@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-security-settings',
@@ -8,6 +8,12 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class SecuritySettingsComponent implements OnInit {
   securitySettingsForm!: FormGroup;
+  private defaultFormValues: any = {
+    otaUpdatePassword: '',
+    denyWifiSettingsAccessIfLocked: false,
+    triggerFactoryReset: false,
+    enableArduinoOTA: true,
+  };
 
   constructor(private formBuilder: FormBuilder) {}
 
@@ -16,15 +22,16 @@ export class SecuritySettingsComponent implements OnInit {
   }
 
   submitForm() {
-    // TODO
+    const {
+      otaUpdatePassword,
+      denyWifiSettingsAccessIfLocked,
+      triggerFactoryReset,
+      enableArduinoOTA,
+    } = this.securitySettingsForm.value;
   }
 
   private createForm() {
-    return this.formBuilder.group({
-      otaUpdatePassword: this.formBuilder.control('', Validators.required),
-      denyWifiSettingsAccessIfLocked: this.formBuilder.control(false, Validators.required),
-      triggerFactoryReset: this.formBuilder.control(false, Validators.required),
-      enableArduinoOTA: this.formBuilder.control(true, Validators.required),
-    });
+    // TODO does this add proper validators (all required)?
+    return this.formBuilder.group(this.defaultFormValues);
   }
 }

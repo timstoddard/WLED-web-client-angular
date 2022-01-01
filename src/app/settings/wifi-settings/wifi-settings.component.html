@@ -2,17 +2,8 @@
   [formGroup]="wifiSettingsForm">
   <div>{{ wifiSettingsForm.value | json }}</div>
   
-  <!-- TODO how to implement '?' button? make a new route for help? -->
-  <div>
-    <button type="button">?</button>
-  </div>
-  <a [routerLink]="['../']">
-    Back
-  </a>
-  <!-- TODO does this need `type="submit"`? -->
-  <button (click)="submitForm()">
-    Save & Connect
-  </button>
+  <!-- TODO save button should say "Save & Connect" -->
+  <app-settings-header (save)="submitForm()"></app-settings-header>
 
   <h2>Wifi Settings</h2>
 
@@ -212,11 +203,6 @@
     <br>
   </div>
 
-  <a [routerLink]="['../']">
-    Back
-  </a>
-  <!-- TODO does this need `type="submit"`? -->
-  <button (click)="submitForm()">
-    Save & Connect
-  </button>
+  <!-- TODO save button should say "Save & Connect" -->
+  <app-settings-footer (save)="submitForm()"></app-settings-footer>
 </form>

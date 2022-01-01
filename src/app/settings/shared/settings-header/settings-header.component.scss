@@ -1,0 +1,5 @@
+@import 'src/app/settings/shared/header_footer_shared';
+
+:host {
+  @include headerAndFooterBaseStyle();
+}

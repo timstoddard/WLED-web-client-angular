@@ -3,6 +3,8 @@
   class="uiSettingsForm">
   <div>{{ uiSettingsForm.value | json }}</div>
 
+  <app-settings-header (save)="submitForm()"></app-settings-header>
+
   <h2 class="uiSettingsForm__title">
     UI Settings
   </h2>
@@ -161,15 +163,5 @@
       class="uiSettingsForm__fileInput">
   </div>
 
-  <div class="uiSettingsForm__buttons">
-    <button
-      class="uiSettingsForm__backButton">
-      Back
-    </button>
-    <button
-      (click)="submitForm()"
-      class="uiSettingsForm__submitButton">
-      Save
-    </button>
-  </div>
+  <app-settings-footer (save)="submitForm()"></app-settings-footer>
 </div>

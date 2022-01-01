@@ -12,6 +12,8 @@ import { DmxSettingsComponent } from './dmx-settings/dmx-settings.component';
 import { LedSettingsComponent } from './led-settings/led-settings.component';
 import { SecuritySettingsComponent } from './security-settings/security-settings.component';
 import { SettingsComponent } from './settings.component';
+import { SettingsFooterComponent } from './shared/settings-footer/settings-footer.component';
+import { SettingsHeaderComponent } from './shared/settings-header/settings-header.component';
 import { SettingsRoutingModule } from './settings-routing.module';
 import { SyncSettingsComponent } from './sync-settings/sync-settings.component';
 import { TimeSettingsComponent } from './time-settings/time-settings.component';
@@ -20,10 +22,12 @@ import { UserModSettingsComponent } from './user-mod-settings/user-mod-settings.
 import { WifiSettingsComponent } from './wifi-settings/wifi-settings.component';
 
 const COMPONENTS = [
-  SettingsComponent,
   DmxSettingsComponent,
   LedSettingsComponent,
   SecuritySettingsComponent,
+  SettingsComponent,
+  SettingsFooterComponent,
+  SettingsHeaderComponent,
   SyncSettingsComponent,
   TimeSettingsComponent,
   UISettingsComponent,

@@ -2,26 +2,35 @@
   [formGroup]="securitySettingsForm"
   class="securitySettingsForm">
   <div>{{ securitySettingsForm.value | json }}</div>
+
+  <app-settings-header (save)="submitForm()"></app-settings-header>
   
-  <!-- TODO how to implement '?' button? make a new route for help? -->
-  <div>
-    <button type="button">?</button>
-  </div>
-  <a [routerLink]="['../']">
-    Back
-  </a>
-  <!-- TODO does this need `type="submit"`? -->
-  <button (click)="submitForm()">
-    Save
-  </button>
+  <mat-form-field
+    appearance="fill"
+    class="">
+    <mat-label>OTA Update Password</mat-label>
+    <input
+      matInput
+      type="password"
+      formControlName="otaUpdatePassword"
+      class="">
+  </mat-form-field>
+  
+  <mat-checkbox
+    formControlName="denyWifiSettingsAccessIfLocked"
+    class="">
+    <mat-label>Deny access to wifi settings if locked</mat-label>
+  </mat-checkbox>
+  <mat-checkbox
+    formControlName="triggerFactoryReset"
+    class="">
+    <mat-label>Trigger factory reset (on save)</mat-label>
+  </mat-checkbox>
+  <mat-checkbox
+    formControlName="enableArduinoOTA"
+    class="">
+    <mat-label>Enable Arduino OTA</mat-label>
+  </mat-checkbox>
 
-  <!-- TODO add form controls here -->
-
-  <a [routerLink]="['../']">
-    Back
-  </a>
-  <!-- TODO does this need `type="submit"`? -->
-  <button (click)="submitForm()">
-    Save
-  </button>
+  <app-settings-footer (save)="submitForm()"></app-settings-footer>
 </form>

@@ -1,0 +1,15 @@
+<!-- TODO how to implement '?' button? make a new route for help? -->
+<div>
+  <button type="button">?</button>
+</div>
+<div>
+  <a [routerLink]="['../']">
+    Back
+  </a>
+</div>
+<div>
+  <!-- TODO does this need `type="submit"`? -->
+  <button (click)="onSave()">
+    Save
+  </button>
+</div>

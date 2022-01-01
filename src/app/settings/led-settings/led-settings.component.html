@@ -3,17 +3,7 @@
   class="ledSettingsForm">
   <div>{{ ledSettingsForm.value | json }}</div>
   
-  <!-- TODO how to implement '?' button? make a new route for help? -->
-  <div>
-    <button type="button">?</button>
-  </div>
-  <a [routerLink]="['../']">
-    Back
-  </a>
-  <!-- TODO does this need `type="submit"`? -->
-  <button (click)="submitForm()">
-    Save
-  </button>
+  <app-settings-header (save)="submitForm()"></app-settings-header>
 
   <h2>Led & Hardware Settings</h2>
 
@@ -270,11 +260,5 @@
     </mat-form-field>
   </div>
 
-  <a [routerLink]="['../']">
-    Back
-  </a>
-  <!-- TODO does this need `type="submit"`? -->
-  <button (click)="submitForm()">
-    Save
-  </button>
+  <app-settings-footer (save)="submitForm()"></app-settings-footer>
 </form>
