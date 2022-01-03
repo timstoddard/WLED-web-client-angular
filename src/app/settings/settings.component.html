@@ -1,1 +1,9 @@
-<p>settings works!</p>
+<nav>
+  <a *ngFor="let link of links"
+    [routerLink]="['./', link.path]"
+    routerLinkActive="button--active">
+    {{ link.component }}
+  </a>
+</nav>
+
+<router-outlet #routerOutlet="outlet"></router-outlet>
