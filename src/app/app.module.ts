@@ -7,8 +7,7 @@ import { ControlsComponent } from './controls/controls.component';
 import { DmxMapComponent } from './dmx-map/dmx-map.component';
 import { EditComponent } from './edit/edit.component';
 import { LiveViewComponent } from './live-view/live-view.component';
-import { LiveViewWsComponent } from './live-view-ws/live-view-ws.component';
-import { MessageComponent } from './message/message.component';
+import { MessageComponent } from './shared/message/message.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { QuickStatsComponent } from './quick-stats/quick-stats.component';
 import { ResetComponent } from './reset/reset.component';
@@ -25,7 +24,6 @@ import { WelcomeComponent } from './welcome/welcome.component';
     DmxMapComponent,
     EditComponent,
     LiveViewComponent,
-    LiveViewWsComponent,
     MessageComponent,
     NotFoundComponent,
     QuickStatsComponent,

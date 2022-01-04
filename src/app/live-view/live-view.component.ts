@@ -7,6 +7,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LiveViewComponent implements OnInit {
 
+  // TODO this component should contain an implementation for live view
+  // both WITH and WITHOUT web sockets. see existing html files:
+  // liveview.htm & liveviewws.htm
+
   constructor() { }
 
   ngOnInit(): void {

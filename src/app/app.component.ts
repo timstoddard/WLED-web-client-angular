@@ -3,7 +3,7 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { UnsubscribingComponent } from './shared/unsubscribing-component';
+import { UnsubscribingComponent } from './shared/unsubscribing.component';
 
 @Component({
   selector: 'app-root',

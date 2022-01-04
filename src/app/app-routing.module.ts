@@ -32,12 +32,9 @@ const routes: Routes = [
   },
   {
     path: 'live',
-    // TODO combine LiveViewComponent & LiveViewWsComponent
     component: LiveViewComponent,
     data: { title: 'Live View' },
   },
-  // TODO how to use the MessageComponent?
-  // { path: 'n/a', component: MessageComponent },
   {
     path: 'quick-stats',
     component: QuickStatsComponent,
