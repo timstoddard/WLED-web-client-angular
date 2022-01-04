@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule } from '@angular/router';
 
+import { RouteWithPageTitle } from '../shared/page-title.service';
 import { DmxSettingsComponent } from './dmx-settings/dmx-settings.component';
 import { LedSettingsComponent } from './led-settings/led-settings.component';
 import { SecuritySettingsComponent } from './security-settings/security-settings.component';
@@ -12,7 +13,7 @@ import { UserModSettingsComponent } from './user-mod-settings/user-mod-settings.
 import { WifiSettingsComponent } from './wifi-settings/wifi-settings.component';
 
 // TODO page titles should match existing web app
-const routes: Routes = [
+const routes: RouteWithPageTitle[] = [
   {
     path: '',
     component: SettingsComponent,

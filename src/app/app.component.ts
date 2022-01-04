@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
-import { Title } from '@angular/platform-browser';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { filter, takeUntil } from 'rxjs/operators';
 
+import { PageTitleService } from './shared/page-title.service';
 import { UnsubscribingComponent } from './shared/unsubscribing.component';
 
 @Component({
@@ -11,8 +9,6 @@ import { UnsubscribingComponent } from './shared/unsubscribing.component';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent extends UnsubscribingComponent {
-  title = 'WLED-Web-Client';
-
   links = [
     {
       path: 'controls',
@@ -60,38 +56,11 @@ export class AppComponent extends UnsubscribingComponent {
     },
   ];
 
-  constructor(
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private titleService: Title) {
-      super();
+  constructor(private pageTitleService: PageTitleService) {
+    super();
   }
 
   ngOnInit() {
-    // TODO move into service
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      takeUntil(this.ngUnsubscribe),
-    )
-    .subscribe(() => {
-      const routeTitle = this.getChild(this.activatedRoute);
-      const DEFAULT_TITLE = 'WLED';
-      if (routeTitle) {
-        routeTitle.data.subscribe(data => {
-          console.log(data);
-          // TODO do this without `any`
-          const newTitle = (data as any).title || DEFAULT_TITLE;
-          this.titleService.setTitle(newTitle);
-        });
-      } else {
-        console.warn(`Could not find title for route: ${this.activatedRoute.toString()}`);
-      }
-    });
-  }
-
-  private getChild(activatedRoute: ActivatedRoute): ActivatedRoute {
-    return activatedRoute.firstChild
-      ? this.getChild(activatedRoute.firstChild)
-      : activatedRoute;
+    this.pageTitleService.updateOnRouteChange(this.ngUnsubscribe);
   }
 }

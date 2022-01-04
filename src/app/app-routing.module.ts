@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule } from '@angular/router';
 
 import { ControlsComponent } from './controls/controls.component';
 import { DmxMapComponent } from './dmx-map/dmx-map.component';
@@ -8,13 +8,14 @@ import { LiveViewComponent } from './live-view/live-view.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { QuickStatsComponent } from './quick-stats/quick-stats.component';
 import { ResetComponent } from './reset/reset.component';
+import { RouteWithPageTitle } from './shared/page-title.service';
 import { TeapotComponent } from './teapot/teapot.component';
 import { UpdateComponent } from './update/update.component';
 import { UserModPageComponent } from './user-mod-page/user-mod-page.component';
 import { WelcomeComponent } from './welcome/welcome.component';
 
 // TODO page titles should match existing web app
-const routes: Routes = [
+const routes: RouteWithPageTitle[] = [
   {
     path: 'controls', // also keep /sliders?
     component: ControlsComponent,
