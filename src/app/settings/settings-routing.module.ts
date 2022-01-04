@@ -11,19 +11,53 @@ import { UISettingsComponent } from './ui-settings/ui-settings.component';
 import { UserModSettingsComponent } from './user-mod-settings/user-mod-settings.component';
 import { WifiSettingsComponent } from './wifi-settings/wifi-settings.component';
 
+// TODO page titles should match existing web app
 const routes: Routes = [
   {
     path: '',
     component: SettingsComponent,
+    data: { title: 'Settings' },
     children: [
-      { path: 'dmx', component: DmxSettingsComponent },
-      { path: 'leds', component: LedSettingsComponent },
-      { path: 'security', component: SecuritySettingsComponent },
-      { path: 'sync', component: SyncSettingsComponent },
-      { path: 'time', component: TimeSettingsComponent },
-      { path: 'ui', component: UISettingsComponent },
-      { path: 'usermod', component: UserModSettingsComponent },
-      { path: 'wifi', component: WifiSettingsComponent },
+      {
+        path: 'dmx',
+        component: DmxSettingsComponent,
+        data: { title: 'DMX Settings' },
+      },
+      {
+        path: 'leds',
+        component: LedSettingsComponent,
+        data: { title: 'LED Settings' },
+      },
+      {
+        path: 'security',
+        component: SecuritySettingsComponent,
+        data: { title: 'Security Settings' },
+      },
+      {
+        path: 'sync',
+        component: SyncSettingsComponent,
+        data: { title: 'Sync Settings' },
+      },
+      {
+        path: 'time',
+        component: TimeSettingsComponent,
+        data: { title: 'Time Settings' },
+      },
+      {
+        path: 'ui',
+        component: UISettingsComponent,
+        data: { title: 'UI Settings' },
+      },
+      {
+        path: 'usermod',
+        component: UserModSettingsComponent,
+        data: { title: 'Usermod Settings' },
+      },
+      {
+        path: 'wifi',
+        component: WifiSettingsComponent,
+        data: { title: 'Wifi Settings' },
+      },
     ],
   },
 ];
