@@ -1,1 +1,31 @@
-<p>controls works!</p>
+<h1>WLED controls</h1>
+
+<span [style.background]="arrayColors[selectedColor]"
+      [cpToggle]="true"
+      [cpDialogDisplay]="'inline'"
+      [(colorPicker)]="arrayColors[selectedColor]"></span>
+
+<div
+  [ngStyle]="quickSelectStyle"
+  [style.background]="arrayColors['color1']"
+  (click)="selectedColor='color1'"></div>
+
+<div
+  [ngStyle]="quickSelectStyle"
+  [style.background]="arrayColors['color2']"
+  (click)="selectedColor='color2'"></div>
+
+<div
+  [ngStyle]="quickSelectStyle"
+  [style.background]="arrayColors['color3']"
+  (click)="selectedColor='color3'"></div>
+
+<div
+  [ngStyle]="quickSelectStyle"
+  [style.background]="arrayColors['color4']"
+  (click)="selectedColor='color4'"></div>
+
+<div
+  [ngStyle]="quickSelectStyle"
+  [style.background]="arrayColors['color5']"
+  (click)="selectedColor='color5'"></div>
