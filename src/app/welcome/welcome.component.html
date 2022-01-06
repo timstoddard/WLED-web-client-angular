@@ -1,1 +1,25 @@
-<p>welcome works!</p>
+<div>[placeholder for WLED logo/image]</div>
+
+<h2>Welcome to WLED!</h2>
+
+<div
+  class="welcome__buttons">
+  <a
+    [routerLink]="['../', 'settings', 'wifi']"
+    class="welcome__buttons__row1col1">
+    <div>[connect icon]</div>
+    <div>Connect</div>
+  </a>
+  <div class="welcome__buttons__row2col1">
+    Connect Module to Wifi
+  </div>
+  <a
+    [routerLink]="['../', 'controls']"
+    class="welcome__buttons__row1col2">
+    <div>[controls/dashboard icon]</div>
+    <div>Controls</div>
+  </a>
+  <div class="welcome__buttons__row2col2">
+    If you're just trying this out in AP mode
+  </div>
+</div>
