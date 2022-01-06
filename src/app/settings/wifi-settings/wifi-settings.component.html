@@ -1,1 +1,171 @@
-<p>wifi-settings works!</p>
+<form
+  [formGroup]="wifiSettingsForm">
+  <!-- TODO how to implement '?' button? make a new route for help? -->
+  <div>
+    <button type="button">?</button>
+  </div>
+  <a [routerLink]="['../']">
+    Back
+  </a>
+  <button type="submit">
+    Save & Connect
+  </button>
+
+  <h2>Wifi Settings</h2>
+
+  <div formGroupName="localNetwork">
+    <h3>Local Network</h3>
+    <i>Leave SSID empty to not connect</i>
+    <br>
+    <input
+      type="text"
+      formControlName="ssid"
+      maxlength="32">
+    <br>
+    <input
+      type="password"
+      formControlName="password"
+      maxlength="63">
+  </div>
+
+  <div formGroupName="IPAddress">
+    <div>Static IP</div>
+    <i>Leave at 0.0.0.0 for DHCP</i>
+    <br>
+    <!-- TODO Add text mask/validation for IP address -->
+    <!-- TODO create IP address input component? -->
+    <input
+      type="text"
+      formControlName="staticIP"
+      required
+      min="0"
+      max="255">
+    <!-- <input name="I0" type="number" class="s" min="0" max="255" required> .
+      <input name="I1" type="number" class="s" min="0" max="255" required> . <input name="I2" type="number" class="s" min="0" max="255" required> . <input name="I3" type="number" class="s" min="0" max="255" required> -->
+    <br>
+    Static gateway:
+    <br>
+    <!-- TODO Add text mask for IP address -->
+    <input
+      type="text"
+      formControlName="staticGateway"
+      required
+      min="0"
+      max="255">
+    <!-- <input name="G0" type="number" class="s" min="0" max="255" required> . <input name="G1" type="number" class="s" min="0" max="255" required> . <input name="G2" type="number" class="s" min="0" max="255" required> .
+      <input name="G3" type="number" class="s" min="0" max="255" required> -->
+    <br>
+    Static subnet mask:
+    <br>
+    <!-- TODO Add text mask for IP address -->
+    <input
+      type="text"
+      formControlName="staticSubnetMask"
+      required
+      min="0"
+      max="255">
+    <!-- <input name="S0" type="number" class="s" min="0" max="255" required> . <input name="S1" type="number" class="s" min="0" max="255" required> . <input name="S2" type="number" class="s" min="0" max="255" required> . <input name="S3" type="number" class="s" min="0" max="255" required> -->
+    <br>
+    <div>mDNS address</div>
+    <div>
+      <i>Leave empty for no mDNS</i>
+    </div>
+    <br>
+    http://
+    <input
+      formControlName="mDNS"
+      maxlength="32">
+    .local
+    <br>
+    Client IP: <span class="sip">Not connected</span>
+  </div>
+
+  <h3>Configure Access Point</h3>
+  <div formGroupName="wledAccessPoint">
+    <div>AP SSID</div>
+    <div>
+      <i>Leave empty for no AP</i>
+    </div>
+    <br>
+    <input
+      type="text"
+      formControlName="ssid"
+      maxlength="32">
+    <br>
+    Hide AP name:
+    <input
+      type="checkbox"
+      formControlName="hideAPName">
+    
+    <br>
+    <div>AP password</div>
+    <div>
+      <i>Leave empty for open</i>
+    </div>
+    <br>
+    <input
+      type="password"
+      formControlName="password"
+      maxlength="63"
+      pattern="(.{8,63})|()"
+      title="Empty or min. 8 characters">
+    <br>
+
+    Access Point WiFi channel:
+    <input
+      type="number"
+      formControlName="wifiChannel"
+      min="1"
+      max="13"
+      required>
+    <br>
+    
+    AP opens:
+    <select formControlName="openAP">
+      <option
+        *ngFor="let openAPOption of openAPOptions"
+        [value]="openAPOption.value">
+        {{ openAPOption.name }}
+      </option>
+    </select>
+    
+    <br>
+    <i>
+      AP IP: <span class="sip">Not active</span>
+    </i>
+    <br>
+  </div>
+
+  <div formGroupName="other">
+    <h3>Other</h3>
+    Disable WiFi sleep:
+    <input
+      type="checkbox"
+      formControlName="disableWifiSleep">
+    <br>
+    <i>
+      Experimental: Can help with connectivity issues.
+      <br>
+      Do not enable if WiFi is working correctly, increases power consumption.
+    </i>
+    <br>
+    <br>
+    <div>Ethernet Type</div>
+    <select formControlName="ethernetTypes">
+      <option
+        *ngFor="let ethernetType of ethernetTypes"
+        [value]="ethernetType.value">
+        {{ ethernetType.name }}
+      </option>
+    </select>
+    <br>
+    <br>
+  </div>
+
+  <a [routerLink]="['../']">
+    Back
+  </a>
+  <button type="submit">
+    Save & Connect
+  </button>
+</form>

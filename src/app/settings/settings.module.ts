@@ -1,5 +1,6 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { DmxSettingsComponent } from './dmx-settings/dmx-settings.component';
 import { LedSettingsComponent } from './led-settings/led-settings.component';
@@ -33,6 +34,7 @@ const COMPONENTS = [
   ],
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     SettingsRoutingModule,
   ]
 })
