@@ -1,1 +1,14 @@
-<p>quick-stats works!</p>
+<div
+  *ngIf="stats"
+  class="quickStats">
+  <h3 class="quickStats__header">
+    Quick Stats
+  </h3>
+
+  <dl class="quickStats__list">
+    <ng-template ngFor let-item [ngForOf]="items">
+      <dt>{{item.name}}</dt>
+      <dd>{{item.value}}</dd>
+    </ng-template>
+  </dl>
+</div>
