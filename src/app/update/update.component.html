@@ -1,1 +1,30 @@
-<p>update works!</p>
+<h2>WLED Firmware Update</h2>
+<form
+  *ngIf="!isUpdating; else updateMessage"
+  [formGroup]="updateForm">
+  Installed version: ##VERSION##<br>
+  Download the latest binary:
+  <a
+    href="https://github.com/Aircoookie/WLED/releases"
+    target="_blank">
+    <img src="https://img.shields.io/github/release/Aircoookie/WLED.svg?style=flat-square">
+  </a>
+  <br>
+  <!-- TODO should have accept=".bin", but it prevents file upload from android app -->
+  <input
+    type="file"
+    required>
+  <br>
+  <input
+    type="submit"
+    formControlName="firmwareBinary"
+    value="Update">
+  <br>
+  <button (click)="goBack()">
+    Back
+  </button>
+</form>
+<ng-template #updateMessage>
+  <div>Update in progress!</div>
+  <div>Please do not close or refresh the page.</div>
+</ng-template>
