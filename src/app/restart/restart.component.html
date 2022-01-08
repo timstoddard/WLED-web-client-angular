@@ -1,0 +1,11 @@
+<h2>Restart</h2>
+
+<div>
+  {{ getMessage() }}
+</div>
+
+<button
+  (click)="doRestart()"
+  [disabled]="isRestarting">
+  Restart
+</button>

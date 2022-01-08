@@ -12,7 +12,7 @@ import { LiveViewComponent } from './live-view/live-view.component';
 import { MessageComponent } from './shared/message/message.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { QuickStatsComponent } from './quick-stats/quick-stats.component';
-import { ResetComponent } from './reset/reset.component';
+import { RestartComponent } from './restart/restart.component';
 import { SettingsModule } from './settings/settings.module';
 import { TeapotComponent } from './teapot/teapot.component';
 import { UpdateComponent } from './update/update.component';
@@ -29,7 +29,7 @@ import { WelcomeComponent } from './welcome/welcome.component';
     MessageComponent,
     NotFoundComponent,
     QuickStatsComponent,
-    ResetComponent,
+    RestartComponent,
     TeapotComponent,
     UpdateComponent,
     UserModPageComponent,

@@ -31,8 +31,8 @@ export class AppComponent extends UnsubscribingComponent {
       component: 'QuickStats',
     },
     {
-      path: 'reset',
-      component: 'Reset',
+      path: 'restart',
+      component: 'Restart',
     },
     {
       path: 'settings',
