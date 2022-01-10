@@ -66,7 +66,7 @@ export class DmxMapComponent implements OnInit {
     //   }
     // }
 
-    console.log(dmxChannels)
+    // console.log(dmxChannels)
     return dmxChannels;
   }
 
