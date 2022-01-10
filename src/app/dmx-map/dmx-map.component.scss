@@ -1,0 +1,65 @@
+.anytype {
+  border: 1px solid white;
+  float: left;
+  height: 100px;
+  margin: 1px;
+  width: 100px;
+}
+
+.type1 { // SET 0
+  color: #F00;
+  font-weight: bold;
+}
+
+.type2 { // RED
+  color: #0F0;
+  font-weight: bold;
+}
+
+.type3 { // GREEN
+  color: #00F;
+  font-weight: bold;
+}
+  
+.type4 { // BLUE
+  color: #FFF;
+  font-weight: bold;
+}
+
+// no style for type5? // WHITE
+
+.type6 { // SHUTTER
+  color: #FFF;
+}
+
+.type7 { // SET 255
+  border: 1px dotted grey;
+  color: #888;
+}
+
+// not used 
+
+/*.bt {
+  background: #333;
+  border: .3ch solid #333;
+  color: #fff;
+  display: inline-block;
+  font-family: Verdana,sans-serif;
+  font-size: 20px;
+  margin: 8px;
+  margin-top: 12px;
+}
+
+.S {
+  border: 2px solid white;
+  margin: 0px;
+}
+  
+body {
+  background: #222;
+  color: #fff;
+  font-family: Verdana,sans-serif;
+  line-height: 200%;
+  margin: 0;
+  text-align: center;
+}*/

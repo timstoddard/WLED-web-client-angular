@@ -1,1 +1,11 @@
-<p>dmx-map works!</p>
+<h2>DMX Map</h2>
+
+<div
+  *ngFor="let channel of dmxChannels"
+  [ngClass]="[
+    'anytype',
+    'type' + channel]">
+  {{ channel + 1 }}
+  <br />
+  {{ getDmxLabel(channel) }}
+</div>
