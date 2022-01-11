@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule, Title } from '@angular/platform-browser';
-import { ColorPickerModule } from 'ngx-color-picker';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -38,7 +37,6 @@ import { WelcomeComponent } from './welcome/welcome.component';
   imports: [
     AppRoutingModule,
     BrowserModule,
-    ColorPickerModule,
     ReactiveFormsModule,
     SettingsModule,
   ],

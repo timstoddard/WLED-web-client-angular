@@ -1,10 +1,8 @@
 <h1>WLED controls</h1>
 
-<span [style.background]="arrayColors[selectedColor]"
-      [cpToggle]="true"
-      [cpDialogDisplay]="'inline'"
-      [(colorPicker)]="arrayColors[selectedColor]"></span>
+<div #colorPicker></div>
 
+<!-- TODO add color presets that match the WLED app -->
 <div
   [ngStyle]="quickSelectStyle"
   [style.background]="arrayColors['color1']"
