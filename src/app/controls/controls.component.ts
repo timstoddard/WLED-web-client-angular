@@ -1,80 +1,320 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import iro from '@jaames/iro';
+import { Component, OnInit } from '@angular/core';
+import RangeTouch from 'rangetouch';
+import { AppConfig, initAppConfig } from '../shared/app-config';
+import { LocalStorageService } from '../shared/local-storage.service';
+import { ControlsService } from './controls.service';
+import { generateApiUrl } from './json.service';
+import { getElementList, isObject } from './utils';
 
 @Component({
   selector: 'app-controls',
   templateUrl: './controls.component.html',
   styleUrls: ['./controls.component.scss']
 })
-export class ControlsComponent implements OnInit, AfterViewInit {
-  @ViewChild('colorPicker', { read: ElementRef }) colorPicker!: ElementRef;
+export class ControlsComponent implements OnInit {
+  private hol = this.getDefaultHolidayConfig();
 
-  // TODO copy list of quick colors from wled
-  toggle: boolean = false;
+  // probably should be moved to a shared location
+  private cfg = initAppConfig(); // TODO add reducers
+  private sliderContainer!: HTMLElement; // sliding UI
+  private iSlide = 0; // related to sliding UI
+  private lastinfo = {};
 
-  rgbaText: string = 'rgba(165, 26, 214, 0.2)';
-
-  arrayColors: any = {
-    color1: '#2883e9',
-    color2: '#e920e9',
-    color3: 'rgb(255,245,0)',
-    color4: 'rgb(236,64,64)',
-    color5: 'rgba(45,208,45,1)'
-  };
-
-  selectedColor: string = 'color1';
-
-  color1: string = '#2889e9';
-  color2: string = '#e920e9';
-  color3: string = '#fff500';
-  color4: string = 'rgb(236,64,64)';
-  color5: string = 'rgba(45,208,45,1)';
-  color6: string = '#1973c0';
-  color7: string = '#f200bd';
-  color8: string = '#a8ff00';
-  color9: string = '#278ce2';
-  color10: string = '#0a6211';
-  color11: string = '#f2ff00';
-  color12: string = '#f200bd';
-  color13: string = 'rgba(0,255,0,0.5)';
-  color14: string = 'rgb(0,255,255)';
-  color15: string = 'rgb(255,0,0)';
-  color16: string = '#a51ad633';
-  color17: string = '#666666';
-  color18: string = '#fa8072';
-
-  quickSelectStyle = {
-    width: '200px',
-    height: '50px',
-    margin: '5px',
-  };
-
-  constructor() {}
+  constructor(
+    private controlsService: ControlsService,
+    private localStorageService: LocalStorageService) {}
 
   ngOnInit() {
+    this.setupRanges();
+    this.loadStoredConfig();
+    this.loadHolidaysOrSkin();
+
+    // TODO make a call to `/json` (gets full app data) but wait 50ms (is this ms value needed/changeable?)
+    // setTimeout(() => {
+    //   this.requestJson(null, false);
+    // }, 50);
+
+    // TODO call update size change
+    // this.size();
+
+    // TODO hide loading screen
+    // document.getElementById('cv')!.style.opacity = `${0}`;
+
+    // TODO load pc mode and update button
+    // if (this.localStorageService.get('pcm') === 'true') {
+    //   this.togglePcMode(true);
+    // }
   }
 
-  ngAfterViewInit() {
-    const colorPicker = iro.ColorPicker(this.colorPicker.nativeElement, {
-      width: 260, // TODO make this dynamic
-      layout: [
-        {
-          component: iro.ui.Wheel,
-          options: {
-            wheelLightness: false,
-            wheelAngle: 270,
-            wheelDirection: 'clockwise',
-          },
-        },
-      ],
+  private loadStoredConfig() {
+    const config = this.localStorageService.get<AppConfig>('wledUiCfg');
+    if (config) {
+      this.cfg = mergeDeep(this.cfg, config);
+    }
+  }
+
+  private loadHolidaysOrSkin() {
+    // TODO move to loadHolidays() in controls service
+    if (this.cfg.comp.hdays) { // should load custom holiday list
+      const holidayJsonPath = generateApiUrl('holidays.json', true);
+      fetch(holidayJsonPath, { method: 'get' }) // may be loaded from external source
+        .then(res => {
+          //if (!res.ok) showErrorToast();
+          return res.json();
+        })
+        .then(json => {
+          if (Array.isArray(json)) {
+            this.hol = json;
+            // TODO: do some parsing first (aircookie comment)
+          }
+        })
+        .catch((error) => {
+          console.log('holidays.json does not contain array of holidays. Defaults loaded.');
+        })
+        .finally(() => {
+          this.loadBackground(this.cfg.theme.bg.url);
+        });
+    } else {
+      this.loadBackground(this.cfg.theme.bg.url);
+    }
+    if (this.cfg.comp.css) {
+      this.loadSkinCSS('skinCss');
+    }
+  }
+
+  private loadBackground(imageUrl: string) {
+    const bg = document.getElementById('bg')!;
+    let img = document.createElement('img') as HTMLImageElement;
+    img.src = imageUrl;
+    if (imageUrl === '') {
+      this.loadHolidayBackground(img);
+    }
+    img.addEventListener('load', (event) => {
+      let alpha = this.cfg.theme.alpha.bg; // parseFloat(this.cfg.theme.alpha.bg);
+      if (isNaN(alpha)) {
+        alpha = 0.6;
+      }
+      bg.style.opacity = `${alpha}`;
+      bg.style.backgroundImage = `url(${img.src})`;
+      // img = null; // TODO is this just fake garbage collection?
     });
   }
 
-  onEventLog(event: string, data: any) {
-    console.log(event, data);
+  private loadHolidayBackground(img: HTMLImageElement) {
+    const today = new Date();
+    for (let i = 0; i < this.hol.length; i++) {
+      const year = this.hol[i][0] === 0 ? today.getFullYear() : this.hol[i][0] as number;
+      const hs = new Date(year, this.hol[i][1] as number, this.hol[i][2] as number);
+      const he = new Date(hs);
+      he.setDate(he.getDate().valueOf() + (this.hol[i][3] as number));
+      if (today >= hs && today <= he) {
+        img.src = this.hol[i][4] as string;
+      }
+    }
   }
 
-  onChangeColor(color: string) {
-    console.log('Color changed:', color);
+  private loadSkinCSS(skinCssId: string) {
+    if (!document.getElementById(skinCssId))	// check if element exists
+    {
+      const documentHead = document.getElementsByTagName('head')[0];
+      const stylesheet = document.createElement('link');
+      stylesheet.id = skinCssId;
+      stylesheet.rel = 'stylesheet';
+      stylesheet.type = 'text/css';
+      stylesheet.href = generateApiUrl('skin.css', true);
+      stylesheet.media = 'all';
+      documentHead.appendChild(stylesheet);
+    }
+  }
+
+  private setupRanges() {
+    // TODO need to call this in child comps? or just in after view init?
+    const ranges = RangeTouch.setup('input[type="range"]', {});
+    console.log('rangetouch', RangeTouch, ranges)
+
+    // TODO add event listeners to ranges
+    const sls = getElementList('input[type="range"]') as HTMLInputElement[];
+    for (const sl of sls) {
+      sl.addEventListener('input', this.updateBubble, true);
+      sl.addEventListener('touchstart', this.toggleBubble);
+      sl.addEventListener('touchend', this.toggleBubble);
+    }
+  }
+
+  // rangetouch slider function
+  private updateBubble(event: Event) {
+    const element = event.target as HTMLInputElement;
+    const parent = element.parentNode as HTMLElement;
+    const bubble = parent.getElementsByTagName('output')[0];
+    if (bubble) {
+      bubble.innerHTML = element.value;
+    }
+  }
+
+  // rangetouch slider function
+  private toggleBubble(event: Event) {
+    const element = event.target as HTMLInputElement;
+    element.parentNode!.querySelector('output')!.classList.toggle('hidden');
+  }
+
+  private getDefaultHolidayConfig() {
+    return [
+      [0, 11, 24, 4, 'https://aircoookie.github.io/xmas.png'], // christmas
+      [0, 2, 17, 1, 'https://images.alphacoders.com/491/491123.jpg'], // st. Patrick's day
+      [2022, 3, 17, 2, 'https://aircoookie.github.io/easter.png'],
+      [2023, 3, 9, 2, 'https://aircoookie.github.io/easter.png'],
+      [2024, 2, 31, 2, 'https://aircoookie.github.io/easter.png'],
+    ];
   }
 }
+
+///////////////////////////////////////////////////
+// helper functions (not tied to any view logic) //
+///////////////////////////////////////////////////
+
+const mergeDeep: any = (target: any, ...sources: any[]) => {
+  if (!sources.length) {
+    return target;
+  }
+  const source = sources.shift();
+
+  if (isObject(target) && isObject(source)) {
+    for (const key in source) {
+      if (isObject(source[key])) {
+        if (!target[key]) {
+          Object.assign(target, { [key]: {} });
+        }
+        mergeDeep(target[key], source[key]);
+      } else {
+        Object.assign(target, { [key]: source[key] });
+      }
+    }
+  }
+  return mergeDeep(target, ...sources);
+};
+
+// TODO probably won't need this once form templates are set up
+const updateUI = () => {
+  // TODO update active appearance of buttons
+  // document.getElementById('buttonPower')!.className = this.isOn ? 'active' : '';
+  // document.getElementById('buttonNl')!.className = this.nlA ? 'active' : '';
+  // document.getElementById('buttonSync')!.className = this.syncSend ? 'active' : '';
+
+  // TODO update slider trails
+  // updateSliderTrail(document.getElementById('sliderBri'));
+  // updateSliderTrail(document.getElementById('sliderSpeed'));
+  // updateSliderTrail(document.getElementById('sliderIntensity'));
+
+  // TODO show/hide whiteness/kelvin sliders based on config
+  // document.getElementById('wwrap')!.style.display = this.isRgbw ? 'block' : 'none';
+  // document.getElementById('wbal')!.style.display = this.lastinfo.leds.cct ? 'block' : 'none';
+  // document.getElementById('kwrap')!.style.display = this.lastinfo.leds.cct ? 'none' : 'block';
+
+  // TODO update presets UI
+  // this.updatePA();
+
+  // TODO update other sliders
+  // this.updatePSliders();
+}
+
+// TODO unused
+const unfocusSliders = () => {
+  document.getElementById('sliderBri')!.blur();
+  document.getElementById('sliderSpeed')!.blur();
+  document.getElementById('sliderIntensity')!.blur();
+}
+
+// TODO unused
+const openGithubWiki = () => {
+  window.open('https://github.com/Aircoookie/WLED/wiki');
+}
+
+////////////////////////////////////////
+// relocated private variables        //
+// TODO delete once controls wired up //
+////////////////////////////////////////
+
+// moved to color service
+// private selectedColorSlot = 0;
+// private whites = [0, 0, 0];
+
+// moved to color presets component
+// private lasth = 0;
+
+// moved to json service
+// private jsonTimeout: number;
+// private lastUpdate = 0; // last call to requestJson()
+// private ws; // websocket
+// private loc = false;
+// private locip;
+// private reqsLegal = false;
+// private isRgbw = false;
+
+// moved to effects component
+// private fxlist = document.getElementById('fxlist');
+
+// moved to palettes component
+// private pallist = document.getElementById('pallist');
+// private palettesData;
+// private selColors;
+
+// moved to segments component
+// private segCount = 0
+// private lowestUnused = 0
+// private lSeg = 0;
+// private noNewSegs = false;
+// private powered = [true];
+// private maxSeg = 0
+// private ledCount = 0
+
+// safely removed
+// private d = document;
+
+// moved to top menu component
+// private isOn = false
+// private nlA = false
+// private nlDur = 60
+// private nlTar = 0;
+// private nlMode = false;
+// private syncSend = false
+// private syncTglRecv = true
+// private isLv = false
+// private isInfo = false
+// private isNodes = false
+// private appWidth: number = 0;
+// private pcMode = false
+// private pcModeA = false
+// private x0 = null;
+// private lastw = 0;
+// private locked = false;
+// private scrollS = 0;
+// private N = 4;
+
+// moved to info component
+// private hc = 0;
+
+// moved to toast comp
+// private toastTimeout;
+
+// moved to presets comp
+// private pJson = {};
+// private pQL = [];
+// private pNum = 0;
+// private pmt = 1
+// private pmtLS = 0
+// private pmtLast = 0;
+// private expanded = [false];
+// private currentPreset = -1;
+// private tr = 7;
+// private pN = ''; // current playlist/preset name
+// private pI = 0; // current playlist/preset id
+/*private plJson = {
+  '0': {
+    ps: [0],
+    dur: [100],
+    transition: [-1],	// to be initiated to default transition dur
+    repeat: 0,
+    r: false,
+    end: 0,
+  },
+};//*/

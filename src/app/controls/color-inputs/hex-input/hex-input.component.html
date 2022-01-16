@@ -1,0 +1,26 @@
+<div id="hexw">
+  <input
+    #hexInput
+    id="hexc"
+    type="text"
+    class="noslide"
+    (keydown)="hexEnter()"
+    autocomplete="off"
+    maxlength="8" />
+  <button
+    id="hexcnf"
+    class="xxs btn"
+    (click)="fromHex()">
+    <i class="icons btna-icon">
+      &#xe390;
+    </i>
+  </button>
+</div>
+
+<p class="labels">
+  <i class="icons sel-icon" (click)="tglHex()">
+    &#xe2b3;
+  </i>
+  <!-- TODO text/icon doesn't seem to match "hex"? make this say something else? -->
+  Color palette
+</p>

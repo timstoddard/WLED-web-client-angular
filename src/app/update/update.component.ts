@@ -15,7 +15,7 @@ export class UpdateComponent implements OnInit {
     this.isUpdating = false;
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     console.log(this.updateForm.controls['firmwareBinary'])
     this.updateForm.controls['firmwareBinary']
       .valueChanges.subscribe(e => console.log(e))

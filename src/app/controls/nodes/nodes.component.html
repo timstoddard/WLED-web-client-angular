@@ -1,0 +1,41 @@
+<div
+  id="nodes"
+  class="modal">
+  <div id="ndlt">
+    WLED instances
+  </div>
+  <div id="kn">
+    <!-- TODO sort nodes by name, and only show nodes with a name -->
+    <table class="infot">
+      <ng-container *ngFor="let node of nodes">
+        <button class="btn btna-icon tab" (click)="location.assign('http://' + node.ip)">
+          {{ getName(node) }}
+        </button>
+        {{ inforow(url, `${getType(node.type)}<br><i>${node.vid === 0 ? "N/A" : node.vid}</i>`) }}
+      </ng-container>
+
+      <div *ngIf="info.ndc < 0">
+        Instance List is disabled.
+      </div>
+      <!-- TODO technically supposed to be an `else if` -->
+      <div *ngIf="nodes.length === 0">
+        No other instances found.
+      </div>
+
+      {{ inforow('Current instance:', info.name) }}
+    </table>
+  </div>
+  <br>
+  <button
+    class="btn infobtn"
+    (click)="loadNodes()">
+    <!-- TODO say reload instead? -->
+    Refresh
+  </button>
+  <button
+    class="btn infobtn"
+    (click)="toggleNodes()">
+    Close
+  </button>
+  <br>
+</div>

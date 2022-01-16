@@ -9,7 +9,7 @@ export class SyncSettingsComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {
+  ngOnInit() {
   }
 
 }

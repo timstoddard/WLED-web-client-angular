@@ -9,7 +9,7 @@ export class UserModSettingsComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {
+  ngOnInit() {
   }
 
 }

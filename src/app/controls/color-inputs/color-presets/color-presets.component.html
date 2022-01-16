@@ -1,0 +1,18 @@
+<div id="qcs-w">
+  <div
+    *ngFor="let color of quickColors"
+    class="qcs"
+    (click)="pickColor('#' + color.hex)"
+    [title]="color.name"
+    [ngStyle]="{
+      backgroundColor: '#' + color.hex
+    }">
+  </div>
+  <div
+    class="qcs"
+    (click)="pickColor('rnd');"
+    title="Random"
+    style="background-color:var(--c-3); padding: 4px 8px; transform: translateY(-10px);">
+    R
+  </div>
+</div>

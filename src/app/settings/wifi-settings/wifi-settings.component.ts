@@ -70,7 +70,7 @@ export class WifiSettingsComponent implements OnInit {
     this.wifiSettingsForm = this.createForm();
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
   }
 
   private createForm() {

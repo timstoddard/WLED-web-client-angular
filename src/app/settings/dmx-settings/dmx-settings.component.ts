@@ -9,7 +9,7 @@ export class DmxSettingsComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {
+  ngOnInit() {
   }
 
 }

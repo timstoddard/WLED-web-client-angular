@@ -1,0 +1,15 @@
+<div
+  class="tab bot"
+  id="bot">
+  <button
+    *ngFor="let bottomBarButton of bottomBarButtons"
+    class="tablinks"
+    (click)="bottomBarButton.onClick">
+    <i class="icons">
+      {{ bottomBarButton.icon }}
+    </i>
+    <p class="tab-label">
+      {{ bottomBarButton.name }}
+    </p>
+  </button>
+</div>

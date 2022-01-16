@@ -31,7 +31,7 @@ export class DmxMapComponent implements OnInit {
   constructor() {
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.dmxChannels = this.getDmxChannels();
   }
 

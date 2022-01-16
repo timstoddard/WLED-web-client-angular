@@ -1,0 +1,16 @@
+<div class="searchbar">
+  <input
+    #searchInput
+    type="text"
+    class="search"
+    placeholder="Search"
+    (input)="search()" />
+  <i class="icons search-icon">
+    &#xe0a1;
+  </i>
+  <i
+    class="icons search-cancel-icon"
+    (click)="cancelSearch()">
+    &#xe38f;
+  </i>
+</div>

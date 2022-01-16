@@ -41,7 +41,7 @@ export class QuickStatsComponent implements OnInit {
     this.items = this.formatItems(this.stats);
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
   }
 
   private formatItems(stats: QuickStats): QuickStatsItem[] {

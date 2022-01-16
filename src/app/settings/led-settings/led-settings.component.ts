@@ -9,7 +9,7 @@ export class LedSettingsComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {
+  ngOnInit() {
   }
 
 }

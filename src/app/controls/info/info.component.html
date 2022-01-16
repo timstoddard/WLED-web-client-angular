@@ -1,0 +1,55 @@
+<div
+  id="info"
+  class="modal">
+  <div id="imgw">
+    <img
+      class="wi"
+      src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB0AAAAFCAYAAAC5Fuf5AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABbSURBVChTlY9bDoAwDMNW7n9nwCipytQN4Z8tbrTHmDmF4oPzyldwRqp1SSdnV/NuZuzqerAByxXznBw3igkeFEfXyUuhK/yFM0CxJfyqXZEOc6/Sr9/bf7uIC5Nwd7orMvAPAAAAAElFTkSuQmCC"
+      alt="" />
+  </div>
+  <br>
+  <div id="kv">
+    v{{ info.ver }} {{ versionName }}
+    <br>
+    <br>
+    <table class="infot">
+      {{ urows }}
+      {{ inforow("Build", info.vid) }}
+      {{ inforow("Signal strength", info.wifi.signal + "% (" + info.wifi.rssi, " dBm)") }}
+      {{ inforow("Uptime", totalRuntimeString) }}
+      {{ inforow("Free heap", heap, " kB") }}
+      {{ inforow("Estimated current", pwru) }}
+      {{ inforow("Frames / second", info.leds.fps) }}
+      {{ inforow("MAC address", info.mac) }}
+      {{ inforow("Filesystem", info.fs.u + "/" + info.fs.t + " kB (" + Math.round(info.fs.u * 100 /
+      info.fs.t) + "%)") }}
+      {{ inforow("Environment", info.arch + " " + info.core + " (" + info.lwip + ")") }}
+    </table>
+  </div>
+  <br>
+  <button
+    class="btn infobtn"
+    (click)="refresh()">
+    Refresh
+  </button>
+  <button
+    class="btn infobtn"
+    (click)="close()">
+    Close Info
+  </button>
+  <br>
+  <button
+    class="btn infobtn"
+    (click)="showNodes()">
+    Instance List
+  </button>
+  <button
+    id="resetbtn"
+    class="btn infobtn"
+    (click)="doReboot()">
+    Reboot WLED
+  </button><br>
+  <span class="h">
+    Made with <span id="heart">&#10084;&#xFE0E;</span> by Aircoookie and the WLED community!
+  </span>
+</div>

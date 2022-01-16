@@ -1,0 +1,72 @@
+<div
+  id="Effects"
+  class="tabcontent">
+  <p class="labels">
+    Effect speed
+  </p>
+  <div class="staytop">
+    <i class="icons slider-icon">
+      &#xe325;
+    </i>
+    <div class="sliderwrap il">
+      <input
+        id="sliderSpeed"
+        class="noslide"
+        onchange="setSpeed()"
+        oninput="updateSliderTrail(this)"
+        max="255"
+        min="0"
+        type="range"
+        value="128" />
+      <output class="sliderbubble hidden"></output>
+      <div class="sliderdisplay"></div>
+    </div>
+  </div>
+  <p class="labels">
+    Effect intensity
+  </p>
+  <div
+    class="staytop"
+    id="staytop1">
+    <i
+      class="icons slider-icon"
+      (click)="tglLabels()">
+      &#xe409;
+    </i>
+    <div class="sliderwrap il">
+      <input
+        id="sliderIntensity"
+        class="noslide"
+        onchange="setIntensity()"
+        oninput="updateSliderTrail(this)"
+        max="255"
+        min="0"
+        type="range"
+        value="128" />
+      <output class="sliderbubble hidden"></output>
+      <div class="sliderdisplay"></div>
+    </div>
+  </div>
+  <p class="labels">
+    Effect mode
+  </p>
+  
+  <app-search-input></app-search-input>
+
+  <div
+    *ngFor="let palette of palettes"
+    class="lstI btn fxbtn"
+    [data-id]="effect.id"
+    (click)="setX(effect.id)">
+    <label class="radio fxchkl">
+      <input
+        type="radio"
+        [value]="effect.id"
+        name="fx">
+      <span class="radiomark"></span>
+    </label>
+    <span class="lstIname">
+      {{ effect.name }}
+    </span>
+  </div>
+</div>

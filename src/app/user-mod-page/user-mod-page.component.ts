@@ -9,7 +9,7 @@ export class UserModPageComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {
+  ngOnInit() {
   }
 
 }

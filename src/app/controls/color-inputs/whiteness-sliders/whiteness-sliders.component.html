@@ -1,0 +1,34 @@
+<div id="wwrap">
+  <p class="labels">
+    White channel
+  </p>
+  <div class="sliderwrap il">
+    <input
+      id="sliderW"
+      class="noslide"
+      onchange="setColorByInputType(0)"
+      oninput="updateSliderTrail(this)"
+      max="255"
+      min="0"
+      type="range"
+      value="128" />
+    <div class="sliderdisplay"></div>
+  </div>
+</div>
+<div id="wbal">
+  <p class="labels">
+    White balance
+  </p>
+  <div class="sliderwrap il">
+    <!-- TODO wire up a ColorService setBalance() to this -->
+    <input
+      id="sliderA"
+      class="noslide"
+      onchange="setBalance(this.value)"
+      max="255"
+      min="0"
+      type="range"
+      value="128" />
+    <div class="sliderdisplay"></div>
+  </div>
+</div>

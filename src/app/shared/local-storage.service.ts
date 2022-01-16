@@ -15,7 +15,7 @@ export class LocalStorageService {
    * Takes a key parameter for looking up data in storage. If this lookup fails it will return a null value.
    * @param key 
    */
-  get(key: string): string | null {
+  get<T>(key: string): T | null {
     const value = localStorage.getItem(key);
     return value !== null ? JSON.parse(value) : value;
   }

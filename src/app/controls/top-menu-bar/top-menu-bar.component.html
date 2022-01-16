@@ -1,0 +1,65 @@
+<div
+  class="wrapper"
+  id="top">
+  <div class="tab top">
+    <div class="btnwrap">
+      <button
+        *ngFor="let topBarButton of topBarButtons"
+        (click)="topBarButton.onClick"
+        class="tgl">
+        <i class="icons">
+          {{ topBarButton.icon }}
+        </i>
+        <p class="tab-label">
+          {{ topBarButton.name }}
+        </p>
+      </button>
+    </div>
+    <a [routerLink]="['./', 'settings']">
+      <i class="icons">
+        &#xe0a2;
+      </i>
+      <p class="tab-label">
+        Config
+      </p>
+    </a>
+    <button
+      id="buttonPcm"
+      (click)="togglePcMode(true)">
+      <i class="icons">
+        &#xe23d;
+      </i>
+      <p class="tab-label">
+        PC Mode
+      </p>
+    </button>
+  </div>
+  <div id="briwrap">
+    <p class="hd">
+      Brightness
+    </p>
+    <div class="il">
+      <i
+        class="icons slider-icon"
+        (click)="tglTheme()">
+        &#xe2a6;
+      </i>
+      <div class="sliderwrap il">
+        <input
+          id="sliderBri"
+          onchange="setBri()"
+          oninput="updateSliderTrail(this)"
+          max="255"
+          min="1"
+          type="range"
+          value="128" />
+        <div class="sliderdisplay"></div>
+      </div>
+    </div>
+  </div>
+  <!-- TODO make this a canvas -->
+  <iframe
+    id="liveview"
+    src="about:blank">
+  </iframe>
+</div>

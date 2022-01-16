@@ -18,11 +18,10 @@ export class EditComponent implements OnInit, AfterViewInit {
   constructor() { }
 
   ngOnInit() {
+    this.requests = new QueuedRequester();
   }
 
   ngAfterViewInit() {
-    this.requests = new QueuedRequester();
-
     const vars: { [key: string]: string } = {};
     // TODO get these from angular router query params
     window.location.href

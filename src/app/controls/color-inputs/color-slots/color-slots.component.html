@@ -1,0 +1,8 @@
+<div id="csl">
+  <button
+    *ngFor="let slot of [0, 1, 2]"
+    class="xxs cl btn"
+    (click)="selectSlot(slot)">
+    {{ slot + 1}}
+  </button>
+</div>

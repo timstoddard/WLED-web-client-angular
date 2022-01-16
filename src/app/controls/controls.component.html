@@ -1,29 +1,45 @@
-<h1>WLED controls</h1>
-
-<div #colorPicker></div>
-
-<!-- TODO add color presets that match the WLED app -->
 <div
-  [ngStyle]="quickSelectStyle"
-  [style.background]="arrayColors['color1']"
-  (click)="selectedColor='color1'"></div>
+  id="cv"
+  class="overlay">
+  Loading WLED UI...
+</div>
+<noscript>
+  <div
+    class="overlay"
+    style="opacity:1;">
+    Sorry, WLED UI needs JavaScript!
+  </div>
+</noscript>
+<div id="bg"></div>
 
-<div
-  [ngStyle]="quickSelectStyle"
-  [style.background]="arrayColors['color2']"
-  (click)="selectedColor='color2'"></div>
+<app-top-menu-bar></app-top-menu-bar>
 
-<div
-  [ngStyle]="quickSelectStyle"
-  [style.background]="arrayColors['color3']"
-  (click)="selectedColor='color3'"></div>
+<div class="container">
+  <div
+    id="Colors"
+    class="tabcontent">
+    <app-color-inputs></app-color-inputs>
+    <app-palettes></app-palettes>
+  </div>
 
-<div
-  [ngStyle]="quickSelectStyle"
-  [style.background]="arrayColors['color4']"
-  (click)="selectedColor='color4'"></div>
+  <app-effects></app-effects>
 
+  <app-segments></app-segments>
+
+  <app-preset></app-preset>
+</div>
+
+<app-bottom-menu-bar></app-bottom-menu-bar>
+
+<div id="connind"></div>
+<!-- TODO move toast to external location so it can be used in more than just controls component? -->
+<app-toast></app-toast>
 <div
-  [ngStyle]="quickSelectStyle"
-  [style.background]="arrayColors['color5']"
-  (click)="selectedColor='color5'"></div>
+  id="namelabel"
+  (click)="toggleNodes()"></div>
+
+<app-nodes
+  [nodes]="">
+</app-nodes>
+
+<app-rover></app-rover>
