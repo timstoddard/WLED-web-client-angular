@@ -1,0 +1,19 @@
+<p
+  *ngIf="label"
+  class="labels">
+  {{ label }}
+</p>
+<div class="sliderwrap il">
+  <input
+    type="range"
+    [formControl]="formControl"
+    (change)="onChange($event)"
+    (input)="onInput($event)"
+    [min]="min"
+    [max]="max"
+    [ngClass]="[class, 'noslide']" />
+  <div
+    #sliderDisplay
+    class="sliderdisplay">
+  </div>
+</div>

@@ -2,32 +2,35 @@ import { Component, OnInit } from '@angular/core';
 import RangeTouch from 'rangetouch';
 import { AppConfig, initAppConfig } from '../shared/app-config';
 import { LocalStorageService } from '../shared/local-storage.service';
-import { ControlsService } from './controls.service';
+import { ColorService } from './color.service';
+// import { ControlsService } from './controls.service';
 import { generateApiUrl } from './json.service';
 import { getElementList, isObject } from './utils';
 
 @Component({
   selector: 'app-controls',
   templateUrl: './controls.component.html',
-  styleUrls: ['./controls.component.scss']
+  styleUrls: ['./controls.component.scss'],
+  providers: [ColorService],
 })
 export class ControlsComponent implements OnInit {
-  private hol = this.getDefaultHolidayConfig();
+  /* private hol = this.getDefaultHolidayConfig();
 
   // probably should be moved to a shared location
   private cfg = initAppConfig(); // TODO add reducers
   private sliderContainer!: HTMLElement; // sliding UI
   private iSlide = 0; // related to sliding UI
-  private lastinfo = {};
+  private lastinfo = {}; */
 
   constructor(
-    private controlsService: ControlsService,
+    // private controlsService: ControlsService,
     private localStorageService: LocalStorageService) {}
 
   ngOnInit() {
-    this.setupRanges();
-    this.loadStoredConfig();
-    this.loadHolidaysOrSkin();
+    // TODO uncomment
+    // this.setupRanges();
+    // this.loadStoredConfig();
+    // this.loadHolidaysOrSkin();
 
     // TODO make a call to `/json` (gets full app data) but wait 50ms (is this ms value needed/changeable?)
     // setTimeout(() => {
@@ -46,7 +49,7 @@ export class ControlsComponent implements OnInit {
     // }
   }
 
-  private loadStoredConfig() {
+  /*private loadStoredConfig() {
     const config = this.localStorageService.get<AppConfig>('wledUiCfg');
     if (config) {
       this.cfg = mergeDeep(this.cfg, config);
@@ -165,14 +168,14 @@ export class ControlsComponent implements OnInit {
       [2023, 3, 9, 2, 'https://aircoookie.github.io/easter.png'],
       [2024, 2, 31, 2, 'https://aircoookie.github.io/easter.png'],
     ];
-  }
+  }*/
 }
 
 ///////////////////////////////////////////////////
 // helper functions (not tied to any view logic) //
 ///////////////////////////////////////////////////
 
-const mergeDeep: any = (target: any, ...sources: any[]) => {
+/*const mergeDeep: any = (target: any, ...sources: any[]) => {
   if (!sources.length) {
     return target;
   }
@@ -201,9 +204,6 @@ const updateUI = () => {
   // document.getElementById('buttonSync')!.className = this.syncSend ? 'active' : '';
 
   // TODO update slider trails
-  // updateSliderTrail(document.getElementById('sliderBri'));
-  // updateSliderTrail(document.getElementById('sliderSpeed'));
-  // updateSliderTrail(document.getElementById('sliderIntensity'));
 
   // TODO show/hide whiteness/kelvin sliders based on config
   // document.getElementById('wwrap')!.style.display = this.isRgbw ? 'block' : 'none';
@@ -227,7 +227,7 @@ const unfocusSliders = () => {
 // TODO unused
 const openGithubWiki = () => {
   window.open('https://github.com/Aircoookie/WLED/wiki');
-}
+}*/
 
 ////////////////////////////////////////
 // relocated private variables        //

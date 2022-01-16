@@ -258,13 +258,16 @@ export class JsonService {
     if (bg) {
       setCssColor('--c-1', bg);
     }
-    const ccfg = config.comp.colors;
-    document.getElementById('hexw')!.style.display = ccfg.hex ? 'block' : 'none';
-    document.getElementById('picker')!.style.display = ccfg.picker ? 'block' : 'none';
-    document.getElementById('vwrap')!.style.display = ccfg.picker ? 'block' : 'none';
-    document.getElementById('kwrap')!.style.display = ccfg.picker ? 'block' : 'none';
-    document.getElementById('rgbwrap')!.style.display = ccfg.rgb ? 'block' : 'none';
-    document.getElementById('qcs-w')!.style.display = ccfg.quick ? 'block' : 'none';
+
+    // TODO show/hide color sliders based on config settings
+    // const ccfg = config.comp.colors;
+    // document.getElementById('hexw')!.style.display = ccfg.hex ? 'block' : 'none';
+    // document.getElementById('picker')!.style.display = ccfg.picker ? 'block' : 'none';
+    // document.getElementById('vwrap')!.style.display = ccfg.picker ? 'block' : 'none';
+    // document.getElementById('kwrap')!.style.display = ccfg.picker ? 'block' : 'none';
+    // document.getElementById('rgbwrap')!.style.display = ccfg.rgb ? 'block' : 'none';
+    // document.getElementById('qcs-w')!.style.display = ccfg.quick ? 'block' : 'none';
+    
     const labels = config.comp.labels;
     let e: any = document.querySelectorAll('.tab-label');
     for (let i = 0; i < e.length; i++) {

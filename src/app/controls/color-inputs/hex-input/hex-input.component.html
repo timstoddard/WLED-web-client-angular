@@ -1,10 +1,9 @@
-<div id="hexw">
+<div *ngIf="showHexInput">
   <input
-    #hexInput
-    id="hexc"
     type="text"
+    [formControl]="hexInput"
+    (keydown)="hexEnter($event)"
     class="noslide"
-    (keydown)="hexEnter()"
     autocomplete="off"
     maxlength="8" />
   <button
@@ -18,9 +17,12 @@
 </div>
 
 <p class="labels">
-  <i class="icons sel-icon" (click)="tglHex()">
+  <i
+    class="icons sel-icon"
+    (click)="tglHex()">
     &#xe2b3;
   </i>
   <!-- TODO text/icon doesn't seem to match "hex"? make this say something else? -->
-  Color palette
+  <!-- Color palette -->
+  Toggle hex input
 </p>

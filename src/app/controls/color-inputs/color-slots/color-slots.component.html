@@ -1,8 +1,11 @@
-<div id="csl">
+<div
+  class="slots"
+  id="csl">
   <button
     *ngFor="let slot of [0, 1, 2]"
-    class="xxs cl btn"
-    (click)="selectSlot(slot)">
+    (click)="selectSlot(slot)"
+    [ngClass]="getButtonClasses(slot)"
+    class="slot">
     {{ slot + 1}}
   </button>
 </div>

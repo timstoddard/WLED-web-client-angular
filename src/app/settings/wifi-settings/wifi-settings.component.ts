@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 interface SelectItem {
   name: string;
@@ -66,7 +66,7 @@ export class WifiSettingsComponent implements OnInit {
 
   wifiSettingsForm: FormGroup;
 
-  constructor() {
+  constructor(private formBuilder: FormBuilder) {
     this.wifiSettingsForm = this.createForm();
   }
 
@@ -74,27 +74,27 @@ export class WifiSettingsComponent implements OnInit {
   }
 
   private createForm() {
-    return new FormGroup({
-      localNetwork: new FormGroup({
-        ssid: new FormControl(''),
-        password: new FormControl(''),
+    return this.formBuilder.group({
+      localNetwork: this.formBuilder.group({
+        ssid: this.formBuilder.control(''),
+        password: this.formBuilder.control(''),
       }),
-      IPAddress: new FormGroup({
-        staticIP: new FormControl(''),
-        staticGateway: new FormControl(''),
-        staticSubnetMask: new FormControl(''),
-        mDNS: new FormControl(''),
+      IPAddress: this.formBuilder.group({
+        staticIP: this.formBuilder.control(''),
+        staticGateway: this.formBuilder.control(''),
+        staticSubnetMask: this.formBuilder.control(''),
+        mDNS: this.formBuilder.control(''),
       }),
-      wledAccessPoint: new FormGroup({
-        ssid: new FormControl(''),
-        password: new FormControl(''),
-        hideAPName: new FormControl(false),
-        wifiChannel: new FormControl(null),
-        openAP: new FormControl(DEFAULT_OPEN_AP_OPTION),
+      wledAccessPoint: this.formBuilder.group({
+        ssid: this.formBuilder.control(''),
+        password: this.formBuilder.control(''),
+        hideAPName: this.formBuilder.control(false),
+        wifiChannel: this.formBuilder.control(null),
+        openAP: this.formBuilder.control(DEFAULT_OPEN_AP_OPTION),
       }),
-      other: new FormGroup({
-        disableWifiSleep: new FormControl(false),
-        ethernetTypes: new FormControl(DEFAULT_ETHERNET_TYPE),
+      other: this.formBuilder.group({
+        disableWifiSleep: this.formBuilder.control(false),
+        ethernetTypes: this.formBuilder.control(DEFAULT_ETHERNET_TYPE),
       }),
     });
   }

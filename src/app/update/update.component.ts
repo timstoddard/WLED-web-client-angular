@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-update',
@@ -10,7 +10,7 @@ export class UpdateComponent implements OnInit {
   updateForm: FormGroup;
   isUpdating: boolean;
 
-  constructor() {
+  constructor(private formBuilder: FormBuilder) {
     this.updateForm = this.createForm();
     this.isUpdating = false;
   }
@@ -34,8 +34,8 @@ export class UpdateComponent implements OnInit {
   }
 
   private createForm() {
-    return new FormGroup({
-      firmwareBinary: new FormControl(''),
+    return this.formBuilder.group({
+      firmwareBinary: this.formBuilder.control(''),
     });
   }
 }

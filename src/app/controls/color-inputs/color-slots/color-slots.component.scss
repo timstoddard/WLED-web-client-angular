@@ -1,0 +1,15 @@
+.slots {
+  background: rgb(20,20,20);
+}
+
+.slot {
+  border: 2px solid white;
+  margin: 5px;
+  width: 42px;
+
+  &--selected {
+    border: 5px solid white;
+    margin: 2px;
+    width: 50px;
+  }
+}

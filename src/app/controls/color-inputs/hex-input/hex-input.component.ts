@@ -1,4 +1,5 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl } from '@angular/forms';
 import { ColorService } from '../../color.service';
 
 const DEFAULT_COLOR = '#ffaa00';
@@ -9,37 +10,42 @@ const DEFAULT_COLOR = '#ffaa00';
   styleUrls: ['./hex-input.component.scss']
 })
 export class HexInputComponent implements OnInit {
-  @Input() whites!: number[];
   @Input() selectedColorSlot!: number;
-  @ViewChild('hexInput', { read: ElementRef }) hexInputElement!: ElementRef<HTMLInputElement>;
+  // @ViewChild('hexInput', { read: ElementRef }) hexInputElement!: ElementRef<HTMLInputElement>;
+  hexInput!: FormControl;
+  showHexInput: boolean = true; // TODO what default
 
-  constructor(private colorService: ColorService) { }
+  constructor(
+    private colorService: ColorService,
+    private formBuilder: FormBuilder) { }
 
   ngOnInit() {
+    this.hexInput = this.formBuilder.control('');
   }
 
   hexEnter(e: KeyboardEvent) {
-    document.getElementById('hexcnf')!.style.backgroundColor = 'var(--c-6)';
+    // TODO update background color of "fromHex()" button
+    // document.getElementById('hexcnf')!.style.backgroundColor = 'var(--c-6)';
+    
     if (e.key === 'Enter') {
       this.fromHex();
     }
-    // if (e.keyCode === 13) {
-    //   this.fromHex();
-    // }
   }
 
   fromHex() {
-    // TODO can this logic be cleaned up/condensed?
-    const str = this.hexInputElement.nativeElement.value;
-    this.whites[this.selectedColorSlot] = parseInt(str.substring(6), 16);
+    const rawValue = this.hexInput.value
+    const value = parseInt(rawValue.substring(6), 16) || 0;
+    this.colorService.updateWhiteValue(value);
     try {
-      this.colorService.setColorPickerColor(`#${str.substring(0, 6)}`);
+      this.colorService.setColorPickerColor(`#${rawValue.substring(0, 6)}`);
     } catch (e) {
       this.colorService.setColorPickerColor(DEFAULT_COLOR);
     }
-    if (isNaN(this.whites[this.selectedColorSlot])) {
-      this.whites[this.selectedColorSlot] = 0;
-    }
     this.colorService.setColorByInputType(2);
+  }
+
+  tglHex() {
+    // TODO update app config, this should set a new state and get the value from there
+    this.showHexInput = !this.showHexInput;
   }
 }

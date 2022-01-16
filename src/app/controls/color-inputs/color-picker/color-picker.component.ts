@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import iro from '@jaames/iro';
 import { ColorService } from '../../color.service';
 
@@ -10,16 +11,39 @@ import { ColorService } from '../../color.service';
 export class ColorPickerComponent implements OnInit, AfterViewInit {
   @ViewChild('colorPicker', { read: ElementRef }) colorPickerElement!: ElementRef;
   private colorPicker!: iro.ColorPicker;
+  colorValues!: FormGroup;
 
-  constructor(private colorService: ColorService) { }
+  constructor(
+    private colorService: ColorService,
+    private formBuilder: FormBuilder) { }
 
   ngOnInit() {
+    this.colorValues = this.createForm();
   }
 
   ngAfterViewInit() {
     this.colorPicker = this.createColorPicker();
     // TODO should color picker be created/owned by color service instead?
     this.colorService.setColorPicker(this.colorPicker);
+  }
+
+  fromHsvValue(value: number) {
+    this.colorService.fromV(value);
+  }
+
+  fromKelvin(kelvin: number) {
+    this.colorService.fromK(kelvin);
+  }
+
+  setColor() {
+    this.colorService.setColorByInputType(0);
+  }
+
+  private createForm() {
+    return this.formBuilder.group({
+      hsvValue: this.formBuilder.control(null),
+      kelvin: this.formBuilder.control(null),
+    })
   }
 
   private createColorPicker() {
@@ -37,7 +61,7 @@ export class ColorPickerComponent implements OnInit, AfterViewInit {
       ],
     });
 
-    // TODO could move into color service since we're calling its functions anyway
+    // TODO could move this declaration into color service since we're calling its functions anyway
     colorPicker.on('input:end', () => {
       this.colorService.setColorByInputType(1);
     });

@@ -1,34 +1,24 @@
 <div id="wwrap">
-  <p class="labels">
-    White channel
-  </p>
-  <div class="sliderwrap il">
-    <input
-      id="sliderW"
-      class="noslide"
-      onchange="setColorByInputType(0)"
-      oninput="updateSliderTrail(this)"
-      max="255"
-      min="0"
-      type="range"
-      value="128" />
-    <div class="sliderdisplay"></div>
-  </div>
+  <app-color-slider
+    [control]="whitenessSettings.get('whiteChannel')!"
+    [min]="0"
+    [max]="255"
+    [value]="128"
+    label="White channel"
+    (slideInput)="'TODO'"
+    (slideChange)="setColor($event)"
+    class="noslide">
+  </app-color-slider>
 </div>
 <div id="wbal">
-  <p class="labels">
-    White balance
-  </p>
-  <div class="sliderwrap il">
-    <!-- TODO wire up a ColorService setBalance() to this -->
-    <input
-      id="sliderA"
-      class="noslide"
-      onchange="setBalance(this.value)"
-      max="255"
-      min="0"
-      type="range"
-      value="128" />
-    <div class="sliderdisplay"></div>
-  </div>
+  <app-color-slider
+    [control]="whitenessSettings.get('whiteBalance')!"
+    [min]="0"
+    [max]="255"
+    [value]="128"
+    label="White balance"
+    (slideInput)="'TODO'"
+    (slideChange)="setBalance($event)"
+    class="noslide">
+  </app-color-slider>
 </div>

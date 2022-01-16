@@ -18,29 +18,6 @@ export const isObject = (item: any) =>
   item && typeof item === 'object' && !Array.isArray(item);
 
 /**
- * Updates the colored in background to the left of the slider button.
- * Updates the 'sliderdisplay' background div of a slider for a visual indication of slider position.
- * @param e 
- * @returns 
- */
-export const updateSliderTrail = (e: HTMLInputElement) => {
-  if (e === null) {
-    return;
-  }
-  const max = e.hasAttribute('max')
-    ? (e.attributes as any).max.value
-    : 255;
-  let percent = parseInt(e.value, 10) * 100 / max;
-  if (percent < 50) {
-    percent += 2;
-  }
-  const val = `linear-gradient(90deg, var(--bg) ${percent}%, var(--c-4) ${percent}%)`;
-  ((e.parentNode! as HTMLElement)
-    .getElementsByClassName('sliderdisplay')[0] as HTMLElement)
-    .style.background = val;
-}
-
-/**
  * Returns the html input element with the given ID.
  * @param id element ID
  * @returns 
