@@ -175,7 +175,7 @@ export class ControlsComponent implements OnInit {
 // helper functions (not tied to any view logic) //
 ///////////////////////////////////////////////////
 
-/*const mergeDeep: any = (target: any, ...sources: any[]) => {
+const mergeDeep: any = (target: any, ...sources: any[]) => {
   if (!sources.length) {
     return target;
   }
@@ -227,7 +227,7 @@ const unfocusSliders = () => {
 // TODO unused
 const openGithubWiki = () => {
   window.open('https://github.com/Aircoookie/WLED/wiki');
-}*/
+}
 
 ////////////////////////////////////////
 // relocated private variables        //

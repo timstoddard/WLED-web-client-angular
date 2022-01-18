@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { Component, Input, OnInit } from '@angular/core';
+import { AbstractControl } from '@angular/forms';
 import { ColorService } from '../../color.service';
 
 @Component({
@@ -8,28 +8,18 @@ import { ColorService } from '../../color.service';
   styleUrls: ['./whiteness-sliders.component.scss']
 })
 export class WhitenessSlidersComponent implements OnInit {
-  whitenessSettings!: FormGroup;
+  @Input() whitenessSettings!: AbstractControl;
 
-  constructor(
-    private colorService: ColorService,
-    private formBuilder: FormBuilder) { }
+  constructor(private colorService: ColorService) {}
 
   ngOnInit() {
-    this.whitenessSettings = this.createForm();
   }
 
   setColor(color: number) {
-    this.colorService.setColorByInputType(0);
+    // this.colorService.setColorByInputType(0);
   }
 
   setBalance(balance: number) {
-    this.colorService.setBalance(balance);
-  }
-
-  private createForm() {
-    return this.formBuilder.group({
-      whiteChannel: this.formBuilder.control(128),
-      whiteBalance: this.formBuilder.control(128),
-    })
+    this.colorService.setWhiteBalance(balance);
   }
 }

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { HsvColor, IroColorValue } from '@irojs/iro-core';
 import { ColorService } from '../../color.service';
 
 interface QuickColor {
@@ -12,7 +13,7 @@ interface QuickColor {
   styleUrls: ['./color-presets.component.scss']
 })
 export class ColorPresetsComponent implements OnInit {
-  private lasth = 0;
+  private previousHue = 0;
 
   quickColors: QuickColor[] = [
     // row 1
@@ -69,22 +70,25 @@ export class ColorPresetsComponent implements OnInit {
    * Set the color from a hex string. Used by quick color selectors.
    * @param hexColor 
    */
-  pickColor(hexColor: string | { h: number, s: number, v: number }) {
+  pickColor(hexColor: IroColorValue) {
     if (hexColor === 'rnd') {
       hexColor = this.generateRandomColor();
     }
-    // TODO what are allowed color formats for picker? generateRandomColor() returns an object not a string
-    this.colorService.setColorPickerColor(hexColor as unknown as string);
-    this.colorService.setColorByInputType(0);
+    this.colorService.setColorPickerColor(hexColor);
+    // this.colorService.setColorByInputType(0);
   }
 
-  private generateRandomColor() {
-    const newColor = { h: 0, s: 0, v: 100 };
+  private generateRandomColor(): HsvColor {
+    const newColor = {
+      h: 0,
+      s: 0,
+      v: 100,
+    };
     newColor.s = Math.floor((Math.random() * 50) + 50);
     do {
       newColor.h = Math.floor(Math.random() * 360);
-    } while (Math.abs(newColor.h - this.lasth) < 50);
-    this.lasth = newColor.h;
+    } while (Math.abs(newColor.h - this.previousHue) < 50);
+    this.previousHue = newColor.h;
     return newColor;
   };
 }

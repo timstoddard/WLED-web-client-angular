@@ -1,6 +1,16 @@
-<app-color-picker></app-color-picker>
-<app-rgb-sliders></app-rgb-sliders>
-<app-whiteness-sliders></app-whiteness-sliders>
-<app-color-presets></app-color-presets>
-<app-color-slots></app-color-slots>
-<app-hex-input></app-hex-input>
+<ng-container *ngIf="colorInputsForm">
+  <app-color-picker
+    [colorValues]="colorInputsForm.get('colorPicker')!">
+  </app-color-picker>
+  <app-rgb-sliders
+    [rgbValues]="colorInputsForm.get('rgb')!">
+  </app-rgb-sliders>
+  <app-whiteness-sliders
+    [whitenessSettings]="colorInputsForm.get('whiteness')!">
+  </app-whiteness-sliders>
+  <app-color-presets></app-color-presets>
+  <app-color-slots></app-color-slots>
+  <app-hex-input
+    [hexInput]="colorInputsForm.get('hex')!">
+  </app-hex-input>
+</ng-container>

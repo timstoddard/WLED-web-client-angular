@@ -3,7 +3,6 @@
     [control]="whitenessSettings.get('whiteChannel')!"
     [min]="0"
     [max]="255"
-    [value]="128"
     label="White channel"
     (slideInput)="'TODO'"
     (slideChange)="setColor($event)"
@@ -15,9 +14,8 @@
     [control]="whitenessSettings.get('whiteBalance')!"
     [min]="0"
     [max]="255"
-    [value]="128"
     label="White balance"
-    (slideInput)="'TODO'"
+    (slideInput)="setBalance($event)"
     (slideChange)="setBalance($event)"
     class="noslide">
   </app-color-slider>

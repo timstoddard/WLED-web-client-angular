@@ -1,7 +1,7 @@
 <div *ngIf="showHexInput">
   <input
     type="text"
-    [formControl]="hexInput"
+    [formControl]="getFormControl()"
     (keydown)="hexEnter($event)"
     class="noslide"
     autocomplete="off"
@@ -9,20 +9,18 @@
   <button
     id="hexcnf"
     class="xxs btn"
-    (click)="fromHex()">
+    (click)="setHex()">
     <i class="icons btna-icon">
       &#xe390;
     </i>
   </button>
 </div>
 
-<p class="labels">
-  <i
-    class="icons sel-icon"
-    (click)="tglHex()">
+<p
+  (click)="toggleShowHex()"
+  class="labels">
+  <i class="icons sel-icon">
     &#xe2b3;
   </i>
-  <!-- TODO text/icon doesn't seem to match "hex"? make this say something else? -->
-  <!-- Color palette -->
-  Toggle hex input
+  {{ showHexInput ? 'Hide' : 'Show' }} hex input
 </p>

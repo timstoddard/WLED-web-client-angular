@@ -1,66 +1,114 @@
 import { Injectable } from '@angular/core';
+import { IroColorValue, RgbColor } from '@irojs/iro-core';
 import iro from '@jaames/iro';
-import { Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 import { ApiHttpService } from '../shared/api-http.service';
 import { ControlsModule } from './controls.module';
-import { asHtmlElem, getInput } from './utils';
+
+export interface CurrentColor {
+  rgb: RgbColor;
+  whiteValue: number;
+  hex: string;
+  hsvValue: number;
+  kelvin: number;
+}
+
+type WhiteValues = [number, number, number];
+
+const DEFAULT_WHITE_CHANNEL_VALUE = 128;
+const DEFAULT_WHITE_BALANCE = 128; // TODO use this
+const DEFAULT_R = 128;
+const DEFAULT_G = 128;
+const DEFAULT_B = 128;
+const DEFAULT_HSV_VALUE = 128;
+const DEFAULT_KELVIN = 6550;
+const DEFAULT_SLOT = 0;
+const DEFAULT_WHITE_VALUES: WhiteValues = [0, 0, 0];
+const DEFAULT_SLOT_COLORS = [
+  'rgb(0,0,0)',
+  'rgb(0,0,0)',
+  'rgb(0,0,0)',
+];
 
 // TODO should be able to provide in controls module
 // @Injectable({ providedIn: ControlsModule })
 @Injectable({ providedIn: 'root' })
 export class ColorService {
-  private colorChange = new Subject<void>(); // TODO wire up listeners to color changes
   private colorPicker!: iro.ColorPicker;
-  private selectedColorSlot = 0;
-  private whites = [0, 0, 0]; // white values, if rbgw enabled
+  private selectedColorSlot = DEFAULT_SLOT; // TODO maybe doesnt belong here?
+  // white values, if rbgw enabled
+  private whites: WhiteValues = DEFAULT_WHITE_VALUES;
+  private currentColorData = new BehaviorSubject<CurrentColor>(this.getDefaults());
 
-  constructor(private apiHttp: ApiHttpService) { }
+  constructor(private apiHttp: ApiHttpService) {}
+
+  getCurrentColorData() {
+    return this.currentColorData;
+  }
 
   getColorPicker() {
     return this.colorPicker;
   }
 
   setColorPicker(colorPicker: iro.ColorPicker) {
+    colorPicker.on('input:end', () => {
+      this.emitNewColor();
+      // this.setColorByInputType(1);
+    });
+    colorPicker.on('color:change', () => {
+      this.emitNewColor();
+    });
+
     this.colorPicker = colorPicker;
   }
 
-  getSelectedSlot() {
-    return this.selectedColorSlot;
-  }
-
-  setColorPickerColor(rgb: string) {
-    console.log('settings', rgb)
-    const color = new iro.Color(rgb);
-    console.log(color, color.value)
-    if (color.value > 0) {
-      this.colorPicker.color.set(color);
+  setColorPickerColor(color: IroColorValue) {
+    const newColor = new iro.Color(color);
+    if (newColor.value > 0) {
+      this.colorPicker.color.set(newColor);
     } else {
       this.colorPicker.color.setChannel('hsv', 'v', 0);
     }
+    // TODO update form (?)
   }
 
-  fromV(value: number) { // TODO better names
-    this.colorPicker.color.setChannel('hsv', 'v', value);
+  setHsvValue(hsvValue: number) {
+    // TODO when this is 0, kelvin
+    this.colorPicker.color.setChannel('hsv', 'v', hsvValue);
   }
 
-  fromK(kelvin: number) {
+  setKelvin(kelvin: number) {
     this.colorPicker.color.set({ kelvin });
   }
 
-  fromRgb(r: number, g: number, b: number) {
-    // const r = getInput('sliderR').value;
-    // const g = getInput('sliderG').value;
-    // const b = getInput('sliderB').value;
-    this.setColorPickerColor(`rgb(${r},${g},${b})`);
+  setRgb(r: number, g: number, b: number) {
+    const rgb = `rgb(${r},${g},${b})`;
+    this.setColorPickerColor(rgb);
   }
 
-  updateWhiteValue(whiteValue: number) {
+  setWhiteValue(whiteValue: number) {
     this.whites[this.selectedColorSlot] = whiteValue;
   }
 
-  setBalance(balance: number) {
-    // TODO implement
+  setWhiteBalance(whiteBalance: number) {
+    // TODO save white balance (update color picker?)
+
+    // TODO api call
+    // var obj = { "seg": { "cct": parseInt(b) } };
+    // requestJson(obj);
+  }
+
+  setHex(hex: string, whiteValue: number) {
+    this.setWhiteValue(whiteValue);
+    try {
+      this.setColorPickerColor(`#${hex}`);
+    } catch (e) {
+      // TODO alert message instead?
+      // this.setColorPickerColor(DEFAULT_COLOR);
+    }
+    // TODO not needed?
+    // this.setColorByInputType(2);
   }
 
   // TODO maybe split this up, one function per input type?
@@ -68,52 +116,7 @@ export class ColorService {
    * Sets the color based on what color input it came from.
    * @param colorInputType 0: from RGB sliders, 1: from picker, 2: from hex
    */
-  setColorByInputType(colorInputType: number) {
-    const cd = document.getElementById('csl')!.children;
-
-    // if picker, and selected slot's curr color black
-    const selectedSlot = asHtmlElem(cd[this.selectedColorSlot]);
-    if (
-      colorInputType === 1 &&
-      selectedSlot.style.backgroundColor === 'rgb(0,0,0)'
-    ) {
-      this.colorPicker.color.setChannel('hsv', 'v', 100);
-    }
-    selectedSlot.style.backgroundColor = this.colorPicker.color.rgbString;
-
-    // if not hex
-    if (colorInputType !== 2) {
-      // TODO get white slider value
-      this.whites[this.selectedColorSlot] = 0; // parseInt(getInput('sliderW').value);
-    }
-    const col = this.colorPicker.color.rgb;
-    const newColor = [col.r, col.g, col.b, this.whites[this.selectedColorSlot]];
-    let obj = {
-      seg: {
-        col: [newColor, [], []],
-      },
-    };
-
-    // if picker
-    if (this.selectedColorSlot === 1) {
-      obj = {
-        seg: {
-          col: [[], newColor, []],
-        },
-      };
-
-      // if hex
-    } else if (this.selectedColorSlot === 2) {
-      obj = {
-        seg: {
-          col: [[], [], newColor],
-        },
-      };
-    }
-
-    // TODO api call
-    // this.requestJson(obj);
-  }
+  setColorByInputType(colorInputType: number) {}
 
   /**
    * Selects one of the 3 color slots.
@@ -127,75 +130,99 @@ export class ColorService {
     // const selectedSlot = asHtmlElem(cd[this.selectedColorSlot]);
     // this.setColorPickerColor(selectedSlot.style.backgroundColor);
 
+    // TODO is this needed?
     // force slider update on initial load (picker "color:change" not fired if black)
     if (this.colorPicker.color.value === 0) {
-      this.updatePSliders();
+      this.emitNewColor();
     }
 
-    // TODO render palettes (?)
+    // TODO render palettes
     // this.redrawPalPrev();
+  }
+
+  getSelectedSlot() {
+    return this.selectedColorSlot;
   }
 
   /**
    * Updates various color input sliders.
    */
-  updatePSliders() {
-    // TODO update the components, not the sliders directly
-    // this.updateRgbSliders();
-    // this.updateHexInput();
-    // this.updateValueSlider();
-    // this.updateKelvinSlider();
-    // this.updateWhiteSlider();
-  }
-
-  private updateRgbSliders() {
-    const color = this.colorPicker.color.rgb;
-    const sliderR = getInput('sliderR');
-    sliderR.value = `${color.r}`;
-    const sliderG = getInput('sliderG');
-    sliderG.value = `${color.g}`;
-    const sliderB = getInput('sliderB');
-    sliderB.value = `${color.b}`;
-  }
-
-  private updateHexInput() {
-    let str = this.colorPicker.color.hexString.substring(1);
+  emitNewColor() {
+    const rgb = this.colorPicker.color.rgb;
+    const kelvin = this.colorPicker.color.kelvin;
+    const hsvValue = this.colorPicker.color.value;
     const whiteValue = this.whites[this.selectedColorSlot];
-    if (whiteValue > 0) {
-      str += whiteValue.toString(16);
-    }
-    
-    // TODO set hex input value
-    // getInput('hexc').value = str;
+    let hexString = this.colorPicker.color.hexString.substring(1);
+    const hex = whiteValue > 0
+      ? hexString + whiteValue.toString(16)
+      : hexString;
+    const newColor: CurrentColor = {
+      rgb,
+      whiteValue,
+      hex,
+      hsvValue,
+      kelvin,
+    };
+    this.currentColorData.next(newColor);
 
-    // TODO update button style
-    // document.getElementById('hexcnf')!.style.backgroundColor = 'var(--c-3)';
-  }
+    // TODO update background of selected slot
+    // selectedSlot.style.backgroundColor = this.colorPicker.color.rgbString;
 
-  private updateValueSlider() {
-    const v = getInput('sliderV');
-    v.value = `${this.colorPicker.color.value}`;
-    
-    // background color as if color had full value
+    // TODO update background for hsv value slider
+    // background color as if color had full value (slider background)
     const hsv = {
       h: this.colorPicker.color.hue,
       s: this.colorPicker.color.saturation,
       v: 100,
     };
-    const c = iro.Color.hsvToRgb(hsv);
-    const cs = `rgb(${c.r},${c.g},${c.b})`;
-    ((v.parentNode! as HTMLElement)
-      .getElementsByClassName('sliderdisplay')[0] as HTMLElement)
-      .style.setProperty('--bg', cs);
-    // updateSliderTrail(v);
-  }
-  
-  private updateKelvinSlider() {
-    getInput('sliderK').value = `${this.colorPicker.color.kelvin}`;
+    const _rgb = iro.Color.hsvToRgb(hsv);
+    const sliderBackground = `rgb(${_rgb.r},${_rgb.g},${_rgb.b})`;
+
+    // TODO update hex enter button style on click and after color update
+    // document.getElementById('hexcnf')!.style.backgroundColor = 'var(--c-3)';
+
+
+
+    // TODO make this work
+    /* // if picker, and selected slot's curr color black
+    const cd = document.getElementById('csl')!.children;
+    const selectedSlot = asHtmlElem(cd[this.selectedColorSlot]);
+    if (
+      colorInputType === 1 &&
+      selectedSlot.style.backgroundColor === 'rgb(0,0,0)'
+    ) {
+      this.colorPicker.color.setChannel('hsv', 'v', 100);
+    }
+
+    // if not hex
+    if (colorInputType !== 2) {
+      // TODO 0 is placeholder, get white slider value
+      this.whites[this.selectedColorSlot] = 0; // parseInt(getInput('sliderW').value);
+    }
+
+    // const rgb = this.colorPicker.color.rgb;
+    const _newColor = [rgb.r, rgb.g, rgb.b, this.whites[this.selectedColorSlot]];
+    const col: Array<number | number[]> = [[], [], []];
+    col[this.selectedColorSlot] = _newColor;
+    let obj = {
+      seg: { col },
+    };
+
+    // TODO api call
+    // this.requestJson(obj); //*/
   }
 
-  private updateWhiteSlider() {
-    getInput('sliderW').value = `${this.whites[this.selectedColorSlot]}`;
-    // updateSliderTrail(getInput('sliderW'));
+  private getDefaults() {
+    return {
+      rgb: {
+        r: DEFAULT_R,
+        g: DEFAULT_G,
+        b: DEFAULT_B,
+      },
+      whiteValue: DEFAULT_WHITE_CHANNEL_VALUE,
+      hex: '', // TODO default hex value?
+      hsvValue: DEFAULT_HSV_VALUE,
+      kelvin: DEFAULT_KELVIN,
+    };
   }
 }

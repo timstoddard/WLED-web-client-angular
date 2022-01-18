@@ -1,5 +1,5 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl } from '@angular/forms';
+import { Component, Input, OnInit } from '@angular/core';
+import { AbstractControl, FormControl } from '@angular/forms';
 import { ColorService } from '../../color.service';
 
 const DEFAULT_COLOR = '#ffaa00';
@@ -10,17 +10,17 @@ const DEFAULT_COLOR = '#ffaa00';
   styleUrls: ['./hex-input.component.scss']
 })
 export class HexInputComponent implements OnInit {
+  @Input() hexInput!: AbstractControl;
   @Input() selectedColorSlot!: number;
-  // @ViewChild('hexInput', { read: ElementRef }) hexInputElement!: ElementRef<HTMLInputElement>;
-  hexInput!: FormControl;
-  showHexInput: boolean = true; // TODO what default
+  showHexInput: boolean = true;
 
-  constructor(
-    private colorService: ColorService,
-    private formBuilder: FormBuilder) { }
+  constructor(private colorService: ColorService) { }
 
   ngOnInit() {
-    this.hexInput = this.formBuilder.control('');
+  }
+
+  getFormControl() {
+    return this.hexInput as FormControl;
   }
 
   hexEnter(e: KeyboardEvent) {
@@ -28,23 +28,26 @@ export class HexInputComponent implements OnInit {
     // document.getElementById('hexcnf')!.style.backgroundColor = 'var(--c-6)';
     
     if (e.key === 'Enter') {
-      this.fromHex();
+      this.setHex();
     }
   }
 
-  fromHex() {
+  setHex() {
     const rawValue = this.hexInput.value
-    const value = parseInt(rawValue.substring(6), 16) || 0;
-    this.colorService.updateWhiteValue(value);
+    const hex = rawValue.substring(0, 6); // TODO also handle length 3? like css
+    const whiteValue = parseInt(rawValue.substring(6), 16) || 0;
+    this.colorService.setHex(hex, whiteValue);
+    this.colorService.setWhiteValue(whiteValue);
     try {
-      this.colorService.setColorPickerColor(`#${rawValue.substring(0, 6)}`);
+      this.colorService.setColorPickerColor(`#${hex}`);
     } catch (e) {
+      // TODO alert message instead?
       this.colorService.setColorPickerColor(DEFAULT_COLOR);
     }
-    this.colorService.setColorByInputType(2);
+    // this.colorService.setColorByInputType(2);
   }
 
-  tglHex() {
+  toggleShowHex() {
     // TODO update app config, this should set a new state and get the value from there
     this.showHexInput = !this.showHexInput;
   }

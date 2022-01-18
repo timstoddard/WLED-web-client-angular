@@ -1,13 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ColorService } from '../../color.service';
-
-// TODO get default from somewhere?
-const DEFAULT_SLOT = 0;
-const DEFAULT_SLOT_COLORS = [
-  'rgb(0,0,0)',
-  'rgb(0,0,0)',
-  'rgb(0,0,0)',
-]
 
 @Component({
   selector: 'app-color-slots',
@@ -15,7 +7,6 @@ const DEFAULT_SLOT_COLORS = [
   styleUrls: ['./color-slots.component.scss']
 })
 export class ColorSlotsComponent implements OnInit {
-  private selectedSlot = DEFAULT_SLOT;
   private slotColors = [];
 
   constructor(private colorService: ColorService) { }
@@ -27,13 +18,13 @@ export class ColorSlotsComponent implements OnInit {
   }
 
   selectSlot(slot: number) {
-    this.selectedSlot = slot;
-    this.colorService.selectSlot(this.selectedSlot);
+    this.colorService.selectSlot(slot);
   }
 
   getButtonClasses(slot: number) {
+    const selectedSlot = this.colorService.getSelectedSlot();
     return {
-      'slot--selected': slot === this.selectedSlot,
+      'slot--selected': slot === selectedSlot,
     };
   }
 }

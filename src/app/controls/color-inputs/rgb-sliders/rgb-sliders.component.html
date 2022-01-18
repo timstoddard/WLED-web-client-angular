@@ -1,4 +1,4 @@
-<div [formGroup]="rgbValues">
+<div>
   <p class="labels">
     RGB color
   </p>
@@ -6,27 +6,18 @@
     [control]="rgbValues.get('r')!"
     [min]="0"
     [max]="255"
-    [value]="128"
-    (slideInput)="fromRgb()"
-    (slideChange)="setColor()"
     class="noslide">
   </app-color-slider>
   <app-color-slider
     [control]="rgbValues.get('g')!"
     [min]="0"
     [max]="255"
-    [value]="128"
-    (slideInput)="fromRgb()"
-    (slideChange)="setColor()"
     class="noslide">
   </app-color-slider>
   <app-color-slider
     [control]="rgbValues.get('b')!"
     [min]="0"
     [max]="255"
-    [value]="128"
-    (slideInput)="fromRgb()"
-    (slideChange)="setColor()"
     class="noslide">
   </app-color-slider>
 </div>

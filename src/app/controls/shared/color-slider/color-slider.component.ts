@@ -15,28 +15,27 @@ export class ColorSliderComponent implements OnInit {
   @Input() control!: AbstractControl;
   @Input() min: number = DEFAULT_MIN;
   @Input() max: number = DEFAULT_MAX;
-  @Input() value: number = DEFAULT_VALUE;
+  // @Input() value: number = DEFAULT_VALUE;
   @Input() label: string = '';
   @Input() class: string = '';
   @Output() slideChange = new EventEmitter<number>();
   @Output() slideInput = new EventEmitter<number>();
   @ViewChild('sliderDisplay', { read: ElementRef }) sliderDisplay!: ElementRef;
-  formControl!: FormControl;
 
   ngOnInit() {
-    this.formControl = this.control as FormControl;
-    if (this.formControl) {
-      this.formControl.setValue(this.value);
-    }
+  }
+
+  getFormControl() {
+    return this.control as FormControl;
   }
 
   onChange(event: Event) {
-    this.slideChange.emit(this.formControl.value); // TODO or emit e?
+    this.slideChange.emit(this.control.value); // TODO or emit e?
     this.updateSliderTrail(event);
   }
 
   onInput(event: Event) {
-    this.slideInput.emit(this.formControl.value);
+    this.slideInput.emit(this.control.value);
     this.updateSliderTrail(event);
   }
 
@@ -51,7 +50,7 @@ export class ColorSliderComponent implements OnInit {
     //   return;
     // }
 
-    let percent = this.formControl.value / this.max * 100;
+    let percent = this.control.value / this.max * 100;
 
     // TODO keep?
     // if (percent < 50) {
