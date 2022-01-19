@@ -75,7 +75,6 @@ export class ColorPresetsComponent implements OnInit {
       hexColor = this.generateRandomColor();
     }
     this.colorService.setColorPickerColor(hexColor);
-    // this.colorService.setColorByInputType(0);
   }
 
   private generateRandomColor(): HsvColor {

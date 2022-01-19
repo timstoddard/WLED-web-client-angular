@@ -14,12 +14,4 @@ export class WhitenessSlidersComponent implements OnInit {
 
   ngOnInit() {
   }
-
-  setColor(color: number) {
-    // this.colorService.setColorByInputType(0);
-  }
-
-  setBalance(balance: number) {
-    this.colorService.setWhiteBalance(balance);
-  }
 }

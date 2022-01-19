@@ -11,7 +11,6 @@ const DEFAULT_COLOR = '#ffaa00';
 })
 export class HexInputComponent implements OnInit {
   @Input() hexInput!: AbstractControl;
-  @Input() selectedColorSlot!: number;
   showHexInput: boolean = true;
 
   constructor(private colorService: ColorService) { }
@@ -37,14 +36,6 @@ export class HexInputComponent implements OnInit {
     const hex = rawValue.substring(0, 6); // TODO also handle length 3? like css
     const whiteValue = parseInt(rawValue.substring(6), 16) || 0;
     this.colorService.setHex(hex, whiteValue);
-    this.colorService.setWhiteValue(whiteValue);
-    try {
-      this.colorService.setColorPickerColor(`#${hex}`);
-    } catch (e) {
-      // TODO alert message instead?
-      this.colorService.setColorPickerColor(DEFAULT_COLOR);
-    }
-    // this.colorService.setColorByInputType(2);
   }
 
   toggleShowHex() {

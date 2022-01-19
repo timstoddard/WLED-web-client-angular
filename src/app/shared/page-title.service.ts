@@ -37,12 +37,13 @@ export class PageTitleService {
     .subscribe(() => {
       const currentChildRoute = this.getChild(this.activatedRoute);
       if (currentChildRoute && currentChildRoute.data) {
-        (currentChildRoute.data as Observable<PageTitle>).pipe(
-          takeUntil(ngUnsubscribe),
-        ).subscribe(data => {
-          const newTitle = data.title || DEFAULT_PAGE_TITLE;
-          this.titleService.setTitle(newTitle);
-        });
+        const routeData = currentChildRoute.data as Observable<PageTitle>;
+        routeData
+          .pipe(takeUntil(ngUnsubscribe))
+          .subscribe(data => {
+            const newTitle = data.title || DEFAULT_PAGE_TITLE;
+            this.titleService.setTitle(newTitle);
+          });
       } else {
         console.warn(`Could not find title data for route: ${this.activatedRoute.toString()}`);
         this.titleService.setTitle(DEFAULT_PAGE_TITLE);

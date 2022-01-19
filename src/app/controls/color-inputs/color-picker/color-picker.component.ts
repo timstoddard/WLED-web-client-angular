@@ -28,6 +28,7 @@ export class ColorPickerComponent extends UnsubscribingComponent implements OnIn
   }
 
   private createColorPicker() {
+    // TODO why can't color be r:0/g:0/b:0?
     const colorPicker = iro.ColorPicker(this.colorPickerElement.nativeElement, {
       width: 260, // TODO make this dynamic
       layout: [

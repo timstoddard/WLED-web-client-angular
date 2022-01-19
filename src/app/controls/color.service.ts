@@ -2,19 +2,16 @@ import { Injectable } from '@angular/core';
 import { IroColorValue, RgbColor } from '@irojs/iro-core';
 import iro from '@jaames/iro';
 import { BehaviorSubject } from 'rxjs';
-
 import { ApiHttpService } from '../shared/api-http.service';
 import { ControlsModule } from './controls.module';
 
 export interface CurrentColor {
   rgb: RgbColor;
   whiteValue: number;
-  hex: string;
+  hex: string; // 6 or 8 characters long
   hsvValue: number;
   kelvin: number;
 }
-
-type WhiteValues = [number, number, number];
 
 const DEFAULT_WHITE_CHANNEL_VALUE = 128;
 const DEFAULT_WHITE_BALANCE = 128; // TODO use this
@@ -23,22 +20,15 @@ const DEFAULT_G = 128;
 const DEFAULT_B = 128;
 const DEFAULT_HSV_VALUE = 128;
 const DEFAULT_KELVIN = 6550;
-const DEFAULT_SLOT = 0;
-const DEFAULT_WHITE_VALUES: WhiteValues = [0, 0, 0];
-const DEFAULT_SLOT_COLORS = [
-  'rgb(0,0,0)',
-  'rgb(0,0,0)',
-  'rgb(0,0,0)',
-];
+const DEFAULT_WHITE_VALUE = 128;
 
 // TODO should be able to provide in controls module
 // @Injectable({ providedIn: ControlsModule })
 @Injectable({ providedIn: 'root' })
 export class ColorService {
   private colorPicker!: iro.ColorPicker;
-  private selectedColorSlot = DEFAULT_SLOT; // TODO maybe doesnt belong here?
-  // white values, if rbgw enabled
-  private whites: WhiteValues = DEFAULT_WHITE_VALUES;
+  // white value, if rbgw enabled
+  private whiteValue = DEFAULT_WHITE_VALUE;
   private currentColorData = new BehaviorSubject<CurrentColor>(this.getDefaults());
 
   constructor(private apiHttp: ApiHttpService) {}
@@ -52,11 +42,12 @@ export class ColorService {
   }
 
   setColorPicker(colorPicker: iro.ColorPicker) {
-    colorPicker.on('input:end', () => {
-      this.emitNewColor();
-      // this.setColorByInputType(1);
-    });
+    // TODO uncommenting this causes callback to fire multiple times
+    // colorPicker.on('input:end', () => {
+    //   this.emitNewColor();
+    // });
     colorPicker.on('color:change', () => {
+      console.log('color change event')
       this.emitNewColor();
     });
 
@@ -87,8 +78,12 @@ export class ColorService {
     this.setColorPickerColor(rgb);
   }
 
-  setWhiteValue(whiteValue: number) {
-    this.whites[this.selectedColorSlot] = whiteValue;
+  setWhiteValue(whiteValue: number, emit = true) {
+    const oldWhiteValue = this.whiteValue;
+    this.whiteValue = whiteValue;
+    if (emit && this.whiteValue !== oldWhiteValue) {
+      this.colorPicker.emit('color:change');
+    }
   }
 
   setWhiteBalance(whiteBalance: number) {
@@ -100,48 +95,14 @@ export class ColorService {
   }
 
   setHex(hex: string, whiteValue: number) {
-    this.setWhiteValue(whiteValue);
+    this.setWhiteValue(whiteValue, false);
     try {
       this.setColorPickerColor(`#${hex}`);
     } catch (e) {
+      console.log(e)
       // TODO alert message instead?
       // this.setColorPickerColor(DEFAULT_COLOR);
     }
-    // TODO not needed?
-    // this.setColorByInputType(2);
-  }
-
-  // TODO maybe split this up, one function per input type?
-  /**
-   * Sets the color based on what color input it came from.
-   * @param colorInputType 0: from RGB sliders, 1: from picker, 2: from hex
-   */
-  setColorByInputType(colorInputType: number) {}
-
-  /**
-   * Selects one of the 3 color slots.
-   * @param slot 0, 1, or 2
-   */
-  selectSlot(slot: number) {
-    this.selectedColorSlot = slot;
-
-    // TODO set colorPicker color = selected slot color
-    // const cd = document.getElementById('csl')!.children;
-    // const selectedSlot = asHtmlElem(cd[this.selectedColorSlot]);
-    // this.setColorPickerColor(selectedSlot.style.backgroundColor);
-
-    // TODO is this needed?
-    // force slider update on initial load (picker "color:change" not fired if black)
-    if (this.colorPicker.color.value === 0) {
-      this.emitNewColor();
-    }
-
-    // TODO render palettes
-    // this.redrawPalPrev();
-  }
-
-  getSelectedSlot() {
-    return this.selectedColorSlot;
   }
 
   /**
@@ -151,10 +112,10 @@ export class ColorService {
     const rgb = this.colorPicker.color.rgb;
     const kelvin = this.colorPicker.color.kelvin;
     const hsvValue = this.colorPicker.color.value;
-    const whiteValue = this.whites[this.selectedColorSlot];
+    const whiteValue = this.whiteValue;
     let hexString = this.colorPicker.color.hexString.substring(1);
     const hex = whiteValue > 0
-      ? hexString + whiteValue.toString(16)
+      ? hexString + whiteValue.toString(16) // TODO pad with zeroes?
       : hexString;
     const newColor: CurrentColor = {
       rgb,
@@ -180,6 +141,9 @@ export class ColorService {
 
     // TODO update hex enter button style on click and after color update
     // document.getElementById('hexcnf')!.style.backgroundColor = 'var(--c-3)';
+
+    // TODO render palettes (need to subscribe)
+    // this.redrawPalPrev();
 
 
 

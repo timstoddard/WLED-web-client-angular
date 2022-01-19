@@ -24,7 +24,7 @@ export class ColorInputsComponent extends UnsubscribingComponent implements OnIn
   }
 
   ngAfterViewInit() {
-    // have to do this here so that the ColorPicker will exist
+    // have to do this here instead of in ngOnInit so that the ColorPicker exists
     this.colorService.getCurrentColorData()
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((colorData: CurrentColor) => {

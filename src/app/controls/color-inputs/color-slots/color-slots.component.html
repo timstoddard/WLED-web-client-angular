@@ -2,9 +2,10 @@
   class="slots"
   id="csl">
   <button
-    *ngFor="let slot of [0, 1, 2]"
+    *ngFor="let slot of getSlots()"
     (click)="selectSlot(slot)"
     [ngClass]="getButtonClasses(slot)"
+    [ngStyle]="getButtonStyle(slot)"
     class="slot">
     {{ slot + 1}}
   </button>

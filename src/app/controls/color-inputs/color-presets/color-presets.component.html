@@ -5,7 +5,10 @@
     (click)="pickColor('#' + color.hex)"
     [title]="color.name"
     [ngStyle]="{
-      backgroundColor: '#' + color.hex
+      backgroundColor: '#' + color.hex,
+      minHeight: '20px',
+      minWidth: '20px',
+      borderRadius: 4
     }">
   </div>
   <div

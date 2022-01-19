@@ -1,9 +1,9 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { AbstractControl, FormControl } from '@angular/forms';
 
+// TODO remove defaults?
 const DEFAULT_MIN = 0;
 const DEFAULT_MAX = 255;
-const DEFAULT_VALUE = 128;
 
 @Component({
   selector: 'app-color-slider',
@@ -11,11 +11,9 @@ const DEFAULT_VALUE = 128;
   styleUrls: ['./color-slider.component.scss']
 })
 export class ColorSliderComponent implements OnInit {
-  // TODO should this be an input? or a private field owned by this class?
   @Input() control!: AbstractControl;
   @Input() min: number = DEFAULT_MIN;
   @Input() max: number = DEFAULT_MAX;
-  // @Input() value: number = DEFAULT_VALUE;
   @Input() label: string = '';
   @Input() class: string = '';
   @Output() slideChange = new EventEmitter<number>();
@@ -29,13 +27,14 @@ export class ColorSliderComponent implements OnInit {
     return this.control as FormControl;
   }
 
+  // TODO seems like we only really need onChange and not onInput
   onChange(event: Event) {
-    this.slideChange.emit(this.control.value); // TODO or emit e?
+    // this.slideChange.emit(this.control.value); // TODO or emit e?
     this.updateSliderTrail(event);
   }
 
   onInput(event: Event) {
-    this.slideInput.emit(this.control.value);
+    // this.slideInput.emit(this.control.value);
     this.updateSliderTrail(event);
   }
 
