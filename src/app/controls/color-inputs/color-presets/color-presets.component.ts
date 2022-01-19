@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { HsvColor, IroColorValue } from '@irojs/iro-core';
 import { ColorService } from '../../color.service';
 
@@ -12,7 +12,7 @@ interface QuickColor {
   templateUrl: './color-presets.component.html',
   styleUrls: ['./color-presets.component.scss']
 })
-export class ColorPresetsComponent implements OnInit {
+export class ColorPresetsComponent {
   private previousHue = 0;
 
   quickColors: QuickColor[] = [
@@ -51,6 +51,7 @@ export class ColorPresetsComponent implements OnInit {
       name: 'Warm',
       hex: 'ffe0a0',
     },
+    // TODO this sets color picker to a bad state, maybe do a near-black or remove this
     {
       name: 'Black',
       hex: '000000',
@@ -62,9 +63,6 @@ export class ColorPresetsComponent implements OnInit {
   ];
 
   constructor(private colorService: ColorService) { }
-
-  ngOnInit() {
-  }
 
   /**
    * Set the color from a hex string. Used by quick color selectors.

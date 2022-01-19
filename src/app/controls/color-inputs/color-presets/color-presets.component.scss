@@ -1,0 +1,25 @@
+$buttonDimension: 42px;
+
+.colorPresets {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 10px;
+  max-width: 290px;
+
+  &__button {
+    border: 1px solid black;
+    border-radius: 6px;
+    margin: 3px;
+    max-height: $buttonDimension;
+    max-width: $buttonDimension;
+    min-height: $buttonDimension;
+    min-width: $buttonDimension;
+    outline: 0;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}

@@ -3,6 +3,10 @@ import { takeUntil } from 'rxjs';
 import { UnsubscribingComponent } from '../../../shared/unsubscribing.component';
 import { ColorService, CurrentColor } from '../../color.service';
 
+// TODO variable number of slots
+
+// TODO look into replacing this component with the multi-color provided by the color picker
+
 const DEFAULT_SLOT = 0;
 const DEFAULT_SLOT_COLORS = [
   'ffffff',
@@ -70,7 +74,7 @@ export class ColorSlotsComponent extends UnsubscribingComponent implements OnIni
 
   getButtonClasses(slot: number) {
     return {
-      'slot--selected': slot === this.selectedSlot,
+      'colorSlots__slot--selected': slot === this.selectedSlot,
     };
   }
 

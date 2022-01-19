@@ -1,15 +1,28 @@
-.slots {
-  background: rgb(20,20,20);
-}
+$buttonDimension: 42px;
 
-.slot {
-  border: 2px solid white;
-  margin: 5px;
-  width: 42px;
+.colorSlots {
+  border: 2px solid black;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  max-width: 150px;
+  padding: 8px;
 
-  &--selected {
-    border: 5px solid white;
-    margin: 2px;
-    width: 50px;
+  &__slot {
+    border: 1px solid black;
+    border-radius: 6px;
+    margin: 3px;
+    max-height: $buttonDimension;
+    max-width: $buttonDimension;
+    min-height: $buttonDimension;
+    min-width: $buttonDimension;
+    outline: 0;
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    &--selected {
+      border: 3px solid gray;
+    }
   }
 }

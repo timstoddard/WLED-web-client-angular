@@ -1,12 +1,10 @@
-<div
-  class="slots"
-  id="csl">
+<div class="colorSlots">
   <button
     *ngFor="let slot of getSlots()"
     (click)="selectSlot(slot)"
+    class="colorSlots__slot"
     [ngClass]="getButtonClasses(slot)"
-    [ngStyle]="getButtonStyle(slot)"
-    class="slot">
-    {{ slot + 1}}
+    [ngStyle]="getButtonStyle(slot)">
+    {{ slot + 1 }}
   </button>
 </div>
