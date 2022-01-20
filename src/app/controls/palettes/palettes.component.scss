@@ -1,0 +1,25 @@
+.palettes {
+  &__radioButton {
+    border: 1px solid rgb(255,255,255,0);
+    border-radius: 6px;
+    margin-bottom: 3px;
+    max-width: 300px;
+    min-height: 25px;
+    padding: 4px;
+
+    &:hover {
+      border-color: black;
+      cursor: pointer;
+    }
+
+    &--selected {
+      // TODO
+    }
+
+    &__text {
+      background-color: rgba(255,255,255,0.8);
+      border-radius: 4px;
+      padding: 2px;
+    }
+  }
+}

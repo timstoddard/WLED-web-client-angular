@@ -13,11 +13,11 @@ import { ControlsComponent } from './controls.component';
 import { HexInputComponent } from './color-inputs/hex-input/hex-input.component';
 // import { InfoComponent } from './info/info.component';
 // import { NodesComponent } from './nodes/nodes.component';
-// import { PalettesComponent } from './palettes/palettes.component';
+import { PalettesComponent } from './palettes/palettes.component';
 // import { PresetsComponent } from './presets/presets.component';
 import { RgbSlidersComponent } from './color-inputs/rgb-sliders/rgb-sliders.component';
 // import { RoverComponent } from './rover/rover.component';
-// import { SearchInputComponent } from './search-input/search-input.component';
+import { SearchInputComponent } from './search-input/search-input.component';
 // import { SegmentsComponent } from './segments/segments.component';
 // import { TopMenuBarComponent } from './top-menu-bar/top-menu-bar.component';
 import { WhitenessSlidersComponent } from './color-inputs/whiteness-sliders/whiteness-sliders.component';
@@ -42,10 +42,10 @@ const COMPONENTS = [
   // EffectsComponent,
   // InfoComponent,
   // NodesComponent,
-  // PalettesComponent,
+  PalettesComponent,
   // PresetsComponent,
   // RoverComponent,
-  // SearchInputComponent,
+  SearchInputComponent,
   // SegmentsComponent,
   // TopMenuBarComponent,
   COLOR_INPUTS,

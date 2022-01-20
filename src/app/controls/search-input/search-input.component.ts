@@ -1,6 +1,5 @@
-import { Component, ElementRef, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
-import { EventEmitter } from 'stream';
 
 @Component({
   selector: 'app-search-input',

@@ -1,0 +1,20 @@
+.controls {
+  &__tabs {
+    height: 100vh;
+    width: 100vw;
+  }
+
+  &__tab {
+    border: 3px solid black;
+    height: 100%;
+    margin: 3px;
+    position: relative;
+
+    > * {
+      display: block;
+      max-height: 45vh;
+      min-height: 45vh;
+      overflow: auto;
+    }
+  }
+}
