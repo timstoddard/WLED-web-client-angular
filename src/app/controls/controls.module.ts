@@ -9,7 +9,7 @@ import { ColorPresetsComponent } from './color-inputs/color-presets/color-preset
 import { ColorSliderComponent } from './shared/color-slider/color-slider.component';
 import { ColorSlotsComponent } from './color-inputs/color-slots/color-slots.component';
 import { ControlsComponent } from './controls.component';
-// import { EffectsComponent } from './effects/effects.component';
+import { EffectsComponent } from './effects/effects.component';
 import { HexInputComponent } from './color-inputs/hex-input/hex-input.component';
 // import { InfoComponent } from './info/info.component';
 // import { NodesComponent } from './nodes/nodes.component';
@@ -39,7 +39,7 @@ const SHARED_COMPONENTS = [
 const COMPONENTS = [
   // BottomMenuBarComponent,
   ControlsComponent,
-  // EffectsComponent,
+  EffectsComponent,
   // InfoComponent,
   // NodesComponent,
   PalettesComponent,

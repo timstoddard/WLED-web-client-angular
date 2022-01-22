@@ -1,42 +1,40 @@
-<div class="il">
-  <div id="pallist" class="list">
-    <app-search-input></app-search-input>
+<div class="palettes">
+  <app-search-input></app-search-input>
 
-    <div class="palettes">
-      <!-- default palette -->
-      <div class="lstI">
-        <label class="check schkl">
-          &nbsp;
-          <input
-            type="radio"
-            [formControl]="selectedPalette"
-            value="0">
-          <span class="radiomark schk"></span>
-        </label>
-        <div class="lstIcontent">
-          <span class="lstIname">
-            Default
-          </span>
-        </div>
-      </div>
+  <div class="palettesList">
+    <!-- default palette -->
+    <div class="lstI">
+      <label class="check schkl">
+        &nbsp;
+        <input
+          type="radio"
+          [formControl]="selectedPalette"
+          value="0">
+        <span class="radiomark schk"></span>
+        <span class="lstIname">
+          Default
+        </span>
+      </label>
+      <!-- <div class="lstIcontent">
+      </div> -->
+    </div>
 
-      <!-- loaded palettes -->
-      <div
-        *ngFor="let palette of palettesWithBackgrounds"
-        [ngClass]="['palettes__radioButton', palette.class, 'lstI', 'btn', 'fxbtn']"
-        [ngStyle]="{ background: palette.background }">
-        <label class="radio fxchkl">
-          <input
-            type="radio"
-            [formControl]="selectedPalette"
-            [value]="palette.id">
-          <span class="radiomark"></span>
-          <span class="palettes__radioButton__text lstIname">
-            {{ palette.name }}
-          </span>
-        </label>
-        <!-- <div class="lstIprev"></div> -->
-      </div>
+    <!-- loaded palettes -->
+    <div
+      *ngFor="let palette of palettesWithBackgrounds"
+      [ngClass]="['palettes__radioButton', palette.class, 'lstI', 'btn', 'fxbtn']"
+      [ngStyle]="{ background: palette.background }">
+      <label class="radio fxchkl">
+        <input
+          type="radio"
+          [formControl]="selectedPalette"
+          [value]="palette.id">
+        <!-- <span class="radiomark"></span> -->
+        <span class="palettes__radioButton__text lstIname">
+          {{ palette.name }}
+        </span>
+      </label>
+      <!-- <div class="lstIprev"></div> -->
     </div>
   </div>
 </div>

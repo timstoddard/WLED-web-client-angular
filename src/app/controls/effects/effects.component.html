@@ -1,70 +1,63 @@
-<div
-  id="Effects"
-  class="tabcontent">
-  <p class="labels">
-    Effect speed
-  </p>
-  <div class="staytop">
-    <i class="icons slider-icon">
-      &#xe325;
-    </i>
-    <div class="sliderwrap il">
-      <input
-        id="sliderSpeed"
-        class="noslide"
-        onchange="setSpeed()"
-        max="255"
-        min="0"
-        type="range"
-        value="128" />
-      <output class="sliderbubble hidden"></output>
-      <div class="sliderdisplay"></div>
+<div class="effects">
+  <div class="effects__sliders">
+    <p class="labels">
+      Effect speed
+    </p>
+    <div class="staytop">
+      <i class="icons slider-icon">
+        &#xe325;
+      </i>
+      <!-- TODO these used to show value in a toast above while sliding, I'm thinking not keep that -->
+      <app-color-slider
+        [control]="effectsForm.get('speed')!"
+        [min]="0"
+        [max]="255"
+        class="noslide">
+      </app-color-slider>
     </div>
-  </div>
-  <p class="labels">
-    Effect intensity
-  </p>
-  <div
-    class="staytop"
-    id="staytop1">
-    <i
-      class="icons slider-icon"
-      (click)="tglLabels()">
-      &#xe409;
-    </i>
-    <div class="sliderwrap il">
-      <input
-        id="sliderIntensity"
-        class="noslide"
-        onchange="setIntensity()"
-        max="255"
-        min="0"
-        type="range"
-        value="128" />
-      <output class="sliderbubble hidden"></output>
-      <div class="sliderdisplay"></div>
+    <p class="labels">
+      Effect intensity
+    </p>
+    <div
+      class="staytop"
+      id="staytop1">
+      <i
+        class="icons slider-icon"
+        (click)="toggleLabels()">
+        &#xe409;
+      </i>
+      <!-- TODO these used to show value in a toast above while sliding, I'm thinking not keep that -->
+      <app-color-slider
+        [control]="effectsForm.get('intensity')!"
+        [min]="0"
+        [max]="255"
+        class="noslide">
+      </app-color-slider>
     </div>
+    <p class="labels">
+      Effect mode
+    </p>
+
+    <app-search-input></app-search-input>
   </div>
-  <p class="labels">
-    Effect mode
-  </p>
-  
-  <app-search-input></app-search-input>
 
   <div
-    *ngFor="let palette of palettes"
-    class="lstI btn fxbtn"
-    [data-id]="effect.id"
-    (click)="setX(effect.id)">
-    <label class="radio fxchkl">
-      <input
-        type="radio"
-        [value]="effect.id"
-        name="fx">
-      <span class="radiomark"></span>
-    </label>
-    <span class="lstIname">
-      {{ effect.name }}
-    </span>
+    [formGroup]="effectsForm"
+    class="effects__list">
+    <div
+      *ngFor="let effect of getEffects()"
+      class="effects__radioButton lstI btn fxbtn">
+      <label class="radio fxchkl">
+        <!-- TODO [urgent fix] form control value is not updated by radio buttons -->
+        <input
+          type="radio"
+          formControlName="selectedEffect"
+          [value]="effect.id">
+        <!-- <span class="radiomark"></span> -->
+        <span class="lstIname">
+          {{ effect.name }}
+        </span>
+      </label>
+    </div>
   </div>
 </div>

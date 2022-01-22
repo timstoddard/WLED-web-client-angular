@@ -1,0 +1,32 @@
+.effects {
+  height: 100%;
+
+  &__sliders {
+    height: 50%;
+    overflow-y: auto;
+  }
+
+  &__list {
+    height: 50%;
+    overflow-y: auto;
+  }
+
+  &__radioButton {
+    background: rgb(200,200,200);
+    border: 1px solid rgb(255,255,255,0);
+    border-radius: 6px;
+    margin-bottom: 3px;
+    max-width: 300px;
+    min-height: 25px;
+    padding: 4px;
+
+    &:hover {
+      border-color: black;
+      cursor: pointer;
+    }
+
+    &--selected {
+      // TODO
+    }
+  }
+}

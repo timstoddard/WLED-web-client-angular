@@ -219,7 +219,10 @@ const updateUI = () => {
 
 // TODO unused
 const unfocusSliders = () => {
+  // in top menu bar (for now?)
   document.getElementById('sliderBri')!.blur();
+  
+  // both in effects component
   document.getElementById('sliderSpeed')!.blur();
   document.getElementById('sliderIntensity')!.blur();
 }

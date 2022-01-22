@@ -295,10 +295,11 @@ export class JsonService {
     this.applyCfg(config);
   }
 
-  tglLabels(config: AppConfig) {
-    config.comp.labels = !config.comp.labels;
-    this.applyCfg(config);
-  }
+  // moved to effects component
+  // tglLabels(config: AppConfig) {
+  //   config.comp.labels = !config.comp.labels;
+  //   this.applyCfg(config);
+  // }
 
   private setTheme(isLight: boolean) {
     if (isLight) {

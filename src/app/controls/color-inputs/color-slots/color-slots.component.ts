@@ -35,7 +35,7 @@ export class ColorSlotsComponent extends UnsubscribingComponent implements OnIni
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(({ hex, whiteValue }: CurrentColor) => {
         const hexFormatted = hex.substring(0, 6);
-        console.log(hexFormatted, whiteValue);
+        // console.log(hexFormatted, whiteValue);
         this.updateSelectedSlot(hexFormatted, whiteValue);
       });
 
@@ -58,7 +58,7 @@ export class ColorSlotsComponent extends UnsubscribingComponent implements OnIni
 
     const hex = this.slotColors[this.selectedSlot];
     const whiteValue = this.whiteValues[this.selectedSlot];
-    console.log('loading slot', slot + 1, hex, whiteValue)
+    // console.log('loading slot', slot + 1, hex, whiteValue)
     this.colorService.setHex(hex, whiteValue);
 
     // TODO is this needed?
