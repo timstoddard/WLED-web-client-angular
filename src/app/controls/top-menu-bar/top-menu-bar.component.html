@@ -15,7 +15,9 @@
         </p>
       </button>
     </div>
-    <a [routerLink]="['./', 'settings']">
+    <!-- TODO Can't bind to 'routerLink' since it isn't a known property of 'a'. -->
+    <!-- <a [routerLink]="['./', 'settings']"> -->
+    <a href="./settings">
       <i class="icons">
         &#xe0a2;
       </i>
@@ -41,21 +43,18 @@
     <div class="il">
       <i
         class="icons slider-icon"
-        (click)="tglTheme()">
+        (click)="toggleTheme()">
         &#xe2a6;
       </i>
-      <div class="sliderwrap il">
-        <input
-          id="sliderBri"
-          onchange="setBri()"
-          max="255"
-          min="1"
-          type="range"
-          value="128" />
-        <div class="sliderdisplay"></div>
-      </div>
+      <app-color-slider
+        [control]="brightnessControl"
+        [min]="1"
+        [max]="255"
+        class="noslide">
+      </app-color-slider>
     </div>
   </div>
+
   <!-- TODO make this a canvas -->
   <iframe
     id="liveview"

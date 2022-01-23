@@ -5,7 +5,9 @@ import { LocalStorageService } from '../shared/local-storage.service';
 import { ControlsModule } from './controls.module';
 import { asHtmlElem, getInput, setCssColor } from './utils';
 
-@Injectable({ providedIn: ControlsModule }) // TODO should this be provided at root?
+// TODO should be able to provide in module
+// @Injectable({ providedIn: ControlsModule }) // TODO should this be provided at root?
+@Injectable({ providedIn: 'root' })
 export class JsonService {
   private jsonTimeout!: number;
   private lastUpdate = 0; // last call to requestJson()
@@ -290,10 +292,11 @@ export class JsonService {
     this.applyCfg(config);
   }
 
-  tglTheme(config: AppConfig) {
-    config.theme.base = (config.theme.base === 'light') ? 'dark' : 'light';
-    this.applyCfg(config);
-  }
+  // moved to top menu bar component
+  // tglTheme(config: AppConfig) {
+  //   config.theme.base = (config.theme.base === 'light') ? 'dark' : 'light';
+  //   this.applyCfg(config);
+  // }
 
   // moved to effects component
   // tglLabels(config: AppConfig) {

@@ -19,7 +19,7 @@ import { RgbSlidersComponent } from './color-inputs/rgb-sliders/rgb-sliders.comp
 // import { RoverComponent } from './rover/rover.component';
 import { SearchInputComponent } from './search-input/search-input.component';
 // import { SegmentsComponent } from './segments/segments.component';
-// import { TopMenuBarComponent } from './top-menu-bar/top-menu-bar.component';
+import { TopMenuBarComponent } from './top-menu-bar/top-menu-bar.component';
 import { WhitenessSlidersComponent } from './color-inputs/whiteness-sliders/whiteness-sliders.component';
 
 const COLOR_INPUTS = [
@@ -47,7 +47,7 @@ const COMPONENTS = [
   // RoverComponent,
   SearchInputComponent,
   // SegmentsComponent,
-  // TopMenuBarComponent,
+  TopMenuBarComponent,
   COLOR_INPUTS,
   SHARED_COMPONENTS,
 ];

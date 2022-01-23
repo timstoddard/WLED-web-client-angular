@@ -1,26 +1,36 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { FormBuilder, FormControl } from '@angular/forms';
+import { takeUntil } from 'rxjs';
 import { AppConfig } from '../../shared/app-config';
 import { LocalStorageService } from '../../shared/local-storage.service';
+import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
 import { generateApiUrl } from '../json.service';
 import { MenuBarButton, setCssColor, updateTablinks } from '../utils';
+
+const DEFAULT_BRIGHTNESS = 128;
 
 @Component({
   selector: 'app-top-menu-bar',
   templateUrl: './top-menu-bar.component.html',
   styleUrls: ['./top-menu-bar.component.scss']
 })
-export class TopMenuBarComponent implements OnInit {
+export class TopMenuBarComponent extends UnsubscribingComponent implements OnInit {
   @Input() cfg!: AppConfig; // TODO get from service/reducer
+  brightnessControl!: FormControl;
+
+  // button controls
   private isOn = false;
-  private nlA = false;
-  private nlDur = 60;
-  private nlTar = 0;
-  private nlMode = false;
-  private syncSend = false;
+  private isNightLightActive = false;
+  private nightLightDuration = 60;
+  private nightLightTar = 0; // TODO better name
+  private nightLightMode = false;
+  private isSyncSend = false;
   private syncTglRecv = true;
-  private isLv = false;
-  private isInfo = false;
-  private isNodes = false;
+  private isLiveViewActive = false;
+  private showInfo = false;
+  private showNodes = false;
+
+  // other vars (some are for sliding ui)
   private appWidth: number = 0;
   private pcMode = false;
   private pcModeA = false;
@@ -38,7 +48,7 @@ export class TopMenuBarComponent implements OnInit {
     },
     {
       name: 'Timer',
-      onClick: this.toggleNl,
+      onClick: this.toggleNightLight,
       icon: '&#xe2a2;',
     },
     {
@@ -48,27 +58,35 @@ export class TopMenuBarComponent implements OnInit {
     },
     {
       name: 'Peek',
-      onClick: this.toggleLiveview,
+      onClick: this.toggleLiveView,
       icon: '&#xe410;',
     },
     {
       name: 'Info',
-      onClick: this.toggleInfo,
+      onClick: this.toggleShowInfo,
       icon: '&#xe066;',
     },
     {
       name: 'Nodes',
-      onClick: this.toggleNodes,
+      onClick: this.toggleShowNodes,
       icon: '&#xe22d;',
     },
   ];
 
-  constructor(private localStorageService: LocalStorageService) { }
+  constructor(
+    private formBuilder: FormBuilder,
+    private localStorageService: LocalStorageService,
+  ) {
+    super();
+  }
 
   ngOnInit() {
-    this.size();
+    this.brightnessControl = this.createFormControl();
+
+    // TODO evaluate if needed
+    /* this.size();
     updateTablinks(0);
-    window.addEventListener('resize', this.size, false);
+    window.addEventListener('resize', this.size, false); */
 
     // TODO slider stuff could be extracted into its own component/service
     // TODO re-implement sliding UI
@@ -84,27 +102,27 @@ export class TopMenuBarComponent implements OnInit {
     // this.sliderContainer.style.setProperty('--n', `${this.N}`);
   }
 
-  private togglePower() {
+  togglePower() {
     this.isOn = !this.isOn;
     var obj = { on: this.isOn };
     // requestJson(obj);
   }
 
-  private toggleNl() {
-    this.nlA = !this.nlA;
-    const message = this.nlA
-      ? `Timer active. Your light will turn ${this.nlTar > 0 ? 'on' : 'off'} ${this.nlMode ? 'over' : 'after'} ${this.nlDur} minutes.`
+  toggleNightLight() {
+    this.isNightLightActive = !this.isNightLightActive;
+    const message = this.isNightLightActive
+      ? `Timer active. Your light will turn ${this.nightLightTar > 0 ? 'on' : 'off'} ${this.nightLightMode ? 'over' : 'after'} ${this.nightLightDuration} minutes.`
       : 'Timer deactivated.'
     // showToast(message);
 
     // TODO update api
-    var obj = { nl: { on: this.nlA } };
+    var obj = { nl: { on: this.isNightLightActive } };
     // this.requestJson(obj);
   }
 
   private toggleSync() {
-    this.syncSend = !this.syncSend;
-    const message = this.syncSend
+    this.isSyncSend = !this.isSyncSend;
+    const message = this.isSyncSend
       ? 'Other lights in the network will now sync to this one.'
       : 'This light and other lights in the network will no longer sync.';
     // showToast(message);
@@ -119,49 +137,53 @@ export class TopMenuBarComponent implements OnInit {
     // this.requestJson(obj);
   }
 
-  private toggleLiveview() {
-    this.isLv = !this.isLv;
+  private toggleLiveView() {
+    this.isLiveViewActive = !this.isLiveViewActive;
     const liveViewIframe = document.getElementById('liveview')! as HTMLIFrameElement;
-    liveViewIframe.style.display = this.isLv ? 'block' : 'none';
-    document.getElementById('buttonSr')!.className = this.isLv ? 'active' : '';
+    liveViewIframe.style.display = this.isLiveViewActive ? 'block' : 'none';
+    document.getElementById('buttonSr')!.className = this.isLiveViewActive ? 'active' : '';
 
     const url = generateApiUrl('liveview')
-    liveViewIframe.src = this.isLv ? url : 'about:blank';
+    liveViewIframe.src = this.isLiveViewActive ? url : 'about:blank';
     
     // TODO send websocket message to disable if live view setting was turned off
-    // if (!this.isLv && ws && ws.readyState === WebSocket.OPEN) {
+    // if (!this.isLiveViewActive && ws && ws.readyState === WebSocket.OPEN) {
     //   ws.send('{"lv":false}');
     // }
     this.size();
   }
 
-  private toggleInfo() {
-    if (this.isNodes) {
-      this.toggleNodes();
+  private toggleShowInfo() {
+    // TODO better way to close nodes if open
+    if (this.showNodes) {
+      this.toggleShowNodes();
     }
-    this.isInfo = !this.isInfo;
-    if (this.isInfo) {
+
+    this.showInfo = !this.showInfo;
+    if (this.showInfo) {
       // TODO render info
       // this.populateInfo(this.lastinfo);
     }
-    document.getElementById('info')!.style.transform = this.isInfo ? 'translateY(0px)' : 'translateY(100%)';
-    document.getElementById('buttonI')!.className = this.isInfo ? 'active' : '';
+    document.getElementById('info')!.style.transform = this.showInfo ? 'translateY(0px)' : 'translateY(100%)';
+    document.getElementById('buttonI')!.className = this.showInfo ? 'active' : '';
   }
 
-  private toggleNodes() {
-    if (this.isInfo) {
-      this.toggleInfo();
+  private toggleShowNodes() {
+    // TODO better way to close info if open
+    if (this.showInfo) {
+      this.toggleShowInfo();
     }
-    this.isNodes = !this.isNodes;
+
+    this.showNodes = !this.showNodes;
     document.getElementById('nodes')!.style.transform =
-      this.isNodes
+      this.showNodes
         ? 'translateY(0px)'
         : 'translateY(100%)';
     document.getElementById('buttonNodes')!.className =
-      this.isNodes
+      this.showNodes
         ? 'active'
         : '';
-    if (this.isNodes) {
+    if (this.showNodes) {
       this.loadNodes();
     }
   }
@@ -186,7 +208,17 @@ export class TopMenuBarComponent implements OnInit {
       });
   }
 
-  private togglePcMode(fromB = false) {
+  /**
+   * Toggles between light and dark mode.
+   * @param config 
+   */
+  toggleTheme(/*config: AppConfig*/) {
+    // TODO wire up to api
+    // config.theme.base = (config.theme.base === 'light') ? 'dark' : 'light';
+    // this.applyCfg(config);
+  }
+
+  togglePcMode(fromB = false) { // TODO "from b" seems to be "called from button"
     if (fromB) {
       this.pcModeA = !this.pcModeA;
       this.localStorageService.set('pcm', this.pcModeA);
@@ -222,6 +254,21 @@ export class TopMenuBarComponent implements OnInit {
     this.lastw = this.appWidth;
   }
 
+  private createFormControl() {
+    const control = this.formBuilder.control(DEFAULT_BRIGHTNESS);
+    control.valueChanges
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((brightness: number) => {
+        // TODO call service here
+        console.log('brightness=', brightness);
+      });
+    return control;
+  }
+
+  // TODO probably not needed soon?
+  /**
+   * Sets the app width and height based on the current client dimensions.
+   */
   private size() {
     this.appWidth = window.innerWidth;
     const lastinfo = { ndc: 0 }; // TODO get info from config/reducer
@@ -233,7 +280,7 @@ export class TopMenuBarComponent implements OnInit {
     setCssColor('--th', h + 'px');
     setCssColor('--bh', document.getElementById('bot')!.clientHeight + 'px');
     setCssColor('--tp', h + 'px');
-    if (this.isLv) {
+    if (this.isLiveViewActive) {
       h -= 4;
     }
     this.togglePcMode();
