@@ -3,7 +3,7 @@ import RangeTouch from 'rangetouch';
 import { AppConfig, initAppConfig } from '../shared/app-config';
 import { LocalStorageService } from '../shared/local-storage.service';
 import { ColorService } from './color.service';
-// import { ControlsService } from './controls.service';
+import { ControlsService } from './controls.service';
 import { generateApiUrl } from './json.service';
 import { getElementList, isObject } from './utils';
 
@@ -11,7 +11,6 @@ import { getElementList, isObject } from './utils';
   selector: 'app-controls',
   templateUrl: './controls.component.html',
   styleUrls: ['./controls.component.scss'],
-  providers: [ColorService],
 })
 export class ControlsComponent implements OnInit {
   /* private hol = this.getDefaultHolidayConfig();
@@ -23,7 +22,7 @@ export class ControlsComponent implements OnInit {
   private lastinfo = {}; */
 
   constructor(
-    // private controlsService: ControlsService,
+    private controlsService: ControlsService,
     private localStorageService: LocalStorageService) {}
 
   ngOnInit() {

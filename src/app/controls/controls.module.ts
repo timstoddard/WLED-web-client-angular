@@ -10,6 +10,7 @@ import { ColorSliderComponent } from './shared/color-slider/color-slider.compone
 import { ColorSlotsComponent } from './color-inputs/color-slots/color-slots.component';
 import { ControlsComponent } from './controls.component';
 import { ControlsRoutingModule } from './controls-routing.module';
+import { ControlsServicesModule } from './controls-services.module';
 import { EffectsComponent } from './effects/effects.component';
 import { HexInputComponent } from './color-inputs/hex-input/hex-input.component';
 // import { InfoComponent } from './info/info.component';
@@ -59,6 +60,7 @@ const COMPONENTS = [
   imports: [
     CommonModule,
     ControlsRoutingModule,
+    ControlsServicesModule,
     ReactiveFormsModule,
   ],
 })

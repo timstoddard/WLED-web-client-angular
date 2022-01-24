@@ -2,12 +2,11 @@ import { Injectable } from '@angular/core';
 import { ApiHttpService } from '../shared/api-http.service';
 import { AppConfig } from '../shared/app-config';
 import { LocalStorageService } from '../shared/local-storage.service';
-import { ControlsModule } from './controls.module';
+import { ControlsServicesModule } from './controls-services.module';
 import { asHtmlElem, getInput, setCssColor } from './utils';
 
-// TODO should be able to provide in module
-// @Injectable({ providedIn: ControlsModule }) // TODO should this be provided at root?
-@Injectable({ providedIn: 'root' })
+// TODO should this be provided at root?
+@Injectable({ providedIn: ControlsServicesModule })
 export class JsonService {
   private jsonTimeout!: number;
   private lastUpdate = 0; // last call to requestJson()

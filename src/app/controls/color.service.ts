@@ -3,7 +3,7 @@ import { IroColorValue, RgbColor } from '@irojs/iro-core';
 import iro from '@jaames/iro';
 import { BehaviorSubject } from 'rxjs';
 import { ApiHttpService } from '../shared/api-http.service';
-import { ControlsModule } from './controls.module';
+import { ControlsServicesModule } from './controls-services.module';
 
 export interface CurrentColor {
   rgb: RgbColor;
@@ -22,9 +22,7 @@ const DEFAULT_HSV_VALUE = 128;
 const DEFAULT_KELVIN = 6550;
 const DEFAULT_WHITE_VALUE = 128;
 
-// TODO should be able to provide in controls module
-// @Injectable({ providedIn: ControlsModule })
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: ControlsServicesModule })
 export class ColorService {
   private colorPicker!: iro.ColorPicker;
   // white value, if rbgw enabled

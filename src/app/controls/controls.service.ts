@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ApiHttpService } from '../shared/api-http.service';
-import { ControlsModule } from './controls.module';
+import { ControlsServicesModule } from './controls-services.module';
 
-@Injectable({ providedIn: ControlsModule })
+@Injectable({ providedIn: ControlsServicesModule })
 export class ControlsService {
   constructor(private apiHttp: ApiHttpService) {}
 

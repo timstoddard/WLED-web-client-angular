@@ -137,7 +137,7 @@ export class PalettesComponent extends UnsubscribingComponent implements OnInit 
   }
 
   setPalette(paletteId = -1) {
-    console.log(`selected effect [id=${paletteId}]`);
+    console.log(`selected palette [id=${paletteId}]`);
 
     // TODO update UI to show selected palette
     // if (paletteId === -1) {
