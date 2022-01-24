@@ -1,19 +1,15 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { AbstractControl, FormControl } from '@angular/forms';
-
-// TODO remove defaults?
-const DEFAULT_MIN = 0;
-const DEFAULT_MAX = 255;
 
 @Component({
   selector: 'app-color-slider',
   templateUrl: './color-slider.component.html',
   styleUrls: ['./color-slider.component.scss']
 })
-export class ColorSliderComponent implements OnInit {
+export class ColorSliderComponent implements OnInit, AfterViewInit {
   @Input() control!: AbstractControl;
-  @Input() min: number = DEFAULT_MIN;
-  @Input() max: number = DEFAULT_MAX;
+  @Input() min!: number;
+  @Input() max!: number;
   @Input() label: string = '';
   @Input() class: string = '';
   @Output() slideChange = new EventEmitter<number>();
@@ -21,6 +17,19 @@ export class ColorSliderComponent implements OnInit {
   @ViewChild('sliderDisplay', { read: ElementRef }) sliderDisplay!: ElementRef;
 
   ngOnInit() {
+  }
+
+  ngAfterViewInit() {
+    if (typeof this.min !== 'number') {
+      console.error(
+        `Min missing from slider. See element:`,
+        this.sliderDisplay);
+    }
+    if (typeof this.max !== 'number') {
+      console.error(
+        `Max missing from slider. See element:`,
+        this.sliderDisplay);
+    }
   }
 
   getFormControl() {
