@@ -1,0 +1,25 @@
+.topMenuBar {
+  &__buttons {
+    align-items: center;
+    display: flex;
+    justify-content: center; // TODO left?
+  }
+
+  &__button {
+    padding: 3px;
+
+    &__text {
+      display: block;
+    }
+  }
+
+  &__liveView {
+    height: 4px; // TODO make this taller? or add ability to set height?
+    width: 100%;
+    border: 1px solid black; // TODO remove border after page is fully styled
+
+    &--hidden {
+      display: none;
+    }
+  }
+}

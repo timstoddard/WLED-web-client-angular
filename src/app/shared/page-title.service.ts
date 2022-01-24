@@ -1,16 +1,23 @@
 import { Injectable } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { ActivatedRoute, NavigationEnd, Route, Router } from '@angular/router';
+import { ActivatedRoute, LoadChildrenCallback, NavigationEnd, Route, Router } from '@angular/router';
 import { filter, takeUntil } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
 
 const DEFAULT_PAGE_TITLE = 'WLED';
 
-export interface RouteWithPageTitle extends Route {
-  data?: PageTitle;
+/** All routes must either have a defined page title or a lazy loaded module. */
+export type RouteWithPageTitle = RouteWithDefinedPageTitle | RouteWithLazyLoadedModule;
+
+interface RouteWithDefinedPageTitle extends Route {
+  data: PageTitle;
 }
 
-export interface PageTitle {
+interface RouteWithLazyLoadedModule extends Route {
+  loadChildren: LoadChildrenCallback;
+}
+
+interface PageTitle {
   title: string;
 }
 

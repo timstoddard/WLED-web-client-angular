@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { ControlsComponent } from './controls/controls.component';
 import { DmxMapComponent } from './dmx-map/dmx-map.component';
 import { EditComponent } from './edit/edit.component';
 import { LiveViewComponent } from './live-view/live-view.component';
@@ -14,13 +13,19 @@ import { UpdateComponent } from './update/update.component';
 import { UserModPageComponent } from './user-mod-page/user-mod-page.component';
 import { WelcomeComponent } from './welcome/welcome.component';
 
-// TODO page titles should match existing web app
+// TODO page titles should match existing web app (?)
 const routes: RouteWithPageTitle[] = [
+  // lazy loaded feature modules
   {
-    path: 'controls', // also keep /sliders?
-    component: ControlsComponent,
-    data: { title: 'WLED Controls' },
+    path: 'controls', // TODO also keep /sliders? (thinking not)
+    loadChildren: () => import('./controls/controls.module').then(m => m.ControlsModule),
   },
+  {
+    path: 'settings',
+    loadChildren: () => import('./settings/settings.module').then(m => m.SettingsModule),
+  },
+
+  // direct routes
   {
     path: 'dmxmap',
     component: DmxMapComponent,
@@ -47,10 +52,6 @@ const routes: RouteWithPageTitle[] = [
     data: { title: 'Restart' },
   },
   {
-    path: 'settings',
-    loadChildren: () => import('./settings/settings.module').then(m => m.SettingsModule),
-  },
-  {
     path: 'teapot', // TODO remove?
     component: TeapotComponent,
     data: { title: '418 Teapot' },
@@ -70,6 +71,8 @@ const routes: RouteWithPageTitle[] = [
     component: WelcomeComponent,
     data: { title: 'Welcome' },
   },
+
+  // handle unknown routes (404 page)
   {
     path: '**',
     component: NotFoundComponent,

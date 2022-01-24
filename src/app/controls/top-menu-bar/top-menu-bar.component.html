@@ -1,63 +1,60 @@
-<div
-  class="wrapper"
-  id="top">
-  <div class="tab top">
-    <div class="btnwrap">
-      <button
-        *ngFor="let topBarButton of topBarButtons"
-        (click)="topBarButton.onClick"
-        class="tgl">
-        <i class="icons">
-          {{ topBarButton.icon }}
-        </i>
-        <p class="tab-label">
-          {{ topBarButton.name }}
-        </p>
-      </button>
-    </div>
-    <!-- TODO Can't bind to 'routerLink' since it isn't a known property of 'a'. -->
-    <!-- <a [routerLink]="['./', 'settings']"> -->
-    <a href="./settings">
-      <i class="icons">
-        &#xe0a2;
-      </i>
-      <p class="tab-label">
-        Config
-      </p>
-    </a>
-    <button
-      id="buttonPcm"
-      (click)="togglePcMode(true)">
-      <i class="icons">
-        &#xe23d;
-      </i>
-      <p class="tab-label">
-        PC Mode
-      </p>
-    </button>
-  </div>
-  <div id="briwrap">
-    <p class="hd">
-      Brightness
-    </p>
-    <div class="il">
-      <i
-        class="icons slider-icon"
-        (click)="toggleTheme()">
-        &#xe2a6;
-      </i>
-      <app-color-slider
-        [control]="brightnessControl"
-        [min]="1"
-        [max]="255"
-        class="noslide">
-      </app-color-slider>
-    </div>
-  </div>
-
-  <!-- TODO make this a canvas -->
-  <iframe
-    id="liveview"
-    src="about:blank">
-  </iframe>
+<div class="topMenuBar__buttons">
+  <button
+    *ngFor="let topBarButton of topBarButtons"
+    (click)="topBarButton.onClick"
+    class="topMenuBar__button">
+    <i class="icons">
+      {{ topBarButton.icon }}
+    </i>
+    <span class="topMenuBar__button__text">
+      {{ topBarButton.name }}
+    </span>
+  </button>
+  <a
+    [routerLink]="['./', 'settings']"
+    class="topMenuBar__button">
+    <i class="icons">
+      &#xe0a2;
+    </i>
+    <span class="topMenuBar__button__text">
+      Config
+    </span>
+  </a>
+  <button
+    (click)="togglePcMode(true)"
+    class="topMenuBar__button">
+    <i class="icons">
+      &#xe23d;
+    </i>
+    <span class="topMenuBar__button__text">
+      PC Mode
+    </span>
+  </button>
 </div>
+
+<!-- TODO move brightness slider somewhere else? -->
+<div class="">
+  <span class="">
+    Brightness
+  </span>
+  <div class="">
+    <i
+      class="icons slider-icon"
+      (click)="toggleTheme()">
+      &#xe2a6;
+    </i>
+    <app-color-slider
+      [control]="brightnessControl"
+      [min]="1"
+      [max]="255"
+      class="noslide">
+    </app-color-slider>
+  </div>
+</div>
+
+<!-- TODO make this a canvas (?) -->
+<iframe
+  src="about:blank"
+  [ngClass]="{ 'topMenuBar__liveView--hidden': !isLiveViewActive }"
+  class="topMenuBar__liveView">
+</iframe>

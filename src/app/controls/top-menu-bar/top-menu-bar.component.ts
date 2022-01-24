@@ -26,7 +26,7 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
   private nightLightMode = false;
   private isSyncSend = false;
   private syncTglRecv = true;
-  private isLiveViewActive = false;
+  isLiveViewActive = true; // false; // TODO just for testing
   private showInfo = false;
   private showNodes = false;
 

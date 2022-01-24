@@ -12,7 +12,7 @@ import { UISettingsComponent } from './ui-settings/ui-settings.component';
 import { UserModSettingsComponent } from './user-mod-settings/user-mod-settings.component';
 import { WifiSettingsComponent } from './wifi-settings/wifi-settings.component';
 
-// TODO page titles should match existing web app
+// TODO page titles should match existing web app (?)
 const routes: RouteWithPageTitle[] = [
   {
     path: '',
