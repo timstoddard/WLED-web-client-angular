@@ -253,8 +253,8 @@ export class PalettesComponent extends UnsubscribingComponent implements OnInit 
     const control = this.formBuilder.control(DEFAULT_PALETTE_ID);
     control.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((value: number) => {
-        this.setPalette(value); // TODO should call palette service?
+      .subscribe((paletteId: number) => {
+        this.setPalette(paletteId); // TODO should call palette service?
       });
     return control;
   }

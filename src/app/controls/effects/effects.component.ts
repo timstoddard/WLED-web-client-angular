@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { takeUntil } from 'rxjs';
 import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
 import { compareNames } from '../utils';
@@ -14,8 +14,13 @@ const DEFAULT_EFFECT_INTENSITY = 128;
   styleUrls: ['./effects.component.scss']
 })
 export class EffectsComponent extends UnsubscribingComponent implements OnInit {
-  // TODO how to load/get effects?
-  @Input() effects!: any[]; // TODO type
+  // TODO how to load/get effects? TODO get actual list from api call
+  @Input() effects = new Array(20)
+    .fill(0)
+    .map((_, i) => ({
+      id: i,
+      name: `Effect ${i + 1}`,
+    }));
   effectsForm!: FormGroup;
 
   constructor(private formBuilder: FormBuilder) {
@@ -44,16 +49,6 @@ export class EffectsComponent extends UnsubscribingComponent implements OnInit {
   toggleLabels() {
     // config.comp.labels = !config.comp.labels;
     // this.applyCfg(config);
-  }
-
-  getEffects() {
-    // TODO get actual list from api call
-    return new Array(20)
-      .fill(0)
-      .map((_, i) => ({
-        id: i,
-        name: `Effect ${i + 1}`,
-      }));
   }
 
   setEffect(effectId = -1) {

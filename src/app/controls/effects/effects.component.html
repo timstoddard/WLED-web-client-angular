@@ -45,15 +45,13 @@
     [formGroup]="effectsForm"
     class="effects__list">
     <div
-      *ngFor="let effect of getEffects()"
+      *ngFor="let effect of effects"
       class="effects__radioButton lstI btn fxbtn">
       <label class="radio fxchkl">
-        <!-- TODO [urgent fix] form control value is not updated by radio buttons -->
         <input
           type="radio"
           formControlName="selectedEffect"
           [value]="effect.id">
-        <!-- <span class="radiomark"></span> -->
         <span class="lstIname">
           {{ effect.name }}
         </span>
