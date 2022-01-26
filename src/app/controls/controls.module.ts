@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
-// import { BottomMenuBarComponent } from './bottom-menu-bar/bottom-menu-bar.component';
+import { BottomMenuBarComponent } from './bottom-menu-bar/bottom-menu-bar.component';
 import { ColorInputsComponent } from './color-inputs/color-inputs.component';
 import { ColorPickerComponent } from './color-inputs/color-picker/color-picker.component';
 import { ColorPresetsComponent } from './color-inputs/color-presets/color-presets.component';
@@ -39,7 +39,7 @@ const SHARED_COMPONENTS = [
 ]
 
 const COMPONENTS = [
-  // BottomMenuBarComponent,
+  BottomMenuBarComponent,
   ControlsComponent,
   EffectsComponent,
   // InfoComponent,

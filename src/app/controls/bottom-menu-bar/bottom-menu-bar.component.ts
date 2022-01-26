@@ -11,23 +11,18 @@ export class BottomMenuBarComponent implements OnInit {
 
   bottomBarButtons: MenuBarButton[] = [
     {
-      name: 'Colors',
+      name: 'Controls',
       onClick: () => this.openTab(0),
       icon: '&#xe2b3;',
     },
     {
-      name: 'Effects',
-      onClick: () => this.openTab(1),
-      icon: '&#xe23d;',
-    },
-    {
       name: 'Segments',
-      onClick: () => this.openTab(2),
+      onClick: () => this.openTab(1),
       icon: '&#xe34b;',
     },
     {
       name: 'Presets',
-      onClick: () => this.openTab(3),
+      onClick: () => this.openTab(2),
       icon: '&#xe04c;',
     },
   ];

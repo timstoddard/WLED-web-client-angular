@@ -1,15 +1,21 @@
-<div
-  class="tab bot"
-  id="bot">
-  <button
-    *ngFor="let bottomBarButton of bottomBarButtons"
-    class="tablinks"
-    (click)="bottomBarButton.onClick">
-    <i class="icons">
-      {{ bottomBarButton.icon }}
-    </i>
-    <p class="tab-label">
-      {{ bottomBarButton.name }}
-    </p>
-  </button>
-</div>
+<button
+  *ngFor="let bottomBarButton of bottomBarButtons"
+  class=""
+  (click)="bottomBarButton.onClick">
+  <i class="icons">
+    {{ bottomBarButton.icon }}
+  </i>
+  <p class="">
+    {{ bottomBarButton.name }}
+  </p>
+</button>
+<a
+  [routerLink]="['../', 'settings']"
+  class="topMenuBar__button">
+  <i class="icons">
+    &#xe0a2;
+  </i>
+  <span class="topMenuBar__button__text">
+    Settings
+  </span>
+</a>

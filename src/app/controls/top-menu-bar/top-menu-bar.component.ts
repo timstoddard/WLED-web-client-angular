@@ -57,7 +57,7 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
       icon: '&#xe116;',
     },
     {
-      name: 'Peek',
+      name: 'Live',
       onClick: this.toggleLiveView,
       icon: '&#xe410;',
     },
