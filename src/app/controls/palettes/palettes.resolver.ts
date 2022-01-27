@@ -17,4 +17,24 @@ export class PalettesResolver implements Resolve<any /* TODO type */> {
     }
     return forkJoin(apiCalls);
   }
+
+  // TODO is there a way to use the `.m` property in the resolver?? see below
+  /*private _getPalettesData(page: number, callback: () => void) {
+    // const url = generateApiUrl(`json/palx?page=${page}`);
+    this.palettesService.getPalettes().subscribe((json: any /* TODO type * /) => {
+      // if (!res.ok) {
+      //   showErrorToast();
+      // }
+      // return res.json();
+      this.palettesData = Object.assign({}, this.palettesData, json.p);
+      if (page < json.m) {
+        this._getPalettesData(page + 1, callback);
+      } else {
+        callback();
+      }
+    }, (error) => {
+      // showToast(error, true);
+      console.log(error);
+    });
+  }*/
 }

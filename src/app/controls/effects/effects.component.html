@@ -1,9 +1,9 @@
 <div class="effects">
   <div class="effects__sliders">
-    <p class="labels">
+    <p class="">
       Effect speed
     </p>
-    <div class="staytop">
+    <div class="">
       <i class="icons slider-icon">
         &#xe325;
       </i>
@@ -15,12 +15,10 @@
         class="noslide">
       </app-color-slider>
     </div>
-    <p class="labels">
+    <p class="">
       Effect intensity
     </p>
-    <div
-      class="staytop"
-      id="staytop1">
+    <div class="">
       <i
         class="icons slider-icon"
         (click)="toggleLabels()">
@@ -34,7 +32,7 @@
         class="noslide">
       </app-color-slider>
     </div>
-    <p class="labels">
+    <p class="">
       Effect mode
     </p>
 
@@ -45,14 +43,14 @@
     [formGroup]="effectsForm"
     class="effects__list">
     <div
-      *ngFor="let effect of effects"
-      class="effects__radioButton lstI btn fxbtn">
-      <label class="radio fxchkl">
+      *ngFor="let effect of sortedEffects"
+      class="effects__radioButton">
+      <label class="">
         <input
           type="radio"
           formControlName="selectedEffect"
           [value]="effect.id">
-        <span class="lstIname">
+        <span class="">
           {{ effect.name }}
         </span>
       </label>

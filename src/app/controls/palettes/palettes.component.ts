@@ -48,23 +48,18 @@ export class PalettesComponent extends UnsubscribingComponent implements OnInit 
   }
 
   ngOnInit() {
-    const palettesData = this.route.snapshot.data['palettesData'] as PalettesData[];
-    let allPaletesData: Palettes = {};
-    for (const paletteData of palettesData) {
-      allPaletesData = Object.assign(allPaletesData, paletteData.p);
-    }
-    this.palettesData = allPaletesData;
-
-    const paletteNames = (this.route.snapshot.data['data'] as WledApiResponse).palettes;
-    this.sortedPalettes = this.sortPalettes(paletteNames);
-
+    this.sortedPalettes = this.getSortedPalettes();
     this.selectedPalette = this.createFormControl();
   }
 
-  private sortPalettes(paletteNames: string[]) {
+  private getSortedPalettes() {
+    // must be set in order to generate the backgrounds
+    this.palettesData = this.getPalettesData();
+
+    const paletteNames = (this.route.snapshot.data['data'] as WledApiResponse).palettes;
     const backgrounds = this.generatePaletteBackgrounds(paletteNames.length);
 
-    const sortedPalettes = paletteNames.slice(1)
+    const sortedPalettes = paletteNames.slice(1) // remove 'Default'
       .map((name, i) => ({
         id: i + 1,
         name,
@@ -78,6 +73,15 @@ export class PalettesComponent extends UnsubscribingComponent implements OnInit 
     });
 
     return sortedPalettes;
+  }
+
+  private getPalettesData() {
+    const palettesData = this.route.snapshot.data['palettesData'] as PalettesData[];
+    let allPalettesData: Palettes = {};
+    for (const paletteData of palettesData) {
+      allPalettesData = Object.assign({}, allPalettesData, paletteData.p);
+    }
+    return allPalettesData;
   }
 
   private loadPalettesData(callback: (() => void) = () => {}) { // TODO can remove callback param?
@@ -116,33 +120,6 @@ export class PalettesComponent extends UnsubscribingComponent implements OnInit 
         setTimeout(callback, 99); // go on to connect websocket
       }
     });//*/
-  }
-
-  private _getPalettesData(page: number, callback: () => void) {
-    // const url = generateApiUrl(`json/palx?page=${page}`);
-    this.palettesService.getPalettes().subscribe((json: any /* TODO type */) => {
-      // if (!res.ok) {
-      //   showErrorToast();
-      // }
-      // return res.json();
-      this.palettesData = Object.assign({}, this.palettesData, json.p);
-      if (page < json.m) {
-        this._getPalettesData(page + 1, callback);
-      } else {
-        callback();
-      }
-    }, (error) => {
-      // showToast(error, true);
-      console.log(error);
-    })
-
-    // fetch(url, {
-    //   method: 'get',
-    //   headers: { 'Content-type': 'application/json; charset=UTF-8' }
-    // })
-    //   .then(res => {})
-    //   .then(json => {})
-    //   .catch((error) => {});
   }
 
   setPalette(paletteId = -1) {

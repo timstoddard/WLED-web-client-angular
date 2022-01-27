@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { WledApiResponse } from './api-types';
+import { WledApiResponse, WledInfo, WledState } from './api-types';
 
 @Injectable({ providedIn: 'root' })
 export class ApiHttpService {
@@ -19,28 +19,29 @@ export class ApiHttpService {
 
   /** Contains the current state of the light. All values may be modified by the client. */
   getState() {
-    return this.http.get(this.createApiUrl('json/state'));
+    return this.http.get<WledState>(this.createApiUrl('json/state'));
   }
 
   /** Contains general information about the device. All values are read-only. */
   getInfo() {
-    return this.http.get(this.createApiUrl('json/info'));
+    return this.http.get<WledInfo>(this.createApiUrl('json/info'));
   }
 
   /** Contains an array of the effect mode names. */
   getEffects() {
-    return this.http.get(this.createApiUrl('json/eff'));
+    return this.http.get<string[]>(this.createApiUrl('json/eff'));
   }
 
   /** Contains an array of the palette names. */
   getPalettes() {
-    return this.http.get(this.createApiUrl('json/pal'));
+    return this.http.get<string[]>(this.createApiUrl('json/pal'));
   }
 
   /** Gets palettes data, 8 palettes per page. */
   getPalettesData(page: number) {
     const params = new HttpParams()
       .set('page', page);
+    // TODO add type for get()
     return this.http.get(this.createApiUrl('json/palx'), { params });
   }
 

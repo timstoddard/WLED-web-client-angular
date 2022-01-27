@@ -1,9 +1,16 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs';
+import { WledApiResponse } from '../../shared/api-types';
 import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
 import { compareNames } from '../utils';
 import { EffectsService } from './effects.service';
+
+interface Effect {
+  id: number;
+  name: string;
+}
 
 const DEFAULT_EFFECT_ID = 0;
 const DEFAULT_EFFECT_SPEED = 128;
@@ -15,45 +22,37 @@ const DEFAULT_EFFECT_INTENSITY = 128;
   styleUrls: ['./effects.component.scss']
 })
 export class EffectsComponent extends UnsubscribingComponent implements OnInit {
-  // TODO how to load/get effects? TODO get actual list from api call
-  @Input() effects = new Array(20)
-    .fill(0)
-    .map((_, i) => ({
-      id: i,
-      name: `Effect ${i + 1}`,
-    }));
+  sortedEffects!: Effect[];
   effectsForm!: FormGroup;
 
   constructor(
     private formBuilder: FormBuilder,
     private effectsService: EffectsService,
+    private route: ActivatedRoute,
   ) {
     super();
   }
 
   ngOnInit() {
-    /*this.effects.shift(); // remove solid
-    for (let i = 0; i < this.effects.length; i++) {
-      this.effects[i] = {
-        id: i + 1,
-        name: this.effects[i],
-      };
-    }
-    this.effects.sort(compareNames);
-
-    this.effects.unshift({
-      id: 0,
-      name: 'Solid',
-      class: 'sticky',
-    });*/
-
+    this.sortedEffects = this.getSortedEffects();
     this.effectsForm = this.createForm();
+  }
 
-    this.effectsService.getEffects()
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((effects) => {
-        console.log('API EFFECTS', effects);
-      });
+  private getSortedEffects() {
+    const effectNames = (this.route.snapshot.data['data'] as WledApiResponse).effects;
+
+    const sortedEffects = effectNames.slice(1) // remove 'Solid'
+      .map((name, i) => ({
+        id: i + 1,
+        name,
+      }));
+    sortedEffects.sort(compareNames);
+    sortedEffects.unshift({
+      id: DEFAULT_EFFECT_ID,
+      name: 'Solid',
+    });
+
+    return sortedEffects;
   }
   
   toggleLabels() {
