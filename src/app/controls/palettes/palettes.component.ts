@@ -8,14 +8,14 @@ import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
 import { compareNames } from '../utils';
 import { PalettesService } from './palettes.service';
 
-type Palette = Array<number[] | 'r' | 'c1' | 'c2' | 'c3'>;
+type PaletteColor = Array<number[] | 'r' | 'c1' | 'c2' | 'c3'>;
 
-interface Palettes {
-  [key: number]: Palette;
+interface PaletteColors {
+  [key: number]: PaletteColor;
 }
 
 interface PalettesData {
-  p: Palettes;
+  p: PaletteColors;
   m: number;
 }
 
@@ -35,8 +35,7 @@ const DEFAULT_PALETTE_ID = 0;
 export class PalettesComponent extends UnsubscribingComponent implements OnInit {
   sortedPalettes!: PaletteBackground[];
   selectedPalette!: FormControl;
-  private selColors!: any; // TODO type
-  private palettesData: any; // TODO type
+  private selColors!: any; // TODO type // TODO where to get this from
 
   constructor(
     private palettesService: PalettesService,
@@ -53,11 +52,8 @@ export class PalettesComponent extends UnsubscribingComponent implements OnInit 
   }
 
   private getSortedPalettes() {
-    // must be set in order to generate the backgrounds
-    this.palettesData = this.getPalettesData();
-
     const paletteNames = (this.route.snapshot.data['data'] as WledApiResponse).palettes;
-    const backgrounds = this.generatePaletteBackgrounds(paletteNames.length);
+    const backgrounds = this.generatePaletteBackgrounds();
 
     const sortedPalettes = paletteNames.slice(1) // remove 'Default'
       .map((name, i) => ({
@@ -75,23 +71,7 @@ export class PalettesComponent extends UnsubscribingComponent implements OnInit 
     return sortedPalettes;
   }
 
-  private getPalettesData() {
-    const palettesData = this.route.snapshot.data['palettesData'] as PalettesData[];
-    let allPalettesData: Palettes = {};
-    for (const paletteData of palettesData) {
-      allPalettesData = Object.assign({}, allPalettesData, paletteData.p);
-    }
-    return allPalettesData;
-  }
-
   private loadPalettesData(callback: (() => void) = () => {}) { // TODO can remove callback param?
-    // TODO remove this check?
-    if (this.palettesData) {
-      return;
-    }
-
-    // this.palettesData = getPalettesData().p;
-
     try {
       // TODO attempt to load palettes data from local storage
       // const key = 'wledPalx';
@@ -148,52 +128,41 @@ export class PalettesComponent extends UnsubscribingComponent implements OnInit 
     // this.requestJson(obj);
   }
 
-  private generatePaletteBackgrounds(length: number) {
+  private generatePaletteBackgrounds() {
+    const paletteColors = this.getPalettesData();
     const backgrounds: { [key: number]: string } = {};
-    for (let i = 0; i < length; i++) {
-      backgrounds[i] = this.genPalPrevCss(i);
+    for (const id in paletteColors) {
+      backgrounds[id] = this.generatePaletteBackgroundCss(paletteColors[id]);
     }
     return backgrounds;
   }
 
-  /*private redrawPalPrev() {
-    let palettes = document.querySelectorAll('#pallist .lstI');
-    for (let i = 0; i < palettes.length; i++) {
-      // TODO where does the `dataset` come from?
-      let id = (palettes[i] as any).dataset.id;
-      const lstPrev = palettes[i].querySelector('.lstIprev');
-      if (lstPrev) {
-        const backgroundGradient = this.genPalPrevCss(id);
-        if (backgroundGradient && backgroundGradient.background) {
-          (lstPrev as HTMLElement).style.background = backgroundGradient.background;
-        }
-      }
+  private getPalettesData() {
+    const palettesData = this.route.snapshot.data['palettesData'] as PalettesData[];
+    let allPalettesData: PaletteColors = {};
+    for (const paletteData of palettesData) {
+      allPalettesData = Object.assign({}, allPalettesData, paletteData.p);
     }
-  }//*/
+    return allPalettesData;
+  }
 
-  genPalPrevCss(id: number) {
-    if (!this.palettesData) {
-      // return { display: 'none' };
-      return '';
-    }
-    const paletteData = this.palettesData[id];
-
-    if (!paletteData) {
-      // return { display: 'none' };
+  private generatePaletteBackgroundCss(paletteColor: PaletteColor) {
+    if (!paletteColor || paletteColor.length === 0) {
       return '';
     }
 
-    // We need at least two colors for a gradient
-    if (paletteData.length === 1) {
-      paletteData[1] = paletteData[0];
-      if (Array.isArray(paletteData[1])) {
-        paletteData[1][0] = 255;
+    // need at least two colors for a gradient
+    if (paletteColor.length === 1) {
+      paletteColor[1] = paletteColor[0];
+      if (Array.isArray(paletteColor[1])) {
+        // set x position to max
+        paletteColor[1][0] = 255;
       }
     }
 
     const gradient = [];
-    for (let j = 0; j < paletteData.length; j++) {
-      const element = paletteData[j];
+    for (let j = 0; j < paletteColor.length; j++) {
+      const element = paletteColor[j];
       let r;
       let g;
       let b;
@@ -207,25 +176,22 @@ export class PalettesComponent extends UnsubscribingComponent implements OnInit 
         r = Math.random() * 255;
         g = Math.random() * 255;
         b = Math.random() * 255;
-      } else {
-        if (this.selColors) {
-          let pos = element[1] - 1;
-          r = this.selColors[pos][0];
-          g = this.selColors[pos][1];
-          b = this.selColors[pos][2];
-        }
+      } else if (this.selColors) {
+        // element = 'c1' or 'c2' or 'c3'
+        // TODO update if # of selColors is made variable
+        let pos = parseInt(element[1], 10) - 1;
+        r = this.selColors[pos][0];
+        g = this.selColors[pos][1];
+        b = this.selColors[pos][2];
       }
       if (index === -1) {
-        index = j / paletteData.length * 100;
+        index = j / paletteColor.length * 100;
       }
 
       gradient.push(`rgb(${r},${g},${b}) ${index}%`);
     }
 
     return `linear-gradient(to right,${gradient.join()})`;
-    // return {
-    //   background: `linear-gradient(to right,${gradient.join()})`,
-    // }
   }
 
   private createFormControl() {
