@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import RangeTouch from 'rangetouch';
+import { WledApiResponse } from '../shared/api-types';
 import { AppConfig, initAppConfig } from '../shared/app-config';
 import { LocalStorageService } from '../shared/local-storage.service';
 import { ColorService } from './color.service';
@@ -21,11 +23,18 @@ export class ControlsComponent implements OnInit {
   private iSlide = 0; // related to sliding UI
   private lastinfo = {}; */
 
+  apiData!: WledApiResponse;
+
   constructor(
     private controlsService: ControlsService,
-    private localStorageService: LocalStorageService) {}
+    private localStorageService: LocalStorageService,
+    private route: ActivatedRoute) {}
 
   ngOnInit() {
+    // TODO is this actually needed? can get most/all data in resolvers
+    this.apiData = this.route.snapshot.data['data'];
+    console.log(this.apiData)
+
     // TODO uncomment
     // this.setupRanges();
     // this.loadStoredConfig();

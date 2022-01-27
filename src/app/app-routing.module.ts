@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-
 import { DmxMapComponent } from './dmx-map/dmx-map.component';
 import { EditComponent } from './edit/edit.component';
 import { LiveViewComponent } from './live-view/live-view.component';

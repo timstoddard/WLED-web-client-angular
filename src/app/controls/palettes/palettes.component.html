@@ -2,34 +2,16 @@
   <app-search-input></app-search-input>
 
   <div class="palettesList">
-    <!-- default palette -->
-    <div class="lstI">
-      <label class="check schkl">
-        &nbsp;
-        <input
-          type="radio"
-          [formControl]="selectedPalette"
-          value="0">
-        <span class="radiomark schk"></span>
-        <span class="lstIname">
-          Default
-        </span>
-      </label>
-      <!-- <div class="lstIcontent">
-      </div> -->
-    </div>
-
-    <!-- loaded palettes -->
     <div
-      *ngFor="let palette of palettesWithBackgrounds"
-      [ngClass]="['palettes__radioButton', palette.class, 'lstI', 'btn', 'fxbtn']"
+      *ngFor="let palette of sortedPalettes"
+      class="palettes__radioButton"
       [ngStyle]="{ background: palette.background }">
-      <label class="radio fxchkl">
+      <label class="">
         <input
           type="radio"
           [formControl]="selectedPalette"
           [value]="palette.id">
-        <span class="palettes__radioButton__text lstIname">
+        <span class="palettes__radioButton__text">
           {{ palette.name }}
         </span>
       </label>

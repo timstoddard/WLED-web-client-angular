@@ -1,9 +1,67 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { WledApiResponse } from './api-types';
 
 @Injectable({ providedIn: 'root' })
 export class ApiHttpService {
+  BASE_URL = 'http://192.168.100.154';
+
   constructor(private http: HttpClient) {}
+
+  private createApiUrl = (path: string) => {
+    return `${this.BASE_URL}/${path}`;
+  }
+
+  /** Returns an object containing the state, info, effects, and palettes. */
+  getJson() {
+    return this.http.get<WledApiResponse>(this.createApiUrl('json'));
+  }
+
+  /** Contains the current state of the light. All values may be modified by the client. */
+  getState() {
+    return this.http.get(this.createApiUrl('json/state'));
+  }
+
+  /** Contains general information about the device. All values are read-only. */
+  getInfo() {
+    return this.http.get(this.createApiUrl('json/info'));
+  }
+
+  /** Contains an array of the effect mode names. */
+  getEffects() {
+    return this.http.get(this.createApiUrl('json/eff'));
+  }
+
+  /** Contains an array of the palette names. */
+  getPalettes() {
+    return this.http.get(this.createApiUrl('json/pal'));
+  }
+
+  /** Gets palettes data, 8 palettes per page. */
+  getPalettesData(page: number) {
+    const params = new HttpParams()
+      .set('page', page);
+    return this.http.get(this.createApiUrl('json/palx'), { params });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   setBrightness(brightness: number) {
     const obj = { bri: brightness };
@@ -52,12 +110,6 @@ export class ApiHttpService {
   //   this.http.post('/json/si', obj);
   //   // this.requestJson(obj);
   // }
-
-  getPalettes(page: string) {
-    const params = new HttpParams()
-      .set('page', page);
-    return this.http.get('/json/palx', { params });
-  }
 
   getNodes() {
     return this.http.get('/json/nodes');

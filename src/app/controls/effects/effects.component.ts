@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { takeUntil } from 'rxjs';
 import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
 import { compareNames } from '../utils';
+import { EffectsService } from './effects.service';
 
 const DEFAULT_EFFECT_ID = 0;
 const DEFAULT_EFFECT_SPEED = 128;
@@ -23,7 +24,10 @@ export class EffectsComponent extends UnsubscribingComponent implements OnInit {
     }));
   effectsForm!: FormGroup;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private effectsService: EffectsService,
+  ) {
     super();
   }
 
@@ -44,6 +48,12 @@ export class EffectsComponent extends UnsubscribingComponent implements OnInit {
     });*/
 
     this.effectsForm = this.createForm();
+
+    this.effectsService.getEffects()
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((effects) => {
+        console.log('API EFFECTS', effects);
+      });
   }
   
   toggleLabels() {
