@@ -1,9 +1,20 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { WledApiResponse, WledInfo, WledState } from './api-types';
 
+export interface PostResponse {
+  success: boolean;
+}
+
+const ALL_JSON_PATH = 'json';
+const STATES_PATH = 'json/state';
+const INFO_PATH = 'json/info';
+const EFFECTS_PATH = 'json/eff';
+const PALETTES_PATH = 'json/pal';
+const PALETTES_DATA_PATH = 'json/palx';
+
 @Injectable({ providedIn: 'root' })
-export class ApiHttpService {
+export class ApiService {
   BASE_URL = 'http://192.168.100.154';
 
   constructor(private http: HttpClient) {}
@@ -14,27 +25,27 @@ export class ApiHttpService {
 
   /** Returns an object containing the state, info, effects, and palettes. */
   getJson() {
-    return this.http.get<WledApiResponse>(this.createApiUrl('json'));
+    return this.http.get<WledApiResponse>(this.createApiUrl(ALL_JSON_PATH));
   }
 
   /** Contains the current state of the light. All values may be modified by the client. */
   getState() {
-    return this.http.get<WledState>(this.createApiUrl('json/state'));
+    return this.http.get<WledState>(this.createApiUrl(STATES_PATH));
   }
 
   /** Contains general information about the device. All values are read-only. */
   getInfo() {
-    return this.http.get<WledInfo>(this.createApiUrl('json/info'));
+    return this.http.get<WledInfo>(this.createApiUrl(INFO_PATH));
   }
 
   /** Contains an array of the effect mode names. */
   getEffects() {
-    return this.http.get<string[]>(this.createApiUrl('json/eff'));
+    return this.http.get<string[]>(this.createApiUrl(EFFECTS_PATH));
   }
 
   /** Contains an array of the palette names. */
   getPalettes() {
-    return this.http.get<string[]>(this.createApiUrl('json/pal'));
+    return this.http.get<string[]>(this.createApiUrl(PALETTES_PATH));
   }
 
   /** Gets palettes data, 8 palettes per page. */
@@ -42,7 +53,23 @@ export class ApiHttpService {
     const params = new HttpParams()
       .set('page', page);
     // TODO add type for get()
-    return this.http.get(this.createApiUrl('json/palx'), { params });
+    return this.http.get(this.createApiUrl(PALETTES_DATA_PATH), { params });
+  }
+
+  /** Sets current palette by id. */
+  setPalette(paletteId: number) {
+    const body = {
+      seg: { pal: paletteId },
+    };
+    return this.http.post<PostResponse>(this.createApiUrl('json/si'), body);
+  }
+
+  /** Sets current effect by id. */
+  setEffect(effectId: number) {
+    const body = {
+      seg: { fx: effectId },
+    };
+    return this.http.post<PostResponse>(this.createApiUrl('json/si'), body);
   }
 
 
@@ -121,7 +148,6 @@ export class ApiHttpService {
   }
 
   requestJson(command: any /* TODO type */, rinfo = true) {
-    // TODO api paths belong in ApiHttpService, not here
     const url = rinfo
       ? 'json/si'
       : (command ? 'json/state' : 'json');

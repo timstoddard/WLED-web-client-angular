@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ApiHttpService } from '../shared/api-http.service';
+import { ApiService } from '../shared/api.service';
 import { AppConfig } from '../shared/app-config';
 import { LocalStorageService } from '../shared/local-storage.service';
 import { ControlsServicesModule } from './controls-services.module';
@@ -18,7 +18,7 @@ export class JsonService {
   private isRgbw = false;
 
   constructor(
-    private apiHttp: ApiHttpService,
+    private apiService: ApiService,
     private localStorageService: LocalStorageService) {}
 
   init() {

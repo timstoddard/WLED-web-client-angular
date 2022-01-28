@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { IroColorValue, RgbColor } from '@irojs/iro-core';
 import iro from '@jaames/iro';
 import { BehaviorSubject } from 'rxjs';
-import { ApiHttpService } from '../shared/api-http.service';
+import { ApiService } from '../shared/api.service';
 import { ControlsServicesModule } from './controls-services.module';
 
 export interface CurrentColor {
@@ -29,7 +29,7 @@ export class ColorService {
   private whiteValue = DEFAULT_WHITE_VALUE;
   private currentColorData = new BehaviorSubject<CurrentColor>(this.getDefaults());
 
-  constructor(private apiHttp: ApiHttpService) {}
+  constructor(private apiService: ApiService) {}
 
   getCurrentColorData() {
     return this.currentColorData;

@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { ApiHttpService } from '../shared/api-http.service';
+import { ApiService } from '../shared/api.service';
 import { ControlsServicesModule } from './controls-services.module';
 
 @Injectable({ providedIn: ControlsServicesModule })
 export class ControlsService {
-  constructor(private apiHttp: ApiHttpService) {}
+  constructor(private apiService: ApiService) {}
 
   requestJson(command: any /* TODO type */, rinfo = true) {
-    this.apiHttp.requestJson(command, rinfo);
+    this.apiService.requestJson(command, rinfo);
   }
 }

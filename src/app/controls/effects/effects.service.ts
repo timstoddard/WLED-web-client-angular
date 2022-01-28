@@ -1,13 +1,17 @@
 import { Injectable } from '@angular/core';
-import { ApiHttpService } from '../../shared/api-http.service';
+import { ApiService } from '../../shared/api.service';
 import { ControlsServicesModule } from '../controls-services.module';
 
 @Injectable({ providedIn: ControlsServicesModule })
 export class EffectsService {
-  constructor(private apiHttp: ApiHttpService) { }
+  constructor(private apiService: ApiService) { }
 
   // TODO is this needed?
   getEffects() {
-    return this.apiHttp.getEffects();
+    return this.apiService.getEffects();
+  }
+
+  setEffect(effectId: number) {
+    return this.apiService.setEffect(effectId);
   }
 }

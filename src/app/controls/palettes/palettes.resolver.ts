@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import { forkJoin } from 'rxjs';
-import { ApiHttpService } from '../../shared/api-http.service';
+import { ApiService } from '../../shared/api.service';
 import { ControlsServicesModule } from '../controls-services.module';
 
 @Injectable({ providedIn: ControlsServicesModule })
 export class PalettesResolver implements Resolve<any /* TODO type */> {
-  constructor(private apiService: ApiHttpService) { }
+  constructor(private apiService: ApiService) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     // const PALETTES_PER_PAGE = 8;

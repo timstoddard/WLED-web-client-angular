@@ -3,6 +3,7 @@ import { FormBuilder, FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs';
 import { WledApiResponse } from '../../shared/api-types';
+import { PostResponse } from '../../shared/api.service';
 import { LocalStorageService } from '../../shared/local-storage.service';
 import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
 import { compareNames } from '../utils';
@@ -102,7 +103,7 @@ export class PalettesComponent extends UnsubscribingComponent implements OnInit 
     });//*/
   }
 
-  setPalette(paletteId = -1) {
+  setPalette_old(paletteId = -1) {
     console.log(`selected palette [id=${paletteId}]`);
 
     // TODO update UI to show selected palette
@@ -120,12 +121,6 @@ export class PalettesComponent extends UnsubscribingComponent implements OnInit 
     //   selElement.classList.remove('selected')
     // }
     // document.querySelector(`#pallist .lstI[data-id="${paletteId}"]`)!.classList.add('selected');
-
-    // TODO api call to update
-    const obj = {
-      seg: { pal: paletteId },
-    };
-    // this.requestJson(obj);
   }
 
   private generatePaletteBackgrounds() {
@@ -198,10 +193,18 @@ export class PalettesComponent extends UnsubscribingComponent implements OnInit 
     const control = this.formBuilder.control(DEFAULT_PALETTE_ID);
     control.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((paletteId: number) => {
-        this.setPalette(paletteId); // TODO should call palette service?
-      });
+      .subscribe((paletteId: number) => this.setPalette(paletteId));
     return control;
+  }
+
+  private setPalette(paletteId: number) {
+    this.palettesService.setPalette(paletteId)
+      .subscribe((response: PostResponse) => {
+        if (!response.success) {
+          // TODO show error toast
+          alert('failed to update');
+        }
+      });
   }
 }
 

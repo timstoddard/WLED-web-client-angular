@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs';
 import { WledApiResponse } from '../../shared/api-types';
+import { PostResponse } from '../../shared/api.service';
 import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
 import { compareNames } from '../utils';
 import { EffectsService } from './effects.service';
@@ -60,7 +61,7 @@ export class EffectsComponent extends UnsubscribingComponent implements OnInit {
     // this.applyCfg(config);
   }
 
-  setEffect(effectId = -1) {
+  setEffect_old(effectId = -1) {
     console.log(`selected effect [id=${effectId}]`);
 
     // TODO update data model to set selected effect by `effectId`
@@ -76,18 +77,15 @@ export class EffectsComponent extends UnsubscribingComponent implements OnInit {
     //   selElement.classList.remove('selected')
     // }
     // document.querySelector(`#fxlist .lstI[data-id="${effectId}"]`)!.classList.add('selected');
-
-    const obj = {
-      seg: { fx: effectId },
-    };
-    // this.requestJson(obj);
   }
 
+  // TODO should call effect service
   setSpeed(speed: number) {
     console.log('setSpeed', speed);
     // TODO implement
   }
   
+  // TODO should call effect service
   setIntensity(intensity: number) {
     console.log('setIntensity', intensity);
     // TODO implement
@@ -102,23 +100,27 @@ export class EffectsComponent extends UnsubscribingComponent implements OnInit {
 
     form.get('selectedEffect')!.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((effectId: number) => {
-        this.setEffect(effectId); // TODO should call effect service?
-      });
+      .subscribe((effectId: number) => this.setEffect(effectId));
 
     form.get('speed')!.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((speed: number) => {
-        this.setSpeed(speed); // TODO should call effect service?
-      });
+      .subscribe((speed: number) => this.setSpeed(speed));
 
     form.get('intensity')!.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((intensity: number) => {
-        this.setIntensity(intensity); // TODO should call effect service?
-      });
+      .subscribe((intensity: number) => this.setIntensity(intensity));
 
     return form;
+  }
+
+  private setEffect(effectId: number) {
+    this.effectsService.setEffect(effectId)
+      .subscribe((response: PostResponse) => {
+        if (!response.success) {
+          // TODO show error toast
+          alert('failed to update');
+        }
+      });
   }
 }
 
