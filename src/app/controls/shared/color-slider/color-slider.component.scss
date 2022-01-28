@@ -1,0 +1,23 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  margin: 4px;
+}
+
+.colorSlider {
+  &__label {
+    margin: 0;
+  }
+
+  &__wrapper {
+    //
+  }
+
+  &__input {
+    //
+  }
+
+  &__display {
+    //
+  }
+}

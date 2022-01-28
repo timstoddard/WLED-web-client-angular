@@ -1,59 +1,50 @@
-<div class="effects">
-  <div class="effects__sliders">
-    <p class="">
-      Effect speed
-    </p>
-    <div class="">
-      <i class="icons slider-icon">
-        &#xe325;
-      </i>
-      <!-- TODO these used to show value in a toast above while sliding, I'm thinking not keep that -->
-      <app-color-slider
-        [control]="effectsForm.get('speed')!"
-        [min]="0"
-        [max]="255"
-        class="noslide">
-      </app-color-slider>
-    </div>
-    <p class="">
-      Effect intensity
-    </p>
-    <div class="">
-      <i
-        class="icons slider-icon"
-        (click)="toggleLabels()">
-        &#xe409;
-      </i>
-      <!-- TODO these used to show value in a toast above while sliding, I'm thinking not keep that -->
-      <app-color-slider
-        [control]="effectsForm.get('intensity')!"
-        [min]="0"
-        [max]="255"
-        class="noslide">
-      </app-color-slider>
-    </div>
-    <p class="">
-      Effect mode
-    </p>
+<!-- <p class="">
+  Effect mode
+</p> -->
+<app-search-input class="effects__searchInput"></app-search-input>
 
-    <app-search-input></app-search-input>
-  </div>
+<div class="effects__sliders">
+  <!-- TODO these used to show value in a toast above while sliding, I'm thinking not keep that -->
+  <app-color-slider
+    [control]="effectsForm.get('speed')!"
+    [min]="0"
+    [max]="255"
+    label="Effect speed"
+    class="noslide">
+    <i class="icons slider-icon">
+      &#xe325;
+    </i>
+  </app-color-slider>
+  <!-- TODO these used to show value in a toast above while sliding, I'm thinking not keep that -->
+  <app-color-slider
+    [control]="effectsForm.get('intensity')!"
+    [min]="0"
+    [max]="255"
+    label="Effect intensity"
+    class="noslide">
+    <!-- TODO should icons be built into the slider component -->
+    <i
+      class="icons slider-icon"
+      (click)="toggleLabels()">
+      &#xe409;
+    </i>
+  </app-color-slider>
+</div>
 
-  <div
-    [formGroup]="effectsForm"
-    class="effects__list">
-    <div
-      *ngFor="let effect of sortedEffects"
-      class="effects__radioButton">
-      <label class="">
-        <input
-          type="radio"
-          formControlName="selectedEffect"
-          [value]="effect.id">
-        <span class="">
-          {{ effect.name }}
-        </span>
-      </label>
-    </div>
-  </div>
+<div
+  [formGroup]="effectsForm"
+  class="effects__list">
+  <label
+    *ngFor="let effect of sortedEffects"
+    [ngClass]="{ 'effects__radioButton--selected': effect.id === effectsForm.get('selectedEffect')!.value }"
+    class="effects__radioButton">
+    <input
+      type="radio"
+      formControlName="selectedEffect"
+      [value]="effect.id"
+      class="effects__radioButton__input">
+    <span class="effects__radioButton__text">
+      {{ effect.name }}
+    </span>
+  </label>
 </div>

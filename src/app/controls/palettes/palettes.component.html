@@ -1,20 +1,18 @@
-<div class="palettes">
-  <app-search-input></app-search-input>
+<app-search-input class="palettes__searchInput"></app-search-input>
 
-  <div class="palettesList">
-    <div
-      *ngFor="let palette of sortedPalettes"
-      class="palettes__radioButton"
-      [ngStyle]="{ background: palette.background }">
-      <label class="">
-        <input
-          type="radio"
-          [formControl]="selectedPalette"
-          [value]="palette.id">
-        <span class="palettes__radioButton__text">
-          {{ palette.name }}
-        </span>
-      </label>
-    </div>
-  </div>
+<div class="palettes__list">
+  <label
+    *ngFor="let palette of sortedPalettes"
+    [ngClass]="{ 'palettes__radioButton--selected': palette.id === selectedPalette.value }"
+    class="palettes__radioButton"
+    [ngStyle]="{ background: palette.background }">
+    <input
+      type="radio"
+      [formControl]="selectedPalette"
+      [value]="palette.id"
+      class="palettes__radioButton__input">
+    <span class="palettes__radioButton__text">
+      {{ palette.name }}
+    </span>
+  </label>
 </div>

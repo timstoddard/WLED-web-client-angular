@@ -1,0 +1,60 @@
+@mixin radioButtonListItem() {
+  $grandparentSelector: &;
+  $textBackgroundOpacity: 0.6;
+  $normalBorderColor: rgb(128,128,128);
+  $hoverBorderColor: rgb(255,255,255);
+  $selectedBorderColor: rgb(0,0,0);
+
+  align-items: center;
+  background: rgb(220,220,220);
+  border: 2px solid $normalBorderColor;
+  border-bottom: 0;
+  display: flex;
+  justify-content: center;
+  min-height: 36px;
+  transition: all 0.2s ease; // TODO keep transitions?
+
+  &--selected {
+    border-color: $selectedBorderColor;
+    cursor: pointer;
+
+    & #{$grandparentSelector}__text {
+      background: rgba(100,100,100,$textBackgroundOpacity);
+      box-shadow: 0px 0px 7px 6px rgba(100,100,100,$textBackgroundOpacity);
+      color: white;
+      font-weight: bold;
+      text-decoration: underline;
+    }
+
+    & + #{$grandparentSelector} {
+      border-top-color: $selectedBorderColor;
+    }
+  }
+
+  &:hover {
+    // needs !important so that hover shows up on selected items
+    border-color: $hoverBorderColor !important;
+    cursor: pointer;
+
+    & #{$grandparentSelector}__text {
+      background: rgba(0,0,0,$textBackgroundOpacity);
+      box-shadow: 0px 0px 7px 6px rgba(0,0,0,$textBackgroundOpacity);
+      color: white;
+    }
+
+    & + #{$grandparentSelector} {
+      border-top-color: $hoverBorderColor;
+    }
+  }
+
+  &__input {
+    display: none;
+  }
+
+  &__text {
+    background: rgba(255,255,255,$textBackgroundOpacity);
+    box-shadow: 0px 0px 7px 6px rgba(255,255,255,$textBackgroundOpacity);
+    color: black;
+    // transition: inherit;
+  }
+}
