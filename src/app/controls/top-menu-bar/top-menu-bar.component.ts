@@ -5,7 +5,8 @@ import { AppConfig } from '../../shared/app-config';
 import { LocalStorageService } from '../../shared/local-storage.service';
 import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
 import { generateApiUrl } from '../json.service';
-import { MenuBarButton, setCssColor, updateTablinks } from '../utils';
+import { genericPostResponse, MenuBarButton, setCssColor, updateTablinks } from '../utils';
+import { TopMenuBarService } from './top-menu-bar.service';
 
 const DEFAULT_BRIGHTNESS = 128;
 
@@ -76,6 +77,7 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
   constructor(
     private formBuilder: FormBuilder,
     private localStorageService: LocalStorageService,
+    private topMenuBarService: TopMenuBarService,
   ) {
     super();
   }
@@ -258,12 +260,29 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     const control = this.formBuilder.control(DEFAULT_BRIGHTNESS);
     control.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((brightness: number) => {
-        // TODO call service here
-        console.log('brightness=', brightness);
-      });
+      .subscribe((brightness: number) => this.setBrightness(brightness));
     return control;
   }
+
+  private setBrightness(brightness: number) {
+    this.topMenuBarService.setBrightness(brightness)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(genericPostResponse);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   // TODO probably not needed soon?
   /**

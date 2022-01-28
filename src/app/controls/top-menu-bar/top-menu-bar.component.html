@@ -23,24 +23,18 @@
 </div>
 
 <!-- TODO move brightness slider somewhere else? -->
-<div class="">
-  <span class="">
-    Brightness
-  </span>
-  <div class="">
-    <i
-      class="icons slider-icon"
-      (click)="toggleTheme()">
-      &#xe2a6;
-    </i>
-    <app-color-slider
-      [control]="brightnessControl"
-      [min]="1"
-      [max]="255"
-      class="noslide">
-    </app-color-slider>
-  </div>
-</div>
+<app-color-slider
+  [control]="brightnessControl"
+  [min]="1"
+  [max]="255"
+  label="Brightness"
+  class="noslide">
+  <i
+    class="icons slider-icon"
+    (click)="toggleTheme()">
+    &#xe2a6;
+  </i>
+</app-color-slider>
 
 <!-- TODO make this a canvas (?) -->
 <iframe
