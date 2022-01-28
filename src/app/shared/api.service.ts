@@ -1,5 +1,6 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { PalettesData } from '../controls/palettes/palettes.service';
 import { WledApiResponse, WledInfo, WledState } from './api-types';
 
 export interface PostResponse {
@@ -25,35 +26,40 @@ export class ApiService {
 
   /** Returns an object containing the state, info, effects, and palettes. */
   getJson() {
-    return this.http.get<WledApiResponse>(this.createApiUrl(ALL_JSON_PATH));
+    return this.http.get<WledApiResponse>(
+      this.createApiUrl(ALL_JSON_PATH));
   }
 
   /** Contains the current state of the light. All values may be modified by the client. */
   getState() {
-    return this.http.get<WledState>(this.createApiUrl(STATES_PATH));
+    return this.http.get<WledState>(
+      this.createApiUrl(STATES_PATH));
   }
 
   /** Contains general information about the device. All values are read-only. */
   getInfo() {
-    return this.http.get<WledInfo>(this.createApiUrl(INFO_PATH));
+    return this.http.get<WledInfo>(
+      this.createApiUrl(INFO_PATH));
   }
 
   /** Contains an array of the effect mode names. */
   getEffects() {
-    return this.http.get<string[]>(this.createApiUrl(EFFECTS_PATH));
+    return this.http.get<string[]>(
+      this.createApiUrl(EFFECTS_PATH));
   }
 
   /** Contains an array of the palette names. */
   getPalettes() {
-    return this.http.get<string[]>(this.createApiUrl(PALETTES_PATH));
+    return this.http.get<string[]>(
+      this.createApiUrl(PALETTES_PATH));
   }
 
   /** Gets palettes data, 8 palettes per page. */
   getPalettesData(page: number) {
     const params = new HttpParams()
       .set('page', page);
-    // TODO add type for get()
-    return this.http.get(this.createApiUrl(PALETTES_DATA_PATH), { params });
+    return this.http.get<PalettesData>(
+      this.createApiUrl(PALETTES_DATA_PATH), { params });
   }
 
   /** Sets current palette by id. */
@@ -61,7 +67,8 @@ export class ApiService {
     const body = {
       seg: { pal: paletteId },
     };
-    return this.http.post<PostResponse>(this.createApiUrl('json/si'), body);
+    return this.http.post<PostResponse>(
+      this.createApiUrl('json/si'), body);
   }
 
   /** Sets current effect by id. */
@@ -69,13 +76,15 @@ export class ApiService {
     const body = {
       seg: { fx: effectId },
     };
-    return this.http.post<PostResponse>(this.createApiUrl('json/si'), body);
+    return this.http.post<PostResponse>(
+      this.createApiUrl('json/si'), body);
   }
 
   /** Sets light brightness. */
   setBrightness(brightness: number) {
     const body = { bri: brightness };
-    return this.http.post<PostResponse>(this.createApiUrl('json/si'), body);
+    return this.http.post<PostResponse>(
+      this.createApiUrl('json/si'), body);
   }
 
   /** Sets effect speed. */
@@ -83,7 +92,8 @@ export class ApiService {
     const body = {
       seg: { sx: speed },
     };
-    return this.http.post<PostResponse>(this.createApiUrl('json/state'), body);
+    return this.http.post<PostResponse>(
+      this.createApiUrl('json/state'), body);
   }
 
   /** Sets effect intensity. */
@@ -91,7 +101,8 @@ export class ApiService {
     const body = {
       seg: { ix: intensity },
     };
-    return this.http.post<PostResponse>(this.createApiUrl('json/state'), body);
+    return this.http.post<PostResponse>(
+      this.createApiUrl('json/state'), body);
   }
 
 

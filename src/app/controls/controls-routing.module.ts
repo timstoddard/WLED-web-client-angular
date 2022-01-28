@@ -3,7 +3,7 @@ import { RouterModule } from '@angular/router';
 import { ControlsComponent } from './controls.component';
 import { ControlsResolver } from './controls.resolver';
 import { RouteWithPageTitle } from '../shared/page-title.service';
-import { PalettesResolver } from './palettes/palettes.resolver';
+import { PalettesDataResolver } from './palettes/palettes-data.resolver';
 
 // TODO page titles should match existing web app (?)
 const routes: RouteWithPageTitle[] = [
@@ -15,7 +15,7 @@ const routes: RouteWithPageTitle[] = [
     },
     resolve: {
       data: ControlsResolver,
-      palettesData: PalettesResolver,
+      palettesData: PalettesDataResolver,
     },
   },
 ];

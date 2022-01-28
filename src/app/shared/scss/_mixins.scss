@@ -1,9 +1,9 @@
 @mixin radioButtonListItem() {
   $grandparentSelector: &;
   $textBackgroundOpacity: 0.6;
-  $normalBorderColor: rgb(128,128,128);
-  $hoverBorderColor: rgb(255,255,255);
-  $selectedBorderColor: rgb(0,0,0);
+  $normalBorderColor: rgb(180,180,180);
+  $hoverBorderColor: rgb(255,0,0);
+  $selectedBorderColor: rgb(20,20,20);
 
   align-items: center;
   background: rgb(220,220,220);
@@ -13,6 +13,14 @@
   justify-content: center;
   min-height: 36px;
   transition: all 0.2s ease; // TODO keep transitions?
+
+  &:last-of-type {
+    border-bottom: 2px solid $normalBorderColor;
+
+    &#{$grandparentSelector}--selected {
+      border-bottom: 2px solid $selectedBorderColor;
+    }
+  }
 
   &--selected {
     border-color: $selectedBorderColor;
