@@ -44,32 +44,32 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
   topBarButtons: MenuBarButton[] = [
     {
       name: 'Power',
-      onClick: this.togglePower,
+      onClick: () => this.togglePower(),
       icon: '&#xe08f;',
     },
     {
       name: 'Timer',
-      onClick: this.toggleNightLight,
+      onClick: () => this.toggleNightLight(),
       icon: '&#xe2a2;',
     },
     {
       name: 'Sync',
-      onClick: this.toggleSync,
+      onClick: () => this.toggleSync(),
       icon: '&#xe116;',
     },
     {
       name: 'Live',
-      onClick: this.toggleLiveView,
+      onClick: () => this.toggleLiveView(),
       icon: '&#xe410;',
     },
     {
       name: 'Info',
-      onClick: this.toggleShowInfo,
+      onClick: () => this.toggleShowInfo(),
       icon: '&#xe066;',
     },
     {
       name: 'Nodes',
-      onClick: this.toggleShowNodes,
+      onClick: () => this.toggleShowNodes(),
       icon: '&#xe22d;',
     },
   ];
@@ -106,8 +106,9 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
 
   togglePower() {
     this.isOn = !this.isOn;
-    var obj = { on: this.isOn };
-    // requestJson(obj);
+    this.topMenuBarService.togglePower(this.isOn)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(genericPostResponse);
   }
 
   toggleNightLight() {

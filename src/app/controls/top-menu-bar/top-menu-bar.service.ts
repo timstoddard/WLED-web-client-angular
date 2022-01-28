@@ -9,4 +9,8 @@ export class TopMenuBarService {
   setBrightness(brightness: number) {
     return this.apiService.setBrightness(brightness);
   }
+
+  togglePower(isOn: boolean) {
+    return this.apiService.togglePower(isOn);
+  }
 }

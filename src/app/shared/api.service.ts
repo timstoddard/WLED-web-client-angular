@@ -105,6 +105,13 @@ export class ApiService {
       this.createApiUrl('json/state'), body);
   }
 
+  /** Toggles the LED strip(s) on/off. */
+  togglePower(isOn: boolean) {
+    const body = { on: isOn };
+    return this.http.post<PostResponse>(
+      this.createApiUrl('json/si'), body);
+  }
+
 
 
 

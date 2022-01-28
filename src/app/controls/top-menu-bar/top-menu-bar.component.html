@@ -1,7 +1,7 @@
 <div class="topMenuBar__buttons">
   <button
     *ngFor="let topBarButton of topBarButtons"
-    (click)="topBarButton.onClick"
+    (click)="topBarButton.onClick()"
     class="topMenuBar__button">
     <i class="icons">
       {{ topBarButton.icon }}
