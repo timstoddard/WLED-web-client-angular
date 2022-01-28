@@ -62,7 +62,8 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
       onClick: () => this.toggleLiveView(),
       icon: '&#xe410;',
     },
-    {
+    // TODO combine these & move to bottom menu
+    /*{
       name: 'Info',
       onClick: () => this.toggleShowInfo(),
       icon: '&#xe066;',
@@ -71,7 +72,7 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
       name: 'Nodes',
       onClick: () => this.toggleShowNodes(),
       icon: '&#xe22d;',
-    },
+    },*/
   ];
 
   constructor(
