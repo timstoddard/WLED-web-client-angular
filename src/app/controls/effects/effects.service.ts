@@ -14,4 +14,12 @@ export class EffectsService {
   setEffect(effectId: number) {
     return this.apiService.setEffect(effectId);
   }
+
+  setSpeed(effectId: number) {
+    return this.apiService.setSpeed(effectId);
+  }
+
+  setIntensity(effectId: number) {
+    return this.apiService.setIntensity(effectId);
+  }
 }

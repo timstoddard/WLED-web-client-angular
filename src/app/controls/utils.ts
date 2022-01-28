@@ -1,3 +1,5 @@
+import { PostResponse } from '../shared/api.service';
+
 // used by top and bottom menu bars
 export interface MenuBarButton {
   name: string;
@@ -57,3 +59,11 @@ export const updateTablinks = (tabIndex: number) => {
   // }
   // tabLinks[tabIndex].className += ' active';
 }
+
+/** Basic error handling for a POST response. */
+export const genericPostResponse = (response: PostResponse) => {
+  if (!response.success) {
+    // TODO show error toast
+    alert('failed to update');
+  }
+};

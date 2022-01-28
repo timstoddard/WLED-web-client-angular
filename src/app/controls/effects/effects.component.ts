@@ -3,9 +3,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs';
 import { WledApiResponse } from '../../shared/api-types';
-import { PostResponse } from '../../shared/api.service';
 import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
-import { compareNames } from '../utils';
+import { compareNames, genericPostResponse } from '../utils';
 import { EffectsService } from './effects.service';
 
 interface Effect {
@@ -79,16 +78,22 @@ export class EffectsComponent extends UnsubscribingComponent implements OnInit {
     // document.querySelector(`#fxlist .lstI[data-id="${effectId}"]`)!.classList.add('selected');
   }
 
-  // TODO should call effect service
-  setSpeed(speed: number) {
-    console.log('setSpeed', speed);
-    // TODO implement
+  private setEffect(effectId: number) {
+    this.effectsService.setEffect(effectId)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(genericPostResponse);
   }
-  
-  // TODO should call effect service
-  setIntensity(intensity: number) {
-    console.log('setIntensity', intensity);
-    // TODO implement
+
+  private setSpeed(effectId: number) {
+    this.effectsService.setSpeed(effectId)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(genericPostResponse);
+  }
+
+  private setIntensity(effectId: number) {
+    this.effectsService.setIntensity(effectId)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(genericPostResponse);
   }
 
   private createForm() {
@@ -111,16 +116,6 @@ export class EffectsComponent extends UnsubscribingComponent implements OnInit {
       .subscribe((intensity: number) => this.setIntensity(intensity));
 
     return form;
-  }
-
-  private setEffect(effectId: number) {
-    this.effectsService.setEffect(effectId)
-      .subscribe((response: PostResponse) => {
-        if (!response.success) {
-          // TODO show error toast
-          alert('failed to update');
-        }
-      });
   }
 }
 

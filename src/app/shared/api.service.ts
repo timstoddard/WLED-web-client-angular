@@ -72,46 +72,48 @@ export class ApiService {
     return this.http.post<PostResponse>(this.createApiUrl('json/si'), body);
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  /** Sets light brightness. */
   setBrightness(brightness: number) {
-    const obj = { bri: brightness };
-    this.http.post('/json/si', obj);
-    // this.requestJson(obj);
+    const body = { bri: brightness };
+    return this.http.post<PostResponse>(this.createApiUrl('json/si'), body);
   }
 
+  /** Sets effect speed. */
   setSpeed(speed: number) {
-    const obj = {
+    const body = {
       seg: { sx: speed },
     };
-    this.http.post('/json/si', obj);
-    // this.requestJson(obj, false);
+    return this.http.post<PostResponse>(this.createApiUrl('json/state'), body);
   }
 
+  /** Sets effect intensity. */
   setIntensity(intensity: number) {
-    const obj = {
+    const body = {
       seg: { ix: intensity },
     };
-    this.http.post('/json/state', obj);
-    // this.requestJson(obj, false);
+    return this.http.post<PostResponse>(this.createApiUrl('json/state'), body);
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
 
   setLor(lor: number) {
     const obj = { lor };

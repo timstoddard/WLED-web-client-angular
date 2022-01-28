@@ -123,6 +123,25 @@ export class PalettesComponent extends UnsubscribingComponent implements OnInit 
     // document.querySelector(`#pallist .lstI[data-id="${paletteId}"]`)!.classList.add('selected');
   }
 
+  private setPalette(paletteId: number) {
+    this.palettesService.setPalette(paletteId)
+      .subscribe((response: PostResponse) => {
+        if (!response.success) {
+          // TODO show error toast
+          alert('failed to update');
+        }
+      });
+  }
+
+  private createFormControl() {
+    const control = this.formBuilder.control(DEFAULT_PALETTE_ID);
+    control.valueChanges
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((paletteId: number) => this.setPalette(paletteId));
+    return control;
+  }
+
+  // TODO should palette backgrounds be a service?
   private generatePaletteBackgrounds() {
     const paletteColors = this.getPalettesData();
     const backgrounds: { [key: number]: string } = {};
@@ -187,24 +206,6 @@ export class PalettesComponent extends UnsubscribingComponent implements OnInit 
     }
 
     return `linear-gradient(to right,${gradient.join()})`;
-  }
-
-  private createFormControl() {
-    const control = this.formBuilder.control(DEFAULT_PALETTE_ID);
-    control.valueChanges
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((paletteId: number) => this.setPalette(paletteId));
-    return control;
-  }
-
-  private setPalette(paletteId: number) {
-    this.palettesService.setPalette(paletteId)
-      .subscribe((response: PostResponse) => {
-        if (!response.success) {
-          // TODO show error toast
-          alert('failed to update');
-        }
-      });
   }
 }
 
