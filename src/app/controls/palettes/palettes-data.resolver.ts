@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
-import { forkJoin } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
 import { ApiService } from '../../shared/api.service';
 import { ControlsServicesModule } from '../controls-services.module';
+import { palettesData } from '../mock-api-data';
 import { PalettesData } from './palettes.service';
 
 @Injectable({ providedIn: ControlsServicesModule })
@@ -10,16 +11,21 @@ export class PalettesDataResolver implements Resolve<PalettesData[]> {
   constructor(private apiService: ApiService) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    // const PALETTES_PER_PAGE = 8;
+    // TODO use api data
+    return of(palettesData);
+
+    // TODO can merge all response objects together instead of returning an array?
+
+    /* // const PALETTES_PER_PAGE = 8;
     const LAST_PALETTE_DATA_PAGE = 9; // 9 pages (for now), zero indexed
     const apiCalls = [];
     for (let page = 0; page < LAST_PALETTE_DATA_PAGE; page++) {
       apiCalls.push(this.apiService.getPalettesData(page));
     }
-    return forkJoin(apiCalls);
+    return forkJoin(apiCalls); */
   }
 
-  // TODO is there a way to use the `.m` property in the resolver?? seems to be max page # (?)
+  // TODO is there a way to use the `.m` property in the resolver?? seems to be max page #, or results per page
   /*private _getPalettesData(page: number, callback: () => void) {
     // const url = generateApiUrl(`json/palx?page=${page}`);
     this.palettesService.getPalettes().subscribe((json: any /* TODO type * /) => {
