@@ -10,7 +10,7 @@ import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
 })
 export class SearchInputComponent extends UnsubscribingComponent implements OnInit {
   @Output() searchValueChanges = new EventEmitter();
-  // @ViewChild('searchInput', { read: ElementRef }) searchInputElement!: ElementRef<HTMLInputElement>;
+  @ViewChild('searchInput', { read: ElementRef }) searchInputElement!: ElementRef<HTMLInputElement>;
   searchText!: FormControl;
 
   constructor(private formBuilder: FormBuilder) {
@@ -23,17 +23,12 @@ export class SearchInputComponent extends UnsubscribingComponent implements OnIn
 
   onChange = () => {
     this.searchValueChanges.emit(this.searchText.value);
-
-    // TODO hide cancel button if no text
-    // searchField.parentElement!.getElementsByClassName('search-cancel-icon')[0].style.display = (searchText.length < 1) ? 'none' : 'inline';
   }
 
   cancelSearch = () => {
-    this.searchText.reset();
-    this.searchValueChanges.emit('');
-
-    // TODO is this the correct behavior? (if cancelled, maybe user doesn't want to search)
-    // this.searchInputElement.nativeElement.focus();
+    this.searchText.reset('');
+    this.searchValueChanges.emit(this.searchText.value);
+    this.searchInputElement.nativeElement.focus();
   }
 
   private createFormControl() {

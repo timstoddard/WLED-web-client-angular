@@ -1,13 +1,15 @@
 <input
+  #searchInput
   type="text"
   [formControl]="searchText"
   placeholder="Search"
   class="searchInput__input" />
-<i
-  class="searchInput__searchIcon icons">
+<!-- TODO should this be clickable? -->
+<i class="searchInput__searchIcon icons">
   &#xe0a1;
 </i>
 <i
+  *ngIf="searchText.value?.length > 0"
   (click)="cancelSearch()"
   class="searchInput__cancelIcon icons">
   &#xe38f;

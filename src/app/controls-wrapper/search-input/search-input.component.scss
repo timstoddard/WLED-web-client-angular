@@ -2,6 +2,7 @@
   align-items: center;
   display: flex;
   margin: 4px;
+  position: relative;
 }
 
 .searchInput {
@@ -21,8 +22,15 @@
   }
 
   &__searchIcon {
+    margin-left: 4px;
   }
 
   &__cancelIcon {
+    position: absolute;
+    right: 30px;
+
+    &:hover {
+      cursor: pointer;
+    }
   }
 }
