@@ -1,4 +1,16 @@
-<button
+<a
+  *ngFor="let foo of getRouterLinks()"
+  [routerLink]="foo.routerLink"
+  class="bottomMenuBar__button">
+  <i class="bottomMenuBar__button__text icons">
+    {{ foo.icon }}
+  </i>
+  <span class="bottomMenuBar__button__text">
+    {{ foo.name }}
+  </span>
+</a>
+
+<!-- <button
   *ngFor="let button of getButtons()"
   (click)="button.onClick()"
   class="bottomMenuBar__button">
@@ -18,4 +30,4 @@
   <span class="bottomMenuBar__button__text">
     Settings
   </span>
-</a>
+</a> -->

@@ -1,5 +1,8 @@
+import { Injectable } from '@angular/core';
+import { ControlsServicesModule } from '../controls-services.module';
 import { getInput } from '../utils';
 
+@Injectable({ providedIn: ControlsServicesModule })
 export class SegmentsService {
   selSegEx(segmentId: number, lastSegment: number) {
     const seg = [];

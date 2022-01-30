@@ -1,0 +1,27 @@
+:host {
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: 100px 1fr 80px;
+  height: 100vh;
+}
+
+.controlsWrapper {
+  &__topMenu {
+    grid-area: 1 / 1 / 2 / 2;
+    overflow-y: auto; // TODO remove
+  }
+
+  &__routerOutlet + ::ng-deep * {
+    grid-area: 2 / 1 / 3 / 2;
+    overflow-y: auto; // TODO needed to set grid height (right?)
+  }
+
+  &__bottomMenu {
+    grid-area: 3 / 1 / 4 / 2;
+  }
+
+  &__tab {
+    height: 100%;
+    position: relative;
+  }
+}

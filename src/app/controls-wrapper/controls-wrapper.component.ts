@@ -10,11 +10,11 @@ import { generateApiUrl } from './json.service';
 import { getElementList, isObject } from './utils';
 
 @Component({
-  selector: 'app-controls',
-  templateUrl: './controls.component.html',
-  styleUrls: ['./controls.component.scss'],
+  selector: 'app-controls-wrapper',
+  templateUrl: './controls-wrapper.component.html',
+  styleUrls: ['./controls-wrapper.component.scss'],
 })
-export class ControlsComponent implements OnInit {
+export class ControlsWrapperComponent implements OnInit {
   /* private hol = this.getDefaultHolidayConfig();
 
   // probably should be moved to a shared location

@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { PalettesData } from '../controls/palettes/palettes.service';
+import { PalettesData } from '../controls-wrapper/palettes/palettes.service';
 import { WledApiResponse, WledInfo, WledState } from './api-types';
 
 export interface PostResponse {

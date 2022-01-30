@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MenuBarButton, updateTablinks } from '../utils';
+import { updateTablinks } from '../utils';
 
 @Component({
   selector: 'app-bottom-menu-bar',
@@ -7,34 +7,37 @@ import { MenuBarButton, updateTablinks } from '../utils';
   styleUrls: ['./bottom-menu-bar.component.scss']
 })
 export class BottomMenuBarComponent implements OnInit {
-  @Input() pcMode: boolean = false;
+  @Input() pcMode: boolean = false; // TODO is this needed?
 
   ngOnInit() {
   }
 
-  getButtons(): MenuBarButton[] {
+  getRouterLinks() {
     return [
       {
         name: 'Controls',
-        onClick: () => this.openTab(0),
+        routerLink: ['../', 'controls'],
         icon: '&#xe2b3;',
-        enabled: false, // TODO
       },
       {
         name: 'Segments',
-        onClick: () => this.openTab(1),
+        routerLink: ['./', 'segments'],
         icon: '&#xe34b;',
-        enabled: false, // TODO
       },
       {
         name: 'Presets',
-        onClick: () => this.openTab(2),
+        routerLink: ['./', 'presets'],
         icon: '&#xe04c;',
-        enabled: false, // TODO
       },
-    ];
+      {
+        name: 'Settings',
+        routerLink: ['../', 'settings'],
+        icon: '&#xe2b3;',
+      },
+    ]
   }
 
+  // TODO no longer used
   private openTab(tabIndex: number, force = false) {
     if (this.pcMode && !force) {
       return;

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AppConfig } from '../../shared/app-config';
-import { getInput, updateSliderTrail } from '../utils';
+import { getInput } from '../utils';
 import { SegmentsService } from './segments.service';
 
 @Component({
@@ -203,3 +203,6 @@ export class SegmentsComponent implements OnInit {
     // this.requestJson(obj);
   }
 }
+
+// TODO remove after using app-color-slider in template (only here to fix type error above)
+const updateSliderTrail = (slider: any) => {};

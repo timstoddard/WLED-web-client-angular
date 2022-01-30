@@ -17,7 +17,7 @@ const routes: RouteWithPageTitle[] = [
   // lazy loaded feature modules
   {
     path: 'controls', // TODO also keep /sliders? (thinking not)
-    loadChildren: () => import('./controls/controls.module').then(m => m.ControlsModule),
+    loadChildren: () => import('./controls-wrapper/controls.module').then(m => m.ControlsModule),
   },
   {
     path: 'settings',

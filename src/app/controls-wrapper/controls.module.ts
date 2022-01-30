@@ -8,7 +8,8 @@ import { ColorPickerComponent } from './color-inputs/color-picker/color-picker.c
 import { ColorPresetsComponent } from './color-inputs/color-presets/color-presets.component';
 import { ColorSliderComponent } from './shared/color-slider/color-slider.component';
 import { ColorSlotsComponent } from './color-inputs/color-slots/color-slots.component';
-import { ControlsComponent } from './controls.component';
+import { ControlsComponent } from './controls/controls.component';
+import { ControlsWrapperComponent } from './controls-wrapper.component';
 import { ControlsRoutingModule } from './controls-routing.module';
 import { ControlsServicesModule } from './controls-services.module';
 import { EffectsComponent } from './effects/effects.component';
@@ -41,6 +42,7 @@ const SHARED_COMPONENTS = [
 const COMPONENTS = [
   BottomMenuBarComponent,
   ControlsComponent,
+  ControlsWrapperComponent,
   EffectsComponent,
   // InfoComponent,
   // NodesComponent,

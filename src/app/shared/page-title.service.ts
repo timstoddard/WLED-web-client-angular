@@ -11,6 +11,7 @@ export type RouteWithPageTitle = RouteWithDefinedPageTitle | RouteWithLazyLoaded
 
 interface RouteWithDefinedPageTitle extends Route {
   data: PageTitle;
+  children?: RouteWithPageTitle[];
 }
 
 interface RouteWithLazyLoadedModule extends Route {
