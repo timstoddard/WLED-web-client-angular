@@ -25,55 +25,21 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
   private nightLightDuration = 60;
   private nightLightTar = 0; // TODO better name
   private nightLightMode = false;
-  private isSyncSend = false;
-  private syncTglRecv = true;
+  private isSyncSend = false; // TODO better name
+  private syncTglRecv = true; // TODO better name
   isLiveViewActive = true; // false; // TODO just for testing
   private showInfo = false;
   private showNodes = false;
 
   // other vars (some are for sliding ui)
   private appWidth: number = 0;
-  private pcMode = false;
+  private isPcMode = false;
   private pcModeA = false;
   private x0 = null;
   private lastw = 0;
   private locked = false;
   private scrollS = 0;
   private N = 4;
-
-  topBarButtons: MenuBarButton[] = [
-    {
-      name: 'Power',
-      onClick: () => this.togglePower(),
-      icon: '&#xe08f;',
-    },
-    {
-      name: 'Timer',
-      onClick: () => this.toggleNightLight(),
-      icon: '&#xe2a2;',
-    },
-    {
-      name: 'Sync',
-      onClick: () => this.toggleSync(),
-      icon: '&#xe116;',
-    },
-    {
-      name: 'Live',
-      onClick: () => this.toggleLiveView(),
-      icon: '&#xe410;',
-    },
-    // TODO combine these & move to bottom menu
-    /*{
-      name: 'Info',
-      onClick: () => this.toggleShowInfo(),
-      icon: '&#xe066;',
-    },
-    {
-      name: 'Nodes',
-      onClick: () => this.toggleShowNodes(),
-      icon: '&#xe22d;',
-    },*/
-  ];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -105,14 +71,60 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     // this.sliderContainer.style.setProperty('--n', `${this.N}`);
   }
 
-  togglePower() {
+  getButtons(): MenuBarButton[] {
+    return [
+      {
+        name: 'Power',
+        onClick: () => this.togglePower(),
+        icon: '&#xe08f;',
+        enabled: this.isOn,
+      },
+      {
+        name: 'Timer', // TODO better name (night light)
+        onClick: () => this.toggleNightLight(),
+        icon: '&#xe2a2;',
+        enabled: this.isNightLightActive,
+      },
+      {
+        name: 'Sync',
+        onClick: () => this.toggleSync(),
+        icon: '&#xe116;',
+        enabled: this.isSyncSend,
+      },
+      {
+        name: 'Live',
+        onClick: () => this.toggleLiveView(),
+        icon: '&#xe410;',
+        enabled: this.isLiveViewActive,
+      },
+      {
+        name: 'PC Mode',
+        onClick: () => this.togglePcMode(true),
+        icon: '&#xe23d;',
+        enabled: this.isPcMode,
+      },
+      // TODO combine these & move to bottom menu
+      /*{
+        name: 'Info',
+        onClick: () => this.toggleShowInfo(),
+        icon: '&#xe066;',
+      },
+      {
+        name: 'Nodes',
+        onClick: () => this.toggleShowNodes(),
+        icon: '&#xe22d;',
+      },*/
+    ];
+  }
+
+  private togglePower() {
     this.isOn = !this.isOn;
     this.topMenuBarService.togglePower(this.isOn)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(genericPostResponse);
   }
 
-  toggleNightLight() {
+  private toggleNightLight() {
     this.isNightLightActive = !this.isNightLightActive;
     const message = this.isNightLightActive
       ? `Timer active. Your light will turn ${this.nightLightTar > 0 ? 'on' : 'off'} ${this.nightLightMode ? 'over' : 'after'} ${this.nightLightDuration} minutes.`
@@ -154,7 +166,9 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     // if (!this.isLiveViewActive && ws && ws.readyState === WebSocket.OPEN) {
     //   ws.send('{"lv":false}');
     // }
-    this.size();
+
+    // TODO call size()
+    // this.size();
   }
 
   private toggleShowInfo() {
@@ -207,6 +221,7 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
         // this.populateNodes(this.lastinfo, json);
       })
       .catch((error) => {
+        // TODO show toast
         // showToast(error, true);
         console.log(error);
       });
@@ -222,25 +237,35 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     // this.applyCfg(config);
   }
 
-  togglePcMode(fromB = false) { // TODO "from b" seems to be "called from button"
+  private togglePcMode(fromB = false) { // TODO "from b" seems to be "called from button"
     if (fromB) {
       this.pcModeA = !this.pcModeA;
-      this.localStorageService.set('pcm', this.pcModeA);
-      this.pcMode = this.pcModeA;
+      this.isPcMode = this.pcModeA;
+
+      // TODO save app config in local storage
+      // this.localStorageService.set('pcm', this.pcModeA);
     }
-    if (this.appWidth < 1250 && !this.pcMode) {
+
+    // TODO if app width is small & pc mode is off, don't toggle
+    /*if (this.appWidth < 1250 && !this.isPcMode) {
       return;
-    }
-    if (!fromB && ((this.appWidth < 1250 && this.lastw < 1250) || (this.appWidth >= 1250 && this.lastw >= 1250))) {
+    }//*/
+
+    // TODO if not from button & app width hasn't crossed small/large threshold, don't toggle
+    /*if (!fromB && ((this.appWidth < 1250 && this.lastw < 1250) || (this.appWidth >= 1250 && this.lastw >= 1250))) {
       return;
-    }
+    }//*/
     // this.openTab(0, true);
-    if (this.appWidth < 1250) {
-      this.pcMode = false;
+
+    // TODO if app width is small, force non pc mode
+    /*if (this.appWidth < 1250) {
+      this.isPcMode = false;
     }
     else if (this.pcModeA && !fromB) {
-      this.pcMode = this.pcModeA;
-    }
+      // TODO what is pc mode "A"?
+      this.isPcMode = this.pcModeA;
+    }//*/
+
     // TODO select tab
     // this.updateTablinks(0);
 
@@ -255,7 +280,8 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     // TODO update slider container width
     // this.sliderContainer.style.width = this.pcMode ? '100%' : '400%';
     
-    this.lastw = this.appWidth;
+    // TODO save current app width
+    // this.lastw = this.appWidth;
   }
 
   private createFormControl() {

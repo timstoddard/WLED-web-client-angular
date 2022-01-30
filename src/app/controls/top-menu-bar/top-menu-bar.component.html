@@ -1,25 +1,19 @@
 <div class="topMenuBar__buttons">
-  <button
-    *ngFor="let topBarButton of topBarButtons"
-    (click)="topBarButton.onClick()"
-    class="topMenuBar__button">
-    <i class="icons">
-      {{ topBarButton.icon }}
-    </i>
-    <span class="topMenuBar__button__text">
-      {{ topBarButton.name }}
-    </span>
-  </button>
-  <button
-    (click)="togglePcMode(true)"
-    class="topMenuBar__button">
-    <i class="icons">
-      &#xe23d;
-    </i>
-    <span class="topMenuBar__button__text">
-      PC Mode
-    </span>
-  </button>
+  <div
+    *ngFor="let button of getButtons()"
+    class="topMenuBar__buttonWrapper">
+    <button
+      (click)="button.onClick()"
+      [ngClass]="{ 'topMenuBar__button--enabled': button.enabled }"
+      class="topMenuBar__button">
+      <i class="icons">
+        {{ button.icon }}
+      </i>
+    </button>
+    <div class="topMenuBar__button__text">
+      {{ button.name }}
+    </div>
+  </div>
 </div>
 
 <!-- TODO move brightness slider somewhere else? -->
@@ -29,6 +23,7 @@
   [max]="255"
   label="Brightness"
   class="noslide">
+  <!-- TODO should brightness slider icon toggle light/dark mode? -->
   <i
     class="icons slider-icon"
     (click)="toggleTheme()">
@@ -37,6 +32,7 @@
 </app-color-slider>
 
 <!-- TODO make this a canvas (?) -->
+<!-- TODO instead of hidden class, use ngIf isLiveViewActive ? -->
 <iframe
   src="about:blank"
   [ngClass]="{ 'topMenuBar__liveView--hidden': !isLiveViewActive }"

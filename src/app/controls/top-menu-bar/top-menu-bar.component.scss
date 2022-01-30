@@ -2,14 +2,38 @@
   &__buttons {
     align-items: center;
     display: flex;
-    justify-content: center; // TODO left?
+    justify-content: space-between;
+    max-width: 350px;
+    margin: 5px auto;
+  }
+
+  &__buttonWrapper {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
   }
 
   &__button {
+    $buttonDimension: 40px;
+    background: none;
+    border: 1px solid rgb(128,128,128);
+    border-radius: #{$buttonDimension / 2};
+    height: $buttonDimension;
+    margin-bottom: 2px;
     padding: 3px;
+    width: $buttonDimension;
+
+    &:hover {
+      background: rgb(220,220,220);
+      cursor: pointer;
+    }
+
+    &--enabled {
+      background: rgb(0,255,0);
+    }
 
     &__text {
-      display: block;
+      font-size: 13px; // TODO bigger?
     }
   }
 

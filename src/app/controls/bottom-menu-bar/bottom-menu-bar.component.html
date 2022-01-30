@@ -1,13 +1,13 @@
 <button
-  *ngFor="let bottomBarButton of bottomBarButtons"
-  (click)="bottomBarButton.onClick"
+  *ngFor="let button of getButtons()"
+  (click)="button.onClick()"
   class="bottomMenuBar__button">
   <i class="icons">
-    {{ bottomBarButton.icon }}
+    {{ button.icon }}
   </i>
-  <span class="bottomMenuBar__button__text">
-    {{ bottomBarButton.name }}
-  </span>
+  <div class="bottomMenuBar__button__text">
+    {{ button.name }}
+  </div>
 </button>
 <a
   [routerLink]="['../', 'settings']"
