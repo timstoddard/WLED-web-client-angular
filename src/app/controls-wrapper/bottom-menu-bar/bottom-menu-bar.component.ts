@@ -12,7 +12,7 @@ export class BottomMenuBarComponent implements OnInit {
   ngOnInit() {
   }
 
-  getRouterLinks() {
+  getButtons() {
     return [
       {
         name: 'Controls',
@@ -32,7 +32,7 @@ export class BottomMenuBarComponent implements OnInit {
       {
         name: 'Settings',
         routerLink: ['../', 'settings'],
-        icon: '&#xe2b3;',
+        icon: '&#xe0a2;',
       },
     ]
   }

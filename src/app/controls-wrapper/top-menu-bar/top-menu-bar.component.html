@@ -6,8 +6,9 @@
       (click)="button.onClick()"
       [ngClass]="{ 'topMenuBar__button--enabled': button.enabled }"
       class="topMenuBar__button">
-      <i class="icons">
-        {{ button.icon }}
+      <i
+        [innerHTML]="button.icon"
+        class="topMenuBar__button__icon icons">
       </i>
     </button>
     <div class="topMenuBar__button__text">

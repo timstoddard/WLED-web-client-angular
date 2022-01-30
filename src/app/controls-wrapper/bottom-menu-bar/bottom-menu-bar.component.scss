@@ -11,12 +11,18 @@
     align-items: center;
     background: rgb(200,200,200);
     border: 0;
+    color: black;
     display: flex;
     flex-direction: column;
     height: 100%;
     justify-content: center;
     padding: 4px;
+    text-decoration: none;
     width: 25%;
+
+    &__icon {
+      font-size: 28px;
+    }
 
     &__text {
     }

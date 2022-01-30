@@ -1,33 +1,12 @@
 <a
-  *ngFor="let foo of getRouterLinks()"
-  [routerLink]="foo.routerLink"
+  *ngFor="let button of getButtons()"
+  [routerLink]="button.routerLink"
   class="bottomMenuBar__button">
-  <i class="bottomMenuBar__button__text icons">
-    {{ foo.icon }}
+  <i
+    [innerHTML]="button.icon"
+    class="bottomMenuBar__button__icon icons">
   </i>
   <span class="bottomMenuBar__button__text">
-    {{ foo.name }}
+    {{ button.name }}
   </span>
 </a>
-
-<!-- <button
-  *ngFor="let button of getButtons()"
-  (click)="button.onClick()"
-  class="bottomMenuBar__button">
-  <i class="icons">
-    {{ button.icon }}
-  </i>
-  <div class="bottomMenuBar__button__text">
-    {{ button.name }}
-  </div>
-</button>
-<a
-  [routerLink]="['../', 'settings']"
-  class="bottomMenuBar__button">
-  <i class="icons">
-    &#xe0a2;
-  </i>
-  <span class="bottomMenuBar__button__text">
-    Settings
-  </span>
-</a> -->
