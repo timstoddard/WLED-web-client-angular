@@ -1,23 +1,35 @@
+@use 'sass:math';
+
+:host {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 .topMenuBar {
   &__buttons {
     align-items: center;
     display: flex;
     justify-content: space-between;
-    max-width: 350px;
-    margin: 5px auto;
+    margin: 5px;
+    margin-right: auto;
+    max-width: 340px;
+    min-width: 300px;
+    width: 90vw;
   }
 
   &__buttonWrapper {
     align-items: center;
     display: flex;
     flex-direction: column;
+    width: 20%;
   }
 
   &__button {
     $buttonDimension: 40px;
     background: none;
     border: 1px solid rgb(128,128,128);
-    border-radius: #{$buttonDimension / 2};
+    border-radius: math.div($buttonDimension, 2);
     height: $buttonDimension;
     margin-bottom: 2px;
     padding: 3px;
@@ -45,13 +57,20 @@
     }
   }
 
-  &__liveView {
-    height: 4px; // TODO make this taller? or add ability to set height?
-    width: 100%;
-    border: 1px solid black; // TODO remove border after page is fully styled
+  &__slider {
+    flex-direction: row;
 
-    &--hidden {
-      display: none;
+    @at-root ::ng-deep &__input {
+      margin: -6px 0;
     }
+  }
+
+  &__liveView {
+    border: 1px solid rgb(128,128,128);
+    border-left-width: 0;
+    border-right-width: 0;
+    height: 8px;
+    margin-bottom: 2px;
+    width: 100%;
   }
 }

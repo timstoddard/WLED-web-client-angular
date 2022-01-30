@@ -23,7 +23,8 @@
   [min]="1"
   [max]="255"
   label="Brightness"
-  class="noslide">
+  sliderClass="topMenuBar__slider__input"
+  class="topMenuBar__slider">
   <!-- TODO should brightness slider icon toggle light/dark mode? -->
   <i
     class="icons slider-icon"
@@ -33,9 +34,9 @@
 </app-color-slider>
 
 <!-- TODO make this a canvas (?) -->
-<!-- TODO instead of hidden class, use ngIf isLiveViewActive ? -->
+<!-- TODO wire up isLiveViewActive to ngIf -->
 <iframe
+  *ngIf="true"
   src="about:blank"
-  [ngClass]="{ 'topMenuBar__liveView--hidden': !isLiveViewActive }"
   class="topMenuBar__liveView">
 </iframe>

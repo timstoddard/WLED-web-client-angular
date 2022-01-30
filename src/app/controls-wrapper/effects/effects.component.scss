@@ -17,7 +17,7 @@
     justify-content: space-evenly;
   }
 
-  @at-root ::ng-deep  &__slider {
+  @at-root ::ng-deep &__slider {
     max-width: 200px;
     min-width: 80px;
     padding: 0;
