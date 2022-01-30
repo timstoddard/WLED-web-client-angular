@@ -30,6 +30,10 @@
 
     &--enabled {
       background: rgb(0,255,0);
+
+      &:hover {
+        background: rgb(25,220,25);
+      }
     }
 
     &__text {
