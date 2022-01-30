@@ -3,7 +3,7 @@ import { FormBuilder, FormControl } from '@angular/forms';
 import { takeUntil } from 'rxjs';
 import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
 import { genericPostResponse } from '../utils';
-import { PaletteBackground, PalettesService } from './palettes.service';
+import { PaletteWithBackground, PalettesService } from './palettes.service';
 
 const DEFAULT_PALETTE_ID = 0;
 
@@ -11,11 +11,11 @@ const DEFAULT_PALETTE_ID = 0;
   selector: 'app-palettes',
   templateUrl: './palettes.component.html',
   styleUrls: ['./palettes.component.scss'],
-  // need to provide here (routed component) so the service can access the activated route
+  // need to provide here (child of routed component) so the service can access the activated route
   providers: [PalettesService],
 })
 export class PalettesComponent extends UnsubscribingComponent implements OnInit {
-  sortedPalettes!: PaletteBackground[];
+  palettes!: PaletteWithBackground[];
   selectedPalette!: FormControl;
   private selColors!: any; // TODO type // TODO where to get this from
 
@@ -27,8 +27,12 @@ export class PalettesComponent extends UnsubscribingComponent implements OnInit 
   }
 
   ngOnInit() {
-    this.sortedPalettes = this.palettesService.getSortedPalettes(DEFAULT_PALETTE_ID);
+    this.palettes = this.palettesService.getFilteredPalettes();
     this.selectedPalette = this.createFormControl();
+  }
+
+  filterList(filterText: string) {
+    this.palettes = this.palettesService.getFilteredPalettes(filterText);
   }
 
   private setPalette(paletteId: number) {

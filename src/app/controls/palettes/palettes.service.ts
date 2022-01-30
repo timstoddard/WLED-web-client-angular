@@ -17,7 +17,7 @@ export interface PalettesData {
   m: number;
 }
 
-export interface PaletteBackground {
+export interface PaletteWithBackground {
   id: number;
   name: string;
   background: string;
@@ -25,20 +25,37 @@ export interface PaletteBackground {
 
 @Injectable({ providedIn: ControlsServicesModule })
 export class PalettesService {
+  sortedPalettes!: PaletteWithBackground[];
+
   constructor(
     private apiService: ApiService,
-    private route: ActivatedRoute) {}
+    private route: ActivatedRoute,
+  ) {
+    this.sortedPalettes = this.sortPalettes();
+  }
 
   // TODO is this needed?
-  getPalettes() {
-    return this.apiService.getPalettes();
-  }
+  // getPalettes() {
+  //   return this.apiService.getPalettes();
+  // }
 
   setPalette(paletteId: number) {
     return this.apiService.setPalette(paletteId);
   }
 
-  getSortedPalettes(defaultPaletteId: number) {
+  /**
+   * Returns a list of all palettes whose names contain `filterText` (case insensitive). When no `filterText` is provided or it is an empty string, all effects are returned.
+   * @param filterText 
+   * @returns 
+   */
+  getFilteredPalettes(filterText = '') {
+    const filterTextLowercase = filterText.toLowerCase();
+    const filteredPalettes = this.sortedPalettes
+      .filter((palette) => palette.name.toLowerCase().includes(filterTextLowercase));
+    return filteredPalettes;
+  }
+
+  private sortPalettes() {
     const paletteNames = (this.route.snapshot.data['data'] as WledApiResponse).palettes;
     const backgrounds = this.generatePaletteBackgrounds();
 
@@ -50,11 +67,10 @@ export class PalettesService {
       }));
     sortedPalettes.sort(compareNames);
     sortedPalettes.unshift({
-      id: defaultPaletteId,
+      id: 0,
       name: 'Default',
-      background: backgrounds[defaultPaletteId],
+      background: backgrounds[0],
     });
-
     return sortedPalettes;
   }
 

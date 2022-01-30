@@ -1,8 +1,7 @@
 <input
-  #searchInput
   type="text"
+  [formControl]="searchText"
   placeholder="Search"
-  (input)="search()"
   class="searchInput__input" />
 <i
   class="icons search-icon">

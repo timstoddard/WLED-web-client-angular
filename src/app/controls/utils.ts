@@ -9,7 +9,8 @@ export interface MenuBarButton {
 }
 
 // used for sorting effect/palette lists
-export const compareNames = (a: any /* TODO type */, b: any /* TODO type */) =>
+interface HasName { name: string; }
+export const compareNames = (a: HasName, b: HasName) =>
   a.name < b.name ? -1 : 1;
 
 // used by info & nodes comps

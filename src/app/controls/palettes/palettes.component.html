@@ -1,8 +1,11 @@
-<app-search-input class="palettes__searchInput"></app-search-input>
+<app-search-input
+  (searchValueChanges)="filterList($event)"
+  class="palettes__searchInput">
+</app-search-input>
 
 <div class="palettes__list">
   <label
-    *ngFor="let palette of sortedPalettes"
+    *ngFor="let palette of palettes"
     [ngClass]="{ 'palettes__radioButton--selected': palette.id === selectedPalette.value }"
     class="palettes__radioButton"
     [ngStyle]="{ background: palette.background }">

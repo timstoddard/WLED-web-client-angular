@@ -1,7 +1,10 @@
 <!-- <p class="">
   Effect mode
 </p> -->
-<app-search-input class="effects__searchInput"></app-search-input>
+<app-search-input
+  (searchValueChanges)="filterList($event)"
+  class="effects__searchInput">
+</app-search-input>
 
 <div class="effects__sliders">
   <!-- TODO these used to show value in a toast above while sliding, I'm thinking not keep that -->
@@ -35,7 +38,7 @@
   [formGroup]="effectsForm"
   class="effects__list">
   <label
-    *ngFor="let effect of sortedEffects"
+    *ngFor="let effect of effects"
     [ngClass]="{ 'effects__radioButton--selected': effect.id === effectsForm.get('selectedEffect')!.value }"
     class="effects__radioButton">
     <input
