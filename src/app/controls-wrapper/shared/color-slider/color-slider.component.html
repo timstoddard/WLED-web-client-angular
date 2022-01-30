@@ -1,11 +1,16 @@
-<p
+<div
   *ngIf="label"
   class="colorSlider__label">
   <!-- show an icon if one is provided -->
   <ng-content></ng-content>
   <span>{{ label }}</span>
-</p>
-<div class="colorSlider__wrapper">
+</div>
+
+<mat-slider [formControl]="getFormControl()" [min]="min" [max]="max" step="1" [ngClass]="sliderClass"
+  class="colorSlider__input">
+</mat-slider>
+
+<!-- <div class="colorSlider__wrapper">
   <input
     type="range"
     [formControl]="getFormControl()"
@@ -19,4 +24,4 @@
     #sliderDisplay
     class="colorSlider__display">
   </div>
-</div>
+</div> -->

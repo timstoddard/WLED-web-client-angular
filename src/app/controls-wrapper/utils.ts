@@ -1,3 +1,4 @@
+import { ActivatedRoute } from '@angular/router';
 import { PostResponse } from '../shared/api.service';
 
 // used by top and bottom menu bars
@@ -69,3 +70,20 @@ export const genericPostResponse = (response: PostResponse) => {
     alert('failed to update');
   }
 };
+
+/**
+ * Searches up the current route tree to find route data for the given key.
+ * @param key 
+ * @param route 
+ * @returns 
+ */
+export const findRouteData = (key: string, route: ActivatedRoute | null): unknown => {
+  if (route) {
+    if (route.snapshot.data[key]) {
+      return route.snapshot.data[key];
+    } else {
+      return findRouteData(key, route.parent);
+    }
+  }
+  return null;
+}

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-
+import { MatSliderModule } from '@angular/material/slider';
 import { BottomMenuBarComponent } from './bottom-menu-bar/bottom-menu-bar.component';
 import { ColorInputsComponent } from './color-inputs/color-inputs.component';
 import { ColorPickerComponent } from './color-inputs/color-picker/color-picker.component';
@@ -62,6 +62,7 @@ const COMPONENTS = [
   imports: [
     CommonModule,
     ControlsRoutingModule,
+    MatSliderModule,
     ControlsServicesModule,
     ReactiveFormsModule,
   ],

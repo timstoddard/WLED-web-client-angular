@@ -24,12 +24,16 @@ export class ColorInputsComponent extends UnsubscribingComponent implements OnIn
   }
 
   ngAfterViewInit() {
-    // have to do this here instead of in ngOnInit so that the ColorPicker exists
-    this.colorService.getCurrentColorData()
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((colorData: CurrentColor) => {
-        this.populateForm(colorData);
-      });
+    // using timeout to avoid ExpressionChangedAfterItHasBeenCheckedError
+    // since we cannot subscribe in ngOnInit (see below comment)
+    setTimeout(() => {
+      // have to do this here instead of in ngOnInit so that the ColorPicker exists
+      this.colorService.getCurrentColorData()
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe((colorData: CurrentColor) => this.populateForm(colorData));
+    });
+    // subscribe to valueChanges observables after setting initial value,
+    // otherwise an infinite loop is created
     this.subscribeToValueChanges();
   }
 
@@ -61,15 +65,11 @@ export class ColorInputsComponent extends UnsubscribingComponent implements OnIn
   private subscribeToValueChanges() {
     this.colorInputsForm.get('colorPicker')!.get('hsvValue')!.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((hsvValue: number) => {
-        this.colorService.setHsvValue(hsvValue);
-      });
+      .subscribe((hsvValue: number) => this.colorService.setHsvValue(hsvValue));
 
     this.colorInputsForm.get('colorPicker')!.get('kelvin')!.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((kelvin: number) => {
-        this.colorService.setKelvin(kelvin);
-      });
+      .subscribe((kelvin: number) => this.colorService.setKelvin(kelvin));
 
     const rgb = merge(
       this.colorInputsForm.get('rgb')!.get('r')!.valueChanges
@@ -88,15 +88,11 @@ export class ColorInputsComponent extends UnsubscribingComponent implements OnIn
 
     this.colorInputsForm.get('whiteness')!.get('whiteChannel')!.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((whiteValue: number) => {
-        this.colorService.setWhiteValue(whiteValue);
-      });
+      .subscribe((whiteValue: number) => this.colorService.setWhiteValue(whiteValue));
 
     this.colorInputsForm.get('whiteness')!.get('whiteBalance')!.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((whiteBalance: number) => {
-        this.colorService.setWhiteBalance(whiteBalance);
-      });
+      .subscribe((whiteBalance: number) => this.colorService.setWhiteBalance(whiteBalance));
   }
 
   /**

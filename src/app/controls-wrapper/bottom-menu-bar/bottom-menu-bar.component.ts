@@ -8,33 +8,30 @@ import { updateTablinks } from '../utils';
 })
 export class BottomMenuBarComponent implements OnInit {
   @Input() pcMode: boolean = false; // TODO is this needed?
+  buttons = [
+    {
+      name: 'Controls',
+      routerLink: ['../', 'controls'],
+      icon: '&#xe2b3;',
+    },
+    {
+      name: 'Segments',
+      routerLink: ['./', 'segments'],
+      icon: '&#xe34b;',
+    },
+    {
+      name: 'Presets',
+      routerLink: ['./', 'presets'],
+      icon: '&#xe04c;',
+    },
+    {
+      name: 'Settings',
+      routerLink: ['../', 'settings'],
+      icon: '&#xe0a2;',
+    },
+  ];
 
   ngOnInit() {
-  }
-
-  getButtons() {
-    return [
-      {
-        name: 'Controls',
-        routerLink: ['../', 'controls'],
-        icon: '&#xe2b3;',
-      },
-      {
-        name: 'Segments',
-        routerLink: ['./', 'segments'],
-        icon: '&#xe34b;',
-      },
-      {
-        name: 'Presets',
-        routerLink: ['./', 'presets'],
-        icon: '&#xe04c;',
-      },
-      {
-        name: 'Settings',
-        routerLink: ['../', 'settings'],
-        icon: '&#xe0a2;',
-      },
-    ]
   }
 
   // TODO no longer used

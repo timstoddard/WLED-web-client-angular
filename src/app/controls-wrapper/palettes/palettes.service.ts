@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { WledApiResponse } from '../../shared/api-types';
 import { ApiService } from '../../shared/api.service';
 import { ControlsServicesModule } from '../controls-services.module';
-import { compareNames } from '../utils';
+import { compareNames, findRouteData } from '../utils';
 
 // TODO do these types belong here?
 export type PaletteColor = Array<number[] | 'r' | 'c1' | 'c2' | 'c3'>;
@@ -56,7 +56,7 @@ export class PalettesService {
   }
 
   private sortPalettes() {
-    const paletteNames = (this.route.snapshot.data['data'] as WledApiResponse).palettes;
+    const paletteNames = (findRouteData('data', this.route) as WledApiResponse).palettes;
     const backgrounds = this.generatePaletteBackgrounds();
 
     const sortedPalettes = paletteNames.slice(1) // remove 'Default'
@@ -84,7 +84,7 @@ export class PalettesService {
   }
 
   private getPalettesData() {
-    const palettesData = this.route.snapshot.data['palettesData'] as PalettesData[];
+    const palettesData = findRouteData('palettesData', this.route) as PalettesData[];
     let allPalettesData: PaletteColors = {};
     for (const paletteData of palettesData) {
       allPalettesData = Object.assign({}, allPalettesData, paletteData.p);

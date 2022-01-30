@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { WledApiResponse } from '../../shared/api-types';
 import { ApiService } from '../../shared/api.service';
 import { ControlsServicesModule } from '../controls-services.module';
-import { compareNames } from '../utils';
+import { compareNames, findRouteData } from '../utils';
 
 export interface Effect {
   id: number;
@@ -51,7 +51,7 @@ export class EffectsService {
   }
 
   private sortEffects() {
-    const effectNames = (this.route.snapshot.data['data'] as WledApiResponse).effects;
+    const effectNames = (findRouteData('data', this.route) as WledApiResponse).effects;
 
     const sortedEffects = effectNames.slice(1) // remove 'Solid'
       .map((name, i) => ({

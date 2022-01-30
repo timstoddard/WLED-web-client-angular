@@ -1,12 +1,14 @@
 <a
-  *ngFor="let button of getButtons()"
+  *ngFor="let button of buttons"
   [routerLink]="button.routerLink"
+  routerLinkActive="bottomMenuBar__button--selected"
+  [routerLinkActiveOptions]="{ exact: true }"
   class="bottomMenuBar__button">
   <i
     [innerHTML]="button.icon"
     class="bottomMenuBar__button__icon icons">
   </i>
-  <span class="bottomMenuBar__button__text">
+  <div class="bottomMenuBar__button__text">
     {{ button.name }}
-  </span>
+  </div>
 </a>
