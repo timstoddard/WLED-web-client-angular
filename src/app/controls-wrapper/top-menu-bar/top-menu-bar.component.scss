@@ -59,6 +59,7 @@
 
   &__slider {
     flex-direction: row;
+    margin: 10px 5px;
 
     @at-root ::ng-deep &__input {
       margin: -6px 0;
