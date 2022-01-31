@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
+import { DomSanitizer } from '@angular/platform-browser';
 import { takeUntil } from 'rxjs';
+import { PostResponse } from '../../shared/api.service';
 import { AppConfig } from '../../shared/app-config';
 import { LocalStorageService } from '../../shared/local-storage.service';
 import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
@@ -45,6 +47,7 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     private formBuilder: FormBuilder,
     private localStorageService: LocalStorageService,
     private topMenuBarService: TopMenuBarService,
+    private sanitizer: DomSanitizer,
   ) {
     super();
   }
@@ -98,7 +101,7 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
         enabled: this.isLiveViewActive,
       },
       {
-        name: 'PC Mode',
+        name: 'PC Mode', // TODO change to toggle popup with brightness slider in it
         onClick: () => this.togglePcMode(true),
         icon: '&#xe23d;',
         enabled: this.isPcMode,
@@ -126,48 +129,46 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
 
   private toggleNightLight() {
     this.isNightLightActive = !this.isNightLightActive;
-    const message = this.isNightLightActive
-      ? `Timer active. Your light will turn ${this.nightLightTar > 0 ? 'on' : 'off'} ${this.nightLightMode ? 'over' : 'after'} ${this.nightLightDuration} minutes.`
-      : 'Timer deactivated.'
-    // showToast(message);
-
-    // TODO update api
-    var obj = { nl: { on: this.isNightLightActive } };
-    // this.requestJson(obj);
+    this.topMenuBarService.toggleNightLight(this.isNightLightActive)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((response: PostResponse) => {
+        genericPostResponse(response);
+        const message = this.isNightLightActive
+          ? `Timer active. Your light will turn ${this.nightLightTar > 0 ? 'on' : 'off'} ${this.nightLightMode ? 'over' : 'after'} ${this.nightLightDuration} minutes.`
+          : 'Timer deactivated.'
+        // showToast(message); // TODO show toast
+      });
   }
 
   private toggleSync() {
     this.isSyncSend = !this.isSyncSend;
-    const message = this.isSyncSend
-      ? 'Other lights in the network will now sync to this one.'
-      : 'This light and other lights in the network will no longer sync.';
-    // showToast(message);
-    
-    // TODO update api
-    /*var obj = {
-      udpn: { send: this.syncSend },
-    };
-    if (this.syncTglRecv) {
-      obj.udpn.recv = this.syncSend;
-    }//*/
-    // this.requestJson(obj);
+    this.topMenuBarService.toggleSync(this.isSyncSend, this.syncTglRecv)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((response: PostResponse) => {
+        genericPostResponse(response);
+        const message = this.isSyncSend
+          ? 'Other lights in the network will now sync to this one.'
+          : 'This light and other lights in the network will no longer sync.';
+        // showToast(message); // TODO show toast
+      });
+  }
+
+  getIframeUrl() {
+    const url = this.isLiveViewActive
+      ? generateApiUrl('liveview')
+      : 'about:blank';
+    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
   private toggleLiveView() {
     this.isLiveViewActive = !this.isLiveViewActive;
-    const liveViewIframe = document.getElementById('liveview')! as HTMLIFrameElement;
-    liveViewIframe.style.display = this.isLiveViewActive ? 'block' : 'none';
-    document.getElementById('buttonSr')!.className = this.isLiveViewActive ? 'active' : '';
-
-    const url = generateApiUrl('liveview')
-    liveViewIframe.src = this.isLiveViewActive ? url : 'about:blank';
     
     // TODO send websocket message to disable if live view setting was turned off
     // if (!this.isLiveViewActive && ws && ws.readyState === WebSocket.OPEN) {
     //   ws.send('{"lv":false}');
     // }
 
-    // TODO call size()
+    // TODO call size() (maybe not needed?)
     // this.size();
   }
 

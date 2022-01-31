@@ -37,6 +37,6 @@
 <!-- TODO wire up isLiveViewActive to ngIf -->
 <iframe
   *ngIf="true"
-  src="about:blank"
+  [src]="getIframeUrl()"
   class="topMenuBar__liveView">
 </iframe>

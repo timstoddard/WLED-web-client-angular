@@ -112,6 +112,27 @@ export class ApiService {
       this.createApiUrl('json/si'), body);
   }
 
+  /** Toggles the night light timer on/off. */
+  toggleNightLight(isNightLightActive: boolean) {
+    const body = {
+      nl: { on: isNightLightActive },
+    };
+    return this.http.post<PostResponse>(
+      this.createApiUrl('json/si'), body);
+  }
+
+  /** Toggles the night light timer on/off. */
+  toggleSync(syncSend: boolean, syncTglRecv: boolean) {
+    const body: any /* TODO type */ = {
+      udpn: { send: syncSend },
+    };
+    if (syncTglRecv) {
+      body.udpn.recv = syncSend;
+    }
+    return this.http.post<PostResponse>(
+      this.createApiUrl('json/si'), body);
+  }
+
 
 
 
