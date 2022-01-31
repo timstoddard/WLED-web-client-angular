@@ -4,8 +4,8 @@
   border-radius: 4px;
   display: flex;
   flex-direction: column;
-  margin: 4px;
-  padding: 2px;
+  margin: 3px;
+  padding: 4px;
 }
 
 .colorSlider {
@@ -13,6 +13,7 @@
     align-items: center;
     display: flex;
     justify-content: center;
+    margin: 6px 0 0 0;
 
     & ::ng-deep .icons {
       margin-right: 2px;

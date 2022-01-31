@@ -7,7 +7,8 @@ import { ColorService } from '../../color.service';
 @Component({
   selector: 'app-color-picker',
   templateUrl: './color-picker.component.html',
-  styleUrls: ['./color-picker.component.scss']
+  styleUrls: ['./color-picker.component.scss'],
+  host: { '(window:resize)': 'onResize($event)' },
 })
 export class ColorPickerComponent extends UnsubscribingComponent implements OnInit, AfterViewInit {
   @Input() colorValues!: AbstractControl;
@@ -22,15 +23,30 @@ export class ColorPickerComponent extends UnsubscribingComponent implements OnIn
   }
 
   ngAfterViewInit() {
-    this.colorPicker = this.createColorPicker();
-    // TODO should color picker be created/owned by color service instead?
-    this.colorService.setColorPicker(this.colorPicker);
+    setTimeout(() => {
+      this.colorPicker = this.createColorPicker();
+      this.colorService.setColorPicker(this.colorPicker);
+    });
+  }
+
+  private getColorPickerWidth() {
+    const colorPickerNativeElement = this.colorPickerElement.nativeElement as HTMLElement;
+    const containerHeight = colorPickerNativeElement.parentElement!.clientHeight;
+    const COLOR_PICKER_HEIGHT_SCALAR = 0.9; // TODO lambda tuning
+    return containerHeight * COLOR_PICKER_HEIGHT_SCALAR;
+  }
+
+  onResize() {
+    const colorPickerWidth = this.getColorPickerWidth();
+    this.colorPicker?.resize(colorPickerWidth);
   }
 
   private createColorPicker() {
+    const colorPickerWidth = this.getColorPickerWidth();
+
     // TODO why can't color be r:0/g:0/b:0?
     const colorPicker = iro.ColorPicker(this.colorPickerElement.nativeElement, {
-      width: 260, // TODO make this dynamic
+      width: colorPickerWidth,
       layout: [
         {
           component: iro.ui.Wheel,

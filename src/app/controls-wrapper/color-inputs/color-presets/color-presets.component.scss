@@ -1,13 +1,15 @@
 $buttonDimension: 42px;
 
-.colorPresets {
+:host {
   align-items: center;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  margin-bottom: 10px;
-  max-width: 290px;
+  max-width: 240px;
+  min-width: 240px;
+}
 
+.colorPresets {
   &__button {
     border: 1px solid black;
     border-radius: 6px;

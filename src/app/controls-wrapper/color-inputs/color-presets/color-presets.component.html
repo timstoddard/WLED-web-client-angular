@@ -1,15 +1,13 @@
-<div class="colorPresets">
-  <button
-    *ngFor="let color of quickColors"
-    (click)="pickColor('#' + color.hex)"
-    [title]="color.name"
-    class="colorPresets__button"
-    [ngStyle]="{ backgroundColor: '#' + color.hex }">
-  </button>
-  <button
-    (click)="pickColor('rnd')"
-    class="colorPresets__button"
-    title="Random">
-    R
-  </button>
-</div>
+<button
+  *ngFor="let color of quickColors"
+  (click)="pickColor('#' + color.hex)"
+  [title]="color.name"
+  class="colorPresets__button"
+  [ngStyle]="{ backgroundColor: '#' + color.hex }">
+</button>
+<button
+  (click)="pickColor('rnd')"
+  class="colorPresets__button"
+  title="Random">
+  R
+</button>
