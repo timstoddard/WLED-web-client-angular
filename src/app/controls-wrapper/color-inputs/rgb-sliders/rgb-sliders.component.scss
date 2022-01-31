@@ -1,0 +1,33 @@
+:host {
+  display: flex;
+}
+
+.rgb {
+  &__sliderWrapper {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    &__r,
+    &__g,
+    &__b {
+      font-size: 42px;
+      font-weight: bold;
+      text-shadow: 1px 1px 3px rgba(32,32,32,0.8);
+      text-transform: uppercase;
+    }
+
+    &__r {
+      color: rgb(255,0,0);
+    }
+
+    &__g {
+      color: rgb(0,255,0);
+    }
+
+    &__b {
+      color: rgb(0,0,255);
+    }
+  }
+}

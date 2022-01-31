@@ -1,23 +1,15 @@
-<div>
-  <p class="labels">
-    RGB color
-  </p>
+<div
+  *ngFor="let letter of ['r', 'g', 'b']"
+  [ngClass]="'rgb__sliderWrapper__' + letter"
+  class="rgb__sliderWrapper">
+  <div [ngClass]="'rgbSliders__' + letter + '__text'">
+    {{ letter }}
+  </div>
   <app-color-slider
-    [control]="rgbValues.get('r')!"
+    [control]="rgbValues.get(letter)!"
     [min]="0"
     [max]="255"
-    class="noslide">
-  </app-color-slider>
-  <app-color-slider
-    [control]="rgbValues.get('g')!"
-    [min]="0"
-    [max]="255"
-    class="noslide">
-  </app-color-slider>
-  <app-color-slider
-    [control]="rgbValues.get('b')!"
-    [min]="0"
-    [max]="255"
+    [vertical]="true"
     class="noslide">
   </app-color-slider>
 </div>

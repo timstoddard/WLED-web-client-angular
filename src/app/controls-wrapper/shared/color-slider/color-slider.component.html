@@ -6,7 +6,13 @@
   <span>{{ label }}</span>
 </div>
 
-<mat-slider [formControl]="getFormControl()" [min]="min" [max]="max" step="1" [ngClass]="sliderClass"
+<mat-slider
+  [formControl]="getFormControl()"
+  [min]="min"
+  [max]="max"
+  step="1"
+  [vertical]="vertical"
+  [ngClass]="sliderClass"
   class="colorSlider__input">
 </mat-slider>
 

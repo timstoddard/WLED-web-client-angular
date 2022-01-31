@@ -12,6 +12,7 @@ export class ColorSliderComponent implements OnInit, AfterViewInit {
   @Input() max!: number;
   @Input() label: string = '';
   @Input() sliderClass: string = '';
+  @Input() vertical: boolean = false;
   @Output() slideChange = new EventEmitter<number>();
   @Output() slideInput = new EventEmitter<number>();
   @ViewChild('sliderDisplay', { read: ElementRef }) sliderDisplay!: ElementRef;
