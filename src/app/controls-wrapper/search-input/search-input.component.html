@@ -2,6 +2,7 @@
   #searchInput
   type="text"
   [formControl]="searchText"
+  (keydown)="onKeyDown($event)"
   placeholder="Search"
   class="searchInput__input" />
 <!-- TODO should this be clickable? -->

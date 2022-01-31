@@ -31,6 +31,13 @@ export class SearchInputComponent extends UnsubscribingComponent implements OnIn
     this.searchInputElement.nativeElement.focus();
   }
 
+  onKeyDown(event: KeyboardEvent) {
+    if (event.key === 'Escape') {
+      this.cancelSearch();
+      event.stopImmediatePropagation();
+    }
+  }
+
   private createFormControl() {
     const control =  this.formBuilder.control('');
     control.valueChanges
