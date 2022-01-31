@@ -13,6 +13,7 @@ export interface Effect {
 @Injectable({ providedIn: ControlsServicesModule })
 export class EffectsService {
   sortedEffects!: Effect[];
+  private selectedEffectName!: string;
 
   constructor(
     private apiService: ApiService,
@@ -27,6 +28,7 @@ export class EffectsService {
   // }
 
   setEffect(effectId: number) {
+    this.selectedEffectName = this.getEffectName(effectId);
     return this.apiService.setEffect(effectId);
   }
 
@@ -36,6 +38,21 @@ export class EffectsService {
 
   setIntensity(effectId: number) {
     return this.apiService.setIntensity(effectId);
+  }
+
+  getEffectName(effectId: number) {
+    if (this.sortedEffects && this.sortedEffects.length > 0) {
+      const selectedPalette = this.sortedEffects
+        .find(((n) => n.id === effectId));
+      if (selectedPalette) {
+        return selectedPalette.name;
+      }
+    }
+    return '';
+  }
+
+  getSelectedEffectName() {
+    return this.selectedEffectName;
   }
 
   /**

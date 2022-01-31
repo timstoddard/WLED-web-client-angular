@@ -31,6 +31,10 @@ export class PalettesComponent extends UnsubscribingComponent implements OnInit 
     this.selectedPalette = this.createFormControl();
   }
 
+  getSelectedPaletteName() {
+    return this.palettesService.getSelectedPaletteName();
+  }
+
   filterList(filterText: string) {
     this.palettes = this.palettesService.getFilteredPalettes(filterText);
   }
@@ -43,9 +47,16 @@ export class PalettesComponent extends UnsubscribingComponent implements OnInit 
 
   private createFormControl() {
     const control = this.formBuilder.control(DEFAULT_PALETTE_ID);
+
     control.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((paletteId: number) => this.setPalette(paletteId));
+
+    // trigger setting the name for the selected name
+    setTimeout(() => {
+      control.setValue(DEFAULT_PALETTE_ID);
+    });
+
     return control;
   }
 }

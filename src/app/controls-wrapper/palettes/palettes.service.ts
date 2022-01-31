@@ -26,6 +26,7 @@ export interface PaletteWithBackground {
 @Injectable({ providedIn: ControlsServicesModule })
 export class PalettesService {
   sortedPalettes!: PaletteWithBackground[];
+  private selectedPaletteName!: string;
 
   constructor(
     private apiService: ApiService,
@@ -40,7 +41,23 @@ export class PalettesService {
   // }
 
   setPalette(paletteId: number) {
+    this.selectedPaletteName = this.getPaletteName(paletteId);
     return this.apiService.setPalette(paletteId);
+  }
+
+  getPaletteName(paletteId: number) {
+    if (this.sortedPalettes && this.sortedPalettes.length > 0) {
+      const selectedPalette = this.sortedPalettes
+        .find(((n) => n.id === paletteId));
+      if (selectedPalette) {
+        return selectedPalette.name;
+      }
+    }
+    return '';
+  }
+
+  getSelectedPaletteName() {
+    return this.selectedPaletteName;
   }
 
   /**

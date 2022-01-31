@@ -3,7 +3,7 @@
 :host {
   display: grid;
   grid-template-columns: 100%;
-  grid-template-rows: auto auto 1fr;
+  grid-template-rows: auto auto auto 1fr;
 }
 
 .effects {
@@ -17,6 +17,15 @@
     justify-content: space-evenly;
   }
 
+  &__selectedName {
+    border-bottom: 1px solid rgb(128,128,128);
+    font-size: 14px;
+    font-style: italic;;
+    grid-area: 3 / 1 / 4 / 2;
+    padding: 4px;
+    text-align: center;
+  }
+
   @at-root ::ng-deep &__slider {
     max-width: 200px;
     min-width: 80px;
@@ -26,7 +35,7 @@
   }
 
   &__list {
-    grid-area: 3 / 1 / 4 / 2;
+    grid-area: 4 / 1 / 5 / 2;
     overflow-y: auto;
   }
 

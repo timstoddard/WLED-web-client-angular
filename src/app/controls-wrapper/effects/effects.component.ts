@@ -32,6 +32,10 @@ export class EffectsComponent extends UnsubscribingComponent implements OnInit {
     this.effectsForm = this.createForm();
   }
 
+  getSelectedEffectName() {
+    return this.effectsService.getSelectedEffectName();
+  }
+
   filterList(filterText: string) {
     this.effects = this.effectsService.getFilteredEffects(filterText);
   }
@@ -77,6 +81,11 @@ export class EffectsComponent extends UnsubscribingComponent implements OnInit {
     form.get('intensity')!.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((intensity: number) => this.setIntensity(intensity));
+
+    // trigger setting the name for the selected name
+    setTimeout(() => {
+      form.get('selectedEffect')!.setValue(DEFAULT_EFFECT_ID); 
+    });
 
     return form;
   }

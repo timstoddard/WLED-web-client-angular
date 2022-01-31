@@ -3,6 +3,10 @@
   class="palettes__searchInput">
 </app-search-input>
 
+<div class="palettes__selectedName">
+  Selected: {{ getSelectedPaletteName() }}
+</div>
+
 <div class="palettes__list">
   <label
     *ngFor="let palette of palettes"
