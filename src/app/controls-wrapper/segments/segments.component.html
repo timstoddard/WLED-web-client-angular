@@ -1,213 +1,37 @@
-// TODO SEGMENTS
+<!-- TODO show "Loading..." on init -->
 
-<!-- <div
-  id="Segments"
-  class="tabcontent">
-  <!-- <div id="segcont">
-    Loading...
-  </div> - - >
-  <div id="segutil">
-  </div>
-  <div id="segutil2">
-    <button
-      class="btn btn-s"
-      id="rsbtn"
-      (click)="resetSegments()">
-      Reset segments
-    </button>
-  </div>
-  <p>
-    Transition:
-    <input
-      id="tt"
-      class="noslide"
-      type="number"
-      min="0"
-      max="65.5"
-      step="0.1"
-      value="0.7" />
-    s
-  </p>
+<span
+  *ngIf="noNewSegs"
+  class="h">
+  Maximum number of segments reached.
+</span>
+
+<app-segment
+  *ngFor="let segment of segments"
+  [segment]="segment">
+</app-segment>
+
+<!-- document.getElementById('rsbtn')!.style.display = (this.segCount > 1) ? 'inline' : 'none'; -->
+<div *ngIf="segments.length > 1">
+  <button
+    (click)="resetSegments()"
+    ngClass="{
+      'segments__resetButton--confirm': '!confirmedResetSegments'
+    }"
+    class="segments__resetButton">
+    {{ getResetButtonText() }}
+  </button>
 </div>
-<div class="segments">
-  <div
-    *ngFor="let segment of segments"
-    class="seg">
-    <label class="check schkl">
-      &nbsp;
-      <input
-        type="checkbox"
-        id="seg${i}sel"
-        onchange="selSeg(segment.id)"
-        [checked]="segment.sel">
-      <span class="checkmark schk"></span>
-    </label>
-    <div class="segname">
-      <div
-        class="segntxt"
-        onclick="selSegEx(segment.id)">
-        ${segment.n ? segment.n : "Segment " + i}
-      </div>
-      <i
-        class="icons edit-icon ${expanded[i] ? " expanded" : '' }"
-        id="seg${i}nedit"
-        (click)="tglSegn(segment.id)">
-        &#xe2c6;
-      </i>
-    </div>
-    <i
-      class="icons e-icon flr ${expanded[i] ? " exp" : '' }"
-      id="sege${i}"
-      (click)="expand(segment.id)">
-      &#xe395;
-    </i>
-    <div
-      class="segin ${expanded[i] ? " expanded" : '' }"
-      id="seg${i}">
-      <input
-        type="text"
-        class="ptxt stxt noslide"
-        id="seg${i}t"
-        autocomplete="off"
-        maxlength=32
-        value="${segment.n ? segment.n : ''}"
-        placeholder="Enter name..." />
-      <div class="sbs">
-        <i
-          class="icons e-icon pwr ${powered[i] ? " act" : '' }"
-          id="seg${i}pwr"
-          (click)="setSegPwr(segment.id)">
-          &#xe08f;
-        </i>
-        <div class="sliderwrap il sws">
-          <input
-            id="seg${i}bri"
-            class="noslide sis"
-            onchange="setSegBri(segment.id)"
-            max="255"
-            min="1"
-            type="range"
-            value="${segment.bri}" />
-          <div class="sliderdisplay"></div>
-        </div>
-      </div>
-      <table class="infot">
-        <tr>
-          <td class="segtd">
-            Start LED
-          </td>
-          <td class="segtd">
-            {{ cfg.comp.seglen ? 'Length' : 'Stop LED' }}
-          </td>
-          <td class="segtd">
-            Offset
-          </td>
-        </tr>
-        <tr>
-          <td class="segtd">
-            <input
-              class="noslide segn"
-              id="seg${i}s"
-              type="number"
-              min="0"
-              max="${ledCount - 1}"
-              value="${segment.start}"
-              oninput="updateLen(segment.id)">
-          </td>
-          <td class="segtd">
-            <input
-              class="noslide segn"
-              id="seg${i}e"
-              type="number"
-              min="0"
-              max="ledCount - (cfg.comp.seglen ? segment.start : 0)"
-              [value]="segment.stop - (cfg.comp.seglen ? segment.start : 0)"
-              oninput="updateLen(segment.id)">
-          </td>
-          <td class="segtd">
-            <input
-              class="noslide segn"
-              id="seg${i}of"
-              type="number"
-              value="${segment.of}"
-              oninput="updateLen(segment.id)">
-          </td>
-        </tr>
-      </table>
-      <table class="infot">
-        <tr>
-          <td class="segtd">
-            Grouping
-          </td>
-          <td class="segtd">
-            Spacing
-          </td>
-          <td class="segtd">
-            Apply
-          </td>
-        </tr>
-        <tr>
-          <td class="segtd">
-            <input
-              class="noslide segn"
-              id="seg${i}grp"
-              type="number"
-              min="1"
-              max="255"
-              value="${segment.grp}"
-              oninput="updateLen(segment.id)">
-          </td>
-          <td class="segtd">
-            <input
-              class="noslide segn"
-              id="seg${i}spc"
-              type="number"
-              min="0"
-              max="255"
-              value="${segment.spc}"
-              oninput="updateLen(segment.id)">
-          </td>
-          <td class="segtd">
-            <i
-              class="icons e-icon cnf cnf-s"
-              id="segc${i}"
-              onclick="setSeg(segment.id)">
-              &#xe390;
-            </i>
-          </td>
-        </tr>
-      </table>
-      <div
-        class="h"
-        id="seg${i}len">
-      </div>
-      <button
-        class="btn btn-i btn-xs del"
-        id="segd${i}"
-        onclick="delSeg(segment.id)">
-        <i class="icons btn-icon">
-          &#xe037;
-        </i>
-      </button>
-      <label class="check revchkl">
-        Reverse direction
-        <input
-          type="checkbox"
-          id="seg${i}rev"
-          onchange="setRev(segment.id)"
-          [checked]="segment.rev">
-        <span class="checkmark schk"></span>
-      </label>
-      <label class="check revchkl">
-        Mirror effect
-        <input
-          type="checkbox"
-          id="seg${i}mi"
-          onchange="setMi(segment.id)"
-          [checked]="segment.mi">
-        <span class="checkmark schk"></span>
-      </label>
-    </div>
-  </div>
-  <br>
-</div> -->
+
+<!-- TODO move to top? -->
+<div>
+  Transition:
+  <input
+    type="number"
+    [formControl]="transitionTime"
+    min="0"
+    max="65.5"
+    step="0.1"
+    class="" />
+  s
+</div>

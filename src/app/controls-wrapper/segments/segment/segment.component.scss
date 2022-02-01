@@ -1,0 +1,119 @@
+@use 'sass:math';
+
+.segment {
+  border: 1px solid rgb(128,128,128);
+  border-radius: 6px;
+  margin: 10px auto;
+  max-width: 500px;
+  padding: 5px;
+
+  &__header {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__isSelected {
+    //
+  }
+
+  &__name {
+    align-items: center;
+    display: flex;
+
+    &__text {
+      font-size: 18px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    &__icon {
+      margin-left: 4px;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
+    &__input {
+
+    }
+  }
+
+  &__expandIcon {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  &__content {
+    margin-top: 8px;
+  }
+
+  &__row {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    margin-top: 4px;
+  }
+
+  &__powerButton {
+    $buttonDimension: 30px;
+    align-items: center;
+    border: 1px solid rgb(128,128,128);
+    border-radius: math.div($buttonDimension, 2);
+    display: flex;
+    height: $buttonDimension;
+    justify-content: center;
+    width: $buttonDimension;
+
+    &:hover {
+      background: rgb(220,220,220);
+      cursor: pointer;
+    }
+
+    &--enabled {
+      background: rgb(0,255,0);
+
+      &:hover {
+        background: rgb(25,220,25);
+      }
+    }
+
+    &__input {
+      display: none;
+    }
+    
+    &__icon {
+      font-size: 20px;
+    }
+  }
+
+  &__numberInput {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    margin: 4px;
+
+    &__label {
+      //
+    }
+
+    &__input {
+      width: 60px;
+    }
+  }
+
+  &__reverseSetting,
+  &__mirrorSetting {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    margin: 6px;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}

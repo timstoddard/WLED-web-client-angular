@@ -1,28 +1,46 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { FormBuilder, FormControl } from '@angular/forms';
+import { takeUntil } from 'rxjs';
+import { WledSegment } from '../../shared/api-types';
 import { AppConfig } from '../../shared/app-config';
+import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
 import { getInput } from '../utils';
 import { SegmentsService } from './segments.service';
+
+const DEFAULT_TRANSITION_TIME = 0.7; // seconds
 
 @Component({
   selector: 'app-segments',
   templateUrl: './segments.component.html',
-  styleUrls: ['./segments.component.scss']
+  styleUrls: ['./segments.component.scss'],
+  // need to provide here (child of routed component) so the service can access the activated route
+  providers: [SegmentsService],
 })
-export class SegmentsComponent implements OnInit {
-  @Input() segments!: any[]; // TODO get from s.seg
+export class SegmentsComponent extends UnsubscribingComponent implements OnInit {
   @Input() cfg!: AppConfig; // TODO get from service/reducer
+  transitionTime!: FormControl;
+  segments!: WledSegment[];
+  noNewSegs: boolean = false;
   private segCount!: number;
   private lowestUnused!: number;
   private lSeg!: number;
   private maxSeg!: number;
-  private noNewSegs!: boolean;
   private powered!: boolean[]; // TODO this should be part of segments input array
   private confirmedResetSegments = false;
   private ledCount = 0;
 
-  constructor(private segmentsService: SegmentsService) { }
+  constructor(
+    private segmentsService: SegmentsService,
+    private formBuilder: FormBuilder,
+  ) {
+    super();
+  }
 
   ngOnInit() {
+    this.segments = this.segmentsService.getSegments();
+
+    this.transitionTime = this.createFormControl();
+
     this.segCount = 0;
     this.lowestUnused = 0;
     this.lSeg = 0; // probably "last segment"? 
@@ -35,7 +53,8 @@ export class SegmentsComponent implements OnInit {
         this.segCount++;
   
         const inst = this.segments[y];
-        let i = parseInt(inst.id, 10);
+        // let i = parseInt(inst.id, 10);
+        let i = y;
         this.powered[i] = inst.on;
         if (i == this.lowestUnused) {
           this.lowestUnused = i + 1;
@@ -47,24 +66,18 @@ export class SegmentsComponent implements OnInit {
     }
 
     if (this.lowestUnused >= this.maxSeg) {
-      document.getElementById('segutil')!.innerHTML =
-        `<span class="h">
-          Maximum number of segments reached.
-        </span>`;
-      this.noNewSegs = true;
+      // this.noNewSegs = true;
     } else if (this.noNewSegs) {
-      this.resetUtil();
-      this.noNewSegs = false;
+      // this.resetUtil();
+      // this.noNewSegs = false;
     }
     for (let i = 0; i <= this.lSeg; i++) {
-      this.updateLen(i);
-      updateSliderTrail(getInput(`seg${i}bri`));
-      if (this.segCount < 2) {
-        document.getElementById(`segd${this.lSeg}`)!.style.display = 'none';
-      }
+      // this.updateLen(i);
+      // updateSliderTrail(getInput(`seg${i}bri`));
+      // if (this.segCount < 2) {
+      //   document.getElementById(`segd${this.lSeg}`)!.style.display = 'none';
+      // }
     }
-    document.getElementById('rsbtn')!.style.display =
-      (this.segCount > 1) ? 'inline' : 'none';
   }
 
   updateSegmentSelected(segmentId: number) {
@@ -87,6 +100,25 @@ export class SegmentsComponent implements OnInit {
 
     this.segCount--;
     this.segmentsService.delSeg(segmentId);
+  }
+
+  private setTransitionTime(seconds: number) {
+    // TODO call api
+  }
+
+  private createFormControl() {
+    const control = this.formBuilder.control(DEFAULT_TRANSITION_TIME);
+
+    control.valueChanges
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((seconds: number) => this.setTransitionTime(seconds));
+
+    // trigger setting the name for the selected name
+    // setTimeout(() => {
+    //   control.setValue(DEFAULT_TRANSITION_VALUE);
+    // });
+
+    return control;
   }
 
   private makeSeg() {
@@ -148,7 +180,7 @@ export class SegmentsComponent implements OnInit {
         : 'none';
   }
 
-  //updates segment length upon input of segment values
+  // updates segment length upon input of segment values
   private updateLen(s: number) {
     if (!getInput(`seg${s}s`)) {
       return;
@@ -178,29 +210,34 @@ export class SegmentsComponent implements OnInit {
     document.getElementById(`seg${s}len`)!.innerHTML = out;
   }
 
+  getResetButtonText() {
+    return this.confirmedResetSegments
+      ? 'Confirm reset'
+      : 'Reset segments';
+  }
+
   resetSegments() {
-    const bt = document.getElementById('rsbtn')!;
     if (!this.confirmedResetSegments) {
-      bt.style.color = '#f00';
-      bt.innerHTML = 'Confirm reset';
+      // bt.style.color = '#f00';
       this.confirmedResetSegments = true;
-      return;
+    } else {
+      // bt.style.color = '#fff';
+      this.confirmedResetSegments = false;
+
+      // TODO api request
+      const obj = {
+        seg: [{
+          start: 0,
+          stop: this.ledCount,
+          sel: true,
+        }],
+      };
+      for (let i = 1; i <= this.lSeg; i++) {
+        // TODO fix type issue
+        obj.seg.push({ stop: 0 } as any);
+      }
+      // this.requestJson(obj);
     }
-    this.confirmedResetSegments = false;
-    bt.style.color = '#fff';
-    bt.innerHTML = 'Reset segments';
-    const obj = {
-      seg: [{
-        start: 0,
-        stop: this.ledCount,
-        sel: true,
-      }],
-    };
-    for (let i = 1; i <= this.lSeg; i++) {
-      // TODO fix type issue
-      obj.seg.push({ stop: 0 } as any);
-    }
-    // this.requestJson(obj);
   }
 }
 

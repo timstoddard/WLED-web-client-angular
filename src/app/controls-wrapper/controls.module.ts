@@ -21,7 +21,8 @@ import { PalettesComponent } from './palettes/palettes.component';
 import { RgbSlidersComponent } from './color-inputs/rgb-sliders/rgb-sliders.component';
 // import { RoverComponent } from './rover/rover.component';
 import { SearchInputComponent } from './search-input/search-input.component';
-// import { SegmentsComponent } from './segments/segments.component';
+import { SegmentComponent } from './segments/segment/segment.component';
+import { SegmentsComponent } from './segments/segments.component';
 import { TopMenuBarComponent } from './top-menu-bar/top-menu-bar.component';
 import { WhitenessSlidersComponent } from './color-inputs/whiteness-sliders/whiteness-sliders.component';
 
@@ -50,7 +51,8 @@ const COMPONENTS = [
   // PresetsComponent,
   // RoverComponent,
   SearchInputComponent,
-  // SegmentsComponent,
+  SegmentComponent,
+  SegmentsComponent,
   TopMenuBarComponent,
   COLOR_INPUTS,
   SHARED_COMPONENTS,
