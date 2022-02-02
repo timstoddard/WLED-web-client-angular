@@ -1,10 +1,13 @@
 @use 'sass:math';
 
+@import 'src/app/shared/scss/mixins';
+
 .segment {
   border: 1px solid rgb(128,128,128);
   border-radius: 6px;
-  margin: 10px auto;
-  max-width: 500px;
+  margin: 10px;
+  max-width: 300px;
+  min-width: 300px;
   padding: 5px;
 
   &__header {
@@ -14,7 +17,26 @@
   }
 
   &__isSelected {
-    //
+    @include cursorPointerOnHover();
+    border: 1px solid rgb(128,128,128);
+    border-radius: 4px;
+    padding: 3px;
+
+    &:hover {
+      background: rgb(220,220,220);
+    }
+
+    &--checked {
+      background: rgb(0,255,0);
+
+      &:hover {
+        background: rgb(25,220,25);
+      }
+    }
+
+    &__input {
+      display: none;
+    }
   }
 
   &__name {
@@ -28,21 +50,22 @@
     }
 
     &__icon {
+      @include cursorPointerOnHover();
+      color: rgb(128,128,128);
       margin-left: 4px;
-
-      &:hover {
-        cursor: pointer;
-      }
     }
 
     &__input {
-
     }
   }
 
   &__expandIcon {
-    &:hover {
-      cursor: pointer;
+    @include cursorPointerOnHover();
+    font-size: 24px;
+    transition: transform 0.2s;
+
+    &--expanded {
+      transform: rotate(180deg);
     }
   }
 
@@ -55,11 +78,16 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
-    margin-top: 4px;
+    padding: 10px;
+
+    &:not(:last-of-type) {
+      border-bottom: 1px solid rgb(200,200,200);
+    }
   }
 
   &__powerButton {
-    $buttonDimension: 30px;
+    @include cursorPointerOnHover();
+    $buttonDimension: 36px;
     align-items: center;
     border: 1px solid rgb(128,128,128);
     border-radius: math.div($buttonDimension, 2);
@@ -70,7 +98,6 @@
 
     &:hover {
       background: rgb(220,220,220);
-      cursor: pointer;
     }
 
     &--enabled {
@@ -86,34 +113,60 @@
     }
     
     &__icon {
-      font-size: 20px;
+      font-size: 25px;
     }
   }
 
+  &__numberForm {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-template-rows: auto auto;
+  }
+
   &__numberInput {
-    align-items: center;
+    align-items: flex-start;
     display: flex;
     flex-direction: column;
-    margin: 4px;
+    margin: 0 10px;
 
     &__label {
-      //
+      font-size: 13px;
     }
 
     &__input {
+      margin: 3px 0;
       width: 60px;
     }
   }
 
+  &__numberButtonWrapper {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+  }
+
+  &__numberButton {
+    @include cursorPointerOnHover();
+  }
+
   &__reverseSetting,
   &__mirrorSetting {
+    @include cursorPointerOnHover();
     align-items: center;
     display: flex;
     justify-content: center;
     margin: 6px;
+  }
 
-    &:hover {
-      cursor: pointer;
+  &__checkboxes {
+    align-items: flex-start;
+    display: inline-flex;
+    flex-direction: column;
+  }
+
+  &__brightness {
+    ::ng-deep &__input {
+      margin: -12px 6px;
     }
   }
 }

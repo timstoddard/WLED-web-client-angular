@@ -4,10 +4,14 @@
   <!-- <div>{{ segmentForm.value | json }}</div> -->
 
   <div class="segment__header">
-    <label class="segment__isSelected">
+    <label
+      [ngClass]="{ 'segment__isSelected--checked': segmentForm.get('isSelected')!.value }"
+      class="segment__isSelected icons">
       <input
+        type="checkbox"
         formControlName="isSelected"
-        type="checkbox">
+        class="segment__isSelected__input">
+        &#xe390;
     </label>
     
     <div
@@ -62,53 +66,57 @@
           &#xe08f;
         </i>
       </label>
-  
+
+      <div class="segment__checkboxes">
+        <label class="segment__reverseSetting">
+          <input
+            type="checkbox"
+            formControlName="isReverse" />
+          <div class="">
+            Reverse direction
+          </div>
+        </label>
+    
+        <label class="segment__mirrorSetting">
+          <input
+            type="checkbox"
+            formControlName="isMirror" />
+          <div class="">
+            Mirror effect
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <div class="segment__row">
       <app-color-slider
         [control]="segmentForm.get('brightness')!"
         [min]="1"
         [max]="255"
+        sliderClass="segment__brightness__input"
         class="">
       </app-color-slider>
     </div>
 
     <div class="segment__row">
-      <div
-        *ngFor="let numberInput of numberInputs"
-        class="segment__numberInput">
-        <div class="segment__numberInput__label">
-          {{ numberInput.label }}
+      <div class="segment__numberForm">
+        <div
+          *ngFor="let numberInput of numberInputs"
+          class="segment__numberInput">
+          <div class="segment__numberInput__label">
+            {{ numberInput.label }}
+          </div>
+          <input
+            type="number"
+            [formControlName]="numberInput.formControlName"
+            class="segment__numberInput__input" />
         </div>
-        <input
-          type="number"
-          [formControlName]="numberInput.formControlName"
-          class="segment__numberInput__input" />
-      </div>  
-    </div>
-    
-    <div class="segment__row">
-      <button class="segment__button">
-        Apply
-      </button>
-    </div>
-
-    <div class="segment__row">
-      <label class="segment__reverseSetting">
-        <input
-          type="checkbox"
-          formControlName="isReverse" />
-        <div class="">
-          Reverse direction
+        <div class="segment__numberButtonWrapper">
+          <button class="segment__numberButton">
+            Apply
+          </button>
         </div>
-      </label>
-  
-      <label class="segment__mirrorSetting">
-        <input
-          type="checkbox"
-          formControlName="isMirror" />
-        <div class="">
-          Mirror effect
-        </div>
-      </label>
+      </div>
     </div>
   </div>
 </div>

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { takeUntil } from 'rxjs';
-import { WledSegment } from '../../../shared/api-types';
+import { Segment } from '../../../shared/app-types';
 import { UnsubscribingComponent } from '../../../shared/unsubscribing.component';
 import { SegmentsService } from '../segments.service';
 
@@ -11,7 +11,7 @@ import { SegmentsService } from '../segments.service';
   styleUrls: ['./segment.component.scss'],
 })
 export class SegmentComponent extends UnsubscribingComponent implements OnInit {
-  @Input() segment!: WledSegment;
+  @Input() segment!: Segment;
   segmentForm!: FormGroup;
   isExpanded: boolean = false;
   isEditingName: boolean = false;
@@ -65,17 +65,17 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
 
   private createForm() {
     const form = this.formBuilder.group({
-      isSelected: this.formBuilder.control(false),
-      name: this.formBuilder.control(''),
-      isOn: this.formBuilder.control(false),
-      brightness: this.formBuilder.control(0),
-      start: this.formBuilder.control(0),
-      stop: this.formBuilder.control(0),
-      offset: this.formBuilder.control(0),
-      grouping: this.formBuilder.control(0),
-      spacing: this.formBuilder.control(0),
-      isReverse: this.formBuilder.control(false),
-      isMirror: this.formBuilder.control(false),
+      isSelected: this.formBuilder.control(this.segment.sel),
+      name: this.formBuilder.control(this.segment.name),
+      isOn: this.formBuilder.control(this.segment.on),
+      brightness: this.formBuilder.control(this.segment.bri),
+      start: this.formBuilder.control(this.segment.start),
+      stop: this.formBuilder.control(this.segment.stop),
+      offset: this.formBuilder.control(this.segment.of),
+      grouping: this.formBuilder.control(this.segment.grp),
+      spacing: this.formBuilder.control(this.segment.spc),
+      isReverse: this.formBuilder.control(this.segment.rev),
+      isMirror: this.formBuilder.control(this.segment.mi),
     });
 
     form.get('name')!.valueChanges

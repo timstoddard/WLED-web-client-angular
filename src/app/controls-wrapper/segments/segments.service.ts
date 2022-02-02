@@ -1,22 +1,38 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { WledApiResponse, WledSegment } from '../../shared/api-types';
+import { WledApiResponse } from '../../shared/api-types';
 import { ApiService } from '../../shared/api.service';
+import { Segment } from '../../shared/app-types';
 import { ControlsServicesModule } from '../controls-services.module';
 import { findRouteData, getInput } from '../utils';
 
 @Injectable({ providedIn: ControlsServicesModule })
 export class SegmentsService {
-  private segments!: WledSegment[]; // TODO is this needed?
-
   constructor (
     private apiService: ApiService,
     private route: ActivatedRoute) {}
 
   getSegments() {
-    const segment = (findRouteData('data', this.route) as WledApiResponse).state.seg;
-    // TODO just for testing
-    return [segment[0], segment[0], segment[0], segment[0]];
+    const segments = (findRouteData('data', this.route) as WledApiResponse).state.seg;
+    const formattedSegments = [];
+    let i = 0;
+    for (const segment of segments) {
+      // add a test name // TODO for later, what default?
+      const withName: Segment = Object.assign({}, segment, { name: `seg ${i++}` });
+      formattedSegments.push(withName);
+    }
+    return [
+      formattedSegments[0],
+      formattedSegments[0],
+      formattedSegments[0],
+      formattedSegments[0],
+      formattedSegments[0],
+      formattedSegments[0],
+      formattedSegments[0],
+      formattedSegments[0],
+      formattedSegments[0],
+      formattedSegments[0],
+    ];
   }
 
   selSegEx(segmentId: number, lastSegment: number) {

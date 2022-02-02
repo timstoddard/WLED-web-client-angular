@@ -6,32 +6,38 @@
   Maximum number of segments reached.
 </span>
 
-<app-segment
-  *ngFor="let segment of segments"
-  [segment]="segment">
-</app-segment>
+<div class="segments__topMenuBar">
+  <div>
+    Transition:
+    <input
+      type="number"
+      [formControl]="transitionTime"
+      min="0"
+      max="65.5"
+      step="0.1"
+      class="" />
+    s
+  </div>
 
-<!-- document.getElementById('rsbtn')!.style.display = (this.segCount > 1) ? 'inline' : 'none'; -->
-<div *ngIf="segments.length > 1">
   <button
+    (click)="addSegment()"
+    class="segments__addButton">
+    <!-- TODO or just a '+' sign? -->
+    New Segment
+  </button>
+
+  <button
+    *ngIf="segments.length > 1"
     (click)="resetSegments()"
-    ngClass="{
-      'segments__resetButton--confirm': '!confirmedResetSegments'
-    }"
+    ngClass="{ 'segments__resetButton--confirm': '!confirmedResetSegments' }"
     class="segments__resetButton">
     {{ getResetButtonText() }}
   </button>
 </div>
 
-<!-- TODO move to top? -->
-<div>
-  Transition:
-  <input
-    type="number"
-    [formControl]="transitionTime"
-    min="0"
-    max="65.5"
-    step="0.1"
-    class="" />
-  s
+<div class="segments__list">
+  <app-segment
+    *ngFor="let segment of segments"
+    [segment]="segment">
+  </app-segment>
 </div>

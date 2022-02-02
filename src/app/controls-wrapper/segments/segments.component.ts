@@ -89,6 +89,10 @@ export class SegmentsComponent extends UnsubscribingComponent implements OnInit 
     this.segmentsService.selSegEx(segmentId, this.lSeg);
   }
 
+  addSegment() {
+    // TODO
+  }
+
   deleteSegment(segmentId: number) {
     if (this.segCount < 2) {
       // showToast('You need to have multiple segments to delete one!');
@@ -212,8 +216,8 @@ export class SegmentsComponent extends UnsubscribingComponent implements OnInit 
 
   getResetButtonText() {
     return this.confirmedResetSegments
-      ? 'Confirm reset'
-      : 'Reset segments';
+      ? 'Confirm Reset'
+      : 'Reset Segments';
   }
 
   resetSegments() {
