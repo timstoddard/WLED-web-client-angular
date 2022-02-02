@@ -1,16 +1,15 @@
-$buttonDimension: 42px;
-
 .colorSlots {
   border: 2px solid black;
   border-radius: 6px;
-  margin-bottom: 10px;
-  max-width: 150px;
+  margin: 4px 0;
   padding: 8px;
 
   &__slot {
+    $buttonDimension: 32px;
     border: 1px solid black;
     border-radius: 6px;
-    margin: 3px;
+    font-size: 16px;
+    margin: 3px 6px;
     max-height: $buttonDimension;
     max-width: $buttonDimension;
     min-height: $buttonDimension;

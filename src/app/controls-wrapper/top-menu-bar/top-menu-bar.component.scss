@@ -61,6 +61,10 @@
     flex-direction: row;
     margin: 10px 5px;
 
+    @at-root ::ng-deep &__label {
+      margin: 0 !important; // override default styling
+    }
+
     @at-root ::ng-deep &__input {
       margin: -6px 0;
     }
