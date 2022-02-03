@@ -1,18 +1,18 @@
-<div id="wwrap">
-  <app-color-slider
-    [control]="whitenessSettings.get('whiteChannel')!"
-    [min]="0"
-    [max]="255"
-    label="White channel"
-    class="noslide">
-  </app-color-slider>
-</div>
-<div id="wbal">
-  <app-color-slider
-    [control]="whitenessSettings.get('whiteBalance')!"
-    [min]="0"
-    [max]="255"
-    label="White balance"
-    class="noslide">
-  </app-color-slider>
-</div>
+<app-color-slider
+  [control]="whitenessSettings.get('whiteChannel')!"
+  [min]="0"
+  [max]="255"
+  label="White channel"
+  [vertical]="true"
+  labelClass="whitenessSliders__slider__label"
+  class="noslide">
+</app-color-slider>
+<app-color-slider
+  [control]="whitenessSettings.get('whiteBalance')!"
+  [min]="0"
+  [max]="255"
+  label="White balance"
+  [vertical]="true"
+  labelClass="whitenessSliders__slider__label"
+  class="noslide">
+</app-color-slider>

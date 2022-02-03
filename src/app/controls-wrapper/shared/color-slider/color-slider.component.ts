@@ -13,6 +13,7 @@ export class ColorSliderComponent implements OnInit, AfterViewInit {
   @Input() label: string = '';
   @Input() labelClass: string = '';
   @Input() sliderClass: string = '';
+  // TODO change default styles based on vertical setting
   @Input() vertical: boolean = false;
   @Output() slideChange = new EventEmitter<number>();
   @Output() slideInput = new EventEmitter<number>();

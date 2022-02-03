@@ -1,5 +1,12 @@
 :host {
   display: flex;
-  flex-direction: column;
   justify-content: center;
+}
+
+.whitenessSliders {
+  &__slider {
+    ::ng-deep &__label {
+      text-align: center;
+    }
+  }
 }
