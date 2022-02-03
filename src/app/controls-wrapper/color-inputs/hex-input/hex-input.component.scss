@@ -1,0 +1,19 @@
+:host {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.hexInput {
+  display: flex;
+
+  &__input {
+    width: 80px;
+  }
+
+  &__showHide {
+    margin-top: 8px;
+    white-space: nowrap;
+  }
+}

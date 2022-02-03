@@ -1,10 +1,12 @@
-<div *ngIf="showHexInput">
+<div
+  *ngIf="showHexInput"
+  class="hexInput">
   <input
     type="text"
     [formControl]="getFormControl()"
     (keydown)="hexEnter($event)"
     placeholder="ffffff"
-    class="noslide"
+    class="hexInput__input noslide"
     autocomplete="off"
     maxlength="8" />
   <button
@@ -17,11 +19,12 @@
   </button>
 </div>
 
-<p
+<!-- TODO is this needed? -->
+<div
   (click)="toggleShowHex()"
-  class="labels">
-  <i class="icons sel-icon">
+  class="hexInput__showHide labels">
+  <i class="icons">
     &#xe2b3;
   </i>
   {{ showHexInput ? 'Hide' : 'Show' }} hex input
-</p>
+</div>
