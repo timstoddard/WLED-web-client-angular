@@ -17,7 +17,8 @@ import { HexInputComponent } from './color-inputs/hex-input/hex-input.component'
 // import { InfoComponent } from './info/info.component';
 // import { NodesComponent } from './nodes/nodes.component';
 import { PalettesComponent } from './palettes/palettes.component';
-// import { PresetsComponent } from './presets/presets.component';
+import { PresetFormComponent } from './presets/preset-form/preset-form.component';
+import { PresetsComponent } from './presets/presets.component';
 import { RgbSlidersComponent } from './color-inputs/rgb-sliders/rgb-sliders.component';
 // import { RoverComponent } from './rover/rover.component';
 import { SearchInputComponent } from './search-input/search-input.component';
@@ -48,7 +49,8 @@ const COMPONENTS = [
   // InfoComponent,
   // NodesComponent,
   PalettesComponent,
-  // PresetsComponent,
+  PresetFormComponent,
+  PresetsComponent,
   // RoverComponent,
   SearchInputComponent,
   SegmentComponent,

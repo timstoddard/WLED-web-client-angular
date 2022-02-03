@@ -1,0 +1,33 @@
+:host {
+  border: 1px solid black;
+  border-radius: 6px;
+  display: flex;
+  margin: 10px auto;
+  max-width: 600px;
+  padding: 6px;
+}
+
+.presetForm {
+  &__row {
+    align-items: center;
+    display: flex;
+    justify-content: space-evenly;
+    padding: 4px;
+  }
+
+  &__row1 {
+    //
+  }
+
+  &__row2 {
+    flex-direction: column;
+  }
+
+  &__row3 {
+    //
+  }
+
+  &__checkboxWrapper {
+    display: flex;
+  }
+}

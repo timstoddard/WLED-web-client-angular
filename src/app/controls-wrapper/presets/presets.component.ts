@@ -94,7 +94,7 @@ export class PresetsComponent implements OnInit {
       }
     }
 
-    document.getElementById('pcont')!.innerHTML = cn;
+    // document.getElementById('pcont')!.innerHTML = cn;
 
     if (this.pNum > 0) {
       if (this.pmtLS !== this.pmt && this.pmt !== 0) {
@@ -193,7 +193,7 @@ export class PresetsComponent implements OnInit {
 
       cn += `<p class="labels">All presets</p>`;
     }
-    document.getElementById('pql')!.innerHTML = cn;
+    // document.getElementById('pql')!.innerHTML = cn;
   }
 
   private isPlaylist(i: number) {
@@ -235,7 +235,7 @@ export class PresetsComponent implements OnInit {
         <button class="btn btn-p" onclick="cpBck()">Copy to clipboard</button>`;
     }
     cn += `</div>`;
-    document.getElementById('pcont')!.innerHTML = cn;
+    // document.getElementById('pcont')!.innerHTML = cn;
     if (hasBackup) {
       (document.getElementById('bck')! as HTMLTextAreaElement).value = backupString;
     }

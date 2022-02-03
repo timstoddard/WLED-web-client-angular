@@ -1,0 +1,67 @@
+<div
+  [formGroup]="newPreset"
+  class="">
+  <div>{{ newPreset.value | json }}</div>
+
+  <div class="presetForm__row presetForm__row1">
+    <label class="">
+      <div class="">
+        ID
+      </div>
+      <input
+        type="number"
+        formControlName="id">
+    </label>
+    <label class="">
+      <div class="">
+        Name
+      </div>
+      <input
+        type="text"
+        formControlName="name">
+    </label>
+    <label class="">
+      <div class="">
+        Quick Load label
+      </div>
+      <input
+        type="text"
+        formControlName="quickLoadLabel">
+    </label>
+  </div>
+
+  <div class="presetForm__row presetForm__row2">
+    <label class="presetForm__checkboxWrapper">
+      <input
+        type="checkbox"
+        formControlName="useCurrentState">
+      <div class="">
+        Use current state
+      </div>
+    </label>
+    <label class="presetForm__checkboxWrapper">
+      <input
+        type="checkbox"
+        formControlName="includeBrightness">
+      <div class="">
+        Include brightness
+      </div>
+    </label>
+    <label class="presetForm__checkboxWrapper">
+      <input
+        type="checkbox"
+        formControlName="saveSegmentBounds">
+      <div class="">
+        Save segment bounds
+      </div>
+    </label>
+  </div>
+
+  <div class="presetForm__row">
+    <button
+      (click)="createPreset()"
+      class="">
+      Create Preset
+    </button>
+  </div>
+</div>
