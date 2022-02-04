@@ -1,0 +1,26 @@
+:host {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0 auto;
+  padding: 8px;
+}
+
+.presetQuickLoad {
+  &__title {
+    margin: 4px;
+  }
+
+  &__buttons {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+  }
+
+  &__button {
+    font-size: 16px;
+    margin: 4px;
+    padding: 4px;
+  }
+}
