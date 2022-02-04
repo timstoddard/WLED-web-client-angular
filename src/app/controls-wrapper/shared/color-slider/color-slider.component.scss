@@ -4,8 +4,15 @@
   border-radius: 4px;
   display: flex;
   flex-direction: column;
+  justify-content: space-evenly;
   margin: 2px;
-  padding: 4px;
+  padding: 6px 8px;
+  text-align: center;
+}
+
+:host-context(.colorSlider__vertical) {
+  .colorSlider {
+  }
 }
 
 .colorSlider {
@@ -13,7 +20,9 @@
     align-items: center;
     display: flex;
     justify-content: center;
-    margin: 6px 0 0 0;
+
+    &__text {
+    }
 
     & ::ng-deep .icons {
       margin-right: 2px;

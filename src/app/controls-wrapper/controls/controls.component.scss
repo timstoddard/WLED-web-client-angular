@@ -3,7 +3,7 @@ $spacing: 6px;
 :host {
   display: grid;
   grid-template-columns: 50% 50%;
-  grid-template-rows: 40% 60%;
+  grid-template-rows: auto 1fr;
   padding: $spacing;
 
   > * {
@@ -16,7 +16,6 @@ $spacing: 6px;
   &__colorInputs {
     grid-area: 1 / 1 / 2 / 3;
     margin-bottom: $spacing;
-    overflow-y: auto;
   }
 
   &__palettes {

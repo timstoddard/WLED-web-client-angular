@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, HostBinding, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { AbstractControl, FormControl } from '@angular/forms';
 
 @Component({
@@ -7,32 +7,27 @@ import { AbstractControl, FormControl } from '@angular/forms';
   styleUrls: ['./color-slider.component.scss']
 })
 export class ColorSliderComponent implements OnInit, AfterViewInit {
+  @HostBinding('class.colorSlider__vertical') verticalClass!: boolean;
   @Input() control!: AbstractControl;
   @Input() min!: number;
   @Input() max!: number;
   @Input() label: string = '';
   @Input() labelClass: string = '';
   @Input() sliderClass: string = '';
-  // TODO change default styles based on vertical setting
-  @Input() vertical: boolean = false;
+  @Input() set vertical(isVertical: boolean) {
+    this.isVertical = isVertical;
+    this.verticalClass = this.isVertical;
+  }
   @Output() slideChange = new EventEmitter<number>();
   @Output() slideInput = new EventEmitter<number>();
   @ViewChild('sliderDisplay', { read: ElementRef }) sliderDisplay!: ElementRef;
+  isVertical: boolean = false;
 
   ngOnInit() {
   }
 
   ngAfterViewInit() {
-    if (typeof this.min !== 'number') {
-      console.error(
-        `Min missing from slider. See element:`,
-        this.sliderDisplay);
-    }
-    if (typeof this.max !== 'number') {
-      console.error(
-        `Max missing from slider. See element:`,
-        this.sliderDisplay);
-    }
+    this.checkMinMaxInputs();
   }
 
   getFormControl() {
@@ -70,5 +65,18 @@ export class ColorSliderComponent implements OnInit, AfterViewInit {
 
     const val = `linear-gradient(90deg, var(--bg) ${percent}%, var(--c-4) ${percent}%)`;
     this.sliderDisplay.nativeElement.style.background = val;
+  }
+
+  private checkMinMaxInputs() {
+    if (typeof this.min !== 'number') {
+      console.error(
+        `Min missing from slider. See element:`,
+        this.sliderDisplay);
+    }
+    if (typeof this.max !== 'number') {
+      console.error(
+        `Max missing from slider. See element:`,
+        this.sliderDisplay);
+    }
   }
 }

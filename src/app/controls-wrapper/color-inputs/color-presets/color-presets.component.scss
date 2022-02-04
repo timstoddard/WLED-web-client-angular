@@ -1,19 +1,22 @@
 $buttonDimension: 42px;
+$buttonMargin: 4px;
+$buttonsPerRow: 4;
 
 :host {
+  // add 20 for padding, add 2 as a division error buffer (1px per side)
+  $width: #{($buttonDimension + $buttonMargin * 2) * $buttonsPerRow + 20 + 2};
   align-items: center;
-  display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  max-width: 240px;
-  min-width: 240px;
+  max-width: $width;
+  min-width: $width;
 }
 
 .colorPresets {
   &__button {
     border: 1px solid black;
     border-radius: 6px;
-    margin: 3px;
+    margin: $buttonMargin;
     max-height: $buttonDimension;
     max-width: $buttonDimension;
     min-height: $buttonDimension;

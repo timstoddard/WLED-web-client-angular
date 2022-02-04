@@ -1,27 +1,22 @@
-<!-- <div id="picker" class="noslide"></div> -->
 <div
   #colorPicker
   class="colorPicker__wheel">
 </div>
 
-<div class="colorPicker__label colorPicker__label--hsv">
-  HSV value
-</div>
 <app-color-slider
   [control]="colorValues.get('hsvValue')!"
   [min]="0"
   [max]="255"
+  label="HSV value"
   [vertical]="true"
-  class="colorPicker__slider colorPicker__slider--hsv">
+  class="colorPicker__slider">
 </app-color-slider>
 
-<div class="colorPicker__label colorPicker__label--kelvin">
-  Kelvin
-</div>
 <app-color-slider
   [control]="colorValues.get('kelvin')!"
   [min]="1900"
   [max]="10091"
+  label="Kelvin"
   [vertical]="true"
-  class="colorPicker__slider colorPicker__slider--kelvin">
+  class="colorPicker__slider">
 </app-color-slider>

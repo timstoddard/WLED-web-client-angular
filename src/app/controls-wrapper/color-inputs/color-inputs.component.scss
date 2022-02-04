@@ -1,11 +1,32 @@
 :host {
   display: flex;
+  overflow-x: auto;
+  width: 100%;
 
   > * {
-    padding: 10px 20px;
+    display: flex;
+    padding: 10px;
   }
 
   > *:not(:last-child) {
     border-right: 1px solid rgb(220,220,220);
+  }
+
+  > :first-child {
+    margin-left: auto;
+  }
+
+  > :last-child {
+    margin-right: auto;
+  }
+
+  & ::ng-deep app-color-slider {
+    $margin: 6px;
+    margin-left: $margin;
+    margin-right: $margin;
+  }
+
+  & ::ng-deep .colorSlider__input {
+    min-height: 100px;
   }
 }

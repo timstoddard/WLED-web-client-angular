@@ -4,7 +4,9 @@
   class="colorSlider__label">
   <!-- show an icon if one is provided -->
   <ng-content></ng-content>
-  <span>{{ label }}</span>
+  <span class="colorSlider__label__text">
+    {{ label }}
+  </span>
 </div>
 
 <mat-slider
@@ -12,7 +14,7 @@
   [min]="min"
   [max]="max"
   step="1"
-  [vertical]="vertical"
+  [vertical]="isVertical"
   [ngClass]="sliderClass"
   class="colorSlider__input">
 </mat-slider>
