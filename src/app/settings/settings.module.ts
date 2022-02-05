@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { DmxSettingsComponent } from './dmx-settings/dmx-settings.component';
 import { LedSettingsComponent } from './led-settings/led-settings.component';
 import { SecuritySettingsComponent } from './security-settings/security-settings.component';
@@ -30,6 +30,7 @@ const COMPONENTS = [
   exports: COMPONENTS,
   imports: [
     CommonModule,
+    MatCheckboxModule,
     ReactiveFormsModule,
     SettingsRoutingModule,
   ]

@@ -1,5 +1,7 @@
 <form
   [formGroup]="wifiSettingsForm">
+  <div>{{ wifiSettingsForm.value | json }}</div>
+  
   <!-- TODO how to implement '?' button? make a new route for help? -->
   <div>
     <button type="button">?</button>
@@ -92,10 +94,14 @@
       formControlName="ssid"
       maxlength="32">
     <br>
-    Hide AP name:
-    <input
+    <mat-checkbox
+      formControlName="hideAPName"
+      class="">
+      Hide AP name
+    </mat-checkbox>
+    <!-- <input
       type="checkbox"
-      formControlName="hideAPName">
+      formControlName="hideAPName"> -->
     
     <br>
     <div>AP password</div>
@@ -138,10 +144,14 @@
 
   <div formGroupName="other">
     <h3>Other</h3>
-    Disable WiFi sleep:
-    <input
+    <mat-checkbox
+      formControlName="disableWifiSleep"
+      class="">
+      Disable WiFi sleep
+    </mat-checkbox>
+    <!-- <input
       type="checkbox"
-      formControlName="disableWifiSleep">
+      formControlName="disableWifiSleep"> -->
     <br>
     <i>
       Experimental: Can help with connectivity issues.

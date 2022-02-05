@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSliderModule } from '@angular/material/slider';
 import { BottomMenuBarComponent } from './bottom-menu-bar/bottom-menu-bar.component';
 import { ColorInputsComponent } from './color-inputs/color-inputs.component';
@@ -68,6 +69,7 @@ const COMPONENTS = [
   imports: [
     CommonModule,
     ControlsRoutingModule,
+    MatCheckboxModule,
     MatSliderModule,
     ControlsServicesModule,
     ReactiveFormsModule,

@@ -16,29 +16,6 @@
     justify-content: space-between;
   }
 
-  &__isSelected {
-    @include cursorPointerOnHover();
-    border: 1px solid rgb(128,128,128);
-    border-radius: 4px;
-    padding: 3px;
-
-    &:hover {
-      background: rgb(220,220,220);
-    }
-
-    &--checked {
-      background: rgb(0,255,0);
-
-      &:hover {
-        background: rgb(25,220,25);
-      }
-    }
-
-    &__input {
-      display: none;
-    }
-  }
-
   &__name {
     align-items: center;
     display: flex;
@@ -147,15 +124,6 @@
 
   &__numberButton {
     @include cursorPointerOnHover();
-  }
-
-  &__reverseSetting,
-  &__mirrorSetting {
-    @include cursorPointerOnHover();
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    margin: 6px;
   }
 
   &__checkboxes {

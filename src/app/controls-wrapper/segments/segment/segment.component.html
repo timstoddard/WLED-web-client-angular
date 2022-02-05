@@ -4,16 +4,11 @@
   <!-- <div>{{ segmentForm.value | json }}</div> -->
 
   <div class="segment__header">
-    <label
-      [ngClass]="{ 'segment__isSelected--checked': segmentForm.get('isSelected')!.value }"
-      class="segment__isSelected icons">
-      <input
-        type="checkbox"
-        formControlName="isSelected"
-        class="segment__isSelected__input">
-        &#xe390;
-    </label>
-    
+    <mat-checkbox
+      formControlName="isSelected"
+      class="">
+    </mat-checkbox>
+
     <div
       *ngIf="!isEditingName; else nameEditor"
       class="segment__name">
@@ -68,23 +63,17 @@
       </label>
 
       <div class="segment__checkboxes">
-        <label class="segment__reverseSetting">
-          <input
-            type="checkbox"
-            formControlName="isReverse" />
-          <div class="">
-            Reverse direction
-          </div>
-        </label>
+        <mat-checkbox
+          formControlName="isReverse"
+          class="">
+          Reverse direction
+        </mat-checkbox>
     
-        <label class="segment__mirrorSetting">
-          <input
-            type="checkbox"
-            formControlName="isMirror" />
-          <div class="">
-            Mirror effect
-          </div>
-        </label>
+        <mat-checkbox
+          formControlName="isMirror"
+          class="">
+          Mirror effect
+        </mat-checkbox>
       </div>
     </div>
 

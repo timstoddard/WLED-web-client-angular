@@ -31,30 +31,21 @@
   </div>
 
   <div class="presetForm__row presetForm__row2">
-    <label class="presetForm__checkboxWrapper">
-      <input
-        type="checkbox"
-        formControlName="useCurrentState">
-      <div class="">
-        Use current state
-      </div>
-    </label>
-    <label class="presetForm__checkboxWrapper">
-      <input
-        type="checkbox"
-        formControlName="includeBrightness">
-      <div class="">
-        Include brightness
-      </div>
-    </label>
-    <label class="presetForm__checkboxWrapper">
-      <input
-        type="checkbox"
-        formControlName="saveSegmentBounds">
-      <div class="">
-        Save segment bounds
-      </div>
-    </label>
+    <mat-checkbox
+      formControlName="useCurrentState"
+      class="">
+      Use current state
+    </mat-checkbox>
+    <mat-checkbox
+      formControlName="includeBrightness"
+      class="">
+      Include brightness
+    </mat-checkbox>
+    <mat-checkbox
+      formControlName="saveSegmentBounds"
+      class="">
+      Save segment bounds
+    </mat-checkbox>
   </div>
 
   <div class="presetForm__row">
