@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 interface SelectItem {
   name: string;
@@ -80,16 +80,17 @@ export class WifiSettingsComponent implements OnInit {
         password: this.formBuilder.control(''),
       }),
       IPAddress: this.formBuilder.group({
-        staticIP: this.formBuilder.control(''),
-        staticGateway: this.formBuilder.control(''),
-        staticSubnetMask: this.formBuilder.control(''),
+        // TODO add validators & text mask for IP inputs
+        staticIP: this.formBuilder.control('', Validators.required),
+        staticGateway: this.formBuilder.control('', Validators.required),
+        staticSubnetMask: this.formBuilder.control('', Validators.required),
         mDNS: this.formBuilder.control(''),
       }),
       wledAccessPoint: this.formBuilder.group({
         ssid: this.formBuilder.control(''),
         password: this.formBuilder.control(''),
         hideAPName: this.formBuilder.control(false),
-        wifiChannel: this.formBuilder.control(null),
+        wifiChannel: this.formBuilder.control(null, Validators.required),
         openAP: this.formBuilder.control(DEFAULT_OPEN_AP_OPTION),
       }),
       other: this.formBuilder.group({

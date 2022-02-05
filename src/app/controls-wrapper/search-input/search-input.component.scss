@@ -1,3 +1,5 @@
+@import 'src/app/shared/scss/mixins';
+
 :host {
   align-items: center;
   display: flex;
@@ -6,14 +8,11 @@
 }
 
 .searchInput {
-  &__input {
-    border: 1px solid rgb(210,210,210);
-    border-radius: 4px;
+  &__inputWrapper {
     flex-grow: 1;
-    grid-area: 1 / 1 / 2 / 2;
-    height: 26px;
-    min-width: 10px;
-    padding: 0 10px;
+  }
+
+  &__input {
   }
 
   &__searchIcon,
@@ -27,11 +26,6 @@
   }
 
   &__cancelIcon {
-    position: absolute;
-    right: 30px;
-
-    &:hover {
-      cursor: pointer;
-    }
+    @include cursorPointerOnHover();
   }
 }

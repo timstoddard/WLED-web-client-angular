@@ -7,8 +7,15 @@
 .hexInput {
   display: flex;
 
-  &__input {
-    width: 80px;
+  &__inputWrapper {
+    max-width: 120px;
+  }
+
+  &__buttonWrapper {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    padding: 4px;
   }
 
   &__showHide {

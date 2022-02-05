@@ -1,22 +1,27 @@
 <div
   *ngIf="showHexInput"
   class="hexInput">
-  <input
-    type="text"
-    [formControl]="getFormControl()"
-    (keydown)="hexEnter($event)"
-    placeholder="ffffff"
-    class="hexInput__input noslide"
-    autocomplete="off"
-    maxlength="8" />
-  <button
-    id="hexcnf"
-    class="xxs btn"
-    (click)="setHex()">
-    <i class="icons btna-icon">
-      &#xe390;
-    </i>
-  </button>
+  <mat-form-field
+    appearance="fill"
+    class="hexInput__inputWrapper">
+    <mat-label>Hex color</mat-label>
+    <input
+      matInput
+      [formControl]="getFormControl()"
+      (keydown)="hexEnter($event)"
+      placeholder="ffffff"
+      maxlength="8"
+      autocomplete="off">
+  </mat-form-field>
+  <div class="hexInput__buttonWrapper">
+    <button
+      (click)="setHex()"
+      class="">
+      <i class="icons">
+        &#xe390;
+      </i>
+    </button>
+  </div>
 </div>
 
 <!-- TODO is this needed? -->

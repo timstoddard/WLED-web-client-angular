@@ -23,13 +23,18 @@
     </div>
     <ng-template #nameEditor>
       <div class="segment__name">
-        <input
-          type="text"
-          formControlName="name"
-          placeholder="Enter name..."
-          maxlength=32
-          autocomplete="off"
-          class="segment__name__input" />
+        <mat-form-field
+          appearance="fill"
+          class="">
+          <mat-label>Segment Name</mat-label>
+          <input
+            matInput
+            formControlName="name"
+            placeholder="Name"
+            maxlength=32
+            autocomplete="off"
+            class="">
+        </mat-form-field>
         <i
           (click)="toggleEditName()"
           class="icons segment__name__icon">
