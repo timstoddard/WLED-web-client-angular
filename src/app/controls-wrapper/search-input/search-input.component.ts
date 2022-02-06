@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { takeUntil } from 'rxjs';
 import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
@@ -9,6 +9,7 @@ import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
   styleUrls: ['./search-input.component.scss']
 })
 export class SearchInputComponent extends UnsubscribingComponent implements OnInit {
+  @Input() label!: string;
   @Output() searchValueChanges = new EventEmitter();
   @ViewChild('searchInput', { read: ElementRef }) searchInputElement!: ElementRef<HTMLInputElement>;
   searchText!: FormControl;

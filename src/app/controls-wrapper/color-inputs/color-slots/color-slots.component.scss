@@ -1,6 +1,10 @@
 .colorSlots {
+  align-items: center;
   border: 2px solid black;
   border-radius: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   margin: 4px 0;
   padding: 8px;
 

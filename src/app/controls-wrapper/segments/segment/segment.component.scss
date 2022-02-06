@@ -2,18 +2,33 @@
 
 @import 'src/app/shared/scss/mixins';
 
+:host {
+  & mat-form-field {
+    margin-bottom: -20px;
+    min-width: 80px;
+  }
+
+  & ::ng-deep .mat-form-field-flex {
+    padding-top: 4px !important;
+  }
+}
+
 .segment {
   border: 1px solid rgb(128,128,128);
   border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   margin: 10px;
   max-width: 300px;
   min-width: 300px;
-  padding: 5px;
+  padding: 6px 12px;
 
   &__header {
     align-items: center;
     display: flex;
     justify-content: space-between;
+    width: 100%;
   }
 
   &__name {
@@ -24,6 +39,7 @@
       font-size: 18px;
       font-weight: bold;
       text-transform: uppercase;
+      padding: 16px 0;
     }
 
     &__icon {
@@ -49,14 +65,11 @@
 
   &__row {
     align-items: center;
+    border-top: 1px solid rgb(200,200,200);
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
     padding: 10px;
-
-    &:not(:last-of-type) {
-      border-bottom: 1px solid rgb(200,200,200);
-    }
   }
 
   &__powerButton {

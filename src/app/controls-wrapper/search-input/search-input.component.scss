@@ -3,8 +3,18 @@
 :host {
   align-items: center;
   display: flex;
-  padding: 6px 10px;
+  min-width: 100px;
+  padding: 6px;
   position: relative;
+
+  & mat-form-field {
+    margin-bottom: -20px;
+    min-width: 100px;
+  }
+
+  & ::ng-deep .mat-form-field-flex {
+    padding-top: 6px !important;
+  }
 }
 
 .searchInput {
@@ -18,7 +28,7 @@
   &__searchIcon,
   &__cancelIcon {
     color: rgb(210,210,210);
-    font-size: 20px;
+    font-size: 30px;
   }
 
   &__searchIcon {
