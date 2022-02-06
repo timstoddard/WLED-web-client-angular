@@ -20,7 +20,7 @@ export class SegmentsComponent extends UnsubscribingComponent implements OnInit 
   @Input() cfg!: AppConfig; // TODO get from service/reducer
   transitionTime!: FormControl;
   segments!: WledSegment[];
-  noNewSegs: boolean = false;
+  noNewSegments: boolean = false;
   private segCount!: number;
   private lowestUnused!: number;
   private lSeg!: number;
@@ -44,11 +44,12 @@ export class SegmentsComponent extends UnsubscribingComponent implements OnInit 
     this.segCount = 0;
     this.lowestUnused = 0;
     this.lSeg = 0; // probably "last segment"? 
-    this.noNewSegs = false;
+    this.noNewSegments = false;
     this.powered = [true];
     this.maxSeg = 0;
 
-    if (this.segments && this.segments.length > 0) {
+    // TODO what do this logic do?
+    /* if (this.segments && this.segments.length > 0) {
       for (let y = 0; y < this.segments.length; y++) {
         this.segCount++;
   
@@ -63,13 +64,13 @@ export class SegmentsComponent extends UnsubscribingComponent implements OnInit 
           this.lSeg = i;
         }
       }
-    }
+    }*/
 
     if (this.lowestUnused >= this.maxSeg) {
-      // this.noNewSegs = true;
-    } else if (this.noNewSegs) {
+      // this.noNewSegments = true;
+    } else if (this.noNewSegments) {
       // this.resetUtil();
-      // this.noNewSegs = false;
+      // this.noNewSegments = false;
     }
     for (let i = 0; i <= this.lSeg; i++) {
       // this.updateLen(i);

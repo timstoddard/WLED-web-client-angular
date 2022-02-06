@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { WledApiResponse } from '../../shared/api-types';
 import { ApiService } from '../../shared/api.service';
 import { Segment } from '../../shared/app-types';
+import { LocalStorageService } from '../../shared/local-storage.service';
 import { ControlsServicesModule } from '../controls-services.module';
 import { findRouteData, getInput } from '../utils';
 
@@ -10,29 +11,42 @@ import { findRouteData, getInput } from '../utils';
 export class SegmentsService {
   constructor (
     private apiService: ApiService,
+    private localStorageService: LocalStorageService,
     private route: ActivatedRoute) {}
 
   getSegments() {
     const segments = (findRouteData('data', this.route) as WledApiResponse).state.seg;
     const formattedSegments = [];
     let i = 0;
-    for (const segment of segments) {
-      // add a test name // TODO for later, what default?
-      const withName: Segment = Object.assign({}, segment, { name: `seg ${i++}` });
-      formattedSegments.push(withName);
+    for (let i = 0; i < segments.length; i++) {
+      for (let j = 0; j < 10; j++) {
+        const additionalFields = { name: this.loadSegmentName(j) };
+        const withName: Segment = Object.assign({}, segments[i], additionalFields);
+        formattedSegments.push(withName);
+      }
     }
-    return [
-      formattedSegments[0],
-      formattedSegments[0],
-      formattedSegments[0],
-      formattedSegments[0],
-      formattedSegments[0],
-      formattedSegments[0],
-      formattedSegments[0],
-      formattedSegments[0],
-      formattedSegments[0],
-      formattedSegments[0],
-    ];
+    return formattedSegments;
+  }
+
+  setSegmentName(index: number, name: string) {
+    const key = `segment-${index}-name`;
+    this.localStorageService.set(key, name);
+    // TODO also need to update UI
+  }
+
+  private loadSegmentName(index: number) {
+    let segmentName = `Segment ${index + 1}`; // default name
+    try {
+      const key = `segment-${index}-name`;
+      const storedSegmentName = this.localStorageService.get(key) as string;
+      if (storedSegmentName !== null) {
+        segmentName = storedSegmentName;
+      }
+    } catch (e) {
+      console.warn(`Segment name could not be loaded (index ${index})`);
+      console.error(e);
+    }
+    return segmentName;
   }
 
   selSegEx(segmentId: number, lastSegment: number) {

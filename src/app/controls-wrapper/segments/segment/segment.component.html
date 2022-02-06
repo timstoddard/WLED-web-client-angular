@@ -13,7 +13,7 @@
       *ngIf="!isEditingName; else nameEditor"
       class="segment__name">
       <span class="segment__name__text">
-        {{ getSegmentName() }}
+        {{ segment?.name }}
       </span>
       <i
         (click)="toggleEditName()"
@@ -94,17 +94,17 @@
 
     <div class="segment__row">
       <div class="segment__numberForm">
-        <div
+        <mat-form-field
           *ngFor="let numberInput of numberInputs"
-          class="segment__numberInput">
-          <div class="segment__numberInput__label">
-            {{ numberInput.label }}
-          </div>
+          appearance="fill"
+          class="segment__numberFormField">
+          <mat-label>{{ numberInput.label }}</mat-label>
           <input
+            matInput
             type="number"
             [formControlName]="numberInput.formControlName"
-            class="segment__numberInput__input" />
-        </div>
+            class="segment__numberInput__input">
+        </mat-form-field>
         <div class="segment__numberButtonWrapper">
           <button class="segment__numberButton">
             Apply

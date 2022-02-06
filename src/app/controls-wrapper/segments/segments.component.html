@@ -1,23 +1,25 @@
 <!-- TODO show "Loading..." on init -->
 
 <span
-  *ngIf="noNewSegs"
+  *ngIf="noNewSegments"
   class="h">
   Maximum number of segments reached.
 </span>
 
 <div class="segments__topMenuBar">
-  <div>
-    Transition:
+  <mat-form-field
+    appearance="fill"
+    class="segments__transitionInput">
+    <mat-label>Transition (s)</mat-label>
     <input
+      matInput
       type="number"
       [formControl]="transitionTime"
       min="0"
       max="65.5"
       step="0.1"
-      class="" />
-    s
-  </div>
+      class="">
+  </mat-form-field>
 
   <button
     (click)="addSegment()"
@@ -37,7 +39,8 @@
 
 <div class="segments__list">
   <app-segment
-    *ngFor="let segment of segments"
-    [segment]="segment">
+    *ngFor="let segment of segments; let i = index;"
+    [segment]="segment"
+    [index]="i">
   </app-segment>
 </div>

@@ -12,6 +12,7 @@ import { SegmentsService } from '../segments.service';
 })
 export class SegmentComponent extends UnsubscribingComponent implements OnInit {
   @Input() segment!: Segment;
+  @Input() index!: number;
   segmentForm!: FormGroup;
   isExpanded: boolean = false;
   isEditingName: boolean = false;
@@ -49,14 +50,12 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
     this.segmentForm = this.createForm();
   }
 
-  getSegmentName() {
-    // TODO get name
-    // return this.segment.n ? this.segment.n : 'Segment ' + i;
-    return 'seg_name';
-  }
-
   toggleEditName() {
     this.isEditingName = !this.isEditingName;
+    if (!this.isEditingName) {
+      const segmentName = this.segmentForm.get('name')!.value as string;
+      this.segmentsService.setSegmentName(this.index, segmentName);
+    }
   }
 
   toggleExpanded() {
@@ -77,10 +76,6 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
       isReverse: this.formBuilder.control(this.segment.rev),
       isMirror: this.formBuilder.control(this.segment.mi),
     });
-
-    form.get('name')!.valueChanges
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((name: string) => this.setName(name));
 
     form.get('isSelected')!.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
@@ -116,17 +111,13 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
 
     form.get('isReverse')!.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((reverse: boolean) => this.setReverse(reverse));
+      .subscribe((reverse: boolean) => this.toggleReverse(reverse));
 
     form.get('isMirror')!.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((mirror: boolean) => this.setMirror(mirror));
+      .subscribe((mirror: boolean) => this.toggleMirror(mirror));
 
     return form;
-  }
-
-  private setName(name: string) {
-    // TODO
   }
 
   private setSelected(selected: boolean) {
@@ -145,44 +136,6 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
     // TODO
   }
 
-  private setStart(start: number) {
-    // TODO
-  }
-
-  private setStop(stop: number) {
-    // TODO
-  }
-
-  private setOffset(offset: number) {
-    // TODO
-  }
-
-  private setGrouping(grouping: number) {
-    // TODO
-  }
-
-  private setSpacing(spacing: number) {
-    // TODO
-  }
-
-  private setReverse(reverse: boolean) {
-    // TODO
-  }
-
-  private setMirror(mirror: boolean) {
-    // TODO
-  }
-
-
-
-
-
-
-
-
-
-
-
   private togglePower() {
     //
   }
@@ -199,11 +152,11 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
     //
   }
 
-  private toggleReverse() {
-    //
+  private toggleReverse(reverse: boolean) {
+    // TODO
   }
 
-  private toggleMirror() {
-    //
+  private toggleMirror(mirror: boolean) {
+    // TODO
   }
 }
