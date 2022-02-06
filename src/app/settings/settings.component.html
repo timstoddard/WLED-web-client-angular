@@ -1,9 +1,16 @@
-<nav>
-  <a *ngFor="let link of links"
-    [routerLink]="['./', link.path]"
-    routerLinkActive="button--active">
-    {{ link.component }}
-  </a>
+<nav class="settings__nav">
+  <ul class="settings__links">
+    <li
+      *ngFor="let link of links"
+      class="settings__linkWrapper">
+      <a
+        [routerLink]="['./', link.path]"
+        routerLinkActive="settings__link--active"
+        class="settings__link">
+        {{ link.component }}
+      </a>
+    </li>
+  </ul>
 </nav>
 
 <router-outlet #routerOutlet="outlet"></router-outlet>
