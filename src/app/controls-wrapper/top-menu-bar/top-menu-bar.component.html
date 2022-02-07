@@ -1,38 +1,73 @@
-<div class="topMenuBar__buttons">
-  <div
-    *ngFor="let button of getButtons()"
-    class="topMenuBar__buttonWrapper">
-    <button
-      (click)="button.onClick()"
-      [ngClass]="{ 'topMenuBar__button--enabled': button.enabled }"
-      class="topMenuBar__button">
-      <i
-        [innerHTML]="button.icon"
-        class="topMenuBar__button__icon icons">
-      </i>
-    </button>
-    <div class="topMenuBar__button__text">
-      {{ button.name }}
+<div
+  [ngClass]="{ 'topMenuBar__row--showingBrightnessSlider': showBrightnessSlider }"
+  class="topMenuBar__row">
+  <div class="topMenuBar__buttons">
+    <div
+      *ngFor="let button of getButtons()"
+      class="topMenuBar__buttonWrapper">
+      <button
+        (click)="button.onClick()"
+        [ngClass]="{ 'topMenuBar__button--enabled': button.enabled }"
+        class="topMenuBar__button">
+        <i
+          [innerHTML]="button.icon"
+          class="topMenuBar__button__icon icons">
+        </i>
+      </button>
+      <div class="topMenuBar__button__text">
+        {{ button.name }}
+      </div>
     </div>
+  
+    <div
+      *ngIf="!showBrightnessSlider"
+      class="topMenuBar__buttonWrapper">
+      <button
+        (click)="toggleBrightnessOpen()"
+        cdkOverlayOrigin
+        #trigger="cdkOverlayOrigin"
+        class="topMenuBar__button">
+        <i
+          [innerHTML]="'&#xe2a6;'"
+          class="topMenuBar__button__icon icons">
+        </i>
+      </button>
+      <div class="topMenuBar__button__text">
+        Brightness
+      </div>
+      <ng-template
+        cdkConnectedOverlay
+        [cdkConnectedOverlayOrigin]="trigger"
+        [cdkConnectedOverlayOpen]="isBrightnessOpen"
+        [cdkConnectedOverlayPositions]="getOverlayPositions()">
+        <ng-container *ngTemplateOutlet="brightnessSlider"></ng-container>
+      </ng-template>
+    </div>
+  </div>
+  
+  <div *ngIf="showBrightnessSlider">
+    <ng-container *ngTemplateOutlet="brightnessSlider"></ng-container>
   </div>
 </div>
 
-<!-- TODO move brightness slider somewhere else? -->
-<app-color-slider
-  [control]="brightnessControl"
-  [min]="1"
-  [max]="255"
-  label="Brightness"
-  labelClass="topMenuBar__slider__label"
-  sliderClass="topMenuBar__slider__input"
-  class="topMenuBar__slider">
-  <!-- TODO should brightness slider icon toggle light/dark mode? -->
-  <i
-    class="icons slider-icon"
-    (click)="toggleTheme()">
-    &#xe2a6;
-  </i>
-</app-color-slider>
+<ng-template #brightnessSlider>
+  <app-color-slider
+    [control]="brightnessControl"
+    [min]="1"
+    [max]="255"
+    label="Brightness"
+    labelClass="topMenuBar__slider__label"
+    sliderClass="topMenuBar__slider__input"
+    [ngClass]="{ 'topMenuBar__slider--inOverlay': !showBrightnessSlider }"
+    class="topMenuBar__slider">
+    <!-- TODO should brightness slider icon toggle light/dark mode? -->
+    <i
+      class="icons slider-icon"
+      (click)="toggleTheme()">
+      &#xe2a6;
+    </i>
+  </app-color-slider>
+</ng-template>
 
 <!-- TODO make this a canvas (?) -->
 <!-- TODO wire up isLiveViewActive to ngIf -->

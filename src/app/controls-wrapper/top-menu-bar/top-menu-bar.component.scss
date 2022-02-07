@@ -7,22 +7,35 @@
 }
 
 .topMenuBar {
+  &__row {
+    &--showingBrightnessSlider {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 8px;
+      width: 100%;
+
+      & .topMenuBar__buttons {
+        // override default styles
+        margin-left: 0;
+        margin-right: 0;
+      }
+    }
+  }
+
   &__buttons {
     align-items: center;
     display: flex;
     justify-content: space-between;
-    margin: 5px;
-    margin-right: auto;
-    max-width: 340px;
-    min-width: 300px;
-    width: 90vw;
+    margin: 5px auto;
   }
 
   &__buttonWrapper {
+    $buttonWidth: 70px;
     align-items: center;
     display: flex;
     flex-direction: column;
-    width: 20%;
+    max-width: $buttonWidth;
+    min-width: $buttonWidth;
   }
 
   &__button {
@@ -58,8 +71,13 @@
   }
 
   &__slider {
+    background: white;
     flex-direction: row;
     margin: 10px 5px;
+
+    &--inOverlay {
+      box-shadow: 2px 2px 5px 1px rgba(0,0,0,0.6);
+    }
 
     @at-root ::ng-deep &__label {
       margin: 0 !important; // override default styling

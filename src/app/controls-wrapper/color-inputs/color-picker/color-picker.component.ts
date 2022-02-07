@@ -4,6 +4,8 @@ import iro from '@jaames/iro';
 import { UnsubscribingComponent } from '../../../shared/unsubscribing.component';
 import { ColorService } from '../../color.service';
 
+const COLOR_PICKER_HEIGHT_SCALAR = 0.9; // TODO tune this value
+
 @Component({
   selector: 'app-color-picker',
   templateUrl: './color-picker.component.html',
@@ -32,7 +34,6 @@ export class ColorPickerComponent extends UnsubscribingComponent implements OnIn
   private getColorPickerWidth() {
     const colorPickerNativeElement = this.colorPickerElement.nativeElement as HTMLElement;
     const containerHeight = colorPickerNativeElement.parentElement!.clientHeight;
-    const COLOR_PICKER_HEIGHT_SCALAR = 0.9; // TODO lambda tuning
     return containerHeight * COLOR_PICKER_HEIGHT_SCALAR;
   }
 

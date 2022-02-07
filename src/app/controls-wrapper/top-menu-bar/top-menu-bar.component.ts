@@ -1,3 +1,4 @@
+import { OriginConnectionPosition, OverlayConnectionPosition, ConnectionPositionPair } from '@angular/cdk/overlay';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -7,19 +8,25 @@ import { AppConfig } from '../../shared/app-config';
 import { LocalStorageService } from '../../shared/local-storage.service';
 import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
 import { generateApiUrl } from '../json.service';
-import { genericPostResponse, MenuBarButton, setCssColor, updateTablinks } from '../utils';
+import { genericPostResponse, MenuBarButton, setCssColor } from '../utils';
 import { TopMenuBarService } from './top-menu-bar.service';
 
 const DEFAULT_BRIGHTNESS = 128;
+const MIN_SHOW_BRIGHTNESS_SLIDER_THRESHOLD_PX = 600;
+const MIN_SHOW_PC_MODE_BUTTON_THRESHOLD_PX = 1200; // TODO might need to be bigger
 
 @Component({
   selector: 'app-top-menu-bar',
   templateUrl: './top-menu-bar.component.html',
-  styleUrls: ['./top-menu-bar.component.scss']
+  styleUrls: ['./top-menu-bar.component.scss'],
+  host: { '(window:resize)': 'onResize($event)' },
 })
 export class TopMenuBarComponent extends UnsubscribingComponent implements OnInit {
   @Input() cfg!: AppConfig; // TODO get from service/reducer
   brightnessControl!: FormControl;
+  isBrightnessOpen: boolean = false;
+  showBrightnessSlider: boolean = false;
+  showPcModeButton: boolean = false;
 
   // button controls
   private isOn = false;
@@ -54,6 +61,7 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
 
   ngOnInit() {
     this.brightnessControl = this.createFormControl();
+    this.onResize();
 
     // TODO evaluate if needed
     /* this.size();
@@ -75,7 +83,7 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
   }
 
   getButtons(): MenuBarButton[] {
-    return [
+    const buttons = [
       {
         name: 'Power',
         onClick: () => this.togglePower(),
@@ -100,12 +108,6 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
         icon: '&#xe410;',
         enabled: this.isLiveViewActive,
       },
-      {
-        name: 'PC Mode', // TODO change to toggle popup with brightness slider in it
-        onClick: () => this.togglePcMode(true),
-        icon: '&#xe23d;',
-        enabled: this.isPcMode,
-      },
       // TODO combine these & move to bottom menu
       /*{
         name: 'Info',
@@ -118,6 +120,49 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
         icon: '&#xe22d;',
       },*/
     ];
+    if (this.showPcModeButton) {
+      buttons.push({
+        name: 'PC Mode',
+        onClick: () => this.togglePcMode(true),
+        icon: '&#xe23d;',
+        enabled: this.isPcMode,
+      });
+    }
+    return buttons;
+  }
+
+  onResize() {
+    const appWidth = document.documentElement.clientWidth;
+    this.showBrightnessSlider = appWidth >= MIN_SHOW_BRIGHTNESS_SLIDER_THRESHOLD_PX;
+    this.showPcModeButton = appWidth >= MIN_SHOW_PC_MODE_BUTTON_THRESHOLD_PX;
+  }
+
+  toggleBrightnessOpen() {
+    this.isBrightnessOpen = !this.isBrightnessOpen;
+  }
+
+  getOverlayPositions() {
+    const OFFSET_X_PX = 0;
+    const OFFSET_Y_PX = 12;
+    const originCentered: OriginConnectionPosition = {
+      originX: 'center',
+      originY: 'bottom',
+    };
+    const overlayCentered: OverlayConnectionPosition = {
+      overlayX: 'center',
+      overlayY: 'top',
+    };
+    const centeredPosition = new ConnectionPositionPair(originCentered, overlayCentered, OFFSET_X_PX, OFFSET_Y_PX);
+    const originRightSide: OriginConnectionPosition = {
+      originX: 'end',
+      originY: 'bottom',
+    };
+    const overlayRightSide: OverlayConnectionPosition = {
+      overlayX: 'end',
+      overlayY: 'top',
+    };
+    const rightSidePosition = new ConnectionPositionPair(originRightSide, overlayRightSide, OFFSET_X_PX, OFFSET_Y_PX);
+    return [centeredPosition, rightSidePosition];
   }
 
   private togglePower() {
