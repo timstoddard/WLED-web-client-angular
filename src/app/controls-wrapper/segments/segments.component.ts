@@ -1,13 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { takeUntil } from 'rxjs';
-import { WledSegment } from '../../shared/api-types';
 import { AppConfig } from '../../shared/app-config';
+import { Segment } from '../../shared/app-types';
 import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
-import { getInput } from '../utils';
+import { genericPostResponse, getInput } from '../utils';
 import { SegmentsService } from './segments.service';
 
-const DEFAULT_TRANSITION_TIME = 0.7; // seconds
+const DEFAULT_TRANSITION_DURATION = 0.7; // seconds
 
 @Component({
   selector: 'app-segments',
@@ -19,13 +19,11 @@ const DEFAULT_TRANSITION_TIME = 0.7; // seconds
 export class SegmentsComponent extends UnsubscribingComponent implements OnInit {
   @Input() cfg!: AppConfig; // TODO get from service/reducer
   transitionTime!: FormControl;
-  segments!: WledSegment[];
+  segments: Segment[] = [];
   noNewSegments: boolean = false;
-  private segCount!: number;
   private lowestUnused!: number;
   private lSeg!: number;
   private maxSeg!: number;
-  private powered!: boolean[]; // TODO this should be part of segments input array
   private confirmedResetSegments = false;
   private ledCount = 0;
 
@@ -41,18 +39,14 @@ export class SegmentsComponent extends UnsubscribingComponent implements OnInit 
 
     this.transitionTime = this.createFormControl();
 
-    this.segCount = 0;
     this.lowestUnused = 0;
     this.lSeg = 0; // probably "last segment"? 
     this.noNewSegments = false;
-    this.powered = [true];
     this.maxSeg = 0;
 
     // TODO what do this logic do?
     /* if (this.segments && this.segments.length > 0) {
       for (let y = 0; y < this.segments.length; y++) {
-        this.segCount++;
-  
         const inst = this.segments[y];
         // let i = parseInt(inst.id, 10);
         let i = y;
@@ -75,19 +69,10 @@ export class SegmentsComponent extends UnsubscribingComponent implements OnInit 
     for (let i = 0; i <= this.lSeg; i++) {
       // this.updateLen(i);
       // updateSliderTrail(getInput(`seg${i}bri`));
-      // if (this.segCount < 2) {
+      // if (this.segments.length < 2) {
       //   document.getElementById(`segd${this.lSeg}`)!.style.display = 'none';
       // }
     }
-  }
-
-  updateSegmentSelected(segmentId: number) {
-    const isSelected = getInput(`seg${segmentId}sel`).checked;
-    this.segmentsService.selSeg(segmentId, isSelected);
-  }
-
-  selectSegmentAndUpdateAllSegments(segmentId: number) {
-    this.segmentsService.selSegEx(segmentId, this.lSeg);
   }
 
   addSegment() {
@@ -95,37 +80,33 @@ export class SegmentsComponent extends UnsubscribingComponent implements OnInit 
   }
 
   deleteSegment(segmentId: number) {
-    if (this.segCount < 2) {
-      // showToast('You need to have multiple segments to delete one!');
-      return;
-    }
+    this.segmentsService.deleteSegment(segmentId);
 
-    // TODO update expanded status
+    // TODO update expanded status of deleted segment
     // this.expanded[segmentId] = false;
-
-    this.segCount--;
-    this.segmentsService.delSeg(segmentId);
   }
 
-  private setTransitionTime(seconds: number) {
-    // TODO call api
+  getExpanded(segmentId: number) {
+    return this.segmentsService.getSegmentExpanded(segmentId);
+  }
+
+  private setTransitionDuration(seconds: number) {
+    this.segmentsService.setTransitionDuration(seconds)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(genericPostResponse);
   }
 
   private createFormControl() {
-    const control = this.formBuilder.control(DEFAULT_TRANSITION_TIME);
+    const control = this.formBuilder.control(DEFAULT_TRANSITION_DURATION);
 
     control.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((seconds: number) => this.setTransitionTime(seconds));
-
-    // trigger setting the name for the selected name
-    // setTimeout(() => {
-    //   control.setValue(DEFAULT_TRANSITION_VALUE);
-    // });
+      .subscribe((seconds: number) => this.setTransitionDuration(seconds));
 
     return control;
   }
 
+  // TODO handle adding a segment
   private makeSeg() {
     let ns = 0;
     if (this.lowestUnused > 0) {
@@ -163,6 +144,7 @@ export class SegmentsComponent extends UnsubscribingComponent implements OnInit 
     // document.getElementById('segutil').innerHTML = cn;
   }
 
+  // TODO reset add button after add segment form is submitted
   private resetUtil() {
     const cn = `
       <button
@@ -175,14 +157,6 @@ export class SegmentsComponent extends UnsubscribingComponent implements OnInit 
       </button>
       <br>`;
     // document.getElementById('segutil').innerHTML = cn;
-  }
-
-  tglSegn(s: number) {
-    const segment = document.getElementById(`seg${s}t`)!;
-    document.getElementById(`seg${s}t`)!.style.display =
-      window.getComputedStyle(segment).display === 'none'
-        ? 'inline'
-        : 'none';
   }
 
   // updates segment length upon input of segment values
@@ -228,23 +202,7 @@ export class SegmentsComponent extends UnsubscribingComponent implements OnInit 
     } else {
       // bt.style.color = '#fff';
       this.confirmedResetSegments = false;
-
-      // TODO api request
-      const obj = {
-        seg: [{
-          start: 0,
-          stop: this.ledCount,
-          sel: true,
-        }],
-      };
-      for (let i = 1; i <= this.lSeg; i++) {
-        // TODO fix type issue
-        obj.seg.push({ stop: 0 } as any);
-      }
-      // this.requestJson(obj);
+      this.segmentsService.resetSegments();
     }
   }
 }
-
-// TODO remove after using app-color-slider in template (only here to fix type error above)
-const updateSliderTrail = (slider: any) => {};

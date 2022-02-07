@@ -39,8 +39,8 @@
 
 <div class="segments__list">
   <app-segment
-    *ngFor="let segment of segments; let i = index;"
+    *ngFor="let segment of segments"
     [segment]="segment"
-    [index]="i">
+    [isExpanded]="getExpanded(segment.id)">
   </app-segment>
 </div>

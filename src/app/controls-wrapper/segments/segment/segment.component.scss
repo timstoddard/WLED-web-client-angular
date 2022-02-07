@@ -71,8 +71,7 @@
     padding: 10px;
   }
 
-  &__powerButton {
-    @include cursorPointerOnHover();
+  &__button {
     $buttonDimension: 36px;
     align-items: center;
     border: 1px solid rgb(128,128,128);
@@ -86,6 +85,16 @@
       background: rgb(220,220,220);
     }
 
+    &:not([disabled]) {
+      @include cursorPointerOnHover();
+    }
+
+    &__icon {
+      font-size: 25px;
+    }
+  }
+
+  &__powerButton {
     &--enabled {
       background: rgb(0,255,0);
 
@@ -97,10 +106,10 @@
     &__input {
       display: none;
     }
-    
-    &__icon {
-      font-size: 25px;
-    }
+  }
+
+  &__deleteButton {
+    background: 0;
   }
 
   &__numberForm {

@@ -2,10 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { PalettesData } from '../controls-wrapper/palettes/palettes.service';
 import { WledApiResponse, WledInfo, WledState } from './api-types';
-
-export interface PostResponse {
-  success: boolean;
-}
+import { Segment } from './app-types';
 
 const ALL_JSON_PATH = 'json';
 const STATES_PATH = 'json/state';
@@ -64,73 +61,214 @@ export class ApiService {
 
   /** Sets current palette by id. */
   setPalette(paletteId: number) {
-    const body = {
+    const body = this.createBody({
       seg: { pal: paletteId },
-    };
-    return this.http.post<PostResponse>(
+    });
+    return this.http.post<WledApiResponse>(
       this.createApiUrl('json/si'), body);
   }
 
   /** Sets current effect by id. */
   setEffect(effectId: number) {
-    const body = {
+    const body = this.createBody({
       seg: { fx: effectId },
-    };
-    return this.http.post<PostResponse>(
+    });
+    return this.http.post<WledApiResponse>(
       this.createApiUrl('json/si'), body);
   }
 
   /** Sets light brightness. */
   setBrightness(brightness: number) {
-    const body = { bri: brightness };
-    return this.http.post<PostResponse>(
+    const body = this.createBody({ bri: brightness });
+    return this.http.post<WledApiResponse>(
       this.createApiUrl('json/si'), body);
   }
 
   /** Sets effect speed. */
   setSpeed(speed: number) {
-    const body = {
+    const body = this.createBody({
       seg: { sx: speed },
-    };
-    return this.http.post<PostResponse>(
+    });
+    return this.http.post<WledApiResponse>(
       this.createApiUrl('json/state'), body);
   }
 
   /** Sets effect intensity. */
   setIntensity(intensity: number) {
-    const body = {
+    const body = this.createBody({
       seg: { ix: intensity },
-    };
-    return this.http.post<PostResponse>(
+    });
+    return this.http.post<WledApiResponse>(
       this.createApiUrl('json/state'), body);
   }
 
   /** Toggles the LED strip(s) on/off. */
   togglePower(isOn: boolean) {
-    const body = { on: isOn };
-    return this.http.post<PostResponse>(
+    const body = this.createBody({ on: isOn });
+    return this.http.post<WledApiResponse>(
       this.createApiUrl('json/si'), body);
   }
 
   /** Toggles the night light timer on/off. */
   toggleNightLight(isNightLightActive: boolean) {
-    const body = {
+    const body = this.createBody({
       nl: { on: isNightLightActive },
-    };
-    return this.http.post<PostResponse>(
+    });
+    return this.http.post<WledApiResponse>(
       this.createApiUrl('json/si'), body);
   }
 
   /** Toggles the night light timer on/off. */
   toggleSync(syncSend: boolean, syncTglRecv: boolean) {
-    const body: any /* TODO type */ = {
+    const body: any /* TODO type */ = this.createBody({
       udpn: { send: syncSend },
-    };
+    });
     if (syncTglRecv) {
       body.udpn.recv = syncSend;
     }
-    return this.http.post<PostResponse>(
+    return this.http.post<WledApiResponse>(
       this.createApiUrl('json/si'), body);
+  }
+
+  /** Selects the specified segment. */
+  selectSegment(segmentId: number, isSelected: boolean) {
+    const body = this.createBody({
+      seg: {
+        id: segmentId,
+        sel: isSelected,
+      },
+    });
+    return this.http.post<WledApiResponse>(
+      this.createApiUrl('json/state'), body);
+  }
+
+  /** Selects the specified segment and deselects all others. */
+  selectOnlySegment(segmentId: number, segmentsLength: number) {
+    const seg = [];
+    for (let i = 0; i < segmentsLength; i++) {
+      seg.push({ sel: i === segmentId });
+    }
+    const body = this.createBody({ seg });
+    return this.http.post<WledApiResponse>(
+      this.createApiUrl('json/si'), body);
+  }
+
+  /** Updates the core parameters of the specified segment. */
+  updateSegment(
+    segmentId: number,
+    name: string,
+    start: number,
+    stop: number,
+    offset: number,
+    grouping: number,
+    spacing: number,
+  ) {
+    // TODO get config object then use this logic
+    // const _stop = (this.cfg.comp.seglen ? start : 0) + stop,
+    const body = this.createBody({
+      seg: {
+        id: segmentId,
+        n: name, // TODO is this really needed?
+        start,
+        stop, 
+        of: offset,
+        grp: grouping,
+        spc: spacing,
+      },
+    });
+    return this.http.post<WledApiResponse>(
+      this.createApiUrl('json/si'), body);
+  }
+
+  /** Deletes the specified segment. */
+  deleteSegment(segmentId: number) {
+    const body = this.createBody({
+      seg: {
+        id: segmentId,
+        stop: 0,
+      },
+    });
+    return this.http.post<WledApiResponse>(
+      this.createApiUrl('json/state'), body);
+  }
+
+  /** Resets all segments, creating a single segment that covers the entire length of the LED strip. */
+  resetSegments(ledCount: number, segmentsLength: number) {
+    const segments: Partial<Segment>[] = [];
+    segments.push({
+      start: 0,
+      stop: ledCount,
+      sel: true,
+    });
+    for (let i = 1; i < segmentsLength; i++) {
+      segments.push({ stop: 0 });
+    }
+    const body = this.createBody({ seg: segments });
+    return this.http.post<WledApiResponse>(
+      this.createApiUrl('json/si'), body);
+  }
+
+  /** Toggles the specified segment on or off. */
+  setSegmentOn(segmentId: number, isOn: boolean) {
+    const body = this.createBody({
+      seg: {
+        id: segmentId,
+        on: isOn,
+      },
+    });
+    return this.http.post<WledApiResponse>(
+      this.createApiUrl('json/si'), body);
+  }
+  
+  /** Sets the brightness of the specified segment. */
+  setSegmentBrightness(segmentId: number, brightness: number) {
+    const body = this.createBody({
+      seg: {
+        id: segmentId,
+        bri: brightness,
+      },
+    });
+    return this.http.post<WledApiResponse>(
+      this.createApiUrl('json/si'), body);
+  }
+
+  /** Toggles the reverse setting of the specified segment. */
+  setSegmentReverse(segmentId: number, isReverse: boolean) {
+    const body = this.createBody({
+      seg: {
+        id: segmentId,
+        rev: isReverse,
+      },
+    });
+    return this.http.post<WledApiResponse>(
+      this.createApiUrl('json/state'), body);
+  }
+
+  /** Toggles the mirror setting of the specified segment. */
+  setSegmentMirror(segmentId: number, isMirror: boolean) {
+    const body = this.createBody({
+      seg: {
+        id: segmentId,
+        mi: isMirror,
+      },
+    });
+    return this.http.post<WledApiResponse>(
+      this.createApiUrl('json/state'), body);
+  }
+
+  /** Sets the transition duration. The `duration` parameter unit is 1/10 of a second (eg: `duration = 7` is 0.7s). */
+  setTransitionDuration(duration: number) {
+    const body = this.createBody({ transition: duration });
+    return this.http.post<WledApiResponse>(
+      this.createApiUrl('json/state'), body);
+  }
+
+  private createBody(body: { [key: string]: unknown }) {
+    const basicOptions = {
+      v: true, // get complete API response
+      time: Math.floor(Date.now() / 1000),
+    };
+    return Object.assign(basicOptions, body);
   }
 
 

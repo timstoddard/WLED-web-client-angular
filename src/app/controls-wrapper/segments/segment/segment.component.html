@@ -12,8 +12,10 @@
     <div
       *ngIf="!isEditingName; else nameEditor"
       class="segment__name">
-      <span class="segment__name__text">
-        {{ segment?.name }}
+      <span
+        (click)="selectOnlySegment()"
+        class="segment__name__text">
+        {{ segment.name }}
       </span>
       <i
         (click)="toggleEditName()"
@@ -57,12 +59,12 @@
     <div class="segment__row">
       <label
         [ngClass]="{ 'segment__powerButton--enabled': segmentForm.get('isOn')!.value }"
-        class="segment__powerButton">
+        class="segment__button segment__powerButton">
         <input
           formControlName="isOn"
           type="checkbox"
           class="segment__powerButton__input" />
-        <i class="segment__powerButton__icon icons">
+        <i class="segment__button__icon icons">
           &#xe08f;
         </i>
       </label>
@@ -80,6 +82,15 @@
           Mirror effect
         </mat-checkbox>
       </div>
+
+      <button
+        (click)="deleteSegment()"
+        [disabled]="getSegmentsLength() <= 1"
+        class="segment__button segment__deleteButton">
+        <i class="segment__button__icon icons">
+          &#xe037;
+        </i>
+      </button>
     </div>
 
     <div class="segment__row">
@@ -106,7 +117,9 @@
             class="segment__numberInput__input">
         </mat-form-field>
         <div class="segment__numberButtonWrapper">
-          <button class="segment__numberButton">
+          <button
+            (click)="updateSegment()"
+            class="segment__numberButton">
             Apply
           </button>
         </div>

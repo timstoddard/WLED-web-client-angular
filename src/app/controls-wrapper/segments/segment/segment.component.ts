@@ -1,8 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { takeUntil } from 'rxjs';
 import { Segment } from '../../../shared/app-types';
 import { UnsubscribingComponent } from '../../../shared/unsubscribing.component';
+import { genericPostResponse } from '../../utils';
 import { SegmentsService } from '../segments.service';
 
 @Component({
@@ -12,9 +13,8 @@ import { SegmentsService } from '../segments.service';
 })
 export class SegmentComponent extends UnsubscribingComponent implements OnInit {
   @Input() segment!: Segment;
-  @Input() index!: number;
+  @Input() isExpanded!: boolean;
   segmentForm!: FormGroup;
-  isExpanded: boolean = false;
   isEditingName: boolean = false;
   numberInputs = [
     {
@@ -50,16 +50,98 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
     this.segmentForm = this.createForm();
   }
 
+  selectOnlySegment() {
+    this.segmentsService.selectOnlySegment(this.segment.id)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(genericPostResponse);
+  }
+
   toggleEditName() {
     this.isEditingName = !this.isEditingName;
     if (!this.isEditingName) {
       const segmentName = this.segmentForm.get('name')!.value as string;
-      this.segmentsService.setSegmentName(this.index, segmentName);
+      this.segmentsService.setSegmentName(this.segment.id, segmentName);
     }
   }
 
   toggleExpanded() {
-    this.isExpanded = !this.isExpanded;
+    this.segmentsService.toggleSegmentExpanded(this.segment.id);
+  }
+
+  updateSegment() {
+    // TODO if `stop < start` show validation error message, don't submit form
+    const name = this.segmentForm.get('name')!.value as string;
+    const start = this.segmentForm.get('start')!.value as number;
+    const stop = this.segmentForm.get('stop')!.value as number;
+    const offset = this.segmentForm.get('offset')!.value as number;
+    const grouping = this.segmentForm.get('grouping')!.value as number;
+    const spacing = this.segmentForm.get('spacing')!.value as number;
+    this.segmentsService.updateSegment(this.segment.id, name, start, stop, offset, grouping, spacing)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(genericPostResponse);
+  }
+
+  deleteSegment() {
+    const response = this.segmentsService.deleteSegment(this.segment.id);
+    if (response) {
+      response
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe(genericPostResponse);
+    }
+  }
+
+  getSegmentsLength() {
+    return this.segmentsService.getSegmentsLength();
+  }
+
+  private setSegmentOn(isOn: boolean) {
+    this.segmentsService.setSegmentOn(this.segment.id, isOn)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(genericPostResponse);
+  }
+
+  private selectSegment(isSelected: boolean) {
+    this.segmentsService.selectSegment(this.segment.id, isSelected)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(genericPostResponse);
+  }
+
+  private setSegmentBrightness(brightness: number) {
+    this.segmentsService.setSegmentBrightness(this.segment.id, brightness)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(genericPostResponse);
+  }
+
+  private setReverse(isReverse: boolean) {
+    this.segmentsService.setSegmentReverse(this.segment.id, isReverse)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(genericPostResponse);
+  }
+
+  private setMirror(isMirror: boolean) {
+    this.segmentsService.setSegmentMirror(this.segment.id, isMirror)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(genericPostResponse);
+  }
+
+  /** Validator: `stop` must be greater than `start`.  */
+  private validateStopGreaterThanStart(): ValidatorFn {
+    return (): ValidationErrors | null => {
+      if (!this.segmentForm) {
+        return null;
+      }
+      const start = this.segmentForm.get('start')!.value as number;
+      const stop = this.segmentForm.get('stop')!.value as number;
+      const error = {
+        stopNotGreaterThanStart: {
+          start,
+          stop,
+        },
+      };
+      return stop <= start
+        ? error
+        : null;
+    };
   }
 
   private createForm() {
@@ -69,7 +151,7 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
       isOn: this.formBuilder.control(this.segment.on),
       brightness: this.formBuilder.control(this.segment.bri),
       start: this.formBuilder.control(this.segment.start),
-      stop: this.formBuilder.control(this.segment.stop),
+      stop: this.formBuilder.control(this.segment.stop, this.validateStopGreaterThanStart()),
       offset: this.formBuilder.control(this.segment.of),
       grouping: this.formBuilder.control(this.segment.grp),
       spacing: this.formBuilder.control(this.segment.spc),
@@ -79,84 +161,24 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
 
     form.get('isSelected')!.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((selected: boolean) => this.setSelected(selected));
+      .subscribe((isSelected) => this.selectSegment(isSelected));
 
     form.get('isOn')!.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((on: boolean) => this.setOn(on));
+      .subscribe((isOn: boolean) => this.setSegmentOn(isOn));
 
     form.get('brightness')!.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((brightness: number) => this.setBrightness(brightness));
-
-    /*form.get('start')!.valueChanges
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((start: number) => this.setStart(start));
-
-    form.get('stop')!.valueChanges
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((stop: number) => this.setStop(stop));
-
-    form.get('offset')!.valueChanges
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((offset: number) => this.setOffset(offset));
-
-    form.get('grouping')!.valueChanges
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((grouping: number) => this.setGrouping(grouping));
-
-    form.get('spacing')!.valueChanges
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((spacing: number) => this.setSpacing(spacing));*/
+      .subscribe((brightness: number) => this.setSegmentBrightness(brightness));
 
     form.get('isReverse')!.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((reverse: boolean) => this.toggleReverse(reverse));
+      .subscribe((isReverse: boolean) => this.setReverse(isReverse));
 
     form.get('isMirror')!.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((mirror: boolean) => this.toggleMirror(mirror));
+      .subscribe((isMirror: boolean) => this.setMirror(isMirror));
 
     return form;
-  }
-
-  private setSelected(selected: boolean) {
-    // TODO
-  }
-
-  // private setExpanded(expanded: boolean) {
-  //   // TODO
-  // }
-
-  private setOn(on: boolean) {
-    // TODO
-  }
-
-  private setBrightness(brightness: number) {
-    // TODO
-  }
-
-  private togglePower() {
-    //
-  }
-
-  private updateLength() {
-    //
-  }
-
-  private updateSegment() {
-    // replaces setSeg
-  }
-
-  private delete() {
-    //
-  }
-
-  private toggleReverse(reverse: boolean) {
-    // TODO
-  }
-
-  private toggleMirror(mirror: boolean) {
-    // TODO
   }
 }

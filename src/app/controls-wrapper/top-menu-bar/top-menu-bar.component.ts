@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { takeUntil } from 'rxjs';
-import { PostResponse } from '../../shared/api.service';
+import { WledApiResponse } from '../../shared/api-types';
 import { AppConfig } from '../../shared/app-config';
 import { LocalStorageService } from '../../shared/local-storage.service';
 import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
@@ -131,7 +131,7 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     this.isNightLightActive = !this.isNightLightActive;
     this.topMenuBarService.toggleNightLight(this.isNightLightActive)
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((response: PostResponse) => {
+      .subscribe((response: WledApiResponse) => {
         genericPostResponse(response);
         const message = this.isNightLightActive
           ? `Timer active. Your light will turn ${this.nightLightTar > 0 ? 'on' : 'off'} ${this.nightLightMode ? 'over' : 'after'} ${this.nightLightDuration} minutes.`
@@ -144,7 +144,7 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     this.isSyncSend = !this.isSyncSend;
     this.topMenuBarService.toggleSync(this.isSyncSend, this.syncTglRecv)
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((response: PostResponse) => {
+      .subscribe((response: WledApiResponse) => {
         genericPostResponse(response);
         const message = this.isSyncSend
           ? 'Other lights in the network will now sync to this one.'

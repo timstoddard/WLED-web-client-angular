@@ -1,5 +1,5 @@
 import { ActivatedRoute } from '@angular/router';
-import { PostResponse } from '../shared/api.service';
+import { WledApiResponse } from '../shared/api-types';
 
 // used by top and bottom menu bars
 export interface MenuBarButton {
@@ -64,11 +64,14 @@ export const updateTablinks = (tabIndex: number) => {
 }
 
 /** Basic error handling for a POST response. */
-export const genericPostResponse = (response: PostResponse) => {
-  if (!response.success) {
-    // TODO show error toast
-    alert('failed to update');
-  }
+export const genericPostResponse = (response: WledApiResponse) => {
+  console.log('response', response);
+
+  // TODO how to check for error
+  // if (!response.success) {
+  //   // TODO show error toast
+  //   alert('failed to update');
+  // }
 };
 
 /**

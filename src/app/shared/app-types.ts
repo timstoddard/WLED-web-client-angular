@@ -5,6 +5,8 @@ export interface AppState {
 }
 
 export interface Segment extends WledSegment {
-  /** Segment name (optional) */
-  name?: string;
+  /** Segment ID. */
+  id: number;
+  /** Segment name. */
+  name: string;
 }

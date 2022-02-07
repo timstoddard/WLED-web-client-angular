@@ -5,132 +5,141 @@ import { ApiService } from '../../shared/api.service';
 import { Segment } from '../../shared/app-types';
 import { LocalStorageService } from '../../shared/local-storage.service';
 import { ControlsServicesModule } from '../controls-services.module';
-import { findRouteData, getInput } from '../utils';
+import { findRouteData } from '../utils';
 
 @Injectable({ providedIn: ControlsServicesModule })
 export class SegmentsService {
+  private segments: Segment[] = [];
+  private ledCount: number = 1429; // TODO get this from api data (info.leds.count)
+  private expanded: boolean[] = [];
+
   constructor (
     private apiService: ApiService,
     private localStorageService: LocalStorageService,
-    private route: ActivatedRoute) {}
+    private route: ActivatedRoute,
+  ) {
+    this.segments = this.loadSegments();
+    this.expanded = this.segments.map(_ => false);
+  }
 
-  getSegments() {
+  loadSegments() {
     const segments = (findRouteData('data', this.route) as WledApiResponse).state.seg;
     const formattedSegments = [];
     let i = 0;
     for (let i = 0; i < segments.length; i++) {
-      for (let j = 0; j < 10; j++) {
-        const additionalFields = { name: this.loadSegmentName(j) };
-        const withName: Segment = Object.assign({}, segments[i], additionalFields);
-        formattedSegments.push(withName);
-      }
+      const additionalFields = {
+        id: i,
+        name: this.loadSegmentName(i),
+      };
+      const withName: Segment = Object.assign({}, segments[i], additionalFields);
+      formattedSegments.push(withName);
     }
     return formattedSegments;
   }
 
-  setSegmentName(index: number, name: string) {
-    const key = `segment-${index}-name`;
-    this.localStorageService.set(key, name);
-    // TODO also need to update UI
+  getSegments() {
+    return this.segments;
   }
 
-  private loadSegmentName(index: number) {
-    let segmentName = `Segment ${index + 1}`; // default name
+  getSegmentsLength() {
+    return this.segments.length;
+  }
+
+  setSegmentName(segmentId: number, name: string) {
+    if (!name) {
+      name = this.getDefaultName(segmentId);
+    }
+    this.segments[segmentId].name = name; // TODO update via reducer
+    const key = `segment-${segmentId}-name`;
+    this.localStorageService.set(key, name);
+  }
+
+  selectSegment(segmentId: number, isSelected: boolean) {
+    return this.apiService.selectSegment(segmentId, isSelected);
+  }
+
+  selectOnlySegment(segmentId: number) {
+    return this.apiService.selectOnlySegment(segmentId, this.segments.length);
+  }
+
+  toggleSegmentExpanded(segmentId: number) {
+    if (segmentId >= this.expanded.length) {
+      console.warn(`Cannot expand segment id ${segmentId}, it does not exist.`);
+      return;
+    }
+    this.expanded[segmentId] = !this.expanded[segmentId];
+  }
+
+  updateSegment(
+    segmentId: number,
+    name: string, // TODO is this really needed?
+    start: number,
+    stop: number,
+    offset: number,
+    grouping: number,
+    spacing: number,
+  ) {
+    return this.apiService.updateSegment(segmentId, name, start, stop, offset, grouping, spacing);
+  }
+
+  deleteSegment(segmentId: number) {
+    if (this.segments.length < 2) {
+      // TODO show form error instead of toast (?)
+      // showToast('You need to have multiple segments to delete one!');
+      return;
+    }
+    this.expanded.splice(segmentId, 1); // remove expanded state value
+    return this.apiService.deleteSegment(segmentId);
+  }
+
+  resetSegments() {
+    return this.apiService.resetSegments(this.ledCount, this.segments.length);
+  }
+
+  setSegmentOn(segmentId: number, isOn: boolean) {
+    return this.apiService.setSegmentOn(segmentId, isOn);
+  }
+
+  setSegmentBrightness(segmentId: number, brightness: number) {
+    return this.apiService.setSegmentBrightness(segmentId, brightness);
+  }
+
+  setSegmentReverse(segmentId: number, isReverse: boolean) {
+    return this.apiService.setSegmentReverse(segmentId, isReverse);
+  }
+
+  setSegmentMirror(segmentId: number, isMirror: boolean) {
+    return this.apiService.setSegmentMirror(segmentId, isMirror);
+  }
+
+  setTransitionDuration(seconds: number) {
+    return this.apiService.setTransitionDuration(seconds * 10);
+  }
+
+  getSegmentExpanded(segmentId: number) {
+    if (segmentId >= this.expanded.length) {
+      console.warn(`Segment id ${segmentId} does not exist.`);
+      return false;
+    }
+    return this.expanded[segmentId];
+  }
+
+  private loadSegmentName(segmentId: number) {
+    let segmentName = this.getDefaultName(segmentId);
     try {
-      const key = `segment-${index}-name`;
+      const key = `segment-${segmentId}-name`;
       const storedSegmentName = this.localStorageService.get(key) as string;
-      if (storedSegmentName !== null) {
+      if (storedSegmentName) {
         segmentName = storedSegmentName;
       }
     } catch (e) {
-      console.warn(`Segment name could not be loaded (index ${index})`);
+      console.warn(`Segment name could not be loaded (id ${segmentId})`);
       console.error(e);
     }
     return segmentName;
   }
 
-  selSegEx(segmentId: number, lastSegment: number) {
-    const seg = [];
-    for (let i = 0; i <= lastSegment; i++) {
-      seg.push({ sel: i === segmentId });
-    }
-    const obj = { seg: seg };
-    this.requestJson(obj);
+  private getDefaultName(segmentId: number) {
+    return `Segment ${segmentId + 1}`;
   }
-
-  selSeg(segmentId: number, isSelected: boolean) {
-    const obj = { seg: { id: segmentId, sel: isSelected } };
-    this.requestJson(obj, false);
-  }
-
-  setSeg(segmentId: number) {
-    const name = getInput(`seg${segmentId}t`).value;
-    const start = parseInt(getInput(`seg${segmentId}s`)!.value);
-    const stop = parseInt(getInput(`seg${segmentId}e`)!.value);
-    if (stop <= start) {
-      this.delSeg(segmentId);
-      return;
-    }
-    const obj = {
-      seg: {
-        id: segmentId,
-        n: name,
-        start: start,
-        // TODO get config value somehow
-        stop: 0, // (this.cfg.comp.seglen ? start : 0) + stop,
-        // added these 3 to appease typescript
-        grp: 0,
-        spc: 0,
-        of: 0,
-      },
-    };
-    if (getInput(`seg${segmentId}grp`)) {
-      const grp = parseInt(getInput(`seg${segmentId}grp`).value);
-      const spc = parseInt(getInput(`seg${segmentId}spc`).value);
-      const ofs = parseInt(getInput(`seg${segmentId}of`).value);
-      obj.seg.grp = grp;
-      obj.seg.spc = spc;
-      obj.seg.of = ofs;
-    }
-    this.requestJson(obj);
-  }
-
-  delSeg(segmentId: number) {
-    var obj = {
-      seg: {
-        id: segmentId,
-        stop: 0,
-      },
-    };
-    this.requestJson(obj, false);
-  }
-
-  setRev(segmentId: number) {
-    // const rev = document.getElementById(`seg${segmentId}rev`)!.checked;
-    const rev = true;
-    const obj = { seg: { id: segmentId, rev: rev } };
-    this.requestJson(obj, false);
-  }
-
-  setMi(segmentId: number) {
-    // const mi = document.getElementById(`seg${segmentId}mi`)!.checked;
-    const mi = true;
-    const obj = { seg: { id: segmentId, mi: mi } };
-    this.requestJson(obj, false);
-  }
-
-  setSegPwr(segmentId: number) {
-    // TODO toggle segment power and call api to update
-    // var obj = { seg: { id: segmentId, on: !powered[segmentId] } };
-    // this.requestJson(obj);
-  }
-
-  setSegBri(segmentId: number) {
-    // const bri = parseInt(getInput(`seg${segmentId}bri`)!.value);
-    const bri = 1;
-    var obj = { seg: { id: segmentId, bri: bri } };
-    this.requestJson(obj);
-  }
-
-  private requestJson = (a: any, b?: boolean) => '';
 }
