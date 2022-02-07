@@ -9,8 +9,8 @@ $spacing: 6px;
   > * {
     border: 1px solid rgb(128,128,128);
     border-radius: 6px;
-    // TODO add inner box shadow?
-    // box-shadow: inset 1px 1px 8px -1px rgba(0,0,0,0.6);
+    // TODO keep box shadow? or modify?
+    box-shadow: inset 1px 1px 10px -1px rgba(0,0,0,0.6);
   }
 }
 
