@@ -9,6 +9,7 @@ import { UnsubscribingComponent } from './shared/unsubscribing.component';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent extends UnsubscribingComponent {
+  isDevMode = true; // TODO remove
   links = [
     {
       path: 'controls',

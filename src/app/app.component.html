@@ -1,9 +1,16 @@
-<nav>
+<!-- TODO put these links into a hamburger menu or similar -->
+<nav *ngIf="isDevMode">
   <a *ngFor="let link of links"
     [routerLink]="link.path"
     routerLinkActive="button--active">
     {{ link.component }}
   </a>
+  <!-- TODO remove -->
+  <span
+    (click)="isDevMode = !isDevMode"
+    style="margin-left: 10px;">
+    [X]
+  </span>
 </nav>
 
 <router-outlet></router-outlet>
