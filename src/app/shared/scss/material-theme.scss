@@ -1,0 +1,16 @@
+@use '@angular/material' as mat;
+
+@import '~@angular/material/theming';
+
+// TODO which theme to use
+$custom-theme-primary: mat.define-palette(mat.$deep-purple-palette, A200);
+$custom-theme-accent: mat.define-palette(mat.$deep-purple-palette, A200);
+$custom-theme: mat.define-light-theme((
+  color: (
+    primary: $custom-theme-primary,
+    accent: $custom-theme-accent,
+  )
+));
+
+@include mat.core();
+@include angular-material-theme($custom-theme);

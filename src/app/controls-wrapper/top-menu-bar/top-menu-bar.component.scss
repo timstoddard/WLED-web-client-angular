@@ -1,5 +1,7 @@
 @use 'sass:math';
 
+@import 'src/app/shared/scss/mixins';
+
 :host {
   display: flex;
   flex-wrap: wrap;
@@ -30,36 +32,16 @@
   }
 
   &__buttonWrapper {
-    $buttonWidth: 70px;
+    @include forceWidth(70px);
     align-items: center;
     display: flex;
     flex-direction: column;
-    max-width: $buttonWidth;
-    min-width: $buttonWidth;
   }
 
   &__button {
-    $buttonDimension: 40px;
-    background: none;
-    border: 1px solid rgb(128,128,128);
-    border-radius: math.div($buttonDimension, 2);
-    height: $buttonDimension;
+    @include iconButton(40px);
     margin-bottom: 2px;
     padding: 3px;
-    width: $buttonDimension;
-
-    &:hover {
-      background: rgb(220,220,220);
-      cursor: pointer;
-    }
-
-    &--enabled {
-      background: rgb(0,255,0);
-
-      &:hover {
-        background: rgb(25,220,25);
-      }
-    }
 
     &__icon {
       font-size: 25px;
@@ -71,12 +53,12 @@
   }
 
   &__slider {
-    background: white;
+    background: var(--backgroundColorPrimary);
     flex-direction: row;
     margin: 10px 5px;
 
     &--inOverlay {
-      box-shadow: 2px 2px 5px 1px rgba(0,0,0,0.6);
+      box-shadow: 0 0 8px 4px rgba(var(--themeColorPrimaryRgb),0.9);
     }
 
     @at-root ::ng-deep &__label {
@@ -89,7 +71,7 @@
   }
 
   &__liveView {
-    border: 1px solid rgb(128,128,128);
+    border: 1px solid var(--borderColorPrimary);
     border-left-width: 0;
     border-right-width: 0;
     height: 8px;

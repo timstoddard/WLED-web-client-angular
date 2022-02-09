@@ -1,3 +1,5 @@
+@import 'src/app/shared/scss/mixins';
+
 $buttonDimension: 42px;
 $buttonMargin: 4px;
 $buttonsPerRow: 4;
@@ -14,7 +16,8 @@ $buttonsPerRow: 4;
 
 .colorPresets {
   &__button {
-    border: 1px solid black;
+    @include cursorPointerOnHover();
+    border: 1px solid var(--borderColorPrimary);
     border-radius: 6px;
     margin: $buttonMargin;
     max-height: $buttonDimension;
@@ -23,8 +26,10 @@ $buttonsPerRow: 4;
     min-width: $buttonDimension;
     outline: 0;
 
-    &:hover {
-      cursor: pointer;
+    &--random {
+      background: var(--backgroundColorPrimary);
+      color: var(--textColorPrimary);
+      font-size: 20px;
     }
   }
 }

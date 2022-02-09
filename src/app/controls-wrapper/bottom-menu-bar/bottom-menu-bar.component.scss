@@ -8,7 +8,7 @@
   &__button {
     align-items: center;
     border: 0;
-    color: rgb(128,128,128);
+    color: var(--textColorAccent);
     display: flex;
     flex-direction: column;
     font-size: 14px;
@@ -19,11 +19,11 @@
     width: 25%;
 
     &:hover {
-      color: blue;
+      color: var(--themeColorPrimary);
     }
 
     &--selected {
-      color: black !important;
+      color: var(--textColorPrimary) !important; // prevent hover style on selected link
     }
 
     &__icon {

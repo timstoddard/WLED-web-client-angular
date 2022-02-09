@@ -135,6 +135,8 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     const appWidth = document.documentElement.clientWidth;
     this.showBrightnessSlider = appWidth >= MIN_SHOW_BRIGHTNESS_SLIDER_THRESHOLD_PX;
     this.showPcModeButton = appWidth >= MIN_SHOW_PC_MODE_BUTTON_THRESHOLD_PX;
+
+    // TODO if width changed from over brightness slider threshold to under, then force close brightness slider
   }
 
   toggleBrightnessOpen() {

@@ -23,9 +23,10 @@
       *ngIf="!showBrightnessSlider"
       class="topMenuBar__buttonWrapper">
       <button
-        (click)="toggleBrightnessOpen()"
         cdkOverlayOrigin
         #trigger="cdkOverlayOrigin"
+        (click)="toggleBrightnessOpen()"
+        [ngClass]="{ 'topMenuBar__button--enabled': isBrightnessOpen }"
         class="topMenuBar__button">
         <i
           [innerHTML]="'&#xe2a6;'"

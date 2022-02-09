@@ -1,18 +1,31 @@
 @mixin radioButtonListItem() {
   $grandparentSelector: &;
-  $textBackgroundOpacity: 0.6;
-  $normalBorderColor: rgb(180,180,180);
-  $hoverBorderColor: rgb(255,0,0);
-  $selectedBorderColor: rgb(20,20,20);
+  $boxShadowPx: 0px 0px 7px 6px;
+
+  // background colors
+  $normalBackgroundColor: rgba(var(--borderColorPrimaryRgb),0.6);
+  $hoverBackgroundColor: rgba(var(--borderColorPrimaryRgb),0.8);
+  $selectedBackgroundColor: rgba(var(--themeColorPrimaryRgb),0.7);
+
+  // text colors
+  $normalTextColor: var(--backgroundColorPrimary);
+  $hoverTextColor: var(--backgroundColorPrimary);
+  $selectedTextColor: var(--backgroundColorPrimary);
+
+  // border colors
+  $normalBorderColor: var(--borderColorAccent);
+  $hoverBorderColor: var(--borderColorPrimary);
+  $selectedBorderColor: var(--themeColorPrimary);
 
   align-items: center;
-  background: rgb(220,220,220);
-  border: 2px solid $normalBorderColor;
+  background: var(--backgroundColorPrimary);
+  border: 1px solid $normalBorderColor;
   border-bottom: 0;
+  color: $selectedTextColor;
   display: flex;
   justify-content: center;
   min-height: 36px;
-  transition: all 0.2s ease; // TODO keep transitions?
+  transition: border-color 0.2s ease;
 
   &:last-of-type {
     border-bottom: 2px solid $normalBorderColor;
@@ -27,9 +40,9 @@
     cursor: pointer;
 
     & #{$grandparentSelector}__text {
-      background: rgba(100,100,100,$textBackgroundOpacity);
-      box-shadow: 0px 0px 7px 6px rgba(100,100,100,$textBackgroundOpacity);
-      color: white;
+      background: $selectedBackgroundColor;
+      box-shadow: $boxShadowPx $selectedBackgroundColor;
+      color: $selectedTextColor;
       font-weight: bold;
       text-decoration: underline;
     }
@@ -45,13 +58,14 @@
     cursor: pointer;
 
     & #{$grandparentSelector}__text {
-      background: rgba(0,0,0,$textBackgroundOpacity);
-      box-shadow: 0px 0px 7px 6px rgba(0,0,0,$textBackgroundOpacity);
-      color: white;
+      background: $hoverBackgroundColor;
+      box-shadow: $boxShadowPx $hoverBackgroundColor;
+      color: $hoverTextColor;
+      text-decoration: underline;
     }
 
     & + #{$grandparentSelector} {
-      border-top-color: $hoverBorderColor;
+      border-top-color: $hoverBorderColor !important;
     }
   }
 
@@ -60,10 +74,9 @@
   }
 
   &__text {
-    background: rgba(255,255,255,$textBackgroundOpacity);
-    box-shadow: 0px 0px 7px 6px rgba(255,255,255,$textBackgroundOpacity);
-    color: black;
-    // transition: inherit;
+    background: $normalBackgroundColor;
+    box-shadow: $boxShadowPx $normalBackgroundColor;
+    color: $normalTextColor;
   }
 }
 
@@ -71,4 +84,35 @@
   &:hover {
     cursor: pointer;
   }
+}
+
+@mixin iconButton($buttonDimension) {
+  background: var(--backgroundColorPrimary);
+  border: 1px solid var(--borderColorPrimary);
+  border-radius: math.div($buttonDimension, 2);
+  color: var(--textColorPrimary);
+  height: $buttonDimension;
+  width: $buttonDimension;
+
+  &:hover {
+    background: var(--backgroundColorAccent);
+  }
+
+  &:not([disabled]) {
+    @include cursorPointerOnHover();
+  }
+
+  &--enabled {
+    background: var(--themeColorPrimary);
+    color: var(--backgroundColorPrimary);
+
+    &:hover {
+      background: var(--themeColorAccent);
+    }
+  }
+}
+
+@mixin forceWidth($width) {
+  max-width: $width;
+  min-width: $width;
 }

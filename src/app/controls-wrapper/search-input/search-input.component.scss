@@ -4,22 +4,24 @@
   align-items: center;
   display: flex;
   min-width: 100px;
-  padding: 6px;
+  padding: 12px 12px 6px;
   position: relative;
-
-  & mat-form-field {
-    margin-bottom: -20px;
-    min-width: 100px;
-  }
 
   & ::ng-deep .mat-form-field-flex {
     padding-top: 6px !important;
+    background: var(--backgroundColorAccent);
+  }
+
+  & ::ng-deep .mat-form-field-label {
+    color: var(--textColorPrimary);
   }
 }
 
 .searchInput {
   &__inputWrapper {
     flex-grow: 1;
+    margin-bottom: -20px;
+    min-width: 100px;
   }
 
   &__input {
@@ -27,7 +29,7 @@
 
   &__searchIcon,
   &__cancelIcon {
-    color: rgb(210,210,210);
+    color: var(--textColorPrimary);
     font-size: 30px;
   }
 

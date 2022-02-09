@@ -16,7 +16,10 @@ export class ColorPresetsComponent {
   private previousHue = 0;
 
   quickColors: QuickColor[] = [
-    // row 1
+    {
+      name: 'Pink',
+      hex: 'ff00ff',
+    },
     {
       name: 'Red',
       hex: 'ff0000',
@@ -41,24 +44,18 @@ export class ColorPresetsComponent {
       name: 'Blue',
       hex: '0000ff',
     },
-
-    // row 2
-    {
-      name: 'White',
-      hex: 'ffffff',
-    },
     {
       name: 'Warm',
       hex: 'ffe0a0',
+    },
+    {
+      name: 'White',
+      hex: 'ffffff',
     },
     // TODO this sets color picker to a bad state, maybe do a near-black or remove this
     {
       name: 'Black',
       hex: '000000',
-    },
-    {
-      name: 'Pink',
-      hex: 'ff00ff',
     },
   ];
 

@@ -1,6 +1,8 @@
+@import 'src/app/shared/scss/mixins';
+
 .colorSlots {
   align-items: center;
-  border: 2px solid black;
+  border: 2px solid var(--borderColorPrimary);
   border-radius: 6px;
   display: flex;
   flex-wrap: wrap;
@@ -9,8 +11,9 @@
   padding: 8px;
 
   &__slot {
+    @include cursorPointerOnHover();
     $buttonDimension: 32px;
-    border: 1px solid black;
+    border: 1px solid var(--borderColorAccent);
     border-radius: 6px;
     font-size: 16px;
     margin: 3px 6px;
@@ -20,12 +23,8 @@
     min-width: $buttonDimension;
     outline: 0;
 
-    &:hover {
-      cursor: pointer;
-    }
-
     &--selected {
-      border: 3px solid gray;
+      border: 3px solid var(--borderColorPrimary);
     }
   }
 }

@@ -11,6 +11,15 @@
   &__inputWrapper {
     max-width: 120px;
     margin-bottom: -16px;
+
+    & ::ng-deep .mat-form-field-flex {
+      padding-top: 6px !important;
+      background: var(--backgroundColorAccent);
+    }
+
+    & ::ng-deep .mat-form-field-label {
+      color: var(--textColorPrimary);
+    }
   }
 
   &__buttonWrapper {
