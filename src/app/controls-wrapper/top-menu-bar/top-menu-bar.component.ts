@@ -5,6 +5,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { takeUntil } from 'rxjs';
 import { WledApiResponse } from '../../shared/api-types';
 import { AppConfig } from '../../shared/app-config';
+import { AppStateRepository } from '../../shared/app-state/app.repository';
 import { LocalStorageService } from '../../shared/local-storage.service';
 import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
 import { generateApiUrl } from '../json.service';
@@ -55,6 +56,7 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     private localStorageService: LocalStorageService,
     private topMenuBarService: TopMenuBarService,
     private sanitizer: DomSanitizer,
+    private appStateRepository: AppStateRepository,
   ) {
     super();
   }
@@ -62,6 +64,11 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
   ngOnInit() {
     this.brightnessControl = this.createFormControl();
     this.onResize();
+
+    // TODO remove
+    this.appStateRepository.appState$
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(n => console.log(n));
 
     // TODO evaluate if needed
     /* this.size();
@@ -341,6 +348,7 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
   }
 
   private setBrightness(brightness: number) {
+    this.appStateRepository.updateBrightness(brightness);
     this.topMenuBarService.setBrightness(brightness)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(genericPostResponse);
