@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { takeUntil } from 'rxjs';
 import { AppConfig } from '../../shared/app-config';
+import { AppStateService } from '../../shared/app-state/app-state.service';
 import { Segment } from '../../shared/app-types';
 import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
 import { genericPostResponse, getInput } from '../utils';
@@ -30,6 +31,7 @@ export class SegmentsComponent extends UnsubscribingComponent implements OnInit 
   constructor(
     private segmentsService: SegmentsService,
     private formBuilder: FormBuilder,
+    private appStateService: AppStateService,
   ) {
     super();
   }
@@ -93,7 +95,7 @@ export class SegmentsComponent extends UnsubscribingComponent implements OnInit 
   private setTransitionDuration(seconds: number) {
     this.segmentsService.setTransitionDuration(seconds)
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(genericPostResponse);
+      .subscribe(genericPostResponse(this.appStateService));
   }
 
   private createFormControl() {

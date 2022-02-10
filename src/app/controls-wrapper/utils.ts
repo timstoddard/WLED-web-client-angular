@@ -1,5 +1,6 @@
 import { ActivatedRoute } from '@angular/router';
 import { WledApiResponse } from '../shared/api-types';
+import { AppStateService } from '../shared/app-state/app-state.service';
 
 // used by top and bottom menu bars
 export interface MenuBarButton {
@@ -64,7 +65,8 @@ export const updateTablinks = (tabIndex: number) => {
 }
 
 /** Basic error handling for a POST response. */
-export const genericPostResponse = (response: WledApiResponse) => {
+export const genericPostResponse = (appStateService: AppStateService) => (response: WledApiResponse) => {
+  appStateService.updateAll(response);
   console.log('response', response);
 
   // TODO how to check for error

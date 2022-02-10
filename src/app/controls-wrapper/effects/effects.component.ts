@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { takeUntil } from 'rxjs';
+import { AppStateService } from '../../shared/app-state/app-state.service';
 import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
 import { genericPostResponse } from '../utils';
 import { Effect, EffectsService } from './effects.service';
@@ -23,6 +24,7 @@ export class EffectsComponent extends UnsubscribingComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private effectsService: EffectsService,
+    private appStateService: AppStateService,
   ) {
     super();
   }
@@ -48,19 +50,19 @@ export class EffectsComponent extends UnsubscribingComponent implements OnInit {
   private setEffect(effectId: number) {
     this.effectsService.setEffect(effectId)
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(genericPostResponse);
+      .subscribe(genericPostResponse(this.appStateService));
   }
 
   private setSpeed(effectId: number) {
     this.effectsService.setSpeed(effectId)
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(genericPostResponse);
+      .subscribe(genericPostResponse(this.appStateService));
   }
 
   private setIntensity(effectId: number) {
     this.effectsService.setIntensity(effectId)
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(genericPostResponse);
+      .subscribe(genericPostResponse(this.appStateService));
   }
 
   private createForm() {

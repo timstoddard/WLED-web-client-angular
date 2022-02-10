@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { takeUntil } from 'rxjs';
+import { AppStateService } from '../../../shared/app-state/app-state.service';
 import { Segment } from '../../../shared/app-types';
 import { UnsubscribingComponent } from '../../../shared/unsubscribing.component';
 import { genericPostResponse } from '../../utils';
@@ -42,6 +43,7 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
   constructor(
     private segmentsService: SegmentsService,
     private formBuilder: FormBuilder,
+    private appStateService: AppStateService,
   ) {
     super();
   }
@@ -53,7 +55,7 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
   selectOnlySegment() {
     this.segmentsService.selectOnlySegment(this.segment.id)
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(genericPostResponse);
+      .subscribe(genericPostResponse(this.appStateService));
   }
 
   toggleEditName() {
@@ -78,7 +80,7 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
     const spacing = this.segmentForm.get('spacing')!.value as number;
     this.segmentsService.updateSegment(this.segment.id, name, start, stop, offset, grouping, spacing)
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(genericPostResponse);
+      .subscribe(genericPostResponse(this.appStateService));
   }
 
   deleteSegment() {
@@ -86,7 +88,7 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
     if (response) {
       response
         .pipe(takeUntil(this.ngUnsubscribe))
-        .subscribe(genericPostResponse);
+        .subscribe(genericPostResponse(this.appStateService));
     }
   }
 
@@ -97,31 +99,31 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
   private setSegmentOn(isOn: boolean) {
     this.segmentsService.setSegmentOn(this.segment.id, isOn)
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(genericPostResponse);
+      .subscribe(genericPostResponse(this.appStateService));
   }
 
   private selectSegment(isSelected: boolean) {
     this.segmentsService.selectSegment(this.segment.id, isSelected)
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(genericPostResponse);
+      .subscribe(genericPostResponse(this.appStateService));
   }
 
   private setSegmentBrightness(brightness: number) {
     this.segmentsService.setSegmentBrightness(this.segment.id, brightness)
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(genericPostResponse);
+      .subscribe(genericPostResponse(this.appStateService));
   }
 
   private setReverse(isReverse: boolean) {
     this.segmentsService.setSegmentReverse(this.segment.id, isReverse)
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(genericPostResponse);
+      .subscribe(genericPostResponse(this.appStateService));
   }
 
   private setMirror(isMirror: boolean) {
     this.segmentsService.setSegmentMirror(this.segment.id, isMirror)
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(genericPostResponse);
+      .subscribe(genericPostResponse(this.appStateService));
   }
 
   /** Validator: `stop` must be greater than `start`.  */

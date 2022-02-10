@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { takeUntil } from 'rxjs';
+import { AppStateService } from '../../shared/app-state/app-state.service';
 import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
 import { genericPostResponse } from '../utils';
 import { PaletteWithBackground, PalettesService } from './palettes.service';
@@ -22,6 +23,7 @@ export class PalettesComponent extends UnsubscribingComponent implements OnInit 
   constructor(
     private palettesService: PalettesService,
     private formBuilder: FormBuilder,
+    private appStateService: AppStateService,
   ) {
     super();
   }
@@ -42,7 +44,7 @@ export class PalettesComponent extends UnsubscribingComponent implements OnInit 
   private setPalette(paletteId: number) {
     this.palettesService.setPalette(paletteId)
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(genericPostResponse);
+      .subscribe(genericPostResponse(this.appStateService));
   }
 
   private createFormControl() {

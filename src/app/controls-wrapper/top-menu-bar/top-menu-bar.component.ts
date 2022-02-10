@@ -5,7 +5,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { takeUntil } from 'rxjs';
 import { WledApiResponse } from '../../shared/api-types';
 import { AppConfig } from '../../shared/app-config';
-import { AppStateRepository } from '../../shared/app-state/app.repository';
+import { AppStateService } from '../../shared/app-state/app-state.service';
 import { LocalStorageService } from '../../shared/local-storage.service';
 import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
 import { generateApiUrl } from '../json.service';
@@ -56,7 +56,7 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     private localStorageService: LocalStorageService,
     private topMenuBarService: TopMenuBarService,
     private sanitizer: DomSanitizer,
-    private appStateRepository: AppStateRepository,
+    private appStateService: AppStateService,
   ) {
     super();
   }
@@ -66,9 +66,20 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     this.onResize();
 
     // TODO remove
-    this.appStateRepository.appState$
+    this.appStateService.getAppState()
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(n => console.log(n));
+
+    this.appStateService.getOn()
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((isOn: boolean) => this.isOn = isOn);
+
+    this.appStateService.getBrightness()
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((brightness: number) => this.brightnessControl.setValue(brightness, {
+        // TODO is this the right (most efficient) way to propagate these changes?
+        emitEvent: false,
+      }));
 
     // TODO evaluate if needed
     /* this.size();
@@ -175,10 +186,9 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
   }
 
   private togglePower() {
-    this.isOn = !this.isOn;
-    this.topMenuBarService.togglePower(this.isOn)
+    this.topMenuBarService.togglePower(!this.isOn)
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(genericPostResponse);
+      .subscribe(genericPostResponse(this.appStateService));
   }
 
   private toggleNightLight() {
@@ -186,7 +196,7 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     this.topMenuBarService.toggleNightLight(this.isNightLightActive)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((response: WledApiResponse) => {
-        genericPostResponse(response);
+        genericPostResponse(this.appStateService)(response);
         const message = this.isNightLightActive
           ? `Timer active. Your light will turn ${this.nightLightTar > 0 ? 'on' : 'off'} ${this.nightLightMode ? 'over' : 'after'} ${this.nightLightDuration} minutes.`
           : 'Timer deactivated.'
@@ -199,7 +209,7 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     this.topMenuBarService.toggleSync(this.isSyncSend, this.syncTglRecv)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((response: WledApiResponse) => {
-        genericPostResponse(response);
+        genericPostResponse(this.appStateService)(response);
         const message = this.isSyncSend
           ? 'Other lights in the network will now sync to this one.'
           : 'This light and other lights in the network will no longer sync.';
@@ -348,10 +358,9 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
   }
 
   private setBrightness(brightness: number) {
-    this.appStateRepository.updateBrightness(brightness);
     this.topMenuBarService.setBrightness(brightness)
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(genericPostResponse);
+      .subscribe(genericPostResponse(this.appStateService));
   }
 
 
