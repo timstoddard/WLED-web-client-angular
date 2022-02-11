@@ -1,20 +1,12 @@
 @import 'src/app/shared/scss/mixins';
 
 :host {
+  @include overrideMatTextInputStyles(--backgroundColorAccent);
   align-items: center;
   display: flex;
   min-width: 100px;
   padding: 12px 12px 6px;
   position: relative;
-
-  & ::ng-deep .mat-form-field-flex {
-    padding-top: 6px !important;
-    background: var(--backgroundColorAccent);
-  }
-
-  & ::ng-deep .mat-form-field-label {
-    color: var(--textColorPrimary);
-  }
 }
 
 .searchInput {
@@ -34,7 +26,7 @@
   }
 
   &__searchIcon {
-    margin-left: 4px;
+    margin-left: 6px;
   }
 
   &__cancelIcon {

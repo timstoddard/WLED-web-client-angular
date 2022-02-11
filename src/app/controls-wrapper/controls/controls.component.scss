@@ -10,7 +10,7 @@ $spacing: 8px;
     border: 1px solid var(--borderColorPrimary);
     border-radius: 6px;
     // TODO keep box shadow?
-    box-shadow: inset 1px 1px 7px 0 rgba(var(--themeColorPrimaryRgb),0.9);
+    box-shadow: inset 1px 1px 8px 0 rgba(var(--borderColorPrimaryRgb),0.8);
   }
 }
 

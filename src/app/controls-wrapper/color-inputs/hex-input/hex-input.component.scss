@@ -1,4 +1,7 @@
+@import 'src/app/shared/scss/mixins';
+
 :host {
+  @include overrideMatTextInputStyles(--backgroundColorAccent);
   align-items: center;
   flex-direction: column;
   justify-content: center;
@@ -11,15 +14,6 @@
   &__inputWrapper {
     max-width: 120px;
     margin-bottom: -16px;
-
-    & ::ng-deep .mat-form-field-flex {
-      padding-top: 6px !important;
-      background: var(--backgroundColorAccent);
-    }
-
-    & ::ng-deep .mat-form-field-label {
-      color: var(--textColorPrimary);
-    }
   }
 
   &__buttonWrapper {

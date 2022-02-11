@@ -58,7 +58,7 @@
     margin: 10px 5px;
 
     &--inOverlay {
-      box-shadow: 0 0 8px 4px rgba(var(--themeColorPrimaryRgb),0.9);
+      box-shadow: 0 0 8px 4px rgba(var(--borderColorPrimaryRgb),0.8);
     }
 
     @at-root ::ng-deep &__label {

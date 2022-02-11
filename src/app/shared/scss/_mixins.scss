@@ -116,3 +116,18 @@
   max-width: $width;
   min-width: $width;
 }
+
+@mixin overrideMatTextInputStyles($backgroundColor) {
+  & ::ng-deep .mat-form-field-flex {
+    background: var($backgroundColor);
+    padding-top: 6px !important;
+  }
+
+  & ::ng-deep .mat-form-field-label {
+    color: var(--textColorPrimary);
+  }
+
+  & ::ng-deep ::placeholder {
+    color: var(--textColorAccent);
+  }
+}

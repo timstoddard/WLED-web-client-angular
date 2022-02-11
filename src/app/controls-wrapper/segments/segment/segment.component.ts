@@ -21,22 +21,27 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
     {
       formControlName: 'start',
       label: 'Start LED',
+      placeholder: '0',
     },
     {
       formControlName: 'stop',
       label: 'Stop LED',
+      placeholder: '100',
     },
     {
       formControlName: 'offset',
       label: 'Offset',
+      placeholder: '0',
     },
     {
       formControlName: 'grouping',
       label: 'Grouping',
+      placeholder: '1',
     },
     {
       formControlName: 'spacing',
       label: 'Spacing',
+      placeholder: '0',
     },
   ]
 

@@ -3,13 +3,7 @@
 @import 'src/app/shared/scss/mixins';
 
 :host {
-  & ::ng-deep .mat-form-field-flex {
-    background: var(--backgroundColorAccent2);
-  }
-
-  & ::ng-deep .mat-form-field-label {
-    color: var(--textColorPrimary);
-  }
+  @include overrideMatTextInputStyles(--backgroundColorPrimary);
 }
 
 .segment {
