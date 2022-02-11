@@ -35,8 +35,8 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
   private nightLightDuration = 60;
   private nightLightTar = 0; // TODO better name
   private nightLightMode = false;
-  private isSyncSend = false; // TODO better name
-  private syncTglRecv = true; // TODO better name
+  private shouldSync = false; // TODO better name
+  private shouldToggleReceiveWithSend = true; // TODO better name
   isLiveViewActive = true; // false; // TODO just for testing
   private showInfo = false;
   private showNodes = false;
@@ -66,20 +66,20 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     this.onResize();
 
     // TODO remove
-    this.appStateService.getAppState()
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(n => console.log(n));
-
-    this.appStateService.getOn()
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((isOn: boolean) => this.isOn = isOn);
-
-    this.appStateService.getBrightness()
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((brightness: number) => this.brightnessControl.setValue(brightness, {
-        // TODO is this the right (most efficient) way to propagate these changes?
-        emitEvent: false,
-      }));
+    this.appStateService.getAppState(this.ngUnsubscribe)
+      .subscribe(n => {
+        console.log(n);
+        this.isOn = n.state.on;
+        this.isNightLightActive = n.state.nightLight.on;
+        this.shouldSync = n.state.udp.shouldSend;
+        // TODO add toggle for receive in UI?
+        this.shouldToggleReceiveWithSend = n.info.shouldToggleReceiveWithSend;
+        this.isLiveViewActive = n.info.isLive;
+        this.brightnessControl.setValue(n.state.brightness, {
+          // TODO is this the right (most efficient) way to propagate these changes?
+          emitEvent: false,
+        });
+      });
 
     // TODO evaluate if needed
     /* this.size();
@@ -118,7 +118,7 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
         name: 'Sync',
         onClick: () => this.toggleSync(),
         icon: '&#xe116;',
-        enabled: this.isSyncSend,
+        enabled: this.shouldSync,
       },
       {
         name: 'Live',
@@ -192,8 +192,7 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
   }
 
   private toggleNightLight() {
-    this.isNightLightActive = !this.isNightLightActive;
-    this.topMenuBarService.toggleNightLight(this.isNightLightActive)
+    this.topMenuBarService.toggleNightLight(!this.isNightLightActive)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((response: WledApiResponse) => {
         genericPostResponse(this.appStateService)(response);
@@ -205,12 +204,11 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
   }
 
   private toggleSync() {
-    this.isSyncSend = !this.isSyncSend;
-    this.topMenuBarService.toggleSync(this.isSyncSend, this.syncTglRecv)
+    this.topMenuBarService.toggleSync(!this.shouldSync, this.shouldToggleReceiveWithSend)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((response: WledApiResponse) => {
         genericPostResponse(this.appStateService)(response);
-        const message = this.isSyncSend
+        const message = this.shouldSync
           ? 'Other lights in the network will now sync to this one.'
           : 'This light and other lights in the network will no longer sync.';
         // showToast(message); // TODO show toast
@@ -225,7 +223,9 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
   }
 
   private toggleLiveView() {
-    this.isLiveViewActive = !this.isLiveViewActive;
+    this.topMenuBarService.toggleLiveView(!this.isNightLightActive)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(genericPostResponse(this.appStateService));
     
     // TODO send websocket message to disable if live view setting was turned off
     // if (!this.isLiveViewActive && ws && ws.readyState === WebSocket.OPEN) {

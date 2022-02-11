@@ -119,13 +119,22 @@ export class ApiService {
   }
 
   /** Toggles the night light timer on/off. */
-  toggleSync(syncSend: boolean, syncTglRecv: boolean) {
-    const body: any /* TODO type */ = this.createBody({
-      udpn: { send: syncSend },
+  toggleSync(shouldSync: boolean, shouldToggleReceiveWithSend: boolean) {
+    const body = this.createBody({
+      udpn: { send: shouldSync },
     });
-    if (syncTglRecv) {
-      body.udpn.recv = syncSend;
+    if (shouldToggleReceiveWithSend) {
+      // TODO no any
+      (body['udpn'] as any).recv = shouldSync;
     }
+    return this.http.post<WledApiResponse>(
+      this.createApiUrl('json/si'), body);
+  }
+
+  toggleLiveView(isLiveView: boolean) {
+    const body = this.createBody({
+      // TODO set live view on/off
+    });
     return this.http.post<WledApiResponse>(
       this.createApiUrl('json/si'), body);
   }

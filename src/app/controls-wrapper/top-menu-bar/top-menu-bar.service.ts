@@ -18,7 +18,11 @@ export class TopMenuBarService {
     return this.apiService.toggleNightLight(isNightLightActive);
   }
 
-  toggleSync(syncSend: boolean, syncTglRecv: boolean) {
-    return this.apiService.toggleSync(syncSend, syncTglRecv);
+  toggleSync(shouldSync: boolean, shouldToggleReceiveWithSend: boolean) {
+    return this.apiService.toggleSync(shouldSync, shouldToggleReceiveWithSend);
+  }
+
+  toggleLiveView(isLiveView: boolean) {
+    return this.apiService.toggleLiveView(isLiveView);
   }
 }

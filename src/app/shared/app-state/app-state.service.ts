@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Store, createState, withProps, select } from '@ngneat/elf';
+import { Subject, takeUntil } from 'rxjs';
 import { WledApiResponse } from '../api-types';
 
 // TODO create entity store for segments
@@ -7,68 +8,72 @@ import { WledApiResponse } from '../api-types';
 // TODO create entity store for effects
 
 interface AppStateProps {
-  state: {
+  state: AppStateState;
+  info: AppStateInfo;
+}
+
+interface AppStateState {
+  on: boolean;
+  brightness: number;
+  transition: number;
+  currentPresetId: number;
+  currentPlaylistId: number;
+  nightLight: {
     on: boolean;
-    brightness: number;
-    transition: number;
-    currentPresetId: number;
-    currentPlaylistId: number;
-    nightLight: {
-      on: boolean;
-      durationMinutes: number;
-      mode: 0 | 1 | 2 | 3;
-      targetBrightness: number;
-      remainingSeconds: number;
-    };
-    udp: {
-      shouldSend: boolean;
-      shouldReceive: boolean;
-    };
-    liveViewOverride: number;
-    mainSegmentId: number;
+    durationMinutes: number;
+    mode: 0 | 1 | 2 | 3;
+    targetBrightness: number;
+    remainingSeconds: number;
   };
-  info: {
-    versionName: string;
-    versionId: number;
-    ledInfo: {
-      totalLeds: number;
-      fps: number;
-      hasWhiteChannel: boolean;
-      showWhiteChannelSlider: boolean;
-      amps: number;
-      maxAmps: number;
-      maxSegments: number;
-    };
-    str: boolean; // TODO is this needed?
-    name: string;
-    udpPort: number;
-    isLive: boolean;
-    lm: string; // TODO is this needed?
-    sourceIpAddress: string;
-    webSocketCount: number;
-    effectCount: number;
-    paletteCount: number;
-    wifi: {
-      ssid: string; // TODO bssid vs ssid?
-      signalStrength: number;
-      channel: number;
-    };
-    fileSystem: {
-      usedSpaceKb: number;
-      totalSpaceKb: number;
-      lastPresetsJsonEditTimestamp: number;
-    };
-    wledDevicesOnNetwork: number;
-    platform: string;
-    arduinoVersion: string;
-    freeHeapBytes: number; // TODO is this bytes or other unit?
-    uptimeSeconds: number;
-    opt: number; // TODO is this needed?
-    brand: string;
-    productName: string;
-    macAddress: string;
-    ipAddress: string;
+  udp: {
+    shouldSend: boolean;
+    shouldReceive: boolean;
   };
+  liveViewOverride: number;
+  mainSegmentId: number;
+}
+
+interface AppStateInfo {
+  versionName: string;
+  versionId: number;
+  ledInfo: {
+    totalLeds: number;
+    fps: number;
+    hasWhiteChannel: boolean;
+    showWhiteChannelSlider: boolean;
+    amps: number;
+    maxAmps: number;
+    maxSegments: number;
+  };
+  shouldToggleReceiveWithSend: boolean;
+  name: string;
+  udpPort: number;
+  isLive: boolean;
+  lm: string; // TODO is this needed?
+  sourceIpAddress: string;
+  webSocketCount: number;
+  effectCount: number;
+  paletteCount: number;
+  wifi: {
+    ssid: string; // TODO bssid vs ssid?
+    signalStrength: number;
+    channel: number;
+  };
+  fileSystem: {
+    usedSpaceKb: number;
+    totalSpaceKb: number;
+    lastPresetsJsonEditTimestamp: number;
+  };
+  wledDevicesOnNetwork: number;
+  platform: string;
+  arduinoVersion: string;
+  freeHeapBytes: number; // TODO is this bytes or other unit?
+  uptimeSeconds: number;
+  opt: number; // TODO is this needed?
+  brand: string;
+  productName: string;
+  macAddress: string;
+  ipAddress: string;
 }
 
 const DEFAULT_APP_STATE: AppStateProps = {
@@ -104,7 +109,7 @@ const DEFAULT_APP_STATE: AppStateProps = {
       maxAmps: 0,
       maxSegments: 0,
     },
-    str: false,
+    shouldToggleReceiveWithSend: false,
     name: '',
     udpPort: 0,
     isLive: false,
@@ -141,6 +146,7 @@ const appStateStore = new Store({ name: 'WLED App State', state, config });
 
 @Injectable({ providedIn: 'root' })
 export class AppStateService {
+  /** Set all app state fields using the api response data. */
   setAll = (response: WledApiResponse) => {
     appStateStore.update(() => ({
       state: {
@@ -175,7 +181,7 @@ export class AppStateService {
           maxAmps: response.info.leds.maxpwr,
           maxSegments: response.info.leds.maxseg,
         },
-        str: response.info.str,
+        shouldToggleReceiveWithSend: response.info.str,
         name: response.info.name,
         udpPort: response.info.udpport,
         isLive: response.info.live,
@@ -209,87 +215,188 @@ export class AppStateService {
   }
 
   // getters
-  getAppState = () => this.selectFromAppState((n) => n);
-  getOn = () => this.selectFromAppState((n) => n.state.on);
-  getBrightness = () => this.selectFromAppState((n) => n.state.brightness);
-  getTransition = () => this.selectFromAppState((n) => n.state.transition);
-  getCurrentPresetId = () => this.selectFromAppState((n) => n.state.currentPresetId);
-  getCurrentPlaylistId = () => this.selectFromAppState((n) => n.state.currentPlaylistId);
-  getNightLight = () => this.selectFromAppState((n) => n.state.nightLight);
-  getUdp = () => this.selectFromAppState((n) => n.state.udp);
-  getLiveViewOverride = () => this.selectFromAppState((n) => n.state.liveViewOverride);
-  getMainSegmentId = () => this.selectFromAppState((n) => n.state.mainSegmentId);
-  getVersionName = () => this.selectFromAppState((n) => n.info.versionName);
-  getVersionId = () => this.selectFromAppState((n) => n.info.versionId);
-  getLedInfo = () => this.selectFromAppState((n) => n.info.ledInfo);
-  // getStr = () => this.selectFromAppState((n) => n.info.str);
-  getName = () => this.selectFromAppState((n) => n.info.name);
-  getUdpPort = () => this.selectFromAppState((n) => n.info.udpPort);
-  getIsLive = () => this.selectFromAppState((n) => n.info.isLive);
-  // getLm = () => this.selectFromAppState((n) => n.info.lm);
-  getSourceIpAddress = () => this.selectFromAppState((n) => n.info.sourceIpAddress);
-  getWebSocketCount = () => this.selectFromAppState((n) => n.info.webSocketCount);
-  getEffectCount = () => this.selectFromAppState((n) => n.info.effectCount);
-  getPaletteCount = () => this.selectFromAppState((n) => n.info.paletteCount);
-  getWifi = () => this.selectFromAppState((n) => n.info.wifi);
-  getFileSystem = () => this.selectFromAppState((n) => n.info.fileSystem);
-  getWledDevicesOnNetwork = () => this.selectFromAppState((n) => n.info.wledDevicesOnNetwork);
-  getPlatform = () => this.selectFromAppState((n) => n.info.platform);
-  getArduinoVersion = () => this.selectFromAppState((n) => n.info.arduinoVersion);
-  getFreeHeapBytes = () => this.selectFromAppState((n) => n.info.freeHeapBytes);
-  getUptimeSeconds = () => this.selectFromAppState((n) => n.info.uptimeSeconds);
-  // getOpt = () => this.selectFromAppState((n) => n.info.opt);
-  getBrand = () => this.selectFromAppState((n) => n.info.brand);
-  getProductName = () => this.selectFromAppState((n) => n.info.productName);
-  getMacAddress = () => this.selectFromAppState((n) => n.info.macAddress);
-  getIpAddress = () => this.selectFromAppState((n) => n.info.ipAddress);
+  getAppState = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n)
+      .pipe<AppStateProps>(takeUntil(ngUnsubscribe));
+  getOn = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.state.on)
+      .pipe<AppStateState['on']>(takeUntil(ngUnsubscribe));
+  getBrightness = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.state.brightness)
+      .pipe<AppStateState['brightness']>(takeUntil(ngUnsubscribe));
+  getTransition = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.state.transition)
+      .pipe<AppStateState['transition']>(takeUntil(ngUnsubscribe));
+  getCurrentPresetId = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.state.currentPresetId)
+      .pipe<AppStateState['currentPresetId']>(takeUntil(ngUnsubscribe));
+  getCurrentPlaylistId = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.state.currentPlaylistId)
+      .pipe<AppStateState['currentPlaylistId']>(takeUntil(ngUnsubscribe));
+  getNightLight = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.state.nightLight)
+      .pipe<AppStateState['nightLight']>(takeUntil(ngUnsubscribe));
+  getUdp = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.state.udp)
+      .pipe<AppStateState['udp']>(takeUntil(ngUnsubscribe));
+  getLiveViewOverride = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.state.liveViewOverride)
+      .pipe<AppStateState['liveViewOverride']>(takeUntil(ngUnsubscribe));
+  getMainSegmentId = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.state.mainSegmentId)
+      .pipe<AppStateState['mainSegmentId']>(takeUntil(ngUnsubscribe));
+  getVersionName = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.info.versionName)
+      .pipe<AppStateInfo['versionName']>(takeUntil(ngUnsubscribe));
+  getVersionId = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.info.versionId)
+      .pipe<AppStateInfo['versionId']>(takeUntil(ngUnsubscribe));
+  getLedInfo = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.info.ledInfo)
+      .pipe<AppStateInfo['ledInfo']>(takeUntil(ngUnsubscribe));
+  getShouldToggleReceiveWithSend = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.info.shouldToggleReceiveWithSend)
+      .pipe<AppStateInfo['shouldToggleReceiveWithSend']>(takeUntil(ngUnsubscribe));
+  getName = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.info.name)
+      .pipe<AppStateInfo['name']>(takeUntil(ngUnsubscribe));
+  getUdpPort = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.info.udpPort)
+      .pipe<AppStateInfo['udpPort']>(takeUntil(ngUnsubscribe));
+  getIsLive = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.info.isLive)
+      .pipe<AppStateInfo['isLive']>(takeUntil(ngUnsubscribe));
+  // getLm = (ngUnsubscribe: Subject<void>) =>
+  //   this.selectFromAppState((n) => n.info.lm)
+  //     .pipe<AppStateInfo['lm']>(takeUntil(ngUnsubscribe));
+  getSourceIpAddress = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.info.sourceIpAddress)
+      .pipe<AppStateInfo['sourceIpAddress']>(takeUntil(ngUnsubscribe));
+  getWebSocketCount = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.info.webSocketCount)
+      .pipe<AppStateInfo['webSocketCount']>(takeUntil(ngUnsubscribe));
+  getEffectCount = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.info.effectCount)
+      .pipe<AppStateInfo['effectCount']>(takeUntil(ngUnsubscribe));
+  getPaletteCount = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.info.paletteCount)
+      .pipe<AppStateInfo['paletteCount']>(takeUntil(ngUnsubscribe));
+  getWifi = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.info.wifi)
+      .pipe<AppStateInfo['wifi']>(takeUntil(ngUnsubscribe));
+  getFileSystem = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.info.fileSystem)
+      .pipe<AppStateInfo['fileSystem']>(takeUntil(ngUnsubscribe));
+  getWledDevicesOnNetwork = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.info.wledDevicesOnNetwork)
+      .pipe<AppStateInfo['wledDevicesOnNetwork']>(takeUntil(ngUnsubscribe));
+  getPlatform = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.info.platform)
+      .pipe<AppStateInfo['platform']>(takeUntil(ngUnsubscribe));
+  getArduinoVersion = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.info.arduinoVersion)
+      .pipe<AppStateInfo['arduinoVersion']>(takeUntil(ngUnsubscribe));
+  getFreeHeapBytes = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.info.freeHeapBytes)
+      .pipe<AppStateInfo['freeHeapBytes']>(takeUntil(ngUnsubscribe));
+  getUptimeSeconds = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.info.uptimeSeconds)
+      .pipe<AppStateInfo['uptimeSeconds']>(takeUntil(ngUnsubscribe));
+  // getOpt = (ngUnsubscribe: Subject<void>) =>
+  //   this.selectFromAppState((n) => n.info.opt)
+  //     .pipe<AppStateInfo['opt']>(takeUntil(ngUnsubscribe));
+  getBrand = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.info.brand)
+      .pipe<AppStateInfo['brand']>(takeUntil(ngUnsubscribe));
+  getProductName = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.info.productName)
+      .pipe<AppStateInfo['productName']>(takeUntil(ngUnsubscribe));
+  getMacAddress = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.info.macAddress)
+      .pipe<AppStateInfo['macAddress']>(takeUntil(ngUnsubscribe));
+  getIpAddress = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.info.ipAddress)
+      .pipe<AppStateInfo['ipAddress']>(takeUntil(ngUnsubscribe));
 
   // setters
-  setOn = (on: AppStateProps['state']['on']) => this.updateState({ on });
-  setBrightness = (brightness: AppStateProps['state']['brightness']) => this.updateState({ brightness });
-  setTransition = (transition: AppStateProps['state']['transition']) => this.updateState({ transition });
-  setCurrentPresetId = (currentPresetId: AppStateProps['state']['currentPresetId']) => this.updateState({ currentPresetId });
-  setCurrentPlaylistId = (currentPlaylistId: AppStateProps['state']['currentPlaylistId']) => this.updateState({ currentPlaylistId });
-  setNightLight = (nightLight: AppStateProps['state']['nightLight']) => this.updateState({ nightLight });
-  setUdp = (udp: AppStateProps['state']['udp']) => this.updateState({ udp });
-  setLiveViewOverride = (liveViewOverride: AppStateProps['state']['liveViewOverride']) => this.updateState({ liveViewOverride });
-  setMainSegmentId = (mainSegmentId: AppStateProps['state']['mainSegmentId']) => this.updateState({ mainSegmentId });
-  setVersionName = (versionName: AppStateProps['info']['versionName']) => this.updateInfo({ versionName });
-  setVersionId = (versionId: AppStateProps['info']['versionId']) => this.updateInfo({ versionId });
-  setLedInfo = (ledInfo: AppStateProps['info']['ledInfo']) => this.updateInfo({ ledInfo });
-  // setStr = (str: AppStateProps['info']['str']) => this.foo2({ str });
-  setName = (name: AppStateProps['info']['name']) => this.updateInfo({ name });
-  setUdpPort = (udpPort: AppStateProps['info']['udpPort']) => this.updateInfo({ udpPort });
-  setIsLive = (isLive: AppStateProps['info']['isLive']) => this.updateInfo({ isLive });
-  // setLm = (lm: AppStateProps['info']['lm']) => this.foo2({ lm });
-  setSourceIpAddress = (sourceIpAddress: AppStateProps['info']['sourceIpAddress']) => this.updateInfo({ sourceIpAddress });
-  setWebSocketCount = (webSocketCount: AppStateProps['info']['webSocketCount']) => this.updateInfo({ webSocketCount });
-  setEffectCount = (effectCount: AppStateProps['info']['effectCount']) => this.updateInfo({ effectCount });
-  setPaletteCount = (paletteCount: AppStateProps['info']['paletteCount']) => this.updateInfo({ paletteCount });
-  setWifi = (wifi: AppStateProps['info']['wifi']) => this.updateInfo({ wifi });
-  setFileSystem = (fileSystem: AppStateProps['info']['fileSystem']) => this.updateInfo({ fileSystem });
-  setWledDevicesOnNetwork = (wledDevicesOnNetwork: AppStateProps['info']['wledDevicesOnNetwork']) => this.updateInfo({ wledDevicesOnNetwork });
-  setPlatform = (platform: AppStateProps['info']['platform']) => this.updateInfo({ platform });
-  setArduinoVersion = (arduinoVersion: AppStateProps['info']['arduinoVersion']) => this.updateInfo({ arduinoVersion });
-  setFreeHeapBytes = (freeHeapBytes: AppStateProps['info']['freeHeapBytes']) => this.updateInfo({ freeHeapBytes });
-  setUptimeSeconds = (uptimeSeconds: AppStateProps['info']['uptimeSeconds']) => this.updateInfo({ uptimeSeconds });
-  // setOpt = (opt: AppStateProps['info']['opt']) => this.foo2({ opt });
-  setBrand = (brand: AppStateProps['info']['brand']) => this.updateInfo({ brand });
-  setProductName = (productName: AppStateProps['info']['productName']) => this.updateInfo({ productName });
-  setMacAddress = (macAddress: AppStateProps['info']['macAddress']) => this.updateInfo({ macAddress });
-  setIpAddress = (ipAddress: AppStateProps['info']['ipAddress']) => this.updateInfo({ ipAddress });
+  setOn = (on: AppStateState['on']) =>
+    this.updateState({ on });
+  setBrightness = (brightness: AppStateState['brightness']) =>
+    this.updateState({ brightness });
+  setTransition = (transition: AppStateState['transition']) =>
+    this.updateState({ transition });
+  setCurrentPresetId = (currentPresetId: AppStateState['currentPresetId']) =>
+    this.updateState({ currentPresetId });
+  setCurrentPlaylistId = (currentPlaylistId: AppStateState['currentPlaylistId']) =>
+    this.updateState({ currentPlaylistId });
+  setNightLight = (nightLight: AppStateState['nightLight']) =>
+    this.updateState({ nightLight });
+  setUdp = (udp: AppStateState['udp']) =>
+    this.updateState({ udp });
+  setLiveViewOverride = (liveViewOverride: AppStateState['liveViewOverride']) =>
+    this.updateState({ liveViewOverride });
+  setMainSegmentId = (mainSegmentId: AppStateState['mainSegmentId']) =>
+    this.updateState({ mainSegmentId });
+  setVersionName = (versionName: AppStateInfo['versionName']) =>
+    this.updateInfo({ versionName });
+  setVersionId = (versionId: AppStateInfo['versionId']) =>
+    this.updateInfo({ versionId });
+  setLedInfo = (ledInfo: AppStateInfo['ledInfo']) =>
+    this.updateInfo({ ledInfo });
+  setShouldToggleReceiveWithSend = (shouldToggleReceiveWithSend: AppStateInfo['shouldToggleReceiveWithSend']) =>
+    this.updateInfo({ shouldToggleReceiveWithSend });
+  setName = (name: AppStateInfo['name']) =>
+    this.updateInfo({ name });
+  setUdpPort = (udpPort: AppStateInfo['udpPort']) =>
+    this.updateInfo({ udpPort });
+  setIsLive = (isLive: AppStateInfo['isLive']) =>
+    this.updateInfo({ isLive });
+  // setLm = (lm: AppStateInfo['lm']) =>
+  //   this.updateInfo({ lm });
+  setSourceIpAddress = (sourceIpAddress: AppStateInfo['sourceIpAddress']) =>
+    this.updateInfo({ sourceIpAddress });
+  setWebSocketCount = (webSocketCount: AppStateInfo['webSocketCount']) =>
+    this.updateInfo({ webSocketCount });
+  setEffectCount = (effectCount: AppStateInfo['effectCount']) =>
+    this.updateInfo({ effectCount });
+  setPaletteCount = (paletteCount: AppStateInfo['paletteCount']) =>
+    this.updateInfo({ paletteCount });
+  setWifi = (wifi: AppStateInfo['wifi']) =>
+    this.updateInfo({ wifi });
+  setFileSystem = (fileSystem: AppStateInfo['fileSystem']) =>
+    this.updateInfo({ fileSystem });
+  setWledDevicesOnNetwork = (wledDevicesOnNetwork: AppStateInfo['wledDevicesOnNetwork']) =>
+    this.updateInfo({ wledDevicesOnNetwork });
+  setPlatform = (platform: AppStateInfo['platform']) =>
+    this.updateInfo({ platform });
+  setArduinoVersion = (arduinoVersion: AppStateInfo['arduinoVersion']) =>
+    this.updateInfo({ arduinoVersion });
+  setFreeHeapBytes = (freeHeapBytes: AppStateInfo['freeHeapBytes']) =>
+    this.updateInfo({ freeHeapBytes });
+  setUptimeSeconds = (uptimeSeconds: AppStateInfo['uptimeSeconds']) =>
+    this.updateInfo({ uptimeSeconds });
+  // setOpt = (opt: AppStateInfo['opt']) =>
+  //   this.updateInfo({ opt });
+  setBrand = (brand: AppStateInfo['brand']) =>
+    this.updateInfo({ brand });
+  setProductName = (productName: AppStateInfo['productName']) =>
+    this.updateInfo({ productName });
+  setMacAddress = (macAddress: AppStateInfo['macAddress']) =>
+    this.updateInfo({ macAddress });
+  setIpAddress = (ipAddress: AppStateInfo['ipAddress']) =>
+    this.updateInfo({ ipAddress });
 
-  private selectFromAppState = (selectFn: (state: AppStateProps) => unknown) =>
+  private selectFromAppState = (selectFn: (state: AppStateProps) => any) =>
     appStateStore.pipe(select(selectFn));
 
-  private updateState = (newState: Partial<AppStateProps['state']>) => {
+  private updateState = (newState: Partial<AppStateState>) => {
     appStateStore.update((n) => ({
       state: { ...n.state, ...newState },
       info: n.info,
     }));
   }
 
-  private updateInfo = (newInfo: Partial<AppStateProps['info']>) => {
+  private updateInfo = (newInfo: Partial<AppStateInfo>) => {
     appStateStore.update((n) => ({
       state: n.state,
       info: { ...n.info, ...newInfo },
