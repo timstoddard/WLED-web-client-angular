@@ -23,7 +23,7 @@ export interface WledState {
   /** ID of currently set playlist. For now, this sets the preset cycle feature, `-1` is off and `0` is on. */
   pl: number;
   /** Nightlight settings. */
-  nl: WledNightlightSettings;
+  nl: WledNightLightSettings;
   /** UDP settings. */
   udpn: WledUdpSettings;
   /** Live data override. 0 is off, 1 is override until live data ends, 2 is override until ESP reboot. */
@@ -49,13 +49,13 @@ export interface WledState {
   playlist?: WledPlaylistSettings;
 }
 
-export interface WledNightlightSettings {
+export interface WledNightLightSettings {
   /** `true` if nightlight currently active. */
   on: boolean;
   /** Duration of nightlight in minutes [1-255]. */
   dur: number;
   /** Nightlight mode (0: instant, 1: fade, 2: color fade, 3: sunrise). */
-  mode: number;
+  mode: 0 | 1 | 2 | 3;
   /** Target brightness of nightlight feature [0-255]. */
   tbri: number;
   /** Remaining nightlight duration in seconds, `-1` if not active. Only in state response, cannot be set. */
