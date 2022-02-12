@@ -12,6 +12,8 @@ export class PalettesDataResolver implements Resolve<PalettesData[]> {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     // TODO use api data
+
+    // TODO set up offline handler like in ControlsResolver
     return of(palettesData);
 
     // TODO can merge all response objects together instead of returning an array?

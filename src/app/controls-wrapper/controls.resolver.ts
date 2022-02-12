@@ -3,16 +3,22 @@ import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/r
 import { ApiService } from '../shared/api.service';
 import { WledApiResponse } from '../shared/api-types';
 import { ControlsServicesModule } from './controls-services.module';
-// import { of } from 'rxjs';
-// import { data } from './mock-api-data';
+import { of } from 'rxjs';
+import { data } from './mock-api-data';
+import { LocalStorageService } from '../shared/local-storage.service';
 
 @Injectable({ providedIn: ControlsServicesModule })
 export class ControlsResolver implements Resolve<WledApiResponse> {
-  constructor(private apiService: ApiService) { }
+  constructor(
+    private apiService: ApiService,
+    private localStorageService: LocalStorageService) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     // TODO set up playground with mock data
-    // return of(data);
-    return this.apiService.getJson();
+
+    const isOffline = this.localStorageService.get('isOffline');
+    return isOffline
+      ? of(data)
+      : this.apiService.getJson();
   }
 }

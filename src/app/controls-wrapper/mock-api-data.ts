@@ -1,6 +1,8 @@
 import { WledApiResponse } from '../shared/api-types';
 import { PalettesData } from './palettes/palettes.service';
 
+// TODO update data for `segs`
+
 export const data: WledApiResponse = {
   state: {
     on: true,
