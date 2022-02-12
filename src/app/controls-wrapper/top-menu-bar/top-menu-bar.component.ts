@@ -65,20 +65,16 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     this.brightnessControl = this.createFormControl();
     this.onResize();
 
-    // TODO remove
     this.appStateService.getAppState(this.ngUnsubscribe)
       .subscribe(n => {
-        console.log(n);
+        console.log(n); // TODO remove
         this.isOn = n.state.on;
         this.isNightLightActive = n.state.nightLight.on;
         this.shouldSync = n.state.udp.shouldSend;
         // TODO add toggle for receive in UI?
         this.shouldToggleReceiveWithSend = n.info.shouldToggleReceiveWithSend;
         this.isLiveViewActive = n.info.isLive;
-        this.brightnessControl.setValue(n.state.brightness, {
-          // TODO is this the right (most efficient) way to propagate these changes?
-          emitEvent: false,
-        });
+        this.brightnessControl.setValue(n.state.brightness, { emitEvent: false });
       });
 
     // TODO evaluate if needed
@@ -154,7 +150,10 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     this.showBrightnessSlider = appWidth >= MIN_SHOW_BRIGHTNESS_SLIDER_THRESHOLD_PX;
     this.showPcModeButton = appWidth >= MIN_SHOW_PC_MODE_BUTTON_THRESHOLD_PX;
 
-    // TODO if width changed from over brightness slider threshold to under, then force close brightness slider
+    // if brightness slider overlay is open & app width changed from under brightness slider threshold to over, then force close the overlay
+    if (this.isBrightnessOpen && this.showBrightnessSlider) {
+      this.isBrightnessOpen = false;
+    }
   }
 
   toggleBrightnessOpen() {
@@ -172,7 +171,6 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
       overlayX: 'center',
       overlayY: 'top',
     };
-    const centeredPosition = new ConnectionPositionPair(originCentered, overlayCentered, OFFSET_X_PX, OFFSET_Y_PX);
     const originRightSide: OriginConnectionPosition = {
       originX: 'end',
       originY: 'bottom',
@@ -181,6 +179,7 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
       overlayX: 'end',
       overlayY: 'top',
     };
+    const centeredPosition = new ConnectionPositionPair(originCentered, overlayCentered, OFFSET_X_PX, OFFSET_Y_PX);
     const rightSidePosition = new ConnectionPositionPair(originRightSide, overlayRightSide, OFFSET_X_PX, OFFSET_Y_PX);
     return [centeredPosition, rightSidePosition];
   }
@@ -223,7 +222,7 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
   }
 
   private toggleLiveView() {
-    this.topMenuBarService.toggleLiveView(!this.isNightLightActive)
+    this.topMenuBarService.toggleLiveView(!this.isLiveViewActive)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(genericPostResponse(this.appStateService));
     
