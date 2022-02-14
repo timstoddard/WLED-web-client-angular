@@ -10,15 +10,16 @@ const INFO_PATH = 'json/info';
 const EFFECTS_PATH = 'json/eff';
 const PALETTES_PATH = 'json/pal';
 const PALETTES_DATA_PATH = 'json/palx';
+const LIVE_PATH = 'json/live';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
-  BASE_URL = 'http://192.168.100.154';
+  readonly BASE_URL = '192.168.100.154';
 
   constructor(private http: HttpClient) {}
 
   private createApiUrl = (path: string) => {
-    return `${this.BASE_URL}/${path}`;
+    return `http://${this.BASE_URL}/${path}`;
   }
 
   /** Returns an object containing the state, info, effects, and palettes. */
@@ -57,6 +58,12 @@ export class ApiService {
       .set('page', page);
     return this.http.get<PalettesData>(
       this.createApiUrl(PALETTES_DATA_PATH), { params });
+  }
+
+  /** Gets live data for all LEDs. */
+  getLiveData() {
+    return this.http.get<any /* TODO type */>(
+      this.createApiUrl(LIVE_PATH));
   }
 
   /** Sets current palette by id. */
@@ -132,11 +139,12 @@ export class ApiService {
   }
 
   toggleLiveView(isLiveView: boolean) {
-    const body = this.createBody({
-      // TODO set live view on/off
-    });
-    return this.http.post<WledApiResponse>(
-      this.createApiUrl('json/si'), body);
+    return this.http.get<any>(this.createApiUrl(LIVE_PATH)); // TODO remove
+
+    // TODO how to handle ws and non-ws cases?
+    // return isLiveView
+    //   ? this.http.get<any>(this.createApiUrl(LIVE_PATH))
+    //   : null;
   }
 
   /** Selects the specified segment. */

@@ -1,0 +1,9 @@
+<!-- <canvas #liveView></canvas> -->
+
+<!-- TODO make this a canvas (?) -->
+<iframe
+  *ngIf="isLive"
+  [src]="getIframeUrl()"
+  class="liveView"
+  [ngStyle]="getIframeStyle()">
+</iframe>

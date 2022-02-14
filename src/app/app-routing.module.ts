@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { DmxMapComponent } from './dmx-map/dmx-map.component';
 import { EditComponent } from './edit/edit.component';
-import { LiveViewComponent } from './live-view/live-view.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { QuickStatsComponent } from './quick-stats/quick-stats.component';
 import { RestartComponent } from './restart/restart.component';
@@ -37,8 +36,7 @@ const routes: RouteWithPageTitle[] = [
   },
   {
     path: 'live',
-    component: LiveViewComponent,
-    data: { title: 'Live View' },
+    loadChildren: () => import('./shared/live-view/live-view.module').then(m => m.LiveViewModule),
   },
   {
     path: 'quick-stats',

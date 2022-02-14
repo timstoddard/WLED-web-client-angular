@@ -23,6 +23,8 @@ export interface PaletteWithBackground {
   background: string;
 }
 
+const NONE_SELECTED = -1;
+
 @Injectable({ providedIn: ControlsServicesModule })
 export class PalettesService {
   sortedPalettes!: PaletteWithBackground[];
@@ -42,10 +44,15 @@ export class PalettesService {
 
   setPalette(paletteId: number) {
     this.selectedPaletteName = this.getPaletteName(paletteId);
-    return this.apiService.setPalette(paletteId);
+    return paletteId !== NONE_SELECTED
+      ? this.apiService.setPalette(paletteId)
+      : null;
   }
 
   getPaletteName(paletteId: number) {
+    if (paletteId === NONE_SELECTED) {
+      return 'none';
+    }
     if (this.sortedPalettes && this.sortedPalettes.length > 0) {
       const selectedPalette = this.sortedPalettes
         .find(((n) => n.id === paletteId));

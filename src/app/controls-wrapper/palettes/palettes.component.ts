@@ -6,7 +6,7 @@ import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
 import { genericPostResponse } from '../utils';
 import { PaletteWithBackground, PalettesService } from './palettes.service';
 
-const DEFAULT_PALETTE_ID = 0;
+const DEFAULT_PALETTE_ID = -1; // TODO get from first selected segment
 
 @Component({
   selector: 'app-palettes',
@@ -30,6 +30,7 @@ export class PalettesComponent extends UnsubscribingComponent implements OnInit 
 
   ngOnInit() {
     this.palettes = this.palettesService.getFilteredPalettes();
+    this.setPalette(DEFAULT_PALETTE_ID);
     this.selectedPalette = this.createFormControl();
   }
 
@@ -42,9 +43,12 @@ export class PalettesComponent extends UnsubscribingComponent implements OnInit 
   }
 
   private setPalette(paletteId: number) {
-    this.palettesService.setPalette(paletteId)
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(genericPostResponse(this.appStateService));
+    const result = this.palettesService.setPalette(paletteId);
+    if (result) {
+      result
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe(genericPostResponse(this.appStateService));
+    }
   }
 
   private createFormControl() {
@@ -53,11 +57,6 @@ export class PalettesComponent extends UnsubscribingComponent implements OnInit 
     control.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((paletteId: number) => this.setPalette(paletteId));
-
-    // trigger setting the name for the selected name
-    setTimeout(() => {
-      control.setValue(DEFAULT_PALETTE_ID);
-    });
 
     return control;
   }

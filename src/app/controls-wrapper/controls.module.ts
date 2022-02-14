@@ -19,6 +19,7 @@ import { ControlsServicesModule } from './controls-services.module';
 import { EffectsComponent } from './effects/effects.component';
 import { HexInputComponent } from './color-inputs/hex-input/hex-input.component';
 // import { InfoComponent } from './info/info.component';
+import { LiveViewModule } from '../shared/live-view/live-view.module';
 // import { NodesComponent } from './nodes/nodes.component';
 import { PalettesComponent } from './palettes/palettes.component';
 import { PresetFormComponent } from './presets/preset-form/preset-form.component';
@@ -73,6 +74,7 @@ const COMPONENTS = [
     CommonModule,
     ControlsRoutingModule,
     ControlsServicesModule,
+    LiveViewModule,
     MatCheckboxModule,
     MatFormFieldModule,
     MatInputModule,

@@ -6,7 +6,7 @@ import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
 import { genericPostResponse } from '../utils';
 import { Effect, EffectsService } from './effects.service';
 
-const DEFAULT_EFFECT_ID = 0;
+const DEFAULT_EFFECT_ID = -1; // TODO get from first selected segment
 const DEFAULT_EFFECT_SPEED = 128;
 const DEFAULT_EFFECT_INTENSITY = 128;
 
@@ -31,6 +31,7 @@ export class EffectsComponent extends UnsubscribingComponent implements OnInit {
 
   ngOnInit() {
     this.effects = this.effectsService.getFilteredEffects();
+    this.setEffect(DEFAULT_EFFECT_ID);
     this.effectsForm = this.createForm();
   }
 
@@ -48,9 +49,12 @@ export class EffectsComponent extends UnsubscribingComponent implements OnInit {
   }
 
   private setEffect(effectId: number) {
-    this.effectsService.setEffect(effectId)
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(genericPostResponse(this.appStateService));
+    const result = this.effectsService.setEffect(effectId);
+    if (result) {
+      result
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe(genericPostResponse(this.appStateService));
+    }
   }
 
   private setSpeed(effectId: number) {
@@ -83,11 +87,6 @@ export class EffectsComponent extends UnsubscribingComponent implements OnInit {
     form.get('intensity')!.valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((intensity: number) => this.setIntensity(intensity));
-
-    // trigger setting the name for the selected name
-    setTimeout(() => {
-      form.get('selectedEffect')!.setValue(DEFAULT_EFFECT_ID); 
-    });
 
     return form;
   }

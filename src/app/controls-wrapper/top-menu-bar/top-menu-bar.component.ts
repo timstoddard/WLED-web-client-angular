@@ -1,7 +1,6 @@
 import { OriginConnectionPosition, OverlayConnectionPosition, ConnectionPositionPair } from '@angular/cdk/overlay';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
 import { takeUntil } from 'rxjs';
 import { WledApiResponse } from '../../shared/api-types';
 import { AppConfig } from '../../shared/app-config';
@@ -37,7 +36,7 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
   private nightLightMode = false;
   private shouldSync = false; // TODO better name
   private shouldToggleReceiveWithSend = true; // TODO better name
-  isLiveViewActive = true; // false; // TODO just for testing
+  isLiveViewActive = false;
   private showInfo = false;
   private showNodes = false;
 
@@ -55,7 +54,6 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     private formBuilder: FormBuilder,
     private localStorageService: LocalStorageService,
     private topMenuBarService: TopMenuBarService,
-    private sanitizer: DomSanitizer,
     private appStateService: AppStateService,
   ) {
     super();
@@ -214,17 +212,18 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
       });
   }
 
-  getIframeUrl() {
-    const url = this.isLiveViewActive
-      ? generateApiUrl('liveview')
-      : 'about:blank';
-    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
-  }
-
   private toggleLiveView() {
-    this.topMenuBarService.toggleLiveView(!this.isLiveViewActive)
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(genericPostResponse(this.appStateService));
+    // TODO make button toggle the backend
+    // const liveData = this.topMenuBarService.toggleLiveView(!this.isLiveViewActive);
+    // if (liveData) {
+    //   liveData
+    //     .pipe(takeUntil(this.ngUnsubscribe))
+    //     .subscribe(n => {
+    //       genericPostResponse(this.appStateService);
+    //       console.log(n);
+    //     });
+    // }
+
     
     // TODO send websocket message to disable if live view setting was turned off
     // if (!this.isLiveViewActive && ws && ws.readyState === WebSocket.OPEN) {

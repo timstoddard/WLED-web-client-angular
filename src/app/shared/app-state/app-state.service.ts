@@ -55,7 +55,7 @@ interface AppStateInfo {
   effectCount: number;
   paletteCount: number;
   wifi: {
-    ssid: string; // TODO bssid vs ssid?
+    bssid: string;
     signalStrength: number;
     channel: number;
   };
@@ -119,7 +119,7 @@ const DEFAULT_APP_STATE: AppStateProps = {
     effectCount: 0,
     paletteCount: 0,
     wifi: {
-      ssid: '',
+      bssid: '',
       signalStrength: 0,
       channel: 0,
     },
@@ -191,7 +191,7 @@ export class AppStateService {
         effectCount: response.info.fxcount,
         paletteCount: response.info.palcount,
         wifi: {
-          ssid: response.info.wifi.bssid,
+          bssid: response.info.wifi.bssid,
           signalStrength: response.info.wifi.signal,
           channel: response.info.wifi.channel,
         },

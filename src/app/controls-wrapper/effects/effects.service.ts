@@ -10,6 +10,8 @@ export interface Effect {
   name: string;
 }
 
+const NONE_SELECTED = -1;
+
 @Injectable({ providedIn: ControlsServicesModule })
 export class EffectsService {
   sortedEffects!: Effect[];
@@ -29,7 +31,9 @@ export class EffectsService {
 
   setEffect(effectId: number) {
     this.selectedEffectName = this.getEffectName(effectId);
-    return this.apiService.setEffect(effectId);
+    return effectId !== NONE_SELECTED
+      ? this.apiService.setEffect(effectId)
+      : null;
   }
 
   setSpeed(effectId: number) {
@@ -41,6 +45,9 @@ export class EffectsService {
   }
 
   getEffectName(effectId: number) {
+    if (effectId === NONE_SELECTED) {
+      return 'none';
+    }
     if (this.sortedEffects && this.sortedEffects.length > 0) {
       const selectedPalette = this.sortedEffects
         .find(((n) => n.id === effectId));

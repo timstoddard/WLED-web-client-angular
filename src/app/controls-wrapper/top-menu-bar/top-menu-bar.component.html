@@ -70,10 +70,4 @@
   </app-color-slider>
 </ng-template>
 
-<!-- TODO make this a canvas (?) -->
-<!-- TODO wire up isLiveViewActive to ngIf -->
-<iframe
-  *ngIf="true"
-  [src]="getIframeUrl()"
-  class="topMenuBar__liveView">
-</iframe>
+<app-live-view></app-live-view>
