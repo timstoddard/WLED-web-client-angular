@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { PalettesData } from '../controls-wrapper/palettes/palettes.service';
 import { WledApiResponse, WledInfo, WledState } from './api-types';
 import { Segment } from './app-types';
+import { LiveViewData } from './live-view/live-view.service';
 
 const ALL_JSON_PATH = 'json';
 const STATES_PATH = 'json/state';
@@ -62,7 +63,7 @@ export class ApiService {
 
   /** Gets live data for all LEDs. */
   getLiveData() {
-    return this.http.get<any /* TODO type */>(
+    return this.http.get<LiveViewData>(
       this.createApiUrl(LIVE_PATH));
   }
 

@@ -1,12 +1,12 @@
-import { Component } from '@angular/core';
-
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { PageTitleService } from './shared/page-title.service';
 import { UnsubscribingComponent } from './shared/unsubscribing.component';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent extends UnsubscribingComponent {
   isDevMode = true; // TODO remove

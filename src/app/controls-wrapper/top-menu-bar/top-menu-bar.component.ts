@@ -1,5 +1,5 @@
 import { OriginConnectionPosition, OverlayConnectionPosition, ConnectionPositionPair } from '@angular/cdk/overlay';
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { takeUntil } from 'rxjs';
 import { WledApiResponse } from '../../shared/api-types';
@@ -23,6 +23,7 @@ const MIN_SHOW_PC_MODE_BUTTON_THRESHOLD_PX = 1200; // TODO might need to be bigg
 })
 export class TopMenuBarComponent extends UnsubscribingComponent implements OnInit {
   @Input() cfg!: AppConfig; // TODO get from service/reducer
+  buttons: MenuBarButton[] = [];
   brightnessControl!: FormControl;
   isBrightnessOpen: boolean = false;
   showBrightnessSlider: boolean = false;
@@ -55,6 +56,7 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     private localStorageService: LocalStorageService,
     private topMenuBarService: TopMenuBarService,
     private appStateService: AppStateService,
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
     super();
   }
@@ -62,6 +64,7 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
   ngOnInit() {
     this.brightnessControl = this.createFormControl();
     this.onResize();
+    this.buttons = this.getButtons();
 
     this.appStateService.getAppState(this.ngUnsubscribe)
       .subscribe(n => {
@@ -73,6 +76,11 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
         this.shouldToggleReceiveWithSend = n.info.shouldToggleReceiveWithSend;
         this.isLiveViewActive = n.info.isLive;
         this.brightnessControl.setValue(n.state.brightness, { emitEvent: false });
+
+        // TODO why does power button always show as enabled on page init
+        // seems to have something to do with using WS
+        // this.buttons = this.getButtons();
+        // this.changeDetectorRef.markForCheck();
       });
 
     // TODO evaluate if needed
@@ -92,55 +100,6 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     // TODO update sliding UI
     // this.sliderContainer = document.querySelector('.container')!;
     // this.sliderContainer.style.setProperty('--n', `${this.N}`);
-  }
-
-  getButtons(): MenuBarButton[] {
-    const buttons = [
-      {
-        name: 'Power',
-        onClick: () => this.togglePower(),
-        icon: '&#xe08f;',
-        enabled: this.isOn,
-      },
-      {
-        name: 'Timer', // TODO better name (night light)
-        onClick: () => this.toggleNightLight(),
-        icon: '&#xe2a2;',
-        enabled: this.isNightLightActive,
-      },
-      {
-        name: 'Sync',
-        onClick: () => this.toggleSync(),
-        icon: '&#xe116;',
-        enabled: this.shouldSync,
-      },
-      {
-        name: 'Live',
-        onClick: () => this.toggleLiveView(),
-        icon: '&#xe410;',
-        enabled: this.isLiveViewActive,
-      },
-      // TODO combine these & move to bottom menu
-      /*{
-        name: 'Info',
-        onClick: () => this.toggleShowInfo(),
-        icon: '&#xe066;',
-      },
-      {
-        name: 'Nodes',
-        onClick: () => this.toggleShowNodes(),
-        icon: '&#xe22d;',
-      },*/
-    ];
-    if (this.showPcModeButton) {
-      buttons.push({
-        name: 'PC Mode',
-        onClick: () => this.togglePcMode(true),
-        icon: '&#xe23d;',
-        enabled: this.isPcMode,
-      });
-    }
-    return buttons;
   }
 
   onResize() {
@@ -180,6 +139,55 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     const centeredPosition = new ConnectionPositionPair(originCentered, overlayCentered, OFFSET_X_PX, OFFSET_Y_PX);
     const rightSidePosition = new ConnectionPositionPair(originRightSide, overlayRightSide, OFFSET_X_PX, OFFSET_Y_PX);
     return [centeredPosition, rightSidePosition];
+  }
+
+  private getButtons(): MenuBarButton[] {
+    const buttons = [
+      {
+        name: 'Power',
+        icon: '&#xe08f;',
+        onClick: () => this.togglePower(),
+        enabled: () => this.isOn,
+      },
+      {
+        name: 'Timer', // TODO better name (night light)
+        icon: '&#xe2a2;',
+        onClick: () => this.toggleNightLight(),
+        enabled: () => this.isNightLightActive,
+      },
+      {
+        name: 'Sync',
+        icon: '&#xe116;',
+        onClick: () => this.toggleSync(),
+        enabled: () => this.shouldSync,
+      },
+      {
+        name: 'Live',
+        icon: '&#xe410;',
+        onClick: () => this.toggleLiveView(),
+        enabled: () => this.isLiveViewActive,
+      },
+      // TODO combine these & move to bottom menu
+      /*{
+        name: 'Info',
+        icon: '&#xe066;',
+        onClick: () => this.toggleShowInfo(),
+      },
+      {
+        name: 'Nodes',
+        icon: '&#xe22d;',
+        onClick: () => this.toggleShowNodes(),
+      },*/
+    ];
+    if (this.showPcModeButton) {
+      buttons.push({
+        name: 'PC Mode',
+        icon: '&#xe23d;',
+        onClick: () => this.togglePcMode(true),
+        enabled: () => this.isPcMode,
+      });
+    }
+    return buttons;
   }
 
   private togglePower() {

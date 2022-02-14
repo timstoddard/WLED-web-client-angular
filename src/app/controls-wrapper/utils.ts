@@ -7,7 +7,7 @@ export interface MenuBarButton {
   name: string;
   onClick: () => void;
   icon: string;
-  enabled: boolean;
+  enabled: () => boolean;
 }
 
 // used for sorting effect/palette lists

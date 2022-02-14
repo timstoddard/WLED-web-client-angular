@@ -19,7 +19,7 @@ const DEFAULT_TRANSITION_DURATION = 0.7; // seconds
 })
 export class SegmentsComponent extends UnsubscribingComponent implements OnInit {
   @Input() cfg!: AppConfig; // TODO get from service/reducer
-  transitionTime!: FormControl;
+  transitionTime!: FormControl; // TODO move to top menu bar (?)
   segments: Segment[] = [];
   noNewSegments: boolean = false;
   private lowestUnused!: number;

@@ -3,11 +3,11 @@
   class="topMenuBar__row">
   <div class="topMenuBar__buttons">
     <div
-      *ngFor="let button of getButtons()"
+      *ngFor="let button of buttons"
       class="topMenuBar__buttonWrapper">
       <button
         (click)="button.onClick()"
-        [ngClass]="{ 'topMenuBar__button--enabled': button.enabled }"
+        [ngClass]="{ 'topMenuBar__button--enabled': button.enabled() }"
         class="topMenuBar__button">
         <i
           [innerHTML]="button.icon"

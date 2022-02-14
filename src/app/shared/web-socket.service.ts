@@ -1,32 +1,22 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
-import { catchError, tap, switchAll } from 'rxjs/operators';
-import { EMPTY, Subject } from 'rxjs';
 import { ApiService } from './api.service';
+import { LiveViewData } from './live-view/live-view.service';
+
+const LIVE_VIEW_MESSAGE = 'LIVE_VIEW_MESSAGE';
 
 @Injectable({ providedIn: 'root' })
 export class WebSocketService {
-  private messagesSubject$ = new Subject<any>();
-  messages$ = this.messagesSubject$.pipe(switchAll(), catchError(e => { throw e }));
   private socket$!: WebSocketSubject<any>;
+  private liveViewSocket$!: Observable<LiveViewData>;
 
   constructor(private apiService: ApiService) {
     this.connect();
   }
 
-  connect() {
-    if (!this.socket$ || this.socket$.closed) {
-      this.socket$ = this.getWebSocket();
-      const messages = this.socket$.pipe(
-        tap({
-          error: error => console.log(error),
-        }), catchError(_ => EMPTY));
-      this.messagesSubject$.next(messages);
-    }
-  }
-
-  getWebSocket() {
-    return webSocket(this.getWebSocketUrl());
+  getLiveViewSocket() {
+    return this.liveViewSocket$;
   }
 
   sendMessage(msg: any) {
@@ -35,6 +25,18 @@ export class WebSocketService {
 
   close() {
     this.socket$.complete();
+  }
+
+  private connect() {
+    // TODO handle dropped connections
+    // https://javascript-conference.com/blog/real-time-in-angular-a-journey-into-websocket-and-rxjs/
+
+    this.socket$ = webSocket<any /* TODO type */>(this.getWebSocketUrl());
+
+    this.liveViewSocket$ = this.socket$.multiplex(
+      () => ({ subscribe: LIVE_VIEW_MESSAGE }),
+      () => ({ unsubscribe: LIVE_VIEW_MESSAGE }),
+      message => !!message.leds);
   }
 
   private getWebSocketUrl() {
