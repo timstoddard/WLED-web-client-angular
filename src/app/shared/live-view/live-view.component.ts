@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@an
 import { takeUntil } from 'rxjs';
 import { ApiService } from '../api.service';
 import { WebSocketService } from '../web-socket.service';
-// import { AppStateService } from '../app-state/app-state.service';
+import { AppStateService } from '../app-state/app-state.service';
 import { UnsubscribingComponent } from '../unsubscribing.component';
 import { generateApiUrl } from '../../controls-wrapper/json.service';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -19,12 +19,11 @@ import { LiveViewService } from './live-view.service';
 export class LiveViewComponent extends UnsubscribingComponent implements OnInit {
   @ViewChild('liveView') liveViewCanvas!: ElementRef<HTMLCanvasElement>;
   isLive: boolean = true;
-  private hasWebSocket: boolean = true; // TODO how to figure this out?
-  private updateTimeout: number = 0;
+  private updateTimeout!: number;
   private backgroundString: string = '';
 
   constructor(
-    // private appStateService: AppStateService,
+    private appStateService: AppStateService,
     private apiService: ApiService,
     private webSocketService: WebSocketService,
     private sanitizer: DomSanitizer,
@@ -35,22 +34,24 @@ export class LiveViewComponent extends UnsubscribingComponent implements OnInit 
   }
 
   ngOnInit() {
-    if (this.hasWebSocket) {
-      this.updateWithWebSocket();
-    } else {
-      this.update();
-    }
-
-    // this.appStateService.getIsLive(this.ngUnsubscribe)
-    //   .subscribe((isLive: boolean) => {
-    //     this.isLive = isLive;
-    //   });
+    this.appStateService.getIsLiveViewActive(this.ngUnsubscribe)
+      .subscribe(isLiveViewActive => {
+        if (isLiveViewActive) {
+          try {
+            this.updateWithWebSocket();
+          } catch (e) {
+            this.update();
+          }
+        }
+      });
   }
 
   getIframeUrl() {
-    const url = this.isLive
-      ? generateApiUrl('liveview')
-      : 'about:blank';
+    // TODO what url to use here?
+    // const url = this.isLive
+    //   ? `${this.apiService.BASE_URL}/liveview`
+    //   : 'about:blank';
+    const url = '';
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
@@ -79,8 +80,9 @@ export class LiveViewComponent extends UnsubscribingComponent implements OnInit 
         } catch (e) {
         } finally {
           const LIVE_VIEW_FPS = 5; // TODO add setting in UI
+          const timeoutMs = 1000 / LIVE_VIEW_FPS;
           clearTimeout(this.updateTimeout);
-          this.updateTimeout = setTimeout(() => this.update(), 1000 / LIVE_VIEW_FPS) as unknown as number;
+          this.updateTimeout = setTimeout(() => this.update(), timeoutMs) as unknown as number;
         }
       });
   }
@@ -95,8 +97,6 @@ export class LiveViewComponent extends UnsubscribingComponent implements OnInit 
         this.backgroundString = this.liveViewService.getBackgroundString(leds);
         this.changeDetectorRef.markForCheck();
       });
-
-    this.webSocketService.sendMessage({ lv: true });
   }
 
   // TODO do we need to request animation frame?

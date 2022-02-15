@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import RangeTouch from 'rangetouch';
+import { takeUntil } from 'rxjs';
 import { WledApiResponse } from '../shared/api-types';
 import { AppConfig, initAppConfig } from '../shared/app-config';
+import { AppStateService } from '../shared/app-state/app-state.service';
 import { LocalStorageService } from '../shared/local-storage.service';
+import { UnsubscribingComponent } from '../shared/unsubscribing.component';
+import { WebSocketService } from '../shared/web-socket.service';
 import { ColorService } from './color.service';
 import { ControlsService } from './controls.service';
 import { generateApiUrl } from './json.service';
@@ -14,7 +18,7 @@ import { getElementList, isObject } from './utils';
   templateUrl: './controls-wrapper.component.html',
   styleUrls: ['./controls-wrapper.component.scss'],
 })
-export class ControlsWrapperComponent implements OnInit {
+export class ControlsWrapperComponent extends UnsubscribingComponent implements OnInit {
   /* private hol = this.getDefaultHolidayConfig();
 
   // probably should be moved to a shared location
@@ -28,12 +32,28 @@ export class ControlsWrapperComponent implements OnInit {
   constructor(
     private controlsService: ControlsService,
     private localStorageService: LocalStorageService,
-    private route: ActivatedRoute) {}
+    private route: ActivatedRoute,
+    private webSocketService: WebSocketService,
+    private appStateService: AppStateService,
+  ) {
+    super();
+  }
 
   ngOnInit() {
     // TODO is this actually needed? can get most/all data in resolvers
     this.apiData = this.route.snapshot.data['data'];
     console.log(this.apiData)
+
+    this.controlsService
+
+    this.webSocketService.getStateInfoSocket()
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(response => {
+        this.appStateService.setAll(response)
+        // this.webSocketService.sendMessage({ v: true });
+        // const { state, info } = response;
+        // console.log(state, info)
+      });
 
     // TODO uncomment
     // this.setupRanges();

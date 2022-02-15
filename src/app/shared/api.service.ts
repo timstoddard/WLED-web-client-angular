@@ -139,15 +139,6 @@ export class ApiService {
       this.createApiUrl('json/si'), body);
   }
 
-  toggleLiveView(isLiveView: boolean) {
-    return this.http.get<any>(this.createApiUrl(LIVE_PATH)); // TODO remove
-
-    // TODO how to handle ws and non-ws cases?
-    // return isLiveView
-    //   ? this.http.get<any>(this.createApiUrl(LIVE_PATH))
-    //   : null;
-  }
-
   /** Selects the specified segment. */
   selectSegment(segmentId: number, isSelected: boolean) {
     const body = this.createBody({

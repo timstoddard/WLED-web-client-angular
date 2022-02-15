@@ -7,6 +7,7 @@ import { AppConfig } from '../../shared/app-config';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { LocalStorageService } from '../../shared/local-storage.service';
 import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
+import { WebSocketService } from '../../shared/web-socket.service';
 import { generateApiUrl } from '../json.service';
 import { genericPostResponse, MenuBarButton, setCssColor } from '../utils';
 import { TopMenuBarService } from './top-menu-bar.service';
@@ -14,6 +15,14 @@ import { TopMenuBarService } from './top-menu-bar.service';
 const DEFAULT_BRIGHTNESS = 128;
 const MIN_SHOW_BRIGHTNESS_SLIDER_THRESHOLD_PX = 600;
 const MIN_SHOW_PC_MODE_BUTTON_THRESHOLD_PX = 1200; // TODO might need to be bigger
+
+class TopMenuBarButtonName {
+  static readonly POWER = 'Power';
+  static readonly TIMER = 'Timer'; // TODO better name (this is really "night light" feature)
+  static readonly SYNC = 'Sync';
+  static readonly LIVE = 'Live';
+  static readonly PC_MODE = 'PC Mode';
+}
 
 @Component({
   selector: 'app-top-menu-bar',
@@ -35,14 +44,15 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
   private nightLightDuration = 60;
   private nightLightTar = 0; // TODO better name
   private nightLightMode = false;
-  private shouldSync = false; // TODO better name
-  private shouldToggleReceiveWithSend = true; // TODO better name
+  private shouldSync = false;
+  private shouldToggleReceiveWithSend = true;
   isLiveViewActive = false;
   private showInfo = false;
   private showNodes = false;
 
   // other vars (some are for sliding ui)
   private appWidth: number = 0;
+  private processingStatus!: { [key: string]: boolean };
   private isPcMode = false;
   private pcModeA = false;
   private x0 = null;
@@ -57,6 +67,7 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     private topMenuBarService: TopMenuBarService,
     private appStateService: AppStateService,
     private changeDetectorRef: ChangeDetectorRef,
+    private webSocketService: WebSocketService,
   ) {
     super();
   }
@@ -65,22 +76,31 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     this.brightnessControl = this.createFormControl();
     this.onResize();
     this.buttons = this.getButtons();
+    this.processingStatus = {};
 
     this.appStateService.getAppState(this.ngUnsubscribe)
       .subscribe(n => {
         console.log(n); // TODO remove
+
+        // update UI data
+        const isOnChanged = this.isOn === n.state.on;
         this.isOn = n.state.on;
         this.isNightLightActive = n.state.nightLight.on;
         this.shouldSync = n.state.udp.shouldSend;
         // TODO add toggle for receive in UI?
         this.shouldToggleReceiveWithSend = n.info.shouldToggleReceiveWithSend;
-        this.isLiveViewActive = n.info.isLive;
+        this.isLiveViewActive = n.uiSettings.isLiveViewActive;
         this.brightnessControl.setValue(n.state.brightness, { emitEvent: false });
 
-        // TODO why does power button always show as enabled on page init
-        // seems to have something to do with using WS
-        // this.buttons = this.getButtons();
-        // this.changeDetectorRef.markForCheck();
+        // TODO some way to keep track of which requests were returned by which function calls?
+        this.processingStatus = {};
+
+        // update backend with current setting (no json api setting for this)
+        if (isOnChanged) {
+          this.webSocketService.sendMessage({ lv: this.isLiveViewActive });
+        }
+
+        this.changeDetectorRef.markForCheck();
       });
 
     // TODO evaluate if needed
@@ -141,28 +161,36 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     return [centeredPosition, rightSidePosition];
   }
 
-  private getButtons(): MenuBarButton[] {
-    const buttons = [
+  getProcessingStatus(name: string) {
+    return !!this.processingStatus[name];
+  }
+
+  private setProcessingStatus(name: string, status: boolean) {
+    this.processingStatus[name] = status;
+  }
+
+  private getButtons() {
+    const buttons: MenuBarButton[] = [
       {
-        name: 'Power',
+        name: TopMenuBarButtonName.POWER,
         icon: '&#xe08f;',
         onClick: () => this.togglePower(),
         enabled: () => this.isOn,
       },
       {
-        name: 'Timer', // TODO better name (night light)
+        name: TopMenuBarButtonName.TIMER,
         icon: '&#xe2a2;',
         onClick: () => this.toggleNightLight(),
         enabled: () => this.isNightLightActive,
       },
       {
-        name: 'Sync',
+        name: TopMenuBarButtonName.SYNC,
         icon: '&#xe116;',
         onClick: () => this.toggleSync(),
         enabled: () => this.shouldSync,
       },
       {
-        name: 'Live',
+        name: TopMenuBarButtonName.LIVE,
         icon: '&#xe410;',
         onClick: () => this.toggleLiveView(),
         enabled: () => this.isLiveViewActive,
@@ -191,53 +219,50 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
   }
 
   private togglePower() {
-    this.topMenuBarService.togglePower(!this.isOn)
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(genericPostResponse(this.appStateService));
+    if (!this.getProcessingStatus(TopMenuBarButtonName.POWER)) {
+      this.setProcessingStatus(TopMenuBarButtonName.POWER, true);
+      this.topMenuBarService.togglePower(!this.isOn)
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe(genericPostResponse(this.appStateService));
+    }
   }
 
   private toggleNightLight() {
-    this.topMenuBarService.toggleNightLight(!this.isNightLightActive)
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((response: WledApiResponse) => {
-        genericPostResponse(this.appStateService)(response);
-        const message = this.isNightLightActive
-          ? `Timer active. Your light will turn ${this.nightLightTar > 0 ? 'on' : 'off'} ${this.nightLightMode ? 'over' : 'after'} ${this.nightLightDuration} minutes.`
-          : 'Timer deactivated.'
-        // showToast(message); // TODO show toast
-      });
+    if (!this.getProcessingStatus(TopMenuBarButtonName.POWER)) {
+      this.setProcessingStatus(TopMenuBarButtonName.TIMER, true);
+      this.topMenuBarService.toggleNightLight(!this.isNightLightActive)
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe((response: WledApiResponse) => {
+          genericPostResponse(this.appStateService)(response);
+          const message = this.isNightLightActive
+            ? `Timer active. Your light will turn ${this.nightLightTar > 0 ? 'on' : 'off'} ${this.nightLightMode ? 'over' : 'after'} ${this.nightLightDuration} minutes.`
+            : 'Timer deactivated.'
+          // showToast(message); // TODO show toast
+        });
+    }
   }
 
   private toggleSync() {
-    this.topMenuBarService.toggleSync(!this.shouldSync, this.shouldToggleReceiveWithSend)
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((response: WledApiResponse) => {
-        genericPostResponse(this.appStateService)(response);
-        const message = this.shouldSync
-          ? 'Other lights in the network will now sync to this one.'
-          : 'This light and other lights in the network will no longer sync.';
-        // showToast(message); // TODO show toast
-      });
+    if (!this.getProcessingStatus(TopMenuBarButtonName.POWER)) {
+      this.setProcessingStatus(TopMenuBarButtonName.SYNC, true);
+      this.topMenuBarService.toggleSync(!this.shouldSync, this.shouldToggleReceiveWithSend)
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe((response: WledApiResponse) => {
+          genericPostResponse(this.appStateService)(response);
+          const message = this.shouldSync
+            ? 'Other lights in the network will now sync to this one.'
+            : 'This light and other lights in the network will no longer sync.';
+          // showToast(message); // TODO show toast
+        });
+    }
   }
 
   private toggleLiveView() {
-    // TODO make button toggle the backend
-    // const liveData = this.topMenuBarService.toggleLiveView(!this.isLiveViewActive);
-    // if (liveData) {
-    //   liveData
-    //     .pipe(takeUntil(this.ngUnsubscribe))
-    //     .subscribe(n => {
-    //       genericPostResponse(this.appStateService);
-    //       console.log(n);
-    //     });
-    // }
-
+    if (!this.getProcessingStatus(TopMenuBarButtonName.POWER)) {
+      this.setProcessingStatus(TopMenuBarButtonName.LIVE, true);
+      this.topMenuBarService.toggleIsLiveViewActive(!this.isLiveViewActive);
+    }
     
-    // TODO send websocket message to disable if live view setting was turned off
-    // if (!this.isLiveViewActive && ws && ws.readyState === WebSocket.OPEN) {
-    //   ws.send('{"lv":false}');
-    // }
-
     // TODO call size() (maybe not needed?)
     // this.size();
   }

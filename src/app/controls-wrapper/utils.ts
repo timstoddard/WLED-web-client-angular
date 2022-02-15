@@ -66,8 +66,9 @@ export const updateTablinks = (tabIndex: number) => {
 
 /** Basic error handling for a POST response. */
 export const genericPostResponse = (appStateService: AppStateService) => (response: WledApiResponse) => {
-  appStateService.setAll(response);
-  console.log('response', response);
+  // TODO wire up so this appStateService used if ws connection fails
+  // appStateService.setAll(response);
+  console.log('POST response', response);
 
   // TODO how to check for error
   // if (!response.success) {

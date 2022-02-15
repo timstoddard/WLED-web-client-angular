@@ -2,6 +2,13 @@
 
 @import 'src/app/shared/scss/mixins';
 
+/** Spinning effect used for "button processing" status border. */
+@keyframes spin {
+  100% {
+    transform: rotateZ(360deg);
+  }
+}
+
 :host {
   display: flex;
   flex-wrap: wrap;
@@ -28,7 +35,7 @@
     align-items: center;
     display: flex;
     justify-content: space-between;
-    margin: 5px auto;
+    margin: 8px auto 5px;
   }
 
   &__buttonWrapper {
@@ -39,9 +46,35 @@
   }
 
   &__button {
-    @include iconButton(40px);
+    $buttonSize: 40px;
+    @include iconButton($buttonSize);
     margin-bottom: 2px;
     padding: 3px;
+    position: relative;
+    
+    &:before {
+      $borderWidth: 2px;
+      $borderSpacing: 2px;
+
+      animation: spin 10s linear infinite; // TODO is this ok for performance? will it use any rendering logic even with opacity 0?
+      border: $borderWidth dashed var(--borderColorAccent);
+      border-radius: #{$buttonSize / 2 + $borderWidth + $borderSpacing};
+      content: '';
+      height: calc($buttonSize + $borderSpacing * 2);
+      left: #{-$borderSpacing - 1 - $borderWidth};
+      opacity: 0;
+      position: absolute;
+      top: #{-$borderSpacing - 1 - $borderWidth};
+      transition: 0.25s opacity ease;
+      width: calc($buttonSize + $borderSpacing * 2);
+      z-index: -1;
+    }
+
+    &--processing {
+      &:before {
+        opacity: 1;
+      }
+    }
 
     &__icon {
       font-size: 25px;

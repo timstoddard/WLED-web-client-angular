@@ -2,12 +2,15 @@
   [ngClass]="{ 'topMenuBar__row--showingBrightnessSlider': showBrightnessSlider }"
   class="topMenuBar__row">
   <div class="topMenuBar__buttons">
+    <!-- TODO make this button its own component -->
     <div
       *ngFor="let button of buttons"
       class="topMenuBar__buttonWrapper">
       <button
         (click)="button.onClick()"
-        [ngClass]="{ 'topMenuBar__button--enabled': button.enabled() }"
+        [ngClass]="{
+          'topMenuBar__button--enabled': button.enabled(),
+          'topMenuBar__button--processing': getProcessingStatus(button.name) }"
         class="topMenuBar__button">
         <i
           [innerHTML]="button.icon"
@@ -70,4 +73,4 @@
   </app-color-slider>
 </ng-template>
 
-<app-live-view></app-live-view>
+<app-live-view *ngIf="isLiveViewActive"></app-live-view>
