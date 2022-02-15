@@ -105,6 +105,10 @@ export interface WledSegment {
   on: boolean;
   /** Sets the individual segment brightness [0-255]. */
   bri: number;
+  /** Segment name. */
+  n: string; // TODO included in response but not in api doc https://kno.wled.ge/interfaces/json-api
+  /** Color temperature. */ // TODO better description
+  cct: number; // TODO included in response but not in api doc https://kno.wled.ge/interfaces/json-api
   // TODO how is this different from reverse??
   /** Mirrors the segment. */
   mi: boolean;

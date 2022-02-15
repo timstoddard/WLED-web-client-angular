@@ -1,8 +1,6 @@
 import { WledApiResponse } from '../shared/api-types';
 import { PalettesData } from './palettes/palettes.service';
 
-// TODO update data for `segs`
-
 export const data: WledApiResponse = {
   state: {
     on: true,
@@ -23,28 +21,116 @@ export const data: WledApiResponse = {
     },
     lor: 0,
     mainseg: 0,
-    seg: [{
-      id: 0,
-      start: 0,
-      stop: 1429,
-      len: 1429,
-      grp: 1,
-      spc: 0,
-      of: 0,
-      on: true,
-      bri: 255,
-      // cct: 127,
-      col: [[255, 160, 0], [0, 0, 0], [0, 0, 0]],
-      fx: 26,
-      sx: 81,
-      ix: 233,
-      pal: 42,
-      sel: true,
-      rev: false,
-      mi: false,
-      lx: 0, // TODO should be optional (?)
-      ly: 0, // TODO should be optional (?)
-    }],
+    seg: [
+      {
+        id: 0,
+        start: 0,
+        stop: 268,
+        len: 268,
+        grp: 1,
+        spc: 0,
+        of: 0,
+        on: true,
+        bri: 255,
+        cct: 127,
+        n: 'stove',
+        col: [
+          [255, 160, 0],
+          [0, 0, 0],
+          [0, 0, 0]
+        ],
+        fx: 26,
+        sx: 128,
+        ix: 128,
+        pal: 0,
+        sel: true,
+        rev: false,
+        mi: false,
+        lx: 0, // TODO should be optional (?)
+        ly: 0, // TODO should be optional (?)
+      },
+      {
+        id: 1,
+        start: 268,
+        stop: 756,
+        len: 488,
+        grp: 1,
+        spc: 0,
+        of: 0,
+        on: true,
+        bri: 255,
+        cct: 127,
+        n: 'sink',
+        col: [
+          [102, 153, 0],
+          [0, 0, 0],
+          [0, 0, 0]
+        ],
+        fx: 26,
+        sx: 128,
+        ix: 128,
+        pal: 0,
+        sel: false,
+        rev: false,
+        mi: false,
+        lx: 0, // TODO should be optional (?)
+        ly: 0, // TODO should be optional (?)
+      },
+      {
+        id: 2,
+        start: 756,
+        stop: 1062,
+        len: 306,
+        grp: 1,
+        spc: 0,
+        of: 0,
+        on: true,
+        bri: 255,
+        cct: 127,
+        n: 'window',
+        col: [
+          [0, 204, 51],
+          [0, 0, 0],
+          [0, 0, 0]
+        ],
+        fx: 26,
+        sx: 128,
+        ix: 128,
+        pal: 0,
+        sel: false,
+        rev: false,
+        mi: false,
+        lx: 0, // TODO should be optional (?)
+        ly: 0, // TODO should be optional (?)
+      },
+      {
+        id: 3,
+        start: 1062,
+        stop: 1429,
+        len: 367,
+        grp: 1,
+        spc: 0,
+        of: 0,
+        on: true,
+        bri: 255,
+        cct: 127,
+        n: 'couch',
+        col: [
+          [0, 51, 204],
+          [0, 0, 0],
+          [0, 0, 0]
+        ],
+        fx: 26,
+        sx: 128,
+        ix: 128,
+        pal: 0,
+        sel: false,
+        rev: false,
+        mi: false,
+        lx: 0, // TODO should be optional (?)
+        ly: 0, // TODO should be optional (?)
+      },
+    ],
   },
   info: {
     ver: '0.13.0-b6',
