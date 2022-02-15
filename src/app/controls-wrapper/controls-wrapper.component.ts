@@ -40,11 +40,9 @@ export class ControlsWrapperComponent extends UnsubscribingComponent implements 
   }
 
   ngOnInit() {
-    // TODO is this actually needed? can get most/all data in resolvers
     this.apiData = this.route.snapshot.data['data'];
     console.log(this.apiData)
-
-    this.controlsService
+    this.appStateService.setAll(this.apiData);
 
     this.webSocketService.getStateInfoSocket()
       .pipe(takeUntil(this.ngUnsubscribe))
@@ -203,6 +201,7 @@ export class ControlsWrapperComponent extends UnsubscribingComponent implements 
 // helper functions (not tied to any view logic) //
 ///////////////////////////////////////////////////
 
+// TODO probably not needed, can use app state service instead
 const mergeDeep: any = (target: any, ...sources: any[]) => {
   if (!sources.length) {
     return target;

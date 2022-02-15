@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { WledApiResponse } from '../../shared/api-types';
 import { ApiService } from '../../shared/api.service';
+import { AppStateService } from '../../shared/app-state/app-state.service';
+import { UnsubscribingService } from '../../shared/unsubscribing.service';
 import { ControlsServicesModule } from '../controls-services.module';
 import { compareNames, findRouteData } from '../utils';
 
@@ -26,21 +27,23 @@ export interface PaletteWithBackground {
 const NONE_SELECTED = -1;
 
 @Injectable({ providedIn: ControlsServicesModule })
-export class PalettesService {
+export class PalettesService extends UnsubscribingService {
   sortedPalettes!: PaletteWithBackground[];
   private selectedPaletteName!: string;
+  private paletteNames: string[] = [];
 
   constructor(
     private apiService: ApiService,
+    private appStateService: AppStateService,
     private route: ActivatedRoute,
   ) {
-    this.sortedPalettes = this.sortPalettes();
+    super();
+    this.appStateService.getPalettes(this.ngUnsubscribe)
+      .subscribe(palettes => {
+        this.paletteNames = palettes;
+        this.sortedPalettes = this.sortPalettes();
+      });
   }
-
-  // TODO is this needed?
-  // getPalettes() {
-  //   return this.apiService.getPalettes();
-  // }
 
   setPalette(paletteId: number) {
     this.selectedPaletteName = this.getPaletteName(paletteId);
@@ -80,10 +83,8 @@ export class PalettesService {
   }
 
   private sortPalettes() {
-    const paletteNames = (findRouteData('data', this.route) as WledApiResponse).palettes;
     const backgrounds = this.generatePaletteBackgrounds();
-
-    const sortedPalettes = paletteNames.slice(1) // remove 'Default'
+    const sortedPalettes = this.paletteNames.slice(1) // remove 'Default'
       .map((name, i) => ({
         id: i + 1,
         name,
@@ -108,10 +109,11 @@ export class PalettesService {
   }
 
   private getPalettesData() {
+    // TODO get from app state?
     const palettesData = findRouteData('palettesData', this.route) as PalettesData[];
     let allPalettesData: PaletteColors = {};
     for (const paletteData of palettesData) {
-      allPalettesData = Object.assign({}, allPalettesData, paletteData.p);
+      allPalettesData = { ...allPalettesData, ...paletteData.p };
     }
     return allPalettesData;
   }

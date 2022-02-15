@@ -10,6 +10,8 @@ import { WledApiResponse } from '../api-types';
 interface AppStateProps {
   state: AppState;
   info: AppInfo;
+  palettes: string[];
+  effects: string[];
   uiSettings: AppUISettings;
 }
 
@@ -93,7 +95,7 @@ const DEFAULT_APP_STATE: AppStateProps = {
       on: false,
       durationMinutes: 0,
       mode: 0,
-      targetBrightness: 1,
+      targetBrightness: 0,
       remainingSeconds: 0,
     },
     udp: {
@@ -145,6 +147,8 @@ const DEFAULT_APP_STATE: AppStateProps = {
     macAddress: '',
     ipAddress: '',
   },
+  palettes: [],
+  effects: [],
   uiSettings: {
     isLiveViewActive: false,
   }
@@ -157,7 +161,7 @@ const appStateStore = new Store({ name: 'WLED App State', state, config });
 export class AppStateService {
   /** Set all app state fields using the api response data. */
   setAll = (response: WledApiResponse) => {
-    appStateStore.update(({ uiSettings }) => ({
+    appStateStore.update(({ uiSettings, palettes, effects }) => ({
       state: {
         on: response.state.on,
         brightness: response.state.bri,
@@ -220,6 +224,8 @@ export class AppStateService {
         macAddress: response.info.mac,
         ipAddress: response.info.ip,
       },
+      palettes: response.palettes ? response.palettes : palettes,
+      effects: response.effects ? response.effects : effects,
       uiSettings,
     }));
   }
@@ -327,6 +333,12 @@ export class AppStateService {
   getIpAddress = (ngUnsubscribe: Subject<void>) =>
     this.selectFromAppState((n) => n.info.ipAddress)
       .pipe<AppInfo['ipAddress']>(takeUntil(ngUnsubscribe));
+  getPalettes = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.palettes)
+      .pipe<AppStateProps['palettes']>(takeUntil(ngUnsubscribe));
+  getEffects = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.effects)
+      .pipe<AppStateProps['effects']>(takeUntil(ngUnsubscribe));
   getIsLiveViewActive = (ngUnsubscribe: Subject<void>) =>
     this.selectFromAppState((n) => n.uiSettings.isLiveViewActive)
       .pipe<AppUISettings['isLiveViewActive']>(takeUntil(ngUnsubscribe));
@@ -398,6 +410,10 @@ export class AppStateService {
     this.updateInfo({ macAddress });
   setIpAddress = (ipAddress: AppInfo['ipAddress']) =>
     this.updateInfo({ ipAddress });
+  setPalettes = (palettes: AppStateProps['palettes']) =>
+    this.updatePalettes(palettes);
+  setEffects = (effects: AppStateProps['effects']) =>
+    this.updateEffects(effects);
   setIsLiveViewActive = (isLiveViewActive: AppUISettings['isLiveViewActive']) =>
     this.updateUISettings({ isLiveViewActive });
 
@@ -405,26 +421,52 @@ export class AppStateService {
     appStateStore.pipe(select(selectFn));
 
   private updateState = (newState: Partial<AppState>) => {
-    appStateStore.update(({ state, info, uiSettings }) => ({
+    appStateStore.update(({ state, info, uiSettings, palettes, effects }) => ({
       state: { ...state, ...newState },
       info,
       uiSettings,
+      palettes,
+      effects,
     }));
   }
 
   private updateInfo = (newInfo: Partial<AppInfo>) => {
-    appStateStore.update(({ state, info, uiSettings }) => ({
+    appStateStore.update(({ state, info, uiSettings, palettes, effects }) => ({
       state,
       info: { ...info, ...newInfo },
       uiSettings,
+      palettes,
+      effects,
+    }));
+  }
+
+  private updatePalettes = (newPalettes: string[]) => {
+    appStateStore.update(({ state, info, uiSettings, effects }) => ({
+      state,
+      info,
+      uiSettings,
+      palettes: newPalettes,
+      effects,
+    }));
+  }
+
+  private updateEffects = (newEffects: string[]) => {
+    appStateStore.update(({ state, info, uiSettings, palettes }) => ({
+      state,
+      info,
+      uiSettings,
+      palettes,
+      effects: newEffects,
     }));
   }
 
   private updateUISettings = (newUiSettings: Partial<AppUISettings>) => {
-    appStateStore.update(({ state, info, uiSettings }) => ({
+    appStateStore.update(({ state, info, uiSettings, palettes, effects }) => ({
       state,
       info,
       uiSettings: { ...uiSettings, ...newUiSettings },
+      palettes,
+      effects,
     }));
   }
 }

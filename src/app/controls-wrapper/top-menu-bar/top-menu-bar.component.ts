@@ -79,18 +79,16 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     this.processingStatus = {};
 
     this.appStateService.getAppState(this.ngUnsubscribe)
-      .subscribe(n => {
-        console.log(n); // TODO remove
-
+      .subscribe(({ state, info, uiSettings }) => {
         // update UI data
-        const isOnChanged = this.isOn === n.state.on;
-        this.isOn = n.state.on;
-        this.isNightLightActive = n.state.nightLight.on;
-        this.shouldSync = n.state.udp.shouldSend;
+        const isOnChanged = this.isOn === state.on;
+        this.isOn = state.on;
+        this.isNightLightActive = state.nightLight.on;
+        this.shouldSync = state.udp.shouldSend;
         // TODO add toggle for receive in UI?
-        this.shouldToggleReceiveWithSend = n.info.shouldToggleReceiveWithSend;
-        this.isLiveViewActive = n.uiSettings.isLiveViewActive;
-        this.brightnessControl.setValue(n.state.brightness, { emitEvent: false });
+        this.shouldToggleReceiveWithSend = info.shouldToggleReceiveWithSend;
+        this.isLiveViewActive = uiSettings.isLiveViewActive;
+        this.brightnessControl.setValue(state.brightness, { emitEvent: false });
 
         // TODO some way to keep track of which requests were returned by which function calls?
         this.processingStatus = {};

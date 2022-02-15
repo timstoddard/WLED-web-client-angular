@@ -31,7 +31,7 @@ export class SegmentsService {
         id: i,
         name: this.loadSegmentName(i),
       };
-      const withName: Segment = Object.assign({}, segments[i], additionalFields);
+      const withName: Segment = { ...segments[i], ...additionalFields };
       formattedSegments.push(withName);
     }
     return formattedSegments;

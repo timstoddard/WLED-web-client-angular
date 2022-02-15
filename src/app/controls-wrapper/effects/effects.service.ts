@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { WledApiResponse } from '../../shared/api-types';
 import { ApiService } from '../../shared/api.service';
+import { AppStateService } from '../../shared/app-state/app-state.service';
+import { UnsubscribingService } from '../../shared/unsubscribing.service';
 import { ControlsServicesModule } from '../controls-services.module';
-import { compareNames, findRouteData } from '../utils';
+import { compareNames } from '../utils';
 
 export interface Effect {
   id: number;
@@ -13,21 +13,22 @@ export interface Effect {
 const NONE_SELECTED = -1;
 
 @Injectable({ providedIn: ControlsServicesModule })
-export class EffectsService {
+export class EffectsService extends UnsubscribingService {
   sortedEffects!: Effect[];
   private selectedEffectName!: string;
+  private effectNames: string[] = [];
 
   constructor(
     private apiService: ApiService,
-    private route: ActivatedRoute,
+    private appStateService: AppStateService,
   ) {
-    this.sortedEffects = this.sortEffects();
+    super();
+    this.appStateService.getEffects(this.ngUnsubscribe)
+      .subscribe(effects => {
+        this.effectNames = effects;
+        this.sortedEffects = this.sortEffects();
+      });
   }
-
-  // TODO is this needed?
-  // getEffects() {
-  //   return this.apiService.getEffects();
-  // }
 
   setEffect(effectId: number) {
     this.selectedEffectName = this.getEffectName(effectId);
@@ -75,9 +76,7 @@ export class EffectsService {
   }
 
   private sortEffects() {
-    const effectNames = (findRouteData('data', this.route) as WledApiResponse).effects;
-
-    const sortedEffects = effectNames.slice(1) // remove 'Solid'
+    const sortedEffects = this.effectNames.slice(1) // remove 'Solid'
       .map((name, i) => ({
         id: i + 1,
         name,

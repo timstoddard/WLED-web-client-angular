@@ -132,8 +132,7 @@ export class ApiService {
       udpn: { send: shouldSync },
     });
     if (shouldToggleReceiveWithSend) {
-      // TODO no any
-      (body['udpn'] as any).recv = shouldSync;
+      (body as any /* TODO no any */)['udpn'].recv = shouldSync;
     }
     return this.http.post<WledApiResponse>(
       this.createApiUrl('json/si'), body);
@@ -277,7 +276,7 @@ export class ApiService {
       v: true, // get complete API response
       time: Math.floor(Date.now() / 1000),
     };
-    return Object.assign(basicOptions, body);
+    return { ...basicOptions, ...body };
   }
 
 

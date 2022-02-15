@@ -656,7 +656,7 @@ export class PresetsComponent implements OnInit {
     if (!this.pJson[presetId]) {
       return '';
     }
-    const preset = Object.assign({}, this.pJson[presetId]);
+    const preset = { ...this.pJson[presetId] };
     if (preset.win) {
       return preset.win;
     }
