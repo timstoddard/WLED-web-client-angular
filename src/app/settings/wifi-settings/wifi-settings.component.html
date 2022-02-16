@@ -9,14 +9,15 @@
   <a [routerLink]="['../']">
     Back
   </a>
-  <button type="submit">
+  <!-- TODO does this need `type="submit"`? -->
+  <button (click)="submitForm()">
     Save & Connect
   </button>
 
   <h2>Wifi Settings</h2>
 
   <div formGroupName="localNetwork">
-    <h3>Local Network</h3>
+    <h3>Connect to Network</h3>
     <i>Leave SSID empty to not connect</i>
     <br>
     <mat-form-field
@@ -43,7 +44,7 @@
     </mat-form-field>
   </div>
 
-  <div formGroupName="IPAddress">
+  <div formGroupName="ipAddress">
     <i>Leave at 0.0.0.0 for DHCP</i>
     <br>
     <!-- TODO Add text mask/validation for IP address -->
@@ -54,7 +55,7 @@
       <mat-label>Static IP</mat-label>
       <input
         matInput
-        formControlName="staticIP"
+        formControlName="staticIp"
         class="">
     </mat-form-field>
     <!-- <input name="I0" type="number" class="s" min="0" max="255" required> .
@@ -105,6 +106,7 @@
     </mat-form-field>
     .local
     <br>
+    <!-- TODO wire this up -->
     Client IP: <span class="sip">Not connected</span>
   </div>
 
@@ -175,6 +177,7 @@
     
     <br>
     <i>
+      <!-- TODO wire this up -->
       AP IP: <span class="sip">Not active</span>
     </i>
     <br>
@@ -195,14 +198,16 @@
     </i>
     <br>
     <br>
-    <div>Ethernet Type</div>
-    <select formControlName="ethernetTypes">
-      <option
-        *ngFor="let ethernetType of ethernetTypes"
-        [value]="ethernetType.value">
-        {{ ethernetType.name }}
-      </option>
-    </select>
+    <ng-container *ngIf="hasEthernet">
+      <div>Ethernet Type</div>
+      <select formControlName="ethernetType">
+        <option
+          *ngFor="let ethernetType of ethernetTypes"
+          [value]="ethernetType.value">
+          {{ ethernetType.name }}
+        </option>
+      </select>
+    </ng-container>
     <br>
     <br>
   </div>
@@ -210,7 +215,8 @@
   <a [routerLink]="['../']">
     Back
   </a>
-  <button type="submit">
+  <!-- TODO does this need `type="submit"`? -->
+  <button (click)="submitForm()">
     Save & Connect
   </button>
 </form>

@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { takeUntil } from 'rxjs';
+import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
+import { WifiSettingsService } from './wifi-settings.service';
 
 interface SelectItem {
   name: string;
@@ -14,7 +17,7 @@ const DEFAULT_OPEN_AP_OPTION = 0;
   templateUrl: './wifi-settings.component.html',
   styleUrls: ['./wifi-settings.component.scss']
 })
-export class WifiSettingsComponent implements OnInit {
+export class WifiSettingsComponent extends UnsubscribingComponent implements OnInit {
   openAPOptions: SelectItem[] = [
     {
       name: 'No connection after boot',
@@ -64,13 +67,65 @@ export class WifiSettingsComponent implements OnInit {
     },
   ];
 
-  wifiSettingsForm: FormGroup;
+  wifiSettingsForm!: FormGroup;
+  hasEthernet: boolean = true; // TODO how to get this?
 
-  constructor(private formBuilder: FormBuilder) {
-    this.wifiSettingsForm = this.createForm();
+  constructor(
+    private formBuilder: FormBuilder,
+    private wifiSettingsService: WifiSettingsService,
+  ) {
+    super();
   }
 
   ngOnInit() {
+    this.wifiSettingsForm = this.createForm();
+  }
+
+  submitForm() {
+    const {
+      localNetwork,
+      ipAddress,
+      wledAccessPoint,
+      other,
+    } = this.wifiSettingsForm.value;
+
+    const ipAddressRegex = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/;
+    const staticIpParts = ipAddress.staticIp.match(ipAddressRegex);
+    const staticGatewayParts = ipAddress.staticGateway.match(ipAddressRegex);
+    const staticSubnetMaskParts = ipAddress.staticSubnetMask.match(ipAddressRegex);
+
+    const formValues = {
+      CS: localNetwork.ssid,
+      CP: localNetwork.password,
+      I0: parseInt(staticIpParts[1], 10),
+      I1: parseInt(staticIpParts[2], 10),
+      I2: parseInt(staticIpParts[3], 10),
+      I3: parseInt(staticIpParts[4], 10),
+      G0: parseInt(staticGatewayParts[1], 10),
+      G1: parseInt(staticGatewayParts[2], 10),
+      G2: parseInt(staticGatewayParts[3], 10),
+      G3: parseInt(staticGatewayParts[4], 10),
+      S0: parseInt(staticSubnetMaskParts[1], 10),
+      S1: parseInt(staticSubnetMaskParts[2], 10),
+      S2: parseInt(staticSubnetMaskParts[3], 10),
+      S3: parseInt(staticSubnetMaskParts[4], 10),
+      CM: ipAddress.mDNS,
+      AS: wledAccessPoint.ssid,
+      AP: wledAccessPoint.password,
+      AH: wledAccessPoint.hideAPName,
+      AC: wledAccessPoint.wifiChannel,
+      AB: wledAccessPoint.openAP,
+      WS: other.disableWifiSleep,
+      ETH: other.ethernetType,
+    };
+
+    console.log(formValues);
+    this.wifiSettingsService.setWifiSettings(formValues)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(n => {
+        // TODO why doesnt this log anything?
+        console.log(n)
+      });
   }
 
   private createForm() {
@@ -79,24 +134,55 @@ export class WifiSettingsComponent implements OnInit {
         ssid: this.formBuilder.control(''),
         password: this.formBuilder.control(''),
       }),
-      IPAddress: this.formBuilder.group({
+      ipAddress: this.formBuilder.group({
         // TODO add validators & text mask for IP inputs
-        staticIP: this.formBuilder.control('', Validators.required),
-        staticGateway: this.formBuilder.control('', Validators.required),
-        staticSubnetMask: this.formBuilder.control('', Validators.required),
-        mDNS: this.formBuilder.control(''),
+        staticIp: this.formBuilder.control('0.0.0.0', Validators.required),
+        staticGateway: this.formBuilder.control('0.0.0.0', Validators.required),
+        staticSubnetMask: this.formBuilder.control('255.255.255.0', Validators.required),
+        // TODO better default?
+        mDNS: this.formBuilder.control('wled-55a9b0'),
       }),
       wledAccessPoint: this.formBuilder.group({
-        ssid: this.formBuilder.control(''),
-        password: this.formBuilder.control(''),
+        ssid: this.formBuilder.control('WLED-AP'),
+        password: this.formBuilder.control('********'),
         hideAPName: this.formBuilder.control(false),
-        wifiChannel: this.formBuilder.control(null, Validators.required),
+        wifiChannel: this.formBuilder.control(1, Validators.required),
         openAP: this.formBuilder.control(DEFAULT_OPEN_AP_OPTION),
       }),
       other: this.formBuilder.group({
-        disableWifiSleep: this.formBuilder.control(false),
-        ethernetTypes: this.formBuilder.control(DEFAULT_ETHERNET_TYPE),
+        disableWifiSleep: this.formBuilder.control(true),
+        ethernetType: this.formBuilder.control(DEFAULT_ETHERNET_TYPE),
       }),
     });
   }
 }
+
+/*
+function GetV() {
+  var d=document;
+  d.Sf.CS.value="10010000101";
+  d.Sf.CP.value="*************";
+  d.Sf.I0.value=0;
+  d.Sf.G0.value=0;
+  d.Sf.S0.value=255;
+  d.Sf.I1.value=0;
+  d.Sf.G1.value=0;
+  d.Sf.S1.value=255;
+  d.Sf.I2.value=0;
+  d.Sf.G2.value=0;
+  d.Sf.S2.value=255;
+  d.Sf.I3.value=0;
+  d.Sf.G3.value=0;
+  d.Sf.S3.value=0;
+  d.Sf.CM.value="wled-55a9b0";
+  d.Sf.AB.selectedIndex=0;
+  d.Sf.AS.value="WLED-AP";
+  d.Sf.AH.checked=0;
+  d.Sf.AP.value="********";
+  d.Sf.AC.value=1;
+  d.Sf.WS.checked=1;
+  document.getElementById('ethd').style.display='none';
+  d.getElementsByClassName("sip")[0].innerHTML="192.168.100.154";
+  d.getElementsByClassName("sip")[1].innerHTML="4.3.2.1";
+}
+*/

@@ -271,6 +271,11 @@ export class ApiService {
       this.createApiUrl('json/state'), body);
   }
 
+  setWifiSettings(wifiSettings: any /* TODO type */) {
+    return this.http.post<any /* TODO type */>(
+      this.createApiUrl('settings/wifi'), wifiSettings);
+  }
+
   private createBody(body: { [key: string]: unknown }) {
     const basicOptions = {
       v: true, // get complete API response
