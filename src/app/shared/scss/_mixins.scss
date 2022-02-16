@@ -1,3 +1,5 @@
+@use 'sass:math';
+
 @mixin radioButtonListItem() {
   $grandparentSelector: &;
   $boxShadowPx: 0px 0px 7px 6px;
@@ -123,11 +125,11 @@
     padding-top: 6px !important;
   }
 
-  & ::ng-deep .mat-form-field-label {
+  & ::ng-deep .mat-form-field:not(.mat-focused) .mat-form-field-label { // only for not focused
     color: var(--textColorPrimary);
   }
 
-  & ::ng-deep ::placeholder {
+  & ::ng-deep input::placeholder {
     color: var(--textColorAccent);
   }
 }

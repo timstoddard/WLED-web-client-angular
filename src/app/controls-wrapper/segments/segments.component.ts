@@ -1,14 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormControl } from '@angular/forms';
-import { takeUntil } from 'rxjs';
 import { AppConfig } from '../../shared/app-config';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { Segment } from '../../shared/app-types';
 import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
-import { genericPostResponse, getInput } from '../utils';
+import { getInput } from '../utils';
 import { SegmentsService } from './segments.service';
-
-const DEFAULT_TRANSITION_DURATION = 0.7; // seconds
 
 @Component({
   selector: 'app-segments',
@@ -19,7 +15,6 @@ const DEFAULT_TRANSITION_DURATION = 0.7; // seconds
 })
 export class SegmentsComponent extends UnsubscribingComponent implements OnInit {
   @Input() cfg!: AppConfig; // TODO get from service/reducer
-  transitionTime!: FormControl; // TODO move to top menu bar (?)
   segments: Segment[] = [];
   noNewSegments: boolean = false;
   private lowestUnused!: number;
@@ -30,16 +25,13 @@ export class SegmentsComponent extends UnsubscribingComponent implements OnInit 
 
   constructor(
     private segmentsService: SegmentsService,
-    private formBuilder: FormBuilder,
     private appStateService: AppStateService,
   ) {
     super();
   }
 
   ngOnInit() {
-    this.segments = this.segmentsService.getSegments();
-
-    this.transitionTime = this.createFormControl();
+    this.segments = this.segmentsService.getSegments(); // TODO get from app state
 
     this.lowestUnused = 0;
     this.lSeg = 0; // probably "last segment"? 
@@ -90,22 +82,6 @@ export class SegmentsComponent extends UnsubscribingComponent implements OnInit 
 
   getExpanded(segmentId: number) {
     return this.segmentsService.getSegmentExpanded(segmentId);
-  }
-
-  private setTransitionDuration(seconds: number) {
-    this.segmentsService.setTransitionDuration(seconds)
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(genericPostResponse(this.appStateService));
-  }
-
-  private createFormControl() {
-    const control = this.formBuilder.control(DEFAULT_TRANSITION_DURATION);
-
-    control.valueChanges
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((seconds: number) => this.setTransitionDuration(seconds));
-
-    return control;
   }
 
   // TODO handle adding a segment

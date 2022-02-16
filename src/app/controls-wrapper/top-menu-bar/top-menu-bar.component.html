@@ -1,5 +1,5 @@
 <div
-  [ngClass]="{ 'topMenuBar__row--showingBrightnessSlider': showBrightnessSlider }"
+  [ngClass]="{ 'topMenuBar__row--showingSettings': showToggleSettingsButton }"
   class="topMenuBar__row">
   <div class="topMenuBar__buttons">
     <!-- TODO make this button its own component -->
@@ -23,54 +23,74 @@
     </div>
   
     <div
-      *ngIf="!showBrightnessSlider"
+      *ngIf="!showToggleSettingsButton"
       class="topMenuBar__buttonWrapper">
       <button
         cdkOverlayOrigin
         #trigger="cdkOverlayOrigin"
-        (click)="toggleBrightnessOpen()"
-        [ngClass]="{ 'topMenuBar__button--enabled': isBrightnessOpen }"
+        (click)="toggleSettingsOpen()"
+        [ngClass]="{ 'topMenuBar__button--enabled': isSettingsOpen }"
         class="topMenuBar__button">
+        <!-- TODO change to ellipsis icon -->
         <i
           [innerHTML]="'&#xe2a6;'"
           class="topMenuBar__button__icon icons">
         </i>
       </button>
       <div class="topMenuBar__button__text">
-        Brightness
+        More
       </div>
       <ng-template
         cdkConnectedOverlay
         [cdkConnectedOverlayOrigin]="trigger"
-        [cdkConnectedOverlayOpen]="isBrightnessOpen"
+        [cdkConnectedOverlayOpen]="isSettingsOpen"
         [cdkConnectedOverlayPositions]="getOverlayPositions()">
-        <ng-container *ngTemplateOutlet="brightnessSlider"></ng-container>
+        <ng-container *ngTemplateOutlet="topMenuBarSettings"></ng-container>
       </ng-template>
     </div>
   </div>
-  
-  <div *ngIf="showBrightnessSlider">
-    <ng-container *ngTemplateOutlet="brightnessSlider"></ng-container>
+
+  <div *ngIf="showToggleSettingsButton">
+    <ng-container *ngTemplateOutlet="topMenuBarSettings"></ng-container>
   </div>
 </div>
 
-<ng-template #brightnessSlider>
-  <app-color-slider
-    [control]="brightnessControl"
-    [min]="1"
-    [max]="255"
-    label="Brightness"
-    labelClass="topMenuBar__slider__label"
-    sliderClass="topMenuBar__slider__input"
-    [ngClass]="{ 'topMenuBar__slider--inOverlay': !showBrightnessSlider }"
-    class="topMenuBar__slider">
-    <!-- TODO should brightness slider icon toggle light/dark mode? -->
-    <i
-      class="icons slider-icon"
-      (click)="toggleTheme()">
-      &#xe2a6;
-    </i>
-  </app-color-slider>
+<ng-template #topMenuBarSettings>
+  <div
+    [formGroup]="topMenuBarForm"
+    [ngClass]="{ 'topMenuBar__settings--inOverlay': !showToggleSettingsButton }"
+    class="topMenuBar__settings">
+    <app-color-slider
+      [control]="topMenuBarForm.get('brightness')!"
+      [min]="1"
+      [max]="255"
+      label="Brightness"
+      labelClass="topMenuBar__slider__label"
+      sliderClass="topMenuBar__slider__input"
+      class="topMenuBar__slider">
+      <!-- TODO should brightness slider icon toggle light/dark mode? -->
+      <i
+        class="icons slider-icon"
+        (click)="toggleTheme()">
+        &#xe2a6;
+      </i>
+    </app-color-slider>
+
+    <mat-form-field
+      appearance="fill"
+      class="topMenuBar__transitionInput">
+      <mat-label>Transition (s)</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="transitionTime"
+        placeholder="0.7"
+        min="0"
+        max="65.5"
+        step="0.1"
+        class="">
+    </mat-form-field>
+  </div>
 </ng-template>
 
 <app-live-view *ngIf="isLiveViewActive"></app-live-view>

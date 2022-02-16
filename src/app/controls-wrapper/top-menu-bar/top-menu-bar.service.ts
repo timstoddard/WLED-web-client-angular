@@ -9,10 +9,6 @@ export class TopMenuBarService {
     private apiService: ApiService,
     private appStateService: AppStateService) { }
 
-  setBrightness(brightness: number) {
-    return this.apiService.setBrightness(brightness);
-  }
-
   togglePower(isOn: boolean) {
     return this.apiService.togglePower(isOn);
   }
@@ -27,5 +23,13 @@ export class TopMenuBarService {
 
   toggleIsLiveViewActive(isLiveViewActive: boolean) {
     this.appStateService.setIsLiveViewActive(isLiveViewActive)
+  }
+
+  setBrightness(brightness: number) {
+    return this.apiService.setBrightness(brightness);
+  }
+
+  setTransitionDuration(seconds: number) {
+    return this.apiService.setTransitionDuration(seconds);
   }
 }

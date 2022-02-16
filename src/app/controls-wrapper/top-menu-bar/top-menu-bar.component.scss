@@ -10,6 +10,7 @@
 }
 
 :host {
+  @include overrideMatTextInputStyles(--backgroundColorAccent);
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -17,7 +18,7 @@
 
 .topMenuBar {
   &__row {
-    &--showingBrightnessSlider {
+    &--showingSettings {
       display: flex;
       justify-content: space-between;
       padding: 0 8px;
@@ -58,7 +59,7 @@
 
       animation: spin 10s linear infinite; // TODO is this ok for performance? will it use any rendering logic even with opacity 0?
       border: $borderWidth dashed var(--borderColorAccent);
-      border-radius: #{$buttonSize / 2 + $borderWidth + $borderSpacing};
+      border-radius: #{math.div($buttonSize, 2) + $borderWidth + $borderSpacing};
       content: '';
       height: calc($buttonSize + $borderSpacing * 2);
       left: #{-$borderSpacing - 1 - $borderWidth};
@@ -85,14 +86,26 @@
     }
   }
 
-  &__slider {
+  &__settings {
+    align-items: center;
     background: var(--backgroundColorPrimary);
-    flex-direction: row;
-    margin: 10px 5px;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: row-reverse;
+    padding: 6px 10px;
 
     &--inOverlay {
       box-shadow: 0 0 8px 4px rgba(var(--borderColorPrimaryRgb),0.8);
+
+      & .topMenuBar__slider {
+        flex-direction: column;
+      }
     }
+  }
+
+  &__slider {
+    flex-direction: row;
+    margin: 8px 0 8px 6px;
 
     @at-root ::ng-deep &__label {
       margin: 0 !important; // override default styling
@@ -101,5 +114,14 @@
     @at-root ::ng-deep &__input {
       margin: -6px 0;
     }
+  }
+
+  &__transitionInput {
+    // needed for overlay view (?)
+    // TODO why is nonfocused text color override not working
+    @include overrideMatTextInputStyles(--backgroundColorAccent);
+    margin-bottom: -20px;
+    max-width: 120px;
+    min-width: 120px;
   }
 }

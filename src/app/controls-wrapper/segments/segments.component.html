@@ -7,21 +7,6 @@
 </span>
 
 <div class="segments__topMenuBar">
-  <mat-form-field
-    appearance="fill"
-    class="segments__transitionInput">
-    <mat-label>Transition (s)</mat-label>
-    <input
-      matInput
-      type="number"
-      [formControl]="transitionTime"
-      placeholder="0.7"
-      min="0"
-      max="65.5"
-      step="0.1"
-      class="">
-  </mat-form-field>
-
   <button
     (click)="addSegment()"
     class="segments__addButton">

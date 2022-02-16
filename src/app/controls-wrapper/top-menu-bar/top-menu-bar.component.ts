@@ -1,7 +1,7 @@
 import { OriginConnectionPosition, OverlayConnectionPosition, ConnectionPositionPair } from '@angular/cdk/overlay';
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormControl } from '@angular/forms';
-import { takeUntil } from 'rxjs';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { Subject, takeUntil } from 'rxjs';
 import { WledApiResponse } from '../../shared/api-types';
 import { AppConfig } from '../../shared/app-config';
 import { AppStateService } from '../../shared/app-state/app-state.service';
@@ -13,6 +13,7 @@ import { genericPostResponse, MenuBarButton, setCssColor } from '../utils';
 import { TopMenuBarService } from './top-menu-bar.service';
 
 const DEFAULT_BRIGHTNESS = 128;
+const DEFAULT_TRANSITION_DURATION_SECONDS = 0.7;
 const MIN_SHOW_BRIGHTNESS_SLIDER_THRESHOLD_PX = 600;
 const MIN_SHOW_PC_MODE_BUTTON_THRESHOLD_PX = 1200; // TODO might need to be bigger
 
@@ -33,9 +34,9 @@ class TopMenuBarButtonName {
 export class TopMenuBarComponent extends UnsubscribingComponent implements OnInit {
   @Input() cfg!: AppConfig; // TODO get from service/reducer
   buttons: MenuBarButton[] = [];
-  brightnessControl!: FormControl;
-  isBrightnessOpen: boolean = false;
-  showBrightnessSlider: boolean = false;
+  topMenuBarForm!: FormGroup;
+  isSettingsOpen: boolean = false;
+  showToggleSettingsButton: boolean = false;
   showPcModeButton: boolean = false;
 
   // button controls
@@ -73,10 +74,10 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
   }
 
   ngOnInit() {
-    this.brightnessControl = this.createFormControl();
-    this.onResize();
     this.buttons = this.getButtons();
     this.processingStatus = {};
+    this.topMenuBarForm = this.createForm();
+    this.onResize();
 
     this.appStateService.getAppState(this.ngUnsubscribe)
       .subscribe(({ state, info, uiSettings }) => {
@@ -88,7 +89,9 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
         // TODO add toggle for receive in UI?
         this.shouldToggleReceiveWithSend = info.shouldToggleReceiveWithSend;
         this.isLiveViewActive = uiSettings.isLiveViewActive;
-        this.brightnessControl.setValue(state.brightness, { emitEvent: false });
+        this.topMenuBarForm.get('brightness')!.setValue(state.brightness, { emitEvent: false });
+        // TODO set transition value
+        // this.topMenuBarForm.get('transitionTime')!.setValue(transitionTime, { emitEvent: false });
 
         // TODO some way to keep track of which requests were returned by which function calls?
         this.processingStatus = {};
@@ -122,17 +125,17 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
 
   onResize() {
     const appWidth = document.documentElement.clientWidth;
-    this.showBrightnessSlider = appWidth >= MIN_SHOW_BRIGHTNESS_SLIDER_THRESHOLD_PX;
+    this.showToggleSettingsButton = appWidth >= MIN_SHOW_BRIGHTNESS_SLIDER_THRESHOLD_PX;
     this.showPcModeButton = appWidth >= MIN_SHOW_PC_MODE_BUTTON_THRESHOLD_PX;
 
-    // if brightness slider overlay is open & app width changed from under brightness slider threshold to over, then force close the overlay
-    if (this.isBrightnessOpen && this.showBrightnessSlider) {
-      this.isBrightnessOpen = false;
+    // if settings overlay is open & app width changed from under brightness slider threshold to over, then force close the overlay
+    if (this.isSettingsOpen && this.showToggleSettingsButton) {
+      this.isSettingsOpen = false;
     }
   }
 
-  toggleBrightnessOpen() {
-    this.isBrightnessOpen = !this.isBrightnessOpen;
+  toggleSettingsOpen() {
+    this.isSettingsOpen = !this.isSettingsOpen;
   }
 
   getOverlayPositions() {
@@ -378,16 +381,33 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     // this.lastw = this.appWidth;
   }
 
-  private createFormControl() {
-    const control = this.formBuilder.control(DEFAULT_BRIGHTNESS);
-    control.valueChanges
-      .pipe(takeUntil(this.ngUnsubscribe))
+  private createForm() {
+    const form = this.formBuilder.group({
+      brightness: this.formBuilder.control(DEFAULT_BRIGHTNESS),
+      transitionTime: this.formBuilder.control(DEFAULT_TRANSITION_DURATION_SECONDS),
+    });
+
+    // TODO move to utils and use everywhere
+    const getValueChanges = (form: FormGroup, controlName: string, ngUnsubscribe: Subject<void>) =>
+      form.get(controlName)!.valueChanges.pipe(takeUntil(ngUnsubscribe));
+
+    getValueChanges(form, 'brightness', this.ngUnsubscribe)
       .subscribe((brightness: number) => this.setBrightness(brightness));
-    return control;
+
+    getValueChanges(form, 'transitionTime', this.ngUnsubscribe)
+      .subscribe((seconds: number) => this.setTransitionDuration(seconds));
+
+    return form;
   }
 
   private setBrightness(brightness: number) {
     this.topMenuBarService.setBrightness(brightness)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(genericPostResponse(this.appStateService));
+  }
+
+  private setTransitionDuration(seconds: number) {
+    this.topMenuBarService.setTransitionDuration(seconds)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(genericPostResponse(this.appStateService));
   }

@@ -112,10 +112,6 @@ export class SegmentsService {
     return this.apiService.setSegmentMirror(segmentId, isMirror);
   }
 
-  setTransitionDuration(seconds: number) {
-    return this.apiService.setTransitionDuration(seconds * 10);
-  }
-
   getSegmentExpanded(segmentId: number) {
     if (segmentId >= this.expanded.length) {
       console.warn(`Segment id ${segmentId} does not exist.`);

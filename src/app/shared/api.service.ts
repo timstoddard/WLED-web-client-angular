@@ -264,9 +264,9 @@ export class ApiService {
       this.createApiUrl('json/state'), body);
   }
 
-  /** Sets the transition duration. The `duration` parameter unit is 1/10 of a second (eg: `duration = 7` is 0.7s). */
-  setTransitionDuration(duration: number) {
-    const body = this.createBody({ transition: duration });
+  /** Sets the transition duration. The `transition` unit is 1/10 of a second (eg: `transition = 7` is 0.7s). */
+  setTransitionDuration(seconds: number) {
+    const body = this.createBody({ transition: seconds * 10 });
     return this.http.post<WledApiResponse>(
       this.createApiUrl('json/state'), body);
   }
