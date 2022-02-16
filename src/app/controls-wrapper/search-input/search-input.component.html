@@ -1,25 +1,34 @@
-<mat-form-field
-  appearance="fill"
-  class="searchInput__inputWrapper">
-  <mat-label>{{ label }}</mat-label>
-  <input
-    #searchInput
-    matInput
-    [formControl]="searchText"
-    (keydown)="onKeyDown($event)"
-    placeholder="Search"
-    class="searchInput__input">
-  <mat-icon matSuffix>
-    <i
-      *ngIf="searchText.value?.length > 0"
-      (click)="cancelSearch()"
-      class="searchInput__cancelIcon icons">
-      &#xe38f;
-    </i>
-  </mat-icon>
-</mat-form-field>
+<ng-container *ngIf="showInput; else showTitle">
+  <mat-form-field
+    appearance="fill"
+    class="searchInput__inputWrapper">
+    <mat-label>{{ label }}</mat-label>
+    <input
+      #searchInput
+      matInput
+      [formControl]="searchText"
+      (keydown)="onKeyDown($event)"
+      placeholder="Search"
+      class="searchInput__input">
+    <mat-icon matSuffix>
+      <i
+        *ngIf="searchText.value?.length > 0"
+        (click)="cancelSearch()"
+        class="searchInput__cancelIcon icons">
+        &#xe38f;
+      </i>
+    </mat-icon>
+  </mat-form-field>
+</ng-container>
 
-<!-- TODO should this be clickable? -->
-<i class="searchInput__searchIcon icons">
+<ng-template #showTitle>
+  <h2 class="searchInput__title">
+    {{ title }}
+  </h2>
+</ng-template>
+
+<i
+  (click)="toggleSearchInput()"
+  class="searchInput__searchIcon icons">
   &#xe0a1;
 </i>

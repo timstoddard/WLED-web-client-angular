@@ -9,10 +9,14 @@ import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
   styleUrls: ['./search-input.component.scss']
 })
 export class SearchInputComponent extends UnsubscribingComponent implements OnInit {
-  @Input() label!: string;
+  /** Optional title to be shown and toggled with search input. */
+  @Input() title: string = '';
+  /** Input element label. */
+  @Input() label: string = '';
   @Output() searchValueChanges = new EventEmitter();
   @ViewChild('searchInput', { read: ElementRef }) searchInputElement!: ElementRef<HTMLInputElement>;
   searchText!: FormControl;
+  showInput!: boolean;
 
   constructor(private formBuilder: FormBuilder) {
     super();
@@ -20,6 +24,7 @@ export class SearchInputComponent extends UnsubscribingComponent implements OnIn
 
   ngOnInit() {
     this.searchText = this.createFormControl();
+    this.showInput = !this.title;
   }
 
   onChange = () => {
@@ -34,8 +39,18 @@ export class SearchInputComponent extends UnsubscribingComponent implements OnIn
 
   onKeyDown(event: KeyboardEvent) {
     if (event.key === 'Escape') {
-      this.cancelSearch();
+      if (this.searchText.value.length > 0) {
+        this.cancelSearch();
+      } else if (this.title) {
+        this.showInput = false;
+      }
       event.stopImmediatePropagation();
+    }
+  }
+
+  toggleSearchInput() {
+    if (this.title) {
+      this.showInput = !this.showInput;
     }
   }
 

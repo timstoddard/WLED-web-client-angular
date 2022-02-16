@@ -16,11 +16,9 @@
     min-width: 100px;
   }
 
-  &__input {
-  }
-
   &__searchIcon,
   &__cancelIcon {
+    @include cursorPointerOnHover();
     color: var(--textColorPrimary);
     font-size: 30px;
   }
@@ -29,7 +27,11 @@
     margin-left: 6px;
   }
 
-  &__cancelIcon {
-    @include cursorPointerOnHover();
+  &__title {
+    flex-grow: 1;
+    margin: 6px;
+    // TODO height shouldnt jump on search icon click, but also want to utilize less space on mobile view
+    // margin: 13px 0 14px;
+    text-align: center;
   }
 }
