@@ -14,7 +14,7 @@ import { TopMenuBarService } from './top-menu-bar.service';
 
 const DEFAULT_BRIGHTNESS = 128;
 const DEFAULT_TRANSITION_DURATION_SECONDS = 0.7;
-const MIN_SHOW_BRIGHTNESS_SLIDER_THRESHOLD_PX = 600;
+const MIN_SHOW_BRIGHTNESS_SLIDER_THRESHOLD_PX = 690;
 const MIN_SHOW_PC_MODE_BUTTON_THRESHOLD_PX = 1200; // TODO might need to be bigger
 
 class TopMenuBarButtonName {

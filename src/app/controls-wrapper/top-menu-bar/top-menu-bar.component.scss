@@ -92,13 +92,16 @@
     border-radius: 6px;
     display: flex;
     flex-direction: row-reverse;
-    padding: 6px 10px;
+    padding: 4px 0 0;
 
     &--inOverlay {
       box-shadow: 0 0 8px 4px rgba(var(--borderColorPrimaryRgb),0.8);
+      flex-direction: column;
+      padding: 10px;
 
       & .topMenuBar__slider {
-        flex-direction: column;
+        margin: 0;
+        margin-bottom: 8px;
       }
     }
   }
