@@ -94,9 +94,7 @@ export class WifiSettingsComponent extends UnsubscribingComponent implements OnI
     const staticGatewayParts = ipAddress.staticGateway.match(ipAddressRegex);
     const staticSubnetMaskParts = ipAddress.staticSubnetMask.match(ipAddressRegex);
 
-    const formValues = {
-      CS: localNetwork.ssid,
-      CP: localNetwork.password,
+    const formValues: any /* TODO type */ = {
       I0: parseInt(staticIpParts[1], 10),
       I1: parseInt(staticIpParts[2], 10),
       I2: parseInt(staticIpParts[3], 10),
@@ -119,6 +117,11 @@ export class WifiSettingsComponent extends UnsubscribingComponent implements OnI
       ETH: other.ethernetType,
     };
 
+    if (localNetwork.ssid && localNetwork.password) {
+      formValues.CS = localNetwork.ssid;
+      formValues.CP = localNetwork.password;
+    }
+
     console.log(formValues);
     this.wifiSettingsService.setWifiSettings(formValues)
       .pipe(takeUntil(this.ngUnsubscribe))
@@ -129,9 +132,11 @@ export class WifiSettingsComponent extends UnsubscribingComponent implements OnI
   }
 
   private createForm() {
+    // TODO get default values from server/api (is this currently possible? existing website has them hardcoded into the html)
     return this.formBuilder.group({
       localNetwork: this.formBuilder.group({
         ssid: this.formBuilder.control(''),
+        // TODO how is password handled server side?
         password: this.formBuilder.control(''),
       }),
       ipAddress: this.formBuilder.group({
@@ -144,6 +149,7 @@ export class WifiSettingsComponent extends UnsubscribingComponent implements OnI
       }),
       wledAccessPoint: this.formBuilder.group({
         ssid: this.formBuilder.control('WLED-AP'),
+        // TODO better default? how is asterisk password handled server side?
         password: this.formBuilder.control('********'),
         hideAPName: this.formBuilder.control(false),
         wifiChannel: this.formBuilder.control(1, Validators.required),
@@ -182,6 +188,8 @@ function GetV() {
   d.Sf.AC.value=1;
   d.Sf.WS.checked=1;
   document.getElementById('ethd').style.display='none';
+
+  // TODO get these from api (is that possible?)
   d.getElementsByClassName("sip")[0].innerHTML="192.168.100.154";
   d.getElementsByClassName("sip")[1].innerHTML="4.3.2.1";
 }
