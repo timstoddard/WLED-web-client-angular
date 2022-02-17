@@ -47,14 +47,14 @@
 
     <i
       (click)="toggleExpanded()"
-      [ngClass]="{ 'segment__expandIcon--expanded': isExpanded }"
+      [ngClass]="{ 'segment__expandIcon--expanded': segment.isExpanded }"
       class="segment__expandIcon icons">
       &#xe395;
     </i>
   </div>
 
   <div
-    *ngIf="isExpanded"
+    *ngIf="segment.isExpanded"
     class="segment__content">
     <div class="segment__row">
       <label
@@ -137,159 +137,88 @@
 
 
 
-<!-- <label class="check schkl">
-  <input
-    onchange="selSeg(segment.id)"
-    type="checkbox">
-</label>
-<div class="segname">
-  <div
-    onclick="selSegEx(segment.id)"
-    class="segntxt">
-    {{ segment.n ? segment.n : 'Segment ' + i }}
-  </div>
-  <i
-    (click)="tglSegn(segment.id)"
-    [ngClass]="isExpanded ? 'expanded' : ''"
-    class="icons edit-icon">
-    &#xe2c6;
-  </i>
-</div>
-<i
-  [ngClass]="isExpanded ? 'exp' : ''"
-  class="icons e-icon flr">
-  &#xe395;
-</i>
-<div
-  [ngClass]="isExpanded ? 'expanded' : ''"
-  class="segin">
-  <input
-    formControlName="name"
-    type="text"
-    value="TODO ${segment.n ? segment.n : ''}"
-    placeholder="Enter name..."
-    maxlength=32
-    autocomplete="off"
-    class="ptxt stxt noslide" />
-  <div class="sbs">
-    <i
-      (click)="setSegPwr(segment.id)"
-      [ngClass]="powered[i] ? 'act' : ''"
-      class="icons e-icon pwr">
-      &#xe08f;
-    </i>
-    <app-color-slider
-      onchange="setSegBri(segment.id)"
-      [control]="segmentForm.get('brightness')!"
-      [min]="1"
-      [max]="255"
-      class="">
-    </app-color-slider>
-  </div>
-  <table class="infot">
-    <tr>
-      <td class="segtd">
-        Start LED
-      </td>
-      <td class="segtd">
-        Length
-        <!-- TODO get app config - - >
-        <!-- {{ cfg.comp.seglen ? 'Length' : 'Stop LED' }} - - >
-      </td>
-      <td class="segtd">
-        Offset
-      </td>
-    </tr>
-    <tr>
-      <td class="segtd">
-        <input
-          class="noslide segn"
-          type="number"
-          min="0"
-          [max]="ledCount - 1"
-          [value]="segment.start"
-          oninput="updateLen(segment.id)">
-      </td>
-      <td class="segtd">
-        <input
-          class="noslide segn"
-          type="number"
-          min="0"
-          [max]="ledCount - (cfg.comp.seglen ? segment.start : 0)"
-          [value]="segment.stop - (cfg.comp.seglen ? segment.start : 0)"
-          oninput="updateLen(segment.id)">
-      </td>
-      <td class="segtd">
-        <input
-          class="noslide segn"
-          type="number"
-          [value]="segment.of"
-          oninput="updateLen(segment.id)">
-      </td>
-    </tr>
-  </table>
-  <table class="infot">
-    <tr>
-      <td class="segtd">
-        Grouping
-      </td>
-      <td class="segtd">
-        Spacing
-      </td>
-      <td class="segtd">
-        Apply
-      </td>
-    </tr>
-    <tr>
-      <td class="segtd">
-        <input
-          class="noslide segn"
-          type="number"
-          min="1"
-          max="255"
-          value="segment.grp"
-          oninput="updateLen(segment.id)">
-      </td>
-      <td class="segtd">
-        <input
-          class="noslide segn"
-          type="number"
-          min="0"
-          max="255"
-          value="segment.spc"
-          oninput="updateLen(segment.id)">
-      </td>
-      <td class="segtd">
-        <i
-          class="icons e-icon cnf cnf-s"
-          onclick="setSeg(segment.id)">
-          &#xe390;
-        </i>
-      </td>
-    </tr>
-  </table>
-  <div class="h"></div>
-  <button
-    class="btn btn-i btn-xs del"
-    onclick="delSeg(segment.id)">
-    <i class="icons btn-icon">
-      &#xe037;
-    </i>
-  </button>
-  <label class="check revchkl">
-    Reverse direction
-    <input
-      type="checkbox"
-      onchange="setRev(segment.id)"
-      [checked]="segment.rev">
-    <span class="checkmark schk"></span>
-  </label>
-  <label class="check revchkl">
-    Mirror effect
-    <input
-      type="checkbox"
-      onchange="setMi(segment.id)"
-      [checked]="segment.mi">
-    <span class="checkmark schk"></span>
-  </label>
-</div> -->
+<!--
+<table class="infot">
+  <tr>
+    <td class="segtd">
+      Start LED
+    </td>
+    <td class="segtd">
+      Length
+      <!-- TODO get app config - - >
+      <!-- {{ cfg.comp.seglen ? 'Length' : 'Stop LED' }} - - >
+    </td>
+    <td class="segtd">
+      Offset
+    </td>
+  </tr>
+  <tr>
+    <td class="segtd">
+      <input
+        class="noslide segn"
+        type="number"
+        min="0"
+        [max]="ledCount - 1"
+        [value]="segment.start"
+        oninput="updateLen(segment.id)">
+    </td>
+    <td class="segtd">
+      <!-- TODO get app config -- >
+      <!-- [max]="ledCount - (cfg.comp.seglen ? segment.start : 0)" -- >
+      <!-- [value]="segment.stop - (cfg.comp.seglen ? segment.start : 0)" -- >
+      <input
+        class="noslide segn"
+        type="number"
+        min="0"
+        oninput="updateLen(segment.id)">
+    </td>
+    <td class="segtd">
+      <input
+        class="noslide segn"
+        type="number"
+        [value]="segment.of"
+        oninput="updateLen(segment.id)">
+    </td>
+  </tr>
+</table>
+<table class="infot">
+  <tr>
+    <td class="segtd">
+      Grouping
+    </td>
+    <td class="segtd">
+      Spacing
+    </td>
+    <td class="segtd">
+      Apply
+    </td>
+  </tr>
+  <tr>
+    <td class="segtd">
+      <input
+        class="noslide segn"
+        type="number"
+        min="1"
+        max="255"
+        value="segment.grp"
+        oninput="updateLen(segment.id)">
+    </td>
+    <td class="segtd">
+      <input
+        class="noslide segn"
+        type="number"
+        min="0"
+        max="255"
+        value="segment.spc"
+        oninput="updateLen(segment.id)">
+    </td>
+    <td class="segtd">
+      <i
+        class="icons e-icon cnf cnf-s"
+        onclick="setSeg(segment.id)">
+        &#xe390;
+      </i>
+    </td>
+  </tr>
+</table>
+-->

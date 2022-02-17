@@ -1,8 +1,4 @@
-<!-- TODO show "Loading..." on init -->
-
-<span
-  *ngIf="noNewSegments"
-  class="h">
+<span *ngIf="noNewSegments">
   Maximum number of segments reached.
 </span>
 
@@ -26,7 +22,6 @@
 <div class="segments__list">
   <app-segment
     *ngFor="let segment of segments"
-    [segment]="segment"
-    [isExpanded]="getExpanded(segment.id)">
+    [segment]="segment">
   </app-segment>
 </div>

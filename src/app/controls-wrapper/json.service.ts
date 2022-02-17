@@ -367,7 +367,6 @@ export class JsonService {
 
     let selc = 0;
     let ind = 0;
-    // this.populateSegments(s);
     // TODO better solution than `|| []`
     for (let i = 0; i < (s.seg || []).length; i++) {
       if (s.seg[i].sel) {

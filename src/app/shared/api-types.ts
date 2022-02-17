@@ -120,7 +120,7 @@ export interface WledSegment {
   // Below are fields that can only be set for a POST request, they are never included in an API response.
 
   /** Zero-indexed ID of the segment. May be omitted, in that case the ID will be inferred from the order of the segment objects in the seg array. */
-  id?: number;
+  id: number; // TODO `id` should have a ? for typescript
   /**
    * Using the `i` property of the segment object, you can set the LED colors in the segment using the JSON API. Keep in mind that this is non-persistent, if the light is turned off the segment will return to effect mode. The segment is blanked out when using individual control, the set effect will not run. To disable, change any property of the segment or turn off the light.
    *

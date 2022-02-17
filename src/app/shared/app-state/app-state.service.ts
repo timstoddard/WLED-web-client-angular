@@ -154,8 +154,10 @@ const DEFAULT_APP_STATE: AppStateProps = {
   }
 };
 
-const { state, config } = createState(withProps<AppStateProps>(DEFAULT_APP_STATE));
-const appStateStore = new Store({ name: 'WLED App State', state, config });
+const appStateStore = new Store({
+  name: 'WLED App State',
+  ...createState(withProps<AppStateProps>(DEFAULT_APP_STATE)),
+});
 
 @Injectable({ providedIn: 'root' })
 export class AppStateService {

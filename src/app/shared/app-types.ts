@@ -9,4 +9,6 @@ export interface Segment extends WledSegment {
   id: number;
   /** Segment name. */
   name: string;
+  /** Whether or not the segment is expanded. */
+  isExpanded: boolean;
 }

@@ -54,9 +54,10 @@
   &__expandIcon {
     @include cursorPointerOnHover();
     font-size: 24px;
-    transition: transform 0.2s;
+    transition: transform 0.25s ease;
 
     &--expanded {
+      // TODO animation doesn't work
       transform: rotate(180deg);
     }
   }

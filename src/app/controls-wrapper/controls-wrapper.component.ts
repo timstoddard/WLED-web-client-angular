@@ -11,6 +11,7 @@ import { WebSocketService } from '../shared/web-socket.service';
 import { ColorService } from './color.service';
 import { ControlsService } from './controls.service';
 import { generateApiUrl } from './json.service';
+import { SegmentsService } from './segments/segments.service';
 import { getElementList, isObject } from './utils';
 
 @Component({
@@ -27,27 +28,31 @@ export class ControlsWrapperComponent extends UnsubscribingComponent implements 
   private iSlide = 0; // related to sliding UI
   private lastinfo = {}; */
 
-  apiData!: WledApiResponse;
-
   constructor(
     private controlsService: ControlsService,
     private localStorageService: LocalStorageService,
     private route: ActivatedRoute,
     private webSocketService: WebSocketService,
     private appStateService: AppStateService,
+    private segmentsService: SegmentsService,
   ) {
     super();
   }
 
   ngOnInit() {
-    this.apiData = this.route.snapshot.data['data'];
-    console.log(this.apiData)
-    this.appStateService.setAll(this.apiData);
+    // TODO use route data if web socket fails
+    const webSocketFailed = false;
+    if (webSocketFailed) {
+      const apiData = this.route.snapshot.data['data'];
+      console.log(apiData)
+    }
 
+    // TODO move to web socket service (?)
     this.webSocketService.getStateInfoSocket()
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(response => {
-        this.appStateService.setAll(response)
+        this.appStateService.setAll(response);
+        this.segmentsService.loadApiSegments(response.state.seg);
         // this.webSocketService.sendMessage({ v: true });
         // const { state, info } = response;
         // console.log(state, info)

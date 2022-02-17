@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { takeUntil } from 'rxjs';
 import { AppConfig } from '../../shared/app-config';
-import { AppStateService } from '../../shared/app-state/app-state.service';
 import { Segment } from '../../shared/app-types';
 import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
 import { getInput } from '../utils';
@@ -10,63 +10,66 @@ import { SegmentsService } from './segments.service';
   selector: 'app-segments',
   templateUrl: './segments.component.html',
   styleUrls: ['./segments.component.scss'],
-  // need to provide here (child of routed component) so the service can access the activated route
-  providers: [SegmentsService],
 })
 export class SegmentsComponent extends UnsubscribingComponent implements OnInit {
   @Input() cfg!: AppConfig; // TODO get from service/reducer
   segments: Segment[] = [];
   noNewSegments: boolean = false;
   private lowestUnused!: number;
-  private lSeg!: number;
+  private maxSegmentId!: number;
   private maxSeg!: number;
   private confirmedResetSegments = false;
   private ledCount = 0;
 
   constructor(
     private segmentsService: SegmentsService,
-    private appStateService: AppStateService,
   ) {
     super();
   }
 
   ngOnInit() {
-    this.segments = this.segmentsService.getSegments(); // TODO get from app state
+    this.segmentsService.getSegmentsStore()
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((segments) => {
+        this.segments = segments.ids
+          .map((id: number) => segments.UIEntities[id]);
 
-    this.lowestUnused = 0;
-    this.lSeg = 0; // probably "last segment"? 
-    this.noNewSegments = false;
-    this.maxSeg = 0;
-
-    // TODO what do this logic do?
-    /* if (this.segments && this.segments.length > 0) {
-      for (let y = 0; y < this.segments.length; y++) {
-        const inst = this.segments[y];
-        // let i = parseInt(inst.id, 10);
-        let i = y;
-        this.powered[i] = inst.on;
-        if (i == this.lowestUnused) {
-          this.lowestUnused = i + 1;
+        this.lowestUnused = 0;
+        this.maxSegmentId = 0;
+        this.noNewSegments = false;
+        this.maxSeg = 0;
+    
+        // TODO what do this logic do?
+        /* for (let i = 0; i < this.segments.length; i++) {
+          const segment = this.segments[i];
+          let segmentId: number;
+          try {
+            segmentId = parseInt(`${segment.id}`, 10);
+          } catch (e) {
+            segmentId = i;
+          }
+          if (segmentId === this.lowestUnused) {
+            this.lowestUnused = segmentId + 1;
+          }
+          if (segmentId > this.maxSegmentId) {
+            this.maxSegmentId = segmentId;
+          }
+        } */
+    
+        /* if (this.lowestUnused >= this.maxSeg) {
+          this.noNewSegments = true;
+        } else if (this.noNewSegments) {
+          this.resetUtil();
+          this.noNewSegments = false;
         }
-        if (i > this.lSeg) {
-          this.lSeg = i;
-        }
-      }
-    }*/
-
-    if (this.lowestUnused >= this.maxSeg) {
-      // this.noNewSegments = true;
-    } else if (this.noNewSegments) {
-      // this.resetUtil();
-      // this.noNewSegments = false;
-    }
-    for (let i = 0; i <= this.lSeg; i++) {
-      // this.updateLen(i);
-      // updateSliderTrail(getInput(`seg${i}bri`));
-      // if (this.segments.length < 2) {
-      //   document.getElementById(`segd${this.lSeg}`)!.style.display = 'none';
-      // }
-    }
+        for (let i = 0; i <= this.maxSegmentId; i++) {
+          // this.updateLen(i);
+          // updateSliderTrail(getInput(`seg${i}bri`));
+          // if (this.segments.length < 2) {
+          //   document.getElementById(`segd${this.lSeg}`)!.style.display = 'none';
+          // }
+        } */
+      });
   }
 
   addSegment() {
@@ -75,13 +78,6 @@ export class SegmentsComponent extends UnsubscribingComponent implements OnInit 
 
   deleteSegment(segmentId: number) {
     this.segmentsService.deleteSegment(segmentId);
-
-    // TODO update expanded status of deleted segment
-    // this.expanded[segmentId] = false;
-  }
-
-  getExpanded(segmentId: number) {
-    return this.segmentsService.getSegmentExpanded(segmentId);
   }
 
   // TODO handle adding a segment

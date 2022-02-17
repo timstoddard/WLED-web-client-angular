@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
+import { of } from 'rxjs';
 import { ApiService } from '../shared/api.service';
 import { WledApiResponse } from '../shared/api-types';
 import { ControlsServicesModule } from './controls-services.module';
-import { of } from 'rxjs';
 import { data } from './mock-api-data';
 import { LocalStorageService } from '../shared/local-storage.service';
 
