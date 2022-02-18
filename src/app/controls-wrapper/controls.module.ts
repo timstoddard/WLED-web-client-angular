@@ -20,6 +20,7 @@ import { EffectsComponent } from './effects/effects.component';
 import { HexInputComponent } from './color-inputs/hex-input/hex-input.component';
 // import { InfoComponent } from './info/info.component';
 import { LiveViewModule } from '../shared/live-view/live-view.module';
+import { NewSegmentComponent } from './segments/new-segment/new-segment.component';
 // import { NodesComponent } from './nodes/nodes.component';
 import { PalettesComponent } from './palettes/palettes.component';
 import { PresetFormComponent } from './presets/preset-form/preset-form.component';
@@ -53,6 +54,7 @@ const COMPONENTS = [
   ControlsWrapperComponent,
   EffectsComponent,
   // InfoComponent,
+  NewSegmentComponent,
   // NodesComponent,
   PalettesComponent,
   PresetFormComponent,

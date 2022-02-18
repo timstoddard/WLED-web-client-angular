@@ -4,7 +4,7 @@ import { takeUntil } from 'rxjs';
 import { AppStateService } from '../../../shared/app-state/app-state.service';
 import { Segment } from '../../../shared/app-types';
 import { UnsubscribingComponent } from '../../../shared/unsubscribing.component';
-import { genericPostResponse } from '../../utils';
+import { formatPlural, genericPostResponse } from '../../utils';
 import { SegmentsService } from '../segments.service';
 
 @Component({
@@ -14,8 +14,10 @@ import { SegmentsService } from '../segments.service';
 })
 export class SegmentComponent extends UnsubscribingComponent implements OnInit {
   @Input() segment!: Segment;
+  @Input() showDeleteButton: boolean = false;
   segmentForm!: FormGroup;
   isEditingName: boolean = false;
+  ledCountLabel!: string;
   numberInputs = [
     {
       formControlName: 'start',
@@ -42,7 +44,7 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
       label: 'Spacing',
       placeholder: '0',
     },
-  ]
+  ];
 
   constructor(
     private segmentsService: SegmentsService,
@@ -54,6 +56,7 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
 
   ngOnInit() {
     this.segmentForm = this.createForm();
+    this.updateLedCountLabel(this.segment);
   }
 
   selectOnlySegment() {
@@ -82,7 +85,12 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
     const offset = this.segmentForm.get('offset')!.value as number;
     const grouping = this.segmentForm.get('grouping')!.value as number;
     const spacing = this.segmentForm.get('spacing')!.value as number;
-    this.segmentsService.updateSegment(this.segment.id, name, start, stop, offset, grouping, spacing)
+    const options = {
+      offset,
+      grouping,
+      spacing,
+    };
+    this.segmentsService.updateSegment(this.segment.id, name, start, stop, options)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(genericPostResponse(this.appStateService));
   }
@@ -107,6 +115,28 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
       this.toggleEditName();
       event.stopImmediatePropagation();
     }
+  }
+
+  private updateLedCountLabel(segment: Segment) {
+    // TODO get app config
+    // const { start, stop } = segment;
+    const length: number = 100; // stop - (this.cfg.comp.seglen ? 0 : start);
+    const spacing = segment.spc;
+    const grouping = segment.grp >= 0
+      ? segment.grp
+      : 1;
+
+    let label: string;
+    if (length === 0) {
+      label = '(delete)';
+    } else {
+      label = formatPlural('LED', length);
+      const virtualLeds = Math.ceil(length / (grouping + spacing));
+      if (!isNaN(virtualLeds) && (grouping > 1 || spacing > 0)) {
+        label += ` (${virtualLeds} virtual)`;
+      }
+    }
+    this.ledCountLabel = label;
   }
 
   private toggleOn(isOn: boolean) {

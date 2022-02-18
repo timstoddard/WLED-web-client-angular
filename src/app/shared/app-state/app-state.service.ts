@@ -236,6 +236,12 @@ export class AppStateService {
   getAppState = (ngUnsubscribe: Subject<void>) =>
     this.selectFromAppState((n) => n)
       .pipe<AppStateProps>(takeUntil(ngUnsubscribe));
+  getState = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.state)
+      .pipe<AppState>(takeUntil(ngUnsubscribe));
+  getInfo = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.info)
+      .pipe<AppInfo>(takeUntil(ngUnsubscribe));
   getOn = (ngUnsubscribe: Subject<void>) =>
     this.selectFromAppState((n) => n.state.on)
       .pipe<AppState['on']>(takeUntil(ngUnsubscribe));

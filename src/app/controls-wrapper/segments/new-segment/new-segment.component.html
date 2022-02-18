@@ -1,0 +1,43 @@
+<div
+  [formGroup]="newSegmentForm"
+  class="newSegment">
+  <!-- <div>{{ newSegmentForm.value | json }}</div> -->
+
+  <div class="newSegment__name">
+    <mat-form-field
+      appearance="fill"
+      class="newSegment__name__formField">
+      <mat-label>Segment Name</mat-label>
+      <input
+        matInput
+        formControlName="name"
+        placeholder="Name"
+        maxlength=32
+        autocomplete="off"
+        class="">
+    </mat-form-field>
+  </div>
+
+  <div class="newSegment__numberInputs">
+    <mat-form-field
+      *ngFor="let numberInput of numberInputs"
+      appearance="fill"
+      class="newSegment__numberFormField">
+      <mat-label>{{ numberInput.label }}</mat-label>
+      <input
+        matInput
+        type="number"
+        [formControlName]="numberInput.formControlName"
+        [placeholder]="numberInput.placeholder"
+        class="newSegment__numberInput">
+    </mat-form-field>
+  </div>
+
+  <div class="newSegment__submitButtonWrapper">
+    <button
+      (click)="submitForm()"
+      class="newSegment__submitButton">
+      Submit
+    </button>
+  </div>
+</div>

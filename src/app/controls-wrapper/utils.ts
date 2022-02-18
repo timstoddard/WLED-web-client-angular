@@ -93,3 +93,13 @@ export const findRouteData = (key: string, route: ActivatedRoute | null): unknow
   }
   return null;
 }
+
+/**
+ * Formats the `type` based on whether or not `count` is plural.
+ * @param type 
+ * @param count 
+ * @returns 
+ */
+export const formatPlural = (type: string, count: number) => {
+  return `${count} ${type}${count !== 1 ? 's' : ''}`;
+}

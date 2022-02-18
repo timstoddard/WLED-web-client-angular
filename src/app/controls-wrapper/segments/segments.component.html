@@ -4,10 +4,17 @@
 
 <div class="segments__topMenuBar">
   <button
-    (click)="addSegment()"
+    *ngIf="!showNewSegmentForm"
+    (click)="toggleNewSegmentForm()"
     class="segments__addButton">
     <!-- TODO or just a '+' sign? -->
     New Segment
+  </button>
+
+  <button
+    (click)="selectAllSegments()"
+    class="segments__addButton">
+    Select All
   </button>
 
   <button
@@ -20,8 +27,16 @@
 </div>
 
 <div class="segments__list">
+  <app-new-segment
+    *ngIf="showNewSegmentForm"
+    [newSegmentId]="segments.length"
+    [ledCount]="ledCount"
+    [lastLed]="lastLed">
+  </app-new-segment>
+
   <app-segment
     *ngFor="let segment of segments"
-    [segment]="segment">
+    [segment]="segment"
+    [showDeleteButton]="showDeleteButtons">
   </app-segment>
 </div>

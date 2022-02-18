@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Store, createState } from '@ngneat/elf';
 import {
   UIEntitiesRef,
+  deleteAllEntities,
   deleteEntities,
   getEntity,
   hasEntity,
@@ -55,6 +56,10 @@ export class SegmentsService extends UnsubscribingService {
     return this.segmentsStore;
   }
 
+  getLastSegment() {
+    return this.segmentsStore.query(getEntity(this.segmentsLength - 1, { ref: UIEntitiesRef })) as Segment;
+  }
+
   loadApiSegments(segments: WledSegment[]) {
     for (const segment of segments) {
       let name: string;
@@ -104,6 +109,10 @@ export class SegmentsService extends UnsubscribingService {
     return this.apiService.selectOnlySegment(segmentId, this.segmentsLength);
   }
 
+  selectAllSegments() {
+    return this.apiService.selectAllSegments(this.segmentsLength);
+  }
+
   toggleSegmentExpanded(segmentId: number) {
     if (!this.segmentsStore.query(hasEntity(segmentId))) {
       console.warn(`Segment with id ${segmentId}, it does not exist.`);
@@ -122,14 +131,17 @@ export class SegmentsService extends UnsubscribingService {
     name: string, // TODO is this really needed?
     start: number,
     stop: number,
-    offset: number,
-    grouping: number,
-    spacing: number,
+    options?: {
+      offset: number,
+      grouping: number,
+      spacing: number,
+    },
   ) {
-    return this.apiService.updateSegment(segmentId, name, start, stop, offset, grouping, spacing);
+    return this.apiService.updateSegment(segmentId, name, start, stop, options);
   }
 
   deleteSegment(segmentId: number) {
+    this.segmentsStore.update(deleteEntities(segmentId));
     if (this.segmentsLength < 2) {
       return null;
     } else {
@@ -139,6 +151,7 @@ export class SegmentsService extends UnsubscribingService {
   }
 
   resetSegments() {
+    this.segmentsStore.update(deleteAllEntities());
     return this.apiService.resetSegments(this.ledCount, this.segmentsLength);
   }
 

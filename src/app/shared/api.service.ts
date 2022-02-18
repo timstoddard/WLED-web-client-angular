@@ -161,29 +161,44 @@ export class ApiService {
       this.createApiUrl('json/si'), body);
   }
 
+  /** Selects all segments. */
+  selectAllSegments(segmentsLength: number) {
+    const seg = [];
+    for (let i = 0; i < segmentsLength; i++) {
+      seg.push({ sel: true });
+    }
+    const body = this.createBody({ seg });
+    return this.http.post<WledApiResponse>(
+      this.createApiUrl('json/si'), body);
+  }
+
   /** Updates the core parameters of the specified segment. */
   updateSegment(
     segmentId: number,
     name: string,
     start: number,
     stop: number,
-    offset: number,
-    grouping: number,
-    spacing: number,
+    options?: {
+      offset: number,
+      grouping: number,
+      spacing: number,
+    }
   ) {
     // TODO get config object then use this logic
     // const _stop = (this.cfg.comp.seglen ? start : 0) + stop,
-    const body = this.createBody({
-      seg: {
-        id: segmentId,
-        n: name, // TODO is this really needed?
-        start,
-        stop, 
-        of: offset,
-        grp: grouping,
-        spc: spacing,
-      },
-    });
+    const seg: any /* TODO type */ = {
+      id: segmentId,
+      n: name, // TODO is this really needed?
+      start,
+      stop,
+    };
+    if (options) {
+      seg.of = options.offset;
+      seg.grp = options.grouping;
+      seg.spc = options.spacing;
+    }
+
+    const body = this.createBody({ seg });
     return this.http.post<WledApiResponse>(
       this.createApiUrl('json/si'), body);
   }

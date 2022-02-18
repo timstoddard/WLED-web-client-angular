@@ -55,6 +55,7 @@
   }
 
   &:hover {
+    // TODO find way to improve specificity to remove !important
     // needs !important so that hover shows up on selected items
     border-color: $hoverBorderColor !important;
     cursor: pointer;
@@ -67,6 +68,7 @@
     }
 
     & + #{$grandparentSelector} {
+      // TODO find way to improve specificity to remove !important
       border-top-color: $hoverBorderColor !important;
     }
   }
@@ -122,7 +124,7 @@
 @mixin overrideMatTextInputStyles($backgroundColor) {
   & ::ng-deep .mat-form-field-flex {
     background: var($backgroundColor);
-    padding-top: 6px !important;
+    padding-top: 6px;
   }
 
   & ::ng-deep .mat-form-field:not(.mat-focused) .mat-form-field-label { // only for not focused
@@ -131,5 +133,28 @@
 
   & ::ng-deep input::placeholder {
     color: var(--textColorAccent);
+  }
+}
+
+@mixin segmentBaseStyles($width) {
+  background: var(--backgroundColorAccent);
+  border: 1px solid var(--borderColorPrimary);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 10px;
+  max-width: $width;
+  min-width: $width;
+  padding: 6px 12px;
+
+  &__numberFormField {
+    margin: 0px 4px -12px;
+    max-width: 95px;
+    min-width: 95px;
+
+    & ::ng-deep .mat-form-field-flex {
+      padding-top: 6px;
+    }
   }
 }
