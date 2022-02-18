@@ -102,6 +102,13 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
     return this.segmentsService.getSegmentsLength();
   }
 
+  onNameKeyDown(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      this.toggleEditName();
+      event.stopImmediatePropagation();
+    }
+  }
+
   private toggleOn(isOn: boolean) {
     this.segmentsService.setSegmentOn(this.segment.id, isOn)
       .pipe(takeUntil(this.ngUnsubscribe))

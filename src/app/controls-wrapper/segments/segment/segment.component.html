@@ -32,6 +32,7 @@
           <input
             matInput
             formControlName="name"
+            (keydown)="onNameKeyDown($event)"
             placeholder="Name"
             maxlength=32
             autocomplete="off"

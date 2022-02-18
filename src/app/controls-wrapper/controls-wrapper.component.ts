@@ -1,14 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import RangeTouch from 'rangetouch';
-import { takeUntil } from 'rxjs';
-import { WledApiResponse } from '../shared/api-types';
 import { AppConfig, initAppConfig } from '../shared/app-config';
 import { AppStateService } from '../shared/app-state/app-state.service';
 import { LocalStorageService } from '../shared/local-storage.service';
 import { UnsubscribingComponent } from '../shared/unsubscribing.component';
 import { WebSocketService } from '../shared/web-socket.service';
-import { ColorService } from './color.service';
 import { ControlsService } from './controls.service';
 import { generateApiUrl } from './json.service';
 import { SegmentsService } from './segments/segments.service';
@@ -32,31 +29,20 @@ export class ControlsWrapperComponent extends UnsubscribingComponent implements 
     private controlsService: ControlsService,
     private localStorageService: LocalStorageService,
     private route: ActivatedRoute,
-    private webSocketService: WebSocketService,
     private appStateService: AppStateService,
-    private segmentsService: SegmentsService,
   ) {
     super();
   }
 
   ngOnInit() {
-    // TODO use route data if web socket fails
-    const webSocketFailed = false;
-    if (webSocketFailed) {
-      const apiData = this.route.snapshot.data['data'];
-      console.log(apiData)
-    }
+    const apiData = this.route.snapshot.data['data'];
+    console.log(apiData)
+    // needed because other responses don't include palette/effects lists
+    this.appStateService.setAll(apiData);
 
-    // TODO move to web socket service (?)
-    this.webSocketService.getStateInfoSocket()
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(response => {
-        this.appStateService.setAll(response);
-        this.segmentsService.loadApiSegments(response.state.seg);
-        // this.webSocketService.sendMessage({ v: true });
-        // const { state, info } = response;
-        // console.log(state, info)
-      });
+    // this.webSocketService.sendMessage({ v: true });
+    // const { state, info } = response;
+    // console.log(state, info)
 
     // TODO uncomment
     // this.setupRanges();
