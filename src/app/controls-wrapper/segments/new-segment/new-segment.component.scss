@@ -11,5 +11,10 @@
     align-items: center;
     display: flex;
     justify-content: center;
+    padding: 4px;
+  }
+
+  &__title {
+    margin: 0;
   }
 }

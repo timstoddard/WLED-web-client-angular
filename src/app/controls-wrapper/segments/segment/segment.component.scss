@@ -30,16 +30,6 @@
       color: var(--textColorAccent);
       margin-left: 4px;
     }
-
-    &__formField {
-      margin-top: 2px;
-      margin-bottom: -18px;
-      min-width: 80px;
-    }
-
-    & ::ng-deep .mat-form-field-flex {
-      padding-top: 4px !important;
-    }
   }
 
   &__expandIcon {

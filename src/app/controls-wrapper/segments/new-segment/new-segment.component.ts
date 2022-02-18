@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { takeUntil } from 'rxjs';
 import { AppStateService } from '../../../shared/app-state/app-state.service';
@@ -15,6 +15,7 @@ export class NewSegmentComponent extends UnsubscribingComponent implements OnIni
   @Input() newSegmentId!: number;
   @Input() ledCount!: number;
   @Input() lastLed!: number;
+  @Output() submit = new EventEmitter();
   newSegmentForm!: FormGroup;
   numberInputs: any[] = []; // TODO type
   ledCountLabel!: string;
@@ -42,7 +43,10 @@ export class NewSegmentComponent extends UnsubscribingComponent implements OnIni
 
     this.segmentsService.updateSegment(this.newSegmentId, name, start, stop)
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(genericPostResponse(this.appStateService));
+      .subscribe((response) => {
+        this.submit.emit();
+        genericPostResponse(this.appStateService)(response);
+      });
   }
 
   private getNumberInputs() {

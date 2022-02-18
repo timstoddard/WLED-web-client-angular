@@ -73,24 +73,25 @@ export class SegmentsComponent extends UnsubscribingComponent implements OnInit 
       .subscribe(genericPostResponse(this.appStateService));
   }
 
-  toggleNewSegmentForm() {
-    this.showNewSegmentForm = true;
-
-    let lastLed = 0;
-    if (this.lowestUnusedId > 0) {
-      const lastSegment = this.segmentsService.getLastSegment();
-      const a = lastSegment.stop;
-      const b = lastSegment.start;
-      // TODO get app config
-      // const b = this.cfg.comp.seglen
-      //   ? lastSegment.start
-      //   : 0;
-      const ledCount = a + b;
-      if (ledCount < this.ledCount) {
-        lastLed = ledCount;
+  setShowNewSegmentForm(show: boolean) {
+    if (show) {
+      let lastLed = 0;
+      if (this.lowestUnusedId > 0) {
+        const lastSegment = this.segmentsService.getLastSegment();
+        const a = lastSegment.stop;
+        const b = lastSegment.start;
+        // TODO get app config
+        // const b = this.cfg.comp.seglen
+        //   ? lastSegment.start
+        //   : 0;
+        const ledCount = a + b;
+        if (ledCount < this.ledCount) {
+          lastLed = ledCount;
+        }
       }
+      this.lastLed = lastLed;
     }
-    this.lastLed = lastLed;
+    this.showNewSegmentForm = show;
   }
 
   // TODO handle adding a segment

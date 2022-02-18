@@ -5,7 +5,7 @@
 <div class="segments__topMenuBar">
   <button
     *ngIf="!showNewSegmentForm"
-    (click)="toggleNewSegmentForm()"
+    (click)="setShowNewSegmentForm(true)"
     class="segments__addButton">
     <!-- TODO or just a '+' sign? -->
     New Segment
@@ -29,6 +29,7 @@
 <div class="segments__list">
   <app-new-segment
     *ngIf="showNewSegmentForm"
+    (submit)="setShowNewSegmentForm(false)"
     [newSegmentId]="segments.length"
     [ledCount]="ledCount"
     [lastLed]="lastLed">
