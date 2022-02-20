@@ -1,3 +1,26 @@
-.button--active {
-  font-weight: bold;
+.nav {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  &__button {
+    color: var(--textColorAccent);
+    padding: 4px;
+  
+    &--active {
+      color: var(--textColorPrimary);
+      font-weight: bold;
+    }
+  }
+
+  &__hideButton {
+    color: var(--textColorAccent);
+    margin-left: 10px;
+
+    &:hover {
+      color: var(--textColorPrimary);
+      cursor: pointer;
+    }
+  }
 }

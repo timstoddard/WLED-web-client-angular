@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { LocalStorageService } from './shared/local-storage.service';
 import { PageTitleService } from './shared/page-title.service';
 import { UnsubscribingComponent } from './shared/unsubscribing.component';
 
@@ -9,7 +10,7 @@ import { UnsubscribingComponent } from './shared/unsubscribing.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent extends UnsubscribingComponent {
-  isDevMode = true; // TODO remove
+  showDevNavBar: boolean = false;
   links = [
     {
       path: 'controls',
@@ -57,11 +58,20 @@ export class AppComponent extends UnsubscribingComponent {
     },
   ];
 
-  constructor(private pageTitleService: PageTitleService) {
+  constructor(
+    private pageTitleService: PageTitleService,
+    private localStorageService: LocalStorageService,
+  ) {
     super();
   }
 
   ngOnInit() {
     this.pageTitleService.updateOnRouteChange(this.ngUnsubscribe);
+    this.showDevNavBar = this.localStorageService.get('showDevNavBar')!;
+  }
+
+  hideDevNavBar() {
+    this.showDevNavBar = false;
+    this.localStorageService.set('showDevNavBar', false);
   }
 }
