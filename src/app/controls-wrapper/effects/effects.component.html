@@ -35,14 +35,14 @@
 </div>
 
 <div class="effects__selectedName">
-  Selected: {{ getSelectedEffectName() }}
+  Selected: {{ getSelectedEffectName() | async }}
 </div>
 
 <div
   [formGroup]="effectsForm"
   class="effects__list">
   <label
-    *ngFor="let effect of effects"
+    *ngFor="let effect of getFilteredEffects() | async"
     [ngClass]="{ 'effects__radioButton--selected': effect.id === effectsForm.get('selectedEffect')!.value }"
     class="effects__radioButton">
     <input

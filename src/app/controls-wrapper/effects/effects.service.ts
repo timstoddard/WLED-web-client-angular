@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { ApiService } from '../../shared/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { UnsubscribingService } from '../../shared/unsubscribing.service';
@@ -14,8 +15,9 @@ const NONE_SELECTED = -1;
 
 @Injectable({ providedIn: ControlsServicesModule })
 export class EffectsService extends UnsubscribingService {
-  sortedEffects!: Effect[];
-  private selectedEffectName!: string;
+  private sortedEffects!: Effect[];
+  private filteredEffects$: BehaviorSubject<Effect[]>;
+  private selectedEffectName$: BehaviorSubject<string>;
   private effectNames: string[] = [];
 
   constructor(
@@ -23,15 +25,21 @@ export class EffectsService extends UnsubscribingService {
     private appStateService: AppStateService,
   ) {
     super();
+
+    this.filteredEffects$ = new BehaviorSubject<Effect[]>([]);
+    this.selectedEffectName$ = new BehaviorSubject<string>(this.getEffectName(NONE_SELECTED));
+
     this.appStateService.getEffects(this.ngUnsubscribe)
       .subscribe(effects => {
         this.effectNames = effects;
         this.sortedEffects = this.sortEffects();
+        this.filterEffects();
       });
   }
 
   setEffect(effectId: number) {
-    this.selectedEffectName = this.getEffectName(effectId);
+    const selectedEffectName = this.getEffectName(effectId);
+    this.selectedEffectName$.next(selectedEffectName);
     return effectId !== NONE_SELECTED
       ? this.apiService.setEffect(effectId)
       : null;
@@ -45,20 +53,12 @@ export class EffectsService extends UnsubscribingService {
     return this.apiService.setIntensity(effectId);
   }
 
-  getEffectName(effectId: number) {
-    let effectName = 'none';
-    if (effectId !== NONE_SELECTED) {
-      const selectedEffect = this.sortedEffects
-        .find(((effect) => effect.id === effectId));
-      if (selectedEffect) {
-        effectName = selectedEffect.name;
-      }
-    }
-    return effectName;
+  getSelectedEffectName() {
+    return this.selectedEffectName$;
   }
 
-  getSelectedEffectName() {
-    return this.selectedEffectName;
+  getFilteredEffects() {
+    return this.filteredEffects$;
   }
 
   /**
@@ -66,11 +66,11 @@ export class EffectsService extends UnsubscribingService {
    * @param filterText 
    * @returns 
    */
-  getFilteredEffects(filterText = '') {
+  filterEffects(filterText = '') {
     const filterTextLowercase = filterText.toLowerCase();
     const filteredEffects = this.sortedEffects
       .filter((effect) => effect.name.toLowerCase().includes(filterTextLowercase));
-    return filteredEffects;
+    this.filteredEffects$.next(filteredEffects);
   }
 
   private sortEffects() {
@@ -83,5 +83,17 @@ export class EffectsService extends UnsubscribingService {
     sortedEffects.sort(compareNames);
     sortedEffects.unshift(createEffect(0, 'Solid'));
     return sortedEffects;
+  }
+
+  private getEffectName(effectId: number) {
+    let effectName = 'none';
+    if (effectId !== NONE_SELECTED) {
+      const selectedEffect = this.sortedEffects
+        .find(((effect) => effect.id === effectId));
+      if (selectedEffect) {
+        effectName = selectedEffect.name;
+      }
+    }
+    return effectName;
   }
 }

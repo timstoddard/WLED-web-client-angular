@@ -58,12 +58,13 @@ export class PalettesService extends UnsubscribingService {
       .subscribe(palettes => {
         this.paletteNames = palettes;
         this.sortedPalettes = this.sortPalettes();
+        this.filterPalettes(this.filterTextLowercase);
       });
 
+    // update palettes that use color slots
     this.colorSlotsService.getSelectedColor()
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(() => {
-        // update palettes that use color slots
         this.filterPalettes(this.filterTextLowercase);
       });
   }

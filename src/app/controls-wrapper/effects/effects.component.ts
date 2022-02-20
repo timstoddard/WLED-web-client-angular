@@ -18,7 +18,6 @@ const DEFAULT_EFFECT_INTENSITY = 128;
   providers: [EffectsService],
 })
 export class EffectsComponent extends UnsubscribingComponent implements OnInit {
-  effects!: Effect[];
   effectsForm!: FormGroup;
 
   constructor(
@@ -30,7 +29,6 @@ export class EffectsComponent extends UnsubscribingComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.effects = this.effectsService.getFilteredEffects();
     this.setEffect(DEFAULT_EFFECT_ID);
     this.effectsForm = this.createForm();
   }
@@ -39,10 +37,15 @@ export class EffectsComponent extends UnsubscribingComponent implements OnInit {
     return this.effectsService.getSelectedEffectName();
   }
 
-  filterList(filterText: string) {
-    this.effects = this.effectsService.getFilteredEffects(filterText);
+  getFilteredEffects() {
+    return this.effectsService.getFilteredEffects();
   }
 
+  filterList(filterText: string) {
+    this.effectsService.filterEffects(filterText);
+  }
+
+  // TODO implement this
   toggleLabels() {
     // config.comp.labels = !config.comp.labels;
     // this.applyCfg(config);
