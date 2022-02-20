@@ -30,6 +30,7 @@ export class ControlsWrapperComponent extends UnsubscribingComponent implements 
     private localStorageService: LocalStorageService,
     private route: ActivatedRoute,
     private appStateService: AppStateService,
+    private segmentsService: SegmentsService,
   ) {
     super();
   }
@@ -39,6 +40,8 @@ export class ControlsWrapperComponent extends UnsubscribingComponent implements 
     console.log(apiData)
     // needed because other responses don't include palette/effects lists
     this.appStateService.setAll(apiData);
+    // needed for offline mode to set the segments
+    this.segmentsService.loadApiSegments(apiData.state.seg);
 
     // this.webSocketService.sendMessage({ v: true });
     // const { state, info } = response;

@@ -2,20 +2,25 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
 import { ApiService } from '../../shared/api.service';
+import { LocalStorageService } from '../../shared/local-storage.service';
 import { ControlsServicesModule } from '../controls-services.module';
 import { palettesData } from '../mock-api-data';
 import { PalettesData } from './palettes.service';
 
 @Injectable({ providedIn: ControlsServicesModule })
 export class PalettesDataResolver implements Resolve<PalettesData[]> {
-  constructor(private apiService: ApiService) { }
+  constructor(
+    private apiService: ApiService,
+    private localStorageService: LocalStorageService) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    // TODO use api data
+    const isOffline = this.localStorageService.get('isOffline');
+    return isOffline
+      ? of(palettesData)
+      : this.getAllPages();
+  }
 
-    // TODO set up offline handler like in ControlsResolver
-    // return of(palettesData);
-
+  private getAllPages() {
     // TODO can merge all response objects together instead of returning an array?
 
     // const PALETTES_PER_PAGE = 8;

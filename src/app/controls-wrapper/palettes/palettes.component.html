@@ -9,12 +9,12 @@
 <app-color-slots class="palettes__colorSlots"></app-color-slots>
 
 <div class="palettes__selectedName">
-  Selected: {{ getSelectedPaletteName() }}
+  Selected: {{ getSelectedPaletteName() | async }}
 </div>
 
 <div class="palettes__list">
   <label
-    *ngFor="let palette of palettes"
+    *ngFor="let palette of getFilteredPalettes() | async"
     [ngClass]="{ 'palettes__radioButton--selected': palette.id === selectedPalette.value }"
     class="palettes__radioButton"
     [ngStyle]="{ background: palette.background }">

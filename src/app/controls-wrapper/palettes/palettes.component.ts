@@ -16,9 +16,7 @@ const DEFAULT_PALETTE_ID = -1; // TODO get from first selected segment
   providers: [PalettesService],
 })
 export class PalettesComponent extends UnsubscribingComponent implements OnInit {
-  palettes!: PaletteWithBackground[];
   selectedPalette!: FormControl;
-  private selColors!: any; // TODO type // TODO where to get this from
 
   constructor(
     private palettesService: PalettesService,
@@ -29,7 +27,6 @@ export class PalettesComponent extends UnsubscribingComponent implements OnInit 
   }
 
   ngOnInit() {
-    this.palettes = this.palettesService.getFilteredPalettes();
     this.setPalette(DEFAULT_PALETTE_ID);
     this.selectedPalette = this.createFormControl();
   }
@@ -38,8 +35,12 @@ export class PalettesComponent extends UnsubscribingComponent implements OnInit 
     return this.palettesService.getSelectedPaletteName();
   }
 
+  getFilteredPalettes() {
+    return this.palettesService.getFilteredPalettes();
+  }
+
   filterList(filterText: string) {
-    this.palettes = this.palettesService.getFilteredPalettes(filterText);
+    this.palettesService.filterPalettes(filterText);
   }
 
   private setPalette(paletteId: number) {

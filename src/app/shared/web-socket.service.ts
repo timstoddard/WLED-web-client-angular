@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { WledApiResponse } from './api-types';
 import { ApiService } from './api.service';
 import { LiveViewData } from './live-view/live-view.service';
+import { LocalStorageService } from './local-storage.service';
 
 // TODO how are these used by the web socket?
 const LIVE_VIEW_MESSAGE = 'LIVE_VIEW_MESSAGE';
@@ -15,8 +16,16 @@ export class WebSocketService {
   private stateAndInfoSocket$!: Observable<WledApiResponse>;
   private liveViewSocket$!: Observable<LiveViewData>;
 
-  constructor(private apiService: ApiService) {
-    this.connect();
+  constructor(
+    private apiService: ApiService,
+    private localStorageService: LocalStorageService,
+  ) {
+    const isOffline = this.localStorageService.get('isOffline');
+    if (isOffline) {
+      this.fakeConnect();
+    } else {
+      this.connect();
+    }
   }
 
   getStateInfoSocket() {
@@ -55,5 +64,11 @@ export class WebSocketService {
   private getWebSocketUrl() {
     const apiUrl = this.apiService.BASE_URL;
     return `ws://${apiUrl}/ws`;
+  }
+
+  private fakeConnect() {
+    this.socket$ = new Subject<any>() as WebSocketSubject<any>;
+    this.stateAndInfoSocket$ = new Observable<any>();
+    this.liveViewSocket$ = new Observable<any>();
   }
 }
