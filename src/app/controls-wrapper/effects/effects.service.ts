@@ -46,17 +46,15 @@ export class EffectsService extends UnsubscribingService {
   }
 
   getEffectName(effectId: number) {
-    if (effectId === NONE_SELECTED) {
-      return 'none';
-    }
-    if (this.sortedEffects && this.sortedEffects.length > 0) {
-      const selectedPalette = this.sortedEffects
-        .find(((n) => n.id === effectId));
-      if (selectedPalette) {
-        return selectedPalette.name;
+    let effectName = 'none';
+    if (effectId !== NONE_SELECTED) {
+      const selectedEffect = this.sortedEffects
+        .find(((effect) => effect.id === effectId));
+      if (selectedEffect) {
+        effectName = selectedEffect.name;
       }
     }
-    return '';
+    return effectName;
   }
 
   getSelectedEffectName() {
@@ -76,16 +74,14 @@ export class EffectsService extends UnsubscribingService {
   }
 
   private sortEffects() {
-    const sortedEffects = this.effectNames.slice(1) // remove 'Solid'
-      .map((name, i) => ({
-        id: i + 1,
-        name,
-      }));
-    sortedEffects.sort(compareNames);
-    sortedEffects.unshift({
-      id: 0,
-      name: 'Solid',
+    const createEffect = (id: number, name: string): Effect => ({
+      id,
+      name,
     });
+    const sortedEffects = this.effectNames.slice(1) // remove 'Solid' before sorting
+      .map((name, i) => createEffect(i + 1, name));
+    sortedEffects.sort(compareNames);
+    sortedEffects.unshift(createEffect(0, 'Solid'));
     return sortedEffects;
   }
 }

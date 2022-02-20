@@ -5,10 +5,10 @@ import { ApiService } from '../../shared/api.service';
 import { LocalStorageService } from '../../shared/local-storage.service';
 import { ControlsServicesModule } from '../controls-services.module';
 import { palettesData } from '../mock-api-data';
-import { PalettesData } from './palettes.service';
+import { PalettesApiData } from './palettes.service';
 
 @Injectable({ providedIn: ControlsServicesModule })
-export class PalettesDataResolver implements Resolve<PalettesData[]> {
+export class PalettesDataResolver implements Resolve<PalettesApiData[]> {
   constructor(
     private apiService: ApiService,
     private localStorageService: LocalStorageService) { }

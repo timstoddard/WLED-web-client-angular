@@ -15,9 +15,13 @@ export interface PaletteColors {
   [key: number]: PaletteColor;
 }
 
-export interface PalettesData {
+export interface PalettesApiData {
   p: PaletteColors;
   m: number;
+}
+
+interface PaletteBackgrounds {
+  [id: number]: string;
 }
 
 export interface PaletteWithBackground {
@@ -34,7 +38,8 @@ export class PalettesService extends UnsubscribingService {
   private filteredPalettes$: BehaviorSubject<PaletteWithBackground[]>;
   private selectedPaletteName$: BehaviorSubject<string>;
   private paletteNames: string[] = [];
-  private filterText!: string;
+  private filterTextLowercase!: string;
+  private backgrounds: PaletteBackgrounds = {};
 
   constructor(
     private apiService: ApiService,
@@ -43,6 +48,8 @@ export class PalettesService extends UnsubscribingService {
     private route: ActivatedRoute,
   ) {
     super();
+
+    this.backgrounds = this.generatePaletteBackgrounds();
 
     this.filteredPalettes$ = new BehaviorSubject<PaletteWithBackground[]>([]);
     this.selectedPaletteName$ = new BehaviorSubject<string>(this.getPaletteName(NONE_SELECTED));
@@ -57,9 +64,7 @@ export class PalettesService extends UnsubscribingService {
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(() => {
         // update palettes that use color slots
-        this.sortedPalettes = this.sortPalettes();
-        // TODO find a way to do this without passing `this.filterText`
-        this.filterPalettes(this.filterText);
+        this.filterPalettes(this.filterTextLowercase);
       });
   }
 
@@ -85,49 +90,73 @@ export class PalettesService extends UnsubscribingService {
    * @returns 
    */
   filterPalettes(filterText = '') {
-    this.filterText = filterText.toLowerCase();
+    this.filterTextLowercase = filterText.toLowerCase();
     const filteredPalettes = this.sortedPalettes
-      .filter((palette) => palette.name.toLowerCase().includes(this.filterText));
+      .filter((palette) => palette.name.toLowerCase().includes(this.filterTextLowercase))
+      .map((palette) => {
+        // TODO better way to filter the color slot based palettes?
+        const isColorSlotBasedPaletteRegex = /^\* Color/;
+        if (isColorSlotBasedPaletteRegex.test(palette.name)) {
+          this.updateBackground(palette.id);
+        }
+        return {
+          ...palette,
+          background: this.backgrounds[palette.id],
+        };
+      });
     this.filteredPalettes$.next(filteredPalettes);
   }
 
   /** Sorts the palettes based on their names and joins with background data. */
   private sortPalettes() {
-    const backgrounds = this.generatePaletteBackgrounds();
-    const sortedPalettes = this.paletteNames.slice(1) // remove 'Default'
-      .map((name, i) => ({
-        id: i + 1,
-        name,
-        background: backgrounds[i + 1],
-      }));
-    sortedPalettes.sort(compareNames);
-    sortedPalettes.unshift({
-      id: 0,
-      name: 'Default',
-      background: backgrounds[0],
+    const createPalette = (id: number, name: string): PaletteWithBackground => ({
+      id,
+      name,
+      background: '',
     });
+    const sortedPalettes = this.paletteNames.slice(1) // remove 'Default' before sorting
+      .map((name, i) => createPalette(i + 1, name));
+    sortedPalettes.sort(compareNames);
+    sortedPalettes.unshift(createPalette(0, 'Default'));
     return sortedPalettes;
   }
 
+  private getPaletteName(paletteId: number) {
+    let paletteName = 'none';
+    if (paletteId !== NONE_SELECTED) {
+      const selectedPalette = this.sortedPalettes
+        .find(((palette) => palette.id === paletteId));
+      if (selectedPalette) {
+        paletteName = selectedPalette.name;
+      }
+    }
+    return paletteName;
+  }
+
+  // TODO this logic should be done (once) in palettes data resolver
+  private getPalettesData() {
+    // TODO get from app state?
+    const palettesData = findRouteData('palettesData', this.route) as PalettesApiData[];
+    let allPalettesData: PaletteColors = {};
+    for (const paletteData of palettesData) {
+      allPalettesData = { ...allPalettesData, ...paletteData.p };
+    }
+    return allPalettesData;
+  }
+
   private generatePaletteBackgrounds() {
-    // TODO for better perf, should only update non-fixed palettes (cache fixed palettes)
-    // also the "random" background shouldn't regenerate on color slot change
     const paletteColors = this.getPalettesData();
-    const backgrounds: { [key: number]: string } = {};
+    const backgrounds: PaletteBackgrounds = {};
     for (const id in paletteColors) {
       backgrounds[id] = this.generatePaletteBackgroundCss(paletteColors[id]);
     }
     return backgrounds;
   }
 
-  private getPalettesData() {
-    // TODO get from app state?
-    const palettesData = findRouteData('palettesData', this.route) as PalettesData[];
-    let allPalettesData: PaletteColors = {};
-    for (const paletteData of palettesData) {
-      allPalettesData = { ...allPalettesData, ...paletteData.p };
-    }
-    return allPalettesData;
+  private updateBackground(paletteId: number) {
+    const paletteColors = this.getPalettesData();
+    const background = this.generatePaletteBackgroundCss(paletteColors[paletteId]);
+    this.backgrounds[paletteId] = background;
   }
 
   private generatePaletteBackgroundCss(paletteColor: PaletteColor) {
@@ -176,19 +205,5 @@ export class PalettesService extends UnsubscribingService {
     }
 
     return `linear-gradient(to right,${gradient.join()})`;
-  }
-
-  private getPaletteName(paletteId: number) {
-    if (paletteId === NONE_SELECTED) {
-      return 'none';
-    }
-    if (this.sortedPalettes && this.sortedPalettes.length > 0) {
-      const selectedPalette = this.sortedPalettes
-        .find(((n) => n.id === paletteId));
-      if (selectedPalette) {
-        return selectedPalette.name;
-      }
-    }
-    return '';
   }
 }

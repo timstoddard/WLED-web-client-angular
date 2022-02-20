@@ -1,5 +1,5 @@
 import { WledApiResponse } from '../shared/api-types';
-import { PalettesData } from './palettes/palettes.service';
+import { PalettesApiData } from './palettes/palettes.service';
 
 export const data: WledApiResponse = {
   state: {
@@ -181,7 +181,7 @@ export const data: WledApiResponse = {
   palettes: ['Default', '* Random Cycle', '* Color 1', '* Colors 1&2', '* Color Gradient', '* Colors Only', 'Party', 'Cloud', 'Lava', 'Ocean', 'Forest', 'Rainbow', 'Rainbow Bands', 'Sunset', 'Rivendell', 'Breeze', 'Red & Blue', 'Yellowout', 'Analogous', 'Splash', 'Pastel', 'Sunset 2', 'Beech', 'Vintage', 'Departure', 'Landscape', 'Beach', 'Sherbet', 'Hult', 'Hult 64', 'Drywet', 'Jul', 'Grintage', 'Rewhi', 'Tertiary', 'Fire', 'Icefire', 'Cyane', 'Light Pink', 'Autumn', 'Magenta', 'Magred', 'Yelmag', 'Yelblu', 'Orange & Teal', 'Tiamat', 'April Night', 'Orangery', 'C9', 'Sakura', 'Aurora', 'Atlantica', 'C9 2', 'C9 New', 'Temperature', 'Aurora 2', 'Retro Clown', 'Candy', 'Toxy Reaf', 'Fairy Reaf', 'Semi Blue', 'Pink Candy', 'Red Reaf', 'Aqua Flash', 'Yelblu Hot', 'Lite Light', 'Red Flash', 'Blink Red', 'Red Shift', 'Red Tide', 'Candy2'],
 };
 
-export const palettesData: PalettesData[] = [{
+export const palettesData: PalettesApiData[] = [{
   m: 8,
   p: {
     0: [[0, 85, 0, 171], [15.9375, 132, 0, 124], [31.875, 181, 0, 75], [47.8125, 229, 0, 27], [63.75, 232, 23, 0], [79.6875, 184, 71, 0], [95.625, 171, 119, 0], [111.5625, 171, 171, 0], [127.5, 171, 85, 0], [143.4375, 221, 34, 0], [159.375, 242, 0, 14], [175.3125, 194, 0, 62], [191.25, 143, 0, 113], [207.1875, 95, 0, 161], [223.125, 47, 0, 208], [239.0625, 0, 7, 249]],

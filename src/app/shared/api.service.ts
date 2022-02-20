@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { PalettesData } from '../controls-wrapper/palettes/palettes.service';
+import { PalettesApiData } from '../controls-wrapper/palettes/palettes.service';
 import { WledApiResponse, WledInfo, WledState } from './api-types';
 import { Segment } from './app-types';
 import { LiveViewData } from './live-view/live-view.service';
@@ -57,7 +57,7 @@ export class ApiService {
   getPalettesData(page: number) {
     const params = new HttpParams()
       .set('page', page);
-    return this.http.get<PalettesData>(
+    return this.http.get<PalettesApiData>(
       this.createApiUrl(PALETTES_DATA_PATH), { params });
   }
 
