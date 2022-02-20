@@ -70,7 +70,7 @@ export class ControlsWrapperComponent extends UnsubscribingComponent implements 
   }
 
   /*private loadStoredConfig() {
-    const config = this.localStorageService.get<AppConfig>('wledUiCfg');
+    const config = this.localStorageService.get<AppConfig>(LocalStorageKey.UI_CONFIG);
     if (config) {
       this.cfg = mergeDeep(this.cfg, config);
     }

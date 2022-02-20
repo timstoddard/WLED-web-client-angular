@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
 import { ApiService } from '../../shared/api.service';
-import { LocalStorageService } from '../../shared/local-storage.service';
+import { LocalStorageKey, LocalStorageService } from '../../shared/local-storage.service';
 import { ControlsServicesModule } from '../controls-services.module';
 import { palettesData } from '../mock-api-data';
 import { PalettesApiData } from './palettes.service';
@@ -14,7 +14,7 @@ export class PalettesDataResolver implements Resolve<PalettesApiData[]> {
     private localStorageService: LocalStorageService) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    const isOffline = this.localStorageService.get('isOffline');
+    const isOffline = this.localStorageService.get(LocalStorageKey.IS_OFFLINE);
     return isOffline
       ? of(palettesData)
       : this.getAllPages();
@@ -57,8 +57,7 @@ export class PalettesDataResolver implements Resolve<PalettesApiData[]> {
 const loadPalettesData = (callback: (() => void) = () => { }) => { // TODO can remove callback param?
   try {
     // TODO attempt to load palettes data from local storage
-    // const key = 'wledPalx';
-    // let palettesDataJson = this.localStorageService.get(key) as any; // TODO type
+    // let palettesDataJson = this.localStorageService.get(LocalStorageKey.PALETTES_DATA) as any; // TODO type
     // palettesDataJson = JSON.parse(palettesDataJson);
     // const now = new Date();
     // const palettesDataJson = getPalettesData();
@@ -74,7 +73,7 @@ const loadPalettesData = (callback: (() => void) = () => { }) => { // TODO can r
   // TODO also do something with websocket connect callback
   /*this.palettesData = {};
   this._getPalettesData(0, () => {
-    this.localStorageService.set(key, {
+    this.localStorageService.set(LocalStorageKey.PALETTES_DATA, {
       p: this.palettesData,
       vid: lastinfo.vid,
     });

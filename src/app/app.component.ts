@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { LocalStorageService } from './shared/local-storage.service';
+import { LocalStorageKey, LocalStorageService } from './shared/local-storage.service';
 import { PageTitleService } from './shared/page-title.service';
 import { UnsubscribingComponent } from './shared/unsubscribing.component';
 
@@ -67,11 +67,11 @@ export class AppComponent extends UnsubscribingComponent {
 
   ngOnInit() {
     this.pageTitleService.updateOnRouteChange(this.ngUnsubscribe);
-    this.showDevNavBar = this.localStorageService.get('showDevNavBar')!;
+    this.showDevNavBar = this.localStorageService.get(LocalStorageKey.SHOW_DEV_NAV_BAR)!;
   }
 
   hideDevNavBar() {
     this.showDevNavBar = false;
-    this.localStorageService.set('showDevNavBar', false);
+    this.localStorageService.set(LocalStorageKey.SHOW_DEV_NAV_BAR, false);
   }
 }

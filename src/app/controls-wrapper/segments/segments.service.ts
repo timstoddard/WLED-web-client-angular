@@ -178,7 +178,7 @@ export class SegmentsService extends UnsubscribingService {
   private loadSegmentName(segmentId: number) {
     let segmentName = this.getDefaultName(segmentId);
     try {
-      const key = `segment-${segmentId}-name`;
+      const key = `SEGMENT_NAME_${segmentId}`;
       const storedSegmentName = this.localStorageService.get(key) as string;
       if (storedSegmentName) {
         segmentName = storedSegmentName;

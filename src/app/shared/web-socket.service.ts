@@ -4,7 +4,7 @@ import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { WledApiResponse } from './api-types';
 import { ApiService } from './api.service';
 import { LiveViewData } from './live-view/live-view.service';
-import { LocalStorageService } from './local-storage.service';
+import { LocalStorageKey, LocalStorageService } from './local-storage.service';
 
 // TODO how are these used by the web socket?
 const LIVE_VIEW_MESSAGE = 'LIVE_VIEW_MESSAGE';
@@ -20,7 +20,7 @@ export class WebSocketService {
     private apiService: ApiService,
     private localStorageService: LocalStorageService,
   ) {
-    const isOffline = this.localStorageService.get('isOffline');
+    const isOffline = this.localStorageService.get(LocalStorageKey.IS_OFFLINE);
     if (isOffline) {
       this.fakeConnect();
     } else {

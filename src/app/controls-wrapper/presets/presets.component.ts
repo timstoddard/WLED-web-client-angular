@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AppConfig } from '../../shared/app-config';
-import { LocalStorageService } from '../../shared/local-storage.service';
+import { LocalStorageKey, LocalStorageService } from '../../shared/local-storage.service';
 import { generateApiUrl } from '../json.service';
 import { getInput, isObject } from '../utils';
 
@@ -51,7 +51,7 @@ export class PresetsComponent implements OnInit {
 
   ngOnInit() {
     if (this.useLocalStorage) {
-      const storedPresets = this.localStorageService.get('wledP');
+      const storedPresets = this.localStorageService.get(LocalStorageKey.SAVED_PRESETS);
       if (storedPresets) {
         this.pJson = storedPresets;
       }
@@ -211,7 +211,7 @@ export class PresetsComponent implements OnInit {
     let hasBackup = false;
     let backupString = '';
     try {
-      backupString = JSON.stringify(this.localStorageService.get('wledP'));
+      backupString = JSON.stringify(this.localStorageService.get(LocalStorageKey.SAVED_PRESETS));
       if (backupString.length > 10) {
         hasBackup = true;
       }
