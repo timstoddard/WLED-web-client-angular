@@ -1,8 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AppUIConfig } from '../../shared/ui-config.service';
+import { UIConfigService } from '../../shared/ui-config.service';
 import { LocalStorageKey, LocalStorageService } from '../../shared/local-storage.service';
 import { generateApiUrl } from '../json.service';
 import { getInput, isObject } from '../utils';
+import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
 
 interface Playlists { [key: number]: Playlist }
 interface Playlist {
@@ -31,9 +32,9 @@ interface Obj {
   templateUrl: './presets.component.html',
   styleUrls: ['./presets.component.scss']
 })
-export class PresetsComponent implements OnInit {
+export class PresetsComponent extends UnsubscribingComponent implements OnInit {
   @Input() useLocalStorage: boolean = true;
-  @Input() cfg!: AppUIConfig; // TODO get from service/reducer
+  showPresetIds!: boolean;
   private pJson: any = {}; /* TODO type */
   private pQL: any[] = [];
   private pNum = 0;
@@ -47,9 +48,19 @@ export class PresetsComponent implements OnInit {
   private pI = 0; // current playlist/preset id
   private plJson: Playlists = this.getDefaultPlaylist();
 
-  constructor(private localStorageService: LocalStorageService) { }
+  constructor(
+    private localStorageService: LocalStorageService,
+    private uiConfigService: UIConfigService,
+  ) {
+    super();
+  }
 
   ngOnInit() {
+    this.uiConfigService.getUIConfig(this.ngUnsubscribe)
+      .subscribe((uiConfig) => {
+        this.showPresetIds = uiConfig.showPresetIds;
+      });
+
     if (this.useLocalStorage) {
       const storedPresets = this.localStorageService.get(LocalStorageKey.SAVED_PRESETS);
       if (storedPresets) {
@@ -83,7 +94,7 @@ export class PresetsComponent implements OnInit {
         is.push(i);
 
         cn += `<div class="seg pres" id="p${i}o">`;
-        if (this.cfg.showPresetIds) {
+        if (this.showPresetIds) {
           cn += `<div class="pid">${i}</div>`;
         }
         cn += `<div class="segname pname" onclick="setPreset(${i})">${this.isPlaylist(i) ? "<i class='icons btn-icon'>&#xe139;</i>" : ''}${this.getPresetName(i)}</div>

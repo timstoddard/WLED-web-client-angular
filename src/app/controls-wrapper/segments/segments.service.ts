@@ -126,18 +126,17 @@ export class SegmentsService extends UnsubscribingService {
       }), { ref: UIEntitiesRef }));
   }
 
-  updateSegment(
+  updateSegment(options: {
     segmentId: number,
-    name: string, // TODO is this really needed?
+    name: string,
     start: number,
     stop: number,
-    options?: {
-      offset: number,
-      grouping: number,
-      spacing: number,
-    },
-  ) {
-    return this.apiService.updateSegment(segmentId, name, start, stop, options);
+    useSegmentLength: boolean,
+    offset?: number,
+    grouping?: number,
+    spacing?: number,
+  }) {
+    return this.apiService.updateSegment(options);
   }
 
   deleteSegment(segmentId: number) {

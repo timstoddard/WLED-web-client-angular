@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { takeUntil } from 'rxjs';
 import { AppStateService } from '../../../shared/app-state/app-state.service';
+import { UIConfigService } from '../../../shared/ui-config.service';
 import { UnsubscribingComponent } from '../../../shared/unsubscribing.component';
 import { formatPlural, genericPostResponse } from '../../utils';
 import { SegmentsService } from '../segments.service';
@@ -19,16 +20,23 @@ export class NewSegmentComponent extends UnsubscribingComponent implements OnIni
   newSegmentForm!: FormGroup;
   numberInputs: any[] = []; // TODO type
   ledCountLabel!: string;
+  useSegmentLength!: boolean;
 
   constructor(
     private formBuilder: FormBuilder,
     private segmentsService: SegmentsService,
     private appStateService: AppStateService,
+    private uiConfigService: UIConfigService,
   ) {
     super();
   }
 
   ngOnInit() {
+    this.uiConfigService.getUIConfig(this.ngUnsubscribe)
+      .subscribe((uiConfig) => {
+        this.useSegmentLength = uiConfig.useSegmentLength;
+      });
+
     this.newSegmentForm = this.createForm();
     this.numberInputs = this.getNumberInputs();
     this.ledCountLabel = this.getLedCountLabel();
@@ -41,7 +49,14 @@ export class NewSegmentComponent extends UnsubscribingComponent implements OnIni
       stop,
     } = this.newSegmentForm.value;
 
-    this.segmentsService.updateSegment(this.newSegmentId, name, start, stop)
+    const options = {
+      segmentId: this.newSegmentId,
+      name,
+      start,
+      stop,
+      useSegmentLength: this.useSegmentLength,
+    };
+    this.segmentsService.updateSegment(options)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((response) => {
         this.submit.emit();
@@ -50,7 +65,6 @@ export class NewSegmentComponent extends UnsubscribingComponent implements OnIni
   }
 
   private getNumberInputs() {
-    const seglen = false; // TODO get this.cfg.comp.seglen
     return [
       {
         formControlName: 'start',
@@ -62,11 +76,11 @@ export class NewSegmentComponent extends UnsubscribingComponent implements OnIni
       },
       {
         formControlName: 'stop',
-        label: seglen ? 'Length' : 'Stop LED',
+        label: this.useSegmentLength ? 'Length' : 'Stop LED',
         placeholder: '100',
         min: 0,
-        max: this.ledCount - (seglen ? this.lastLed : 0),
-        value: this.ledCount - (seglen ? this.lastLed : 0),
+        max: this.ledCount - (this.useSegmentLength ? this.lastLed : 0),
+        value: this.ledCount - (this.useSegmentLength ? this.lastLed : 0),
       },
     ];
   }

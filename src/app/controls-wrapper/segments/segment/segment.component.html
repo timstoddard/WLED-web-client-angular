@@ -146,9 +146,7 @@
       Start LED
     </td>
     <td class="segtd">
-      Length
-      <!-- TODO get app config - - >
-      <!-- {{ cfg.comp.seglen ? 'Length' : 'Stop LED' }} - - >
+      {{ useSegmentLength ? 'Length' : 'Stop LED' }}
     </td>
     <td class="segtd">
       Offset
@@ -165,13 +163,12 @@
         oninput="updateLen(segment.id)">
     </td>
     <td class="segtd">
-      <!-- TODO get app config -- >
-      <!-- [max]="ledCount - (cfg.comp.seglen ? segment.start : 0)" -- >
-      <!-- [value]="segment.stop - (cfg.comp.seglen ? segment.start : 0)" -- >
       <input
         class="noslide segn"
         type="number"
         min="0"
+        [max]="ledCount - (useSegmentLength ? segment.start : 0)"
+        [value]="segment.stop - (useSegmentLength ? segment.start : 0)"
         oninput="updateLen(segment.id)">
     </td>
     <td class="segtd">

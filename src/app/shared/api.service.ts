@@ -173,28 +173,30 @@ export class ApiService {
   }
 
   /** Updates the core parameters of the specified segment. */
-  updateSegment(
+  updateSegment(options: {
     segmentId: number,
     name: string,
     start: number,
     stop: number,
-    options?: {
-      offset: number,
-      grouping: number,
-      spacing: number,
-    }
-  ) {
-    // TODO get config object then use this logic
-    // const _stop = (this.cfg.comp.seglen ? start : 0) + stop,
+    useSegmentLength: boolean,
+    offset?: number,
+    grouping?: number,
+    spacing?: number,
+  }) {
+    const actualStop = (options.useSegmentLength ? options.start : 0) + options.stop;
     const seg: any /* TODO type */ = {
-      id: segmentId,
-      n: name, // TODO is this really needed?
-      start,
-      stop,
+      id: options.segmentId,
+      n: options.name, // TODO is this really needed?
+      start: options.start,
+      stop: actualStop,
     };
-    if (options) {
+    if (options.offset) {
       seg.of = options.offset;
+    }
+    if (options.grouping) {
       seg.grp = options.grouping;
+    }
+    if (options.spacing) {
       seg.spc = options.spacing;
     }
 

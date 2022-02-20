@@ -32,7 +32,6 @@ class TopMenuBarButtonName {
   host: { '(window:resize)': 'onResize($event)' },
 })
 export class TopMenuBarComponent extends UnsubscribingComponent implements OnInit {
-  @Input() cfg!: AppUIConfig; // TODO get from service/reducer
   buttons: MenuBarButton[] = [];
   topMenuBarForm!: FormGroup;
   isSettingsOpen: boolean = false;

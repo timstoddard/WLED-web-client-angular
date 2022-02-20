@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, ValidationErrors, ValidatorFn } from '@angular/
 import { takeUntil } from 'rxjs';
 import { AppStateService } from '../../../shared/app-state/app-state.service';
 import { Segment } from '../../../shared/app-types';
+import { UIConfigService } from '../../../shared/ui-config.service';
 import { UnsubscribingComponent } from '../../../shared/unsubscribing.component';
 import { formatPlural, genericPostResponse } from '../../utils';
 import { SegmentsService } from '../segments.service';
@@ -18,6 +19,7 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
   segmentForm!: FormGroup;
   isEditingName: boolean = false;
   ledCountLabel!: string;
+  useSegmentLength!: boolean;
   numberInputs = [
     {
       formControlName: 'start',
@@ -50,11 +52,17 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
     private segmentsService: SegmentsService,
     private formBuilder: FormBuilder,
     private appStateService: AppStateService,
+    private uiConfigService: UIConfigService,
   ) {
     super();
   }
 
   ngOnInit() {
+    this.uiConfigService.getUIConfig(this.ngUnsubscribe)
+      .subscribe((uiConfig) => {
+        this.useSegmentLength = uiConfig.useSegmentLength;
+      });
+
     this.segmentForm = this.createForm();
     this.updateLedCountLabel(this.segment);
   }
@@ -86,11 +94,16 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
     const grouping = this.segmentForm.get('grouping')!.value as number;
     const spacing = this.segmentForm.get('spacing')!.value as number;
     const options = {
+      segmentId: this.segment.id,
+      name,
+      start,
+      stop,
+      useSegmentLength: this.useSegmentLength,
       offset,
       grouping,
       spacing,
     };
-    this.segmentsService.updateSegment(this.segment.id, name, start, stop, options)
+    this.segmentsService.updateSegment(options)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(genericPostResponse(this.appStateService));
   }
@@ -118,9 +131,8 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
   }
 
   private updateLedCountLabel(segment: Segment) {
-    // TODO get app config
-    // const { start, stop } = segment;
-    const length: number = 100; // stop - (this.cfg.comp.seglen ? 0 : start);
+    const { start, stop } = segment;
+    const length = stop - (this.useSegmentLength ? 0 : start);
     const spacing = segment.spc;
     const grouping = segment.grp >= 0
       ? segment.grp
