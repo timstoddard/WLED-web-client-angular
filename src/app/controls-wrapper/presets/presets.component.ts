@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AppConfig } from '../../shared/app-config';
+import { AppUIConfig } from '../../shared/ui-config.service';
 import { LocalStorageKey, LocalStorageService } from '../../shared/local-storage.service';
 import { generateApiUrl } from '../json.service';
 import { getInput, isObject } from '../utils';
@@ -33,7 +33,7 @@ interface Obj {
 })
 export class PresetsComponent implements OnInit {
   @Input() useLocalStorage: boolean = true;
-  @Input() cfg!: AppConfig; // TODO get from service/reducer
+  @Input() cfg!: AppUIConfig; // TODO get from service/reducer
   private pJson: any = {}; /* TODO type */
   private pQL: any[] = [];
   private pNum = 0;
@@ -83,7 +83,7 @@ export class PresetsComponent implements OnInit {
         is.push(i);
 
         cn += `<div class="seg pres" id="p${i}o">`;
-        if (this.cfg.comp.pid) {
+        if (this.cfg.showPresetIds) {
           cn += `<div class="pid">${i}</div>`;
         }
         cn += `<div class="segname pname" onclick="setPreset(${i})">${this.isPlaylist(i) ? "<i class='icons btn-icon'>&#xe139;</i>" : ''}${this.getPresetName(i)}</div>

@@ -3,7 +3,7 @@ import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { WledApiResponse } from '../../shared/api-types';
-import { AppConfig } from '../../shared/app-config';
+import { AppUIConfig, UIConfigService } from '../../shared/ui-config.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { LocalStorageService } from '../../shared/local-storage.service';
 import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
@@ -32,12 +32,13 @@ class TopMenuBarButtonName {
   host: { '(window:resize)': 'onResize($event)' },
 })
 export class TopMenuBarComponent extends UnsubscribingComponent implements OnInit {
-  @Input() cfg!: AppConfig; // TODO get from service/reducer
+  @Input() cfg!: AppUIConfig; // TODO get from service/reducer
   buttons: MenuBarButton[] = [];
   topMenuBarForm!: FormGroup;
   isSettingsOpen: boolean = false;
   showToggleSettingsButton: boolean = false;
   showPcModeButton: boolean = false;
+  isDarkMode!: boolean;
 
   // button controls
   private isOn = false;
@@ -69,6 +70,7 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     private appStateService: AppStateService,
     private changeDetectorRef: ChangeDetectorRef,
     private webSocketService: WebSocketService,
+    private uiConfigService: UIConfigService,
   ) {
     super();
   }
@@ -102,6 +104,11 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
         }
 
         this.changeDetectorRef.markForCheck();
+      });
+
+    this.uiConfigService.getUIConfig(this.ngUnsubscribe)
+      .subscribe((uiConfig) => {
+        this.isDarkMode = uiConfig.theme.base === 'dark';
       });
 
     // TODO evaluate if needed
@@ -328,10 +335,9 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
    * Toggles between light and dark mode.
    * @param config 
    */
-  toggleTheme(/*config: AppConfig*/) {
-    // TODO wire up to api
-    // config.theme.base = (config.theme.base === 'light') ? 'dark' : 'light';
-    // this.applyCfg(config);
+  toggleTheme() {
+    const newBase = this.isDarkMode ? 'light' : 'dark';
+    this.uiConfigService.setThemeBase(newBase);
   }
 
   private togglePcMode(fromB = false) { // TODO "from b" seems to be "called from button"

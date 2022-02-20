@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { takeUntil } from 'rxjs';
 import { AppStateService } from '../../shared/app-state/app-state.service';
+import { UIConfigService } from '../../shared/ui-config.service';
 import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
 import { genericPostResponse } from '../utils';
 import { Effect, EffectsService } from './effects.service';
@@ -19,11 +20,13 @@ const DEFAULT_EFFECT_INTENSITY = 128;
 })
 export class EffectsComponent extends UnsubscribingComponent implements OnInit {
   effectsForm!: FormGroup;
+  private showLabels!: boolean;
 
   constructor(
     private formBuilder: FormBuilder,
     private effectsService: EffectsService,
     private appStateService: AppStateService,
+    private uiConfigService: UIConfigService,
   ) {
     super();
   }
@@ -31,6 +34,11 @@ export class EffectsComponent extends UnsubscribingComponent implements OnInit {
   ngOnInit() {
     this.setEffect(DEFAULT_EFFECT_ID);
     this.effectsForm = this.createForm();
+
+    this.uiConfigService.getUIConfig(this.ngUnsubscribe)
+      .subscribe((uiConfig) => {
+        this.showLabels = uiConfig.showLabels;
+      });
   }
 
   getSelectedEffectName() {
@@ -45,10 +53,8 @@ export class EffectsComponent extends UnsubscribingComponent implements OnInit {
     this.effectsService.filterEffects(filterText);
   }
 
-  // TODO implement this
   toggleLabels() {
-    // config.comp.labels = !config.comp.labels;
-    // this.applyCfg(config);
+    this.uiConfigService.setShowLabels(!this.showLabels);
   }
 
   private setEffect(effectId: number) {

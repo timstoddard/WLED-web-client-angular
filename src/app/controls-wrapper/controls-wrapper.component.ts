@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import RangeTouch from 'rangetouch';
-import { AppConfig, initAppConfig } from '../shared/app-config';
+import { WledApiResponse } from '../shared/api-types';
 import { AppStateService } from '../shared/app-state/app-state.service';
 import { LocalStorageService } from '../shared/local-storage.service';
+import { UIConfigService } from '../shared/ui-config.service';
 import { UnsubscribingComponent } from '../shared/unsubscribing.component';
 import { WebSocketService } from '../shared/web-socket.service';
 import { ControlsService } from './controls.service';
@@ -31,14 +32,17 @@ export class ControlsWrapperComponent extends UnsubscribingComponent implements 
     private route: ActivatedRoute,
     private appStateService: AppStateService,
     private segmentsService: SegmentsService,
+    private uiConfigService: UIConfigService,
   ) {
     super();
   }
 
   ngOnInit() {
-    const apiData = this.route.snapshot.data['data'];
-    console.log(apiData)
-    // needed because other responses don't include palette/effects lists
+    const apiData = this.route.snapshot.data['data'] as WledApiResponse;
+    for (const key of ['state', 'info']) {
+      console.log(key, apiData[key as keyof WledApiResponse]);
+    }
+    // needed because only this response include palettes/effects lists
     this.appStateService.setAll(apiData);
     // needed for offline mode to set the segments
     this.segmentsService.loadApiSegments(apiData.state.seg);

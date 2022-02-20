@@ -3,10 +3,6 @@ import { Store, createState, withProps, select } from '@ngneat/elf';
 import { Subject, takeUntil } from 'rxjs';
 import { WledApiResponse } from '../api-types';
 
-// TODO create entity store for segments
-// TODO create entity store for palettes
-// TODO create entity store for effects
-
 interface AppStateProps {
   state: AppState;
   info: AppInfo;
@@ -154,16 +150,20 @@ const DEFAULT_APP_STATE: AppStateProps = {
   }
 };
 
-const appStateStore = new Store({
-  name: 'WLED App State',
-  ...createState(withProps<AppStateProps>(DEFAULT_APP_STATE)),
-});
-
 @Injectable({ providedIn: 'root' })
 export class AppStateService {
+  private appStateStore: Store;
+
+  constructor() {
+    this.appStateStore = new Store({
+      name: 'WLED App State',
+      ...createState(withProps<AppStateProps>(DEFAULT_APP_STATE)),
+    });
+  }
+
   /** Set all app state fields using the api response data. */
   setAll = (response: WledApiResponse) => {
-    appStateStore.update(({ uiSettings, palettes, effects }) => ({
+    this.appStateStore.update(({ uiSettings, palettes, effects }) => ({
       state: {
         on: response.state.on,
         brightness: response.state.bri,
@@ -242,6 +242,7 @@ export class AppStateService {
   getInfo = (ngUnsubscribe: Subject<void>) =>
     this.selectFromAppState((n) => n.info)
       .pipe<AppInfo>(takeUntil(ngUnsubscribe));
+  // TODO remove individual getters
   getOn = (ngUnsubscribe: Subject<void>) =>
     this.selectFromAppState((n) => n.state.on)
       .pipe<AppState['on']>(takeUntil(ngUnsubscribe));
@@ -426,55 +427,49 @@ export class AppStateService {
     this.updateUISettings({ isLiveViewActive });
 
   private selectFromAppState = (selectFn: (state: AppStateProps) => any) =>
-    appStateStore.pipe(select(selectFn));
+    this.appStateStore.pipe(select(selectFn));
 
   private updateState = (newState: Partial<AppState>) => {
-    appStateStore.update(({ state, info, uiSettings, palettes, effects }) => ({
-      state: { ...state, ...newState },
-      info,
-      uiSettings,
-      palettes,
-      effects,
+    this.appStateStore.update((appState) => ({
+      ...appState,
+      state: {
+        ...appState.state,
+        ...newState,
+      },
     }));
   }
 
   private updateInfo = (newInfo: Partial<AppInfo>) => {
-    appStateStore.update(({ state, info, uiSettings, palettes, effects }) => ({
-      state,
-      info: { ...info, ...newInfo },
-      uiSettings,
-      palettes,
-      effects,
+    this.appStateStore.update((appState) => ({
+      ...appState,
+      info: {
+        ...appState.info,
+        ...newInfo,
+      },
     }));
   }
 
   private updatePalettes = (newPalettes: string[]) => {
-    appStateStore.update(({ state, info, uiSettings, effects }) => ({
-      state,
-      info,
-      uiSettings,
+    this.appStateStore.update((appState) => ({
+      ...appState,
       palettes: newPalettes,
-      effects,
     }));
   }
 
   private updateEffects = (newEffects: string[]) => {
-    appStateStore.update(({ state, info, uiSettings, palettes }) => ({
-      state,
-      info,
-      uiSettings,
-      palettes,
+    this.appStateStore.update((appState) => ({
+      ...appState,
       effects: newEffects,
     }));
   }
 
   private updateUISettings = (newUiSettings: Partial<AppUISettings>) => {
-    appStateStore.update(({ state, info, uiSettings, palettes, effects }) => ({
-      state,
-      info,
-      uiSettings: { ...uiSettings, ...newUiSettings },
-      palettes,
-      effects,
+    this.appStateStore.update((appState) => ({
+      ...appState,
+      uiSettings: {
+        ...appState.uiSettings,
+        ...newUiSettings,
+      },
     }));
   }
 }

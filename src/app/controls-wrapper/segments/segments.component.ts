@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { takeUntil } from 'rxjs';
-import { AppConfig } from '../../shared/app-config';
+import { AppUIConfig } from '../../shared/ui-config.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { Segment } from '../../shared/app-types';
 import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
@@ -13,7 +13,7 @@ import { SegmentsService } from './segments.service';
   styleUrls: ['./segments.component.scss'],
 })
 export class SegmentsComponent extends UnsubscribingComponent implements OnInit {
-  @Input() cfg!: AppConfig; // TODO get from service/reducer
+  @Input() cfg!: AppUIConfig; // TODO get from service/reducer
   segments: Segment[] = [];
   noNewSegments: boolean = false;
   showDeleteButtons: boolean = false;

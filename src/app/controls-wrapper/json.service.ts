@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../shared/api.service';
-import { AppConfig } from '../shared/app-config';
-import { LocalStorageService } from '../shared/local-storage.service';
+import { AppUIConfig, UIConfigService } from '../shared/ui-config.service';
+import { LocalStorageKey, LocalStorageService } from '../shared/local-storage.service';
 import { ControlsServicesModule } from './controls-services.module';
 import { asHtmlElem, getInput, setCssColor } from './utils';
 
@@ -19,11 +19,12 @@ export class JsonService {
 
   constructor(
     private apiService: ApiService,
-    private localStorageService: LocalStorageService) {}
+    private localStorageService: LocalStorageService,
+    private uiConfigService: UIConfigService) {}
 
   init() {
     this.getLocIp();
-    this.applyCfg({} as AppConfig); // TODO get actual config
+    this.applyCfg({} as AppUIConfig); // TODO get actual config
     document.addEventListener('visibilitychange', this.handleVisibilityChange, false);
   }
 
@@ -253,15 +254,15 @@ export class JsonService {
     }
   }
 
-  private applyCfg(config: AppConfig) {
+  private applyCfg(config: AppUIConfig) {
     this.setTheme(config.theme.base === 'light');
-    const bg = config.theme.color.bg;
-    if (bg) {
-      setCssColor('--c-1', bg);
+    const backgroundColor = config.theme.color.background;
+    if (backgroundColor) {
+      setCssColor('--c-1', backgroundColor);
     }
 
     // TODO show/hide color sliders based on config settings
-    // const ccfg = config.comp.colors;
+    // const ccfg = config.colors;
     // document.getElementById('hexw')!.style.display = ccfg.hex ? 'block' : 'none';
     // document.getElementById('picker')!.style.display = ccfg.picker ? 'block' : 'none';
     // document.getElementById('vwrap')!.style.display = ccfg.picker ? 'block' : 'none';
@@ -269,7 +270,7 @@ export class JsonService {
     // document.getElementById('rgbwrap')!.style.display = ccfg.rgb ? 'block' : 'none';
     // document.getElementById('qcs-w')!.style.display = ccfg.quick ? 'block' : 'none';
     
-    const labels = config.comp.labels;
+    const labels = config.showLabels;
     let e: any = document.querySelectorAll('.tab-label');
     for (let i = 0; i < e.length; i++) {
       e[i].style.display = labels ? 'block' : 'none';
@@ -280,28 +281,18 @@ export class JsonService {
     setCssColor('--bbp', labels ? '9px 0 7px 0' : '10px 0 4px 0');
     setCssColor('--bhd', labels ? 'block' : 'none');
     setCssColor('--bmt', labels ? '0px' : '5px');
-    setCssColor('--t-b', `${config.theme.alpha.tab}`);
+    setCssColor('--t-b', `${config.theme.alpha.buttons}`);
     // TODO call update size change
     // this.size();
-    this.localStorageService.set('wledUiCfg', config);
+    this.localStorageService.set(LocalStorageKey.UI_CONFIG, config);
   }
 
-  tglHex(config: AppConfig) {
-    config.comp.colors.hex = !config.comp.colors.hex;
-    this.applyCfg(config);
+  // TODO move to color inputs component
+  toggleHexInput() {
+    // config.showColorInputs.hex = !config.showColorInputs.hex;
+    const showHexInput = true; // TODO
+    this.uiConfigService.setShowHexInput(showHexInput);
   }
-
-  // moved to top menu bar component
-  // tglTheme(config: AppConfig) {
-  //   config.theme.base = (config.theme.base === 'light') ? 'dark' : 'light';
-  //   this.applyCfg(config);
-  // }
-
-  // moved to effects component
-  // tglLabels(config: AppConfig) {
-  //   config.comp.labels = !config.comp.labels;
-  //   this.applyCfg(config);
-  // }
 
   private setTheme(isLight: boolean) {
     if (isLight) {
