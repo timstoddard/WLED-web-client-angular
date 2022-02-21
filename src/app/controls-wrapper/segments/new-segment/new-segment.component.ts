@@ -1,9 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { takeUntil } from 'rxjs';
 import { AppStateService } from '../../../shared/app-state/app-state.service';
 import { UIConfigService } from '../../../shared/ui-config.service';
-import { UnsubscribingComponent } from '../../../shared/unsubscribing.component';
+import { UnsubscribingComponent } from '../../../shared/unsubscribing/unsubscribing.component';
 import { formatPlural, genericPostResponse } from '../../utils';
 import { SegmentsService } from '../segments.service';
 
@@ -56,8 +55,8 @@ export class NewSegmentComponent extends UnsubscribingComponent implements OnIni
       stop,
       useSegmentLength: this.useSegmentLength,
     };
-    this.segmentsService.updateSegment(options)
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.handleUnsubscribe(
+      this.segmentsService.updateSegment(options))
       .subscribe((response) => {
         this.submit.emit();
         genericPostResponse(this.appStateService)(response);

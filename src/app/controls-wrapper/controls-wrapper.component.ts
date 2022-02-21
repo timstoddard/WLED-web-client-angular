@@ -1,16 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import RangeTouch from 'rangetouch';
+// import RangeTouch from 'rangetouch';
 import { WledApiResponse } from '../shared/api-types';
 import { AppStateService } from '../shared/app-state/app-state.service';
-import { LocalStorageService } from '../shared/local-storage.service';
-import { UIConfigService } from '../shared/ui-config.service';
-import { UnsubscribingComponent } from '../shared/unsubscribing.component';
-import { WebSocketService } from '../shared/web-socket.service';
+import { LocalStorageKey, LocalStorageService } from '../shared/local-storage.service';
+import { AppUIConfig, UIConfigService } from '../shared/ui-config.service';
+import { UnsubscribingComponent } from '../shared/unsubscribing/unsubscribing.component';
 import { ControlsService } from './controls.service';
 import { generateApiUrl } from './json.service';
 import { SegmentsService } from './segments/segments.service';
-import { getElementList, isObject } from './utils';
 
 @Component({
   selector: 'app-controls-wrapper',
@@ -18,13 +16,16 @@ import { getElementList, isObject } from './utils';
   styleUrls: ['./controls-wrapper.component.scss'],
 })
 export class ControlsWrapperComponent extends UnsubscribingComponent implements OnInit {
-  /* private hol = this.getDefaultHolidayConfig();
+  private useCustomCss!: boolean;
+  private enableHolidays!: boolean;
+  private backgroundUrl!: string;
+  private backgroundOpacity!: number;
+  private holidayConfig = this.getDefaultHolidayConfig();
 
-  // probably should be moved to a shared location
-  private cfg = initAppConfig(); // TODO add reducers
-  private sliderContainer!: HTMLElement; // sliding UI
-  private iSlide = 0; // related to sliding UI
-  private lastinfo = {}; */
+  // probably should be moved to a shared/different location
+  // private sliderContainer!: HTMLElement; // sliding UI
+  // private iSlide = 0; // related to sliding UI
+  // private lastinfo = {};
 
   constructor(
     private controlsService: ControlsService,
@@ -47,19 +48,24 @@ export class ControlsWrapperComponent extends UnsubscribingComponent implements 
     // needed for offline mode to set the segments
     this.segmentsService.loadApiSegments(apiData.state.seg);
 
+    this.uiConfigService.getUIConfig(this.ngUnsubscribe)
+      .subscribe((uiConfig) => {
+        this.useCustomCss = uiConfig.useCustomCss;
+        this.enableHolidays = uiConfig.enableHolidays;
+        this.backgroundUrl  = uiConfig.theme.background.url;
+        this.backgroundOpacity = uiConfig.theme.alpha.background;
+        // save ui config in local storage
+        this.localStorageService.set(LocalStorageKey.UI_CONFIG, uiConfig);
+      });
+
     // this.webSocketService.sendMessage({ v: true });
-    // const { state, info } = response;
-    // console.log(state, info)
 
-    // TODO uncomment
+    // load from local storage after setting up listeners above
+    this.loadStoredUIConfig();
+    this.loadHolidaysOrSkin();
+
+    // TODO remove?
     // this.setupRanges();
-    // this.loadStoredConfig();
-    // this.loadHolidaysOrSkin();
-
-    // TODO make a call to `/json` (gets full app data) but wait 50ms (is this ms value needed/changeable?)
-    // setTimeout(() => {
-    //   this.requestJson(null, false);
-    // }, 50);
 
     // TODO call update size change
     // this.size();
@@ -73,25 +79,26 @@ export class ControlsWrapperComponent extends UnsubscribingComponent implements 
     // }
   }
 
-  /*private loadStoredConfig() {
-    const config = this.localStorageService.get<AppConfig>(LocalStorageKey.UI_CONFIG);
+  private loadStoredUIConfig() {
+    const config = this.localStorageService.get<AppUIConfig>(LocalStorageKey.UI_CONFIG);
     if (config) {
-      this.cfg = mergeDeep(this.cfg, config);
+      this.uiConfigService.setAll(config);
     }
   }
 
   private loadHolidaysOrSkin() {
     // TODO move to loadHolidays() in controls service
-    if (this.cfg.comp.hdays) { // should load custom holiday list
+    if (this.enableHolidays) { // should load custom holiday list
       const holidayJsonPath = generateApiUrl('holidays.json', true);
-      fetch(holidayJsonPath, { method: 'get' }) // may be loaded from external source
+      // TODO use api service
+      /* fetch(holidayJsonPath, { method: 'get' }) // may be loaded from external source
         .then(res => {
           //if (!res.ok) showErrorToast();
           return res.json();
         })
         .then(json => {
           if (Array.isArray(json)) {
-            this.hol = json;
+            this.holidayConfig = json;
             // TODO: do some parsing first (aircookie comment)
           }
         })
@@ -99,50 +106,49 @@ export class ControlsWrapperComponent extends UnsubscribingComponent implements 
           console.log('holidays.json does not contain array of holidays. Defaults loaded.');
         })
         .finally(() => {
-          this.loadBackground(this.cfg.theme.bg.url);
-        });
+          this.loadBackground(this.backgroundUrl);
+        }); */
     } else {
-      this.loadBackground(this.cfg.theme.bg.url);
+      this.loadBackground(this.backgroundUrl);
     }
-    if (this.cfg.comp.css) {
+    if (this.useCustomCss) {
       this.loadSkinCSS('skinCss');
     }
   }
 
   private loadBackground(imageUrl: string) {
-    const bg = document.getElementById('bg')!;
-    let img = document.createElement('img') as HTMLImageElement;
-    img.src = imageUrl;
+    const backgroundElement = document.getElementById('bg')!;
+    let imgElement = document.createElement('img') as HTMLImageElement;
+    imgElement.src = imageUrl;
     if (imageUrl === '') {
-      this.loadHolidayBackground(img);
+      this.loadHolidayBackground(imgElement);
     }
-    img.addEventListener('load', (event) => {
-      let alpha = this.cfg.theme.alpha.bg; // parseFloat(this.cfg.theme.alpha.bg);
+    imgElement.addEventListener('load', (event) => {
+      let alpha = this.backgroundOpacity;
       if (isNaN(alpha)) {
         alpha = 0.6;
       }
-      bg.style.opacity = `${alpha}`;
-      bg.style.backgroundImage = `url(${img.src})`;
+      backgroundElement.style.opacity = `${alpha}`;
+      backgroundElement.style.backgroundImage = `url(${imgElement.src})`;
       // img = null; // TODO is this just fake garbage collection?
     });
   }
 
   private loadHolidayBackground(img: HTMLImageElement) {
     const today = new Date();
-    for (let i = 0; i < this.hol.length; i++) {
-      const year = this.hol[i][0] === 0 ? today.getFullYear() : this.hol[i][0] as number;
-      const hs = new Date(year, this.hol[i][1] as number, this.hol[i][2] as number);
-      const he = new Date(hs);
-      he.setDate(he.getDate().valueOf() + (this.hol[i][3] as number));
-      if (today >= hs && today <= he) {
-        img.src = this.hol[i][4] as string;
+    for (let i = 0; i < this.holidayConfig.length; i++) {
+      const year = this.holidayConfig[i][0] === 0 ? today.getFullYear() : this.holidayConfig[i][0] as number;
+      const startHour = new Date(year, this.holidayConfig[i][1] as number, this.holidayConfig[i][2] as number);
+      const endHour = new Date(startHour);
+      endHour.setDate(endHour.getDate().valueOf() + (this.holidayConfig[i][3] as number));
+      if (today >= startHour && today <= endHour) {
+        img.src = this.holidayConfig[i][4] as string;
       }
     }
   }
 
   private loadSkinCSS(skinCssId: string) {
-    if (!document.getElementById(skinCssId))	// check if element exists
-    {
+    if (!document.getElementById(skinCssId)) { // check if element exists
       const documentHead = document.getElementsByTagName('head')[0];
       const stylesheet = document.createElement('link');
       stylesheet.id = skinCssId;
@@ -154,7 +160,22 @@ export class ControlsWrapperComponent extends UnsubscribingComponent implements 
     }
   }
 
-  private setupRanges() {
+  private getDefaultHolidayConfig() {
+    // TODO use Date objects
+    /* interface HolidayConfig {
+      date: Date;
+      imageUrl: string;
+    } */
+    return [
+      [0, 11, 24, 4, 'https://aircoookie.github.io/xmas.png'], // Christmas
+      [0, 2, 17, 1, 'https://images.alphacoders.com/491/491123.jpg'], // St. Patrick's Day
+      [2022, 3, 17, 2, 'https://aircoookie.github.io/easter.png'],
+      [2023, 3, 9, 2, 'https://aircoookie.github.io/easter.png'],
+      [2024, 2, 31, 2, 'https://aircoookie.github.io/easter.png'],
+    ];
+  }
+
+  /*private setupRanges() {
     // TODO need to call this in child comps? or just in after view init?
     const ranges = RangeTouch.setup('input[type="range"]', {});
     console.log('rangetouch', RangeTouch, ranges)
@@ -182,44 +203,12 @@ export class ControlsWrapperComponent extends UnsubscribingComponent implements 
   private toggleBubble(event: Event) {
     const element = event.target as HTMLInputElement;
     element.parentNode!.querySelector('output')!.classList.toggle('hidden');
-  }
-
-  private getDefaultHolidayConfig() {
-    return [
-      [0, 11, 24, 4, 'https://aircoookie.github.io/xmas.png'], // christmas
-      [0, 2, 17, 1, 'https://images.alphacoders.com/491/491123.jpg'], // st. Patrick's day
-      [2022, 3, 17, 2, 'https://aircoookie.github.io/easter.png'],
-      [2023, 3, 9, 2, 'https://aircoookie.github.io/easter.png'],
-      [2024, 2, 31, 2, 'https://aircoookie.github.io/easter.png'],
-    ];
   }*/
 }
 
 ///////////////////////////////////////////////////
 // helper functions (not tied to any view logic) //
 ///////////////////////////////////////////////////
-
-// TODO probably not needed, can use app state service instead
-const mergeDeep: any = (target: any, ...sources: any[]) => {
-  if (!sources.length) {
-    return target;
-  }
-  const source = sources.shift();
-
-  if (isObject(target) && isObject(source)) {
-    for (const key in source) {
-      if (isObject(source[key])) {
-        if (!target[key]) {
-          Object.assign(target, { [key]: {} });
-        }
-        mergeDeep(target[key], source[key]);
-      } else {
-        Object.assign(target, { [key]: source[key] });
-      }
-    }
-  }
-  return mergeDeep(target, ...sources);
-};
 
 // TODO probably won't need this once form templates are set up
 const updateUI = () => {

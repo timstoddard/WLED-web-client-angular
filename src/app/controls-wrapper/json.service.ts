@@ -284,7 +284,6 @@ export class JsonService {
     setCssColor('--t-b', `${config.theme.alpha.buttons}`);
     // TODO call update size change
     // this.size();
-    this.localStorageService.set(LocalStorageKey.UI_CONFIG, config);
   }
 
   // TODO move to color inputs component

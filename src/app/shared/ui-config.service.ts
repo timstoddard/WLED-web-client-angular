@@ -100,6 +100,37 @@ export class UIConfigService {
     this.selectFromUIConfig((n) => n)
       .pipe<AppUIConfig>(takeUntil(ngUnsubscribe));
 
+  setAll = (uiConfig: AppUIConfig) => {
+    this.uiConfigStore.update(() => ({
+      theme: {
+        base: uiConfig.theme.base,
+        background: {
+          url: uiConfig.theme.background.url,
+          random: uiConfig.theme.background.random,
+        },
+        alpha: {
+          background: uiConfig.theme.alpha.background,
+          buttons: uiConfig.theme.alpha.buttons,
+        },
+        color: {
+          background: uiConfig.theme.color.background,
+        },
+      },
+      showColorInputs: {
+        picker: uiConfig.showColorInputs.picker,
+        rgb: uiConfig.showColorInputs.rgb,
+        presets: uiConfig.showColorInputs.presets,
+        hex: uiConfig.showColorInputs.hex,
+      },
+      showLabels: uiConfig.showLabels,
+      pcmbot: uiConfig.pcmbot,
+      showPresetIds: uiConfig.showPresetIds,
+      useSegmentLength: uiConfig.useSegmentLength,
+      useCustomCss: uiConfig.useCustomCss,
+      enableHolidays: uiConfig.enableHolidays,
+    }));
+  }
+
   setThemeBase = (base: AppTheme['base']) =>
     this.updateTheme({ base });
   setThemeBackground = (background: AppTheme['background']) =>

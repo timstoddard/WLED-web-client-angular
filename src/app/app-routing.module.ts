@@ -13,6 +13,14 @@ import { WelcomeComponent } from './welcome/welcome.component';
 
 // TODO page titles should match existing web app (?)
 const routes: RouteWithPageTitle[] = [
+  // auto-redirect to controls page
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'controls',
+    data: { title: 'WLED' },
+  },
+
   // lazy loaded feature modules
   {
     path: 'controls', // TODO also keep /sliders? (thinking not)

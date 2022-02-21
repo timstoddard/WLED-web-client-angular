@@ -1,12 +1,12 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { takeUntil } from 'rxjs';
 import { ApiService } from '../api.service';
 import { WebSocketService } from '../web-socket.service';
 import { AppStateService } from '../app-state/app-state.service';
-import { UnsubscribingComponent } from '../unsubscribing.component';
+import { UnsubscribingComponent } from '../unsubscribing/unsubscribing.component';
 import { generateApiUrl } from '../../controls-wrapper/json.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { LiveViewService } from './live-view.service';
+import { interval, takeUntil } from 'rxjs';
 
 // TODO better change detection (?) so this component doesnt cause perf issues
 
@@ -42,6 +42,8 @@ export class LiveViewComponent extends UnsubscribingComponent implements OnInit 
           } catch (e) {
             this.update();
           }
+        } else {
+          // TODO disable update() calls
         }
       });
   }
@@ -70,33 +72,41 @@ export class LiveViewComponent extends UnsubscribingComponent implements OnInit 
     //   return;
     // }
 
-    // TODO is there a way to set interval in rxjs
-    this.apiService.getLiveData()
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.handleUnsubscribe(
+      this.apiService.getLiveData())
       .subscribe(({ leds }) => {
         try {
           this.backgroundString = this.liveViewService.getBackgroundString(leds);
           this.changeDetectorRef.markForCheck();
         } catch (e) {
-        } finally {
-          const LIVE_VIEW_FPS = 5; // TODO add setting in UI
-          const timeoutMs = 1000 / LIVE_VIEW_FPS;
-          clearTimeout(this.updateTimeout);
-          this.updateTimeout = setTimeout(() => this.update(), timeoutMs) as unknown as number;
         }
       });
+
+    const LIVE_VIEW_WS_FPS = 1; // 10; // TODO add setting in UI
+    const timeoutMs = 1000 / LIVE_VIEW_WS_FPS;
+    // TODO this works without interval??
+    // interval(timeoutMs)
+    //   .pipe(takeUntil(this.ngUnsubscribe))
+    //   .subscribe(() => { this.update(); });
   }
 
   /**
    * Updates canvas to show live LED view. Uses web sockets.
    */
   private updateWithWebSocket() {
-    this.webSocketService.getLiveViewSocket()
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.handleUnsubscribe(
+      this.webSocketService.getLiveViewSocket())
       .subscribe(({ leds }) => {
         this.backgroundString = this.liveViewService.getBackgroundString(leds);
         this.changeDetectorRef.markForCheck();
       });
+
+    const LIVE_VIEW_API_FPS = 1; // 5; // TODO add setting in UI
+    const timeoutMs = 1000 / LIVE_VIEW_API_FPS;
+    // TODO this works without interval??
+    // interval(timeoutMs)
+    //   .pipe(takeUntil(this.ngUnsubscribe))
+    //   .subscribe(() => { this.updateWithWebSocket(); });
   }
 
   // TODO do we need to request animation frame?

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { takeUntil } from 'rxjs';
-import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
+import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
 import { WifiSettingsService } from './wifi-settings.service';
 
 interface SelectItem {
@@ -123,8 +122,8 @@ export class WifiSettingsComponent extends UnsubscribingComponent implements OnI
     }
 
     console.log(formValues);
-    this.wifiSettingsService.setWifiSettings(formValues)
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.handleUnsubscribe(
+      this.wifiSettingsService.setWifiSettings(formValues))
       .subscribe(n => {
         // TODO why doesnt this log anything?
         console.log(n)

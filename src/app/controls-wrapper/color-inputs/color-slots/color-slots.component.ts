@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { takeUntil } from 'rxjs';
-import { UnsubscribingComponent } from '../../../shared/unsubscribing.component';
+import { UnsubscribingComponent } from '../../../shared/unsubscribing/unsubscribing.component';
 import { ColorService, CurrentColor } from '../../color.service';
 import { ColorSlotsService } from './color-slots.service';
 
@@ -22,8 +21,7 @@ export class ColorSlotsComponent extends UnsubscribingComponent implements OnIni
   }
 
   ngOnInit() {
-    this.colorService.getCurrentColorData()
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.handleUnsubscribe(this.colorService.getCurrentColorData())
       .subscribe(({ hex, whiteValue }: CurrentColor) => {
         // TODO why does rgb(0,0,0) mess things up
         const hexFormatted = hex.substring(0, 6);

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, takeUntil } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { ApiService } from '../../shared/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
-import { UnsubscribingService } from '../../shared/unsubscribing.service';
+import { UnsubscribingService } from '../../shared/unsubscribing/unsubscribing.service';
 import { ColorSlotsService } from '../color-inputs/color-slots/color-slots.service';
 import { ControlsServicesModule } from '../controls-services.module';
 import { compareNames, findRouteData } from '../utils';
@@ -62,8 +62,8 @@ export class PalettesService extends UnsubscribingService {
       });
 
     // update palettes that use color slots
-    this.colorSlotsService.getSelectedColor()
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.handleUnsubscribe(
+      this.colorSlotsService.getSelectedColor())
       .subscribe(() => {
         this.filterPalettes(this.filterTextLowercase);
       });

@@ -3,7 +3,7 @@ import { UIConfigService } from '../../shared/ui-config.service';
 import { LocalStorageKey, LocalStorageService } from '../../shared/local-storage.service';
 import { generateApiUrl } from '../json.service';
 import { getInput, isObject } from '../utils';
-import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
+import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
 
 interface Playlists { [key: number]: Playlist }
 interface Playlist {

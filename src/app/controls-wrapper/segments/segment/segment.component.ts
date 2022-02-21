@@ -1,10 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { takeUntil } from 'rxjs';
 import { AppStateService } from '../../../shared/app-state/app-state.service';
 import { Segment } from '../../../shared/app-types';
 import { UIConfigService } from '../../../shared/ui-config.service';
-import { UnsubscribingComponent } from '../../../shared/unsubscribing.component';
+import { UnsubscribingComponent } from '../../../shared/unsubscribing/unsubscribing.component';
 import { formatPlural, genericPostResponse } from '../../utils';
 import { SegmentsService } from '../segments.service';
 
@@ -68,8 +67,8 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
   }
 
   selectOnlySegment() {
-    this.segmentsService.selectOnlySegment(this.segment.id)
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.handleUnsubscribe(
+      this.segmentsService.selectOnlySegment(this.segment.id))
       .subscribe(genericPostResponse(this.appStateService));
   }
 
@@ -103,15 +102,15 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
       grouping,
       spacing,
     };
-    this.segmentsService.updateSegment(options)
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.handleUnsubscribe(
+      this.segmentsService.updateSegment(options))
       .subscribe(genericPostResponse(this.appStateService));
   }
 
   deleteSegment() {
     try {
-      this.segmentsService.deleteSegment(this.segment.id)!
-        .pipe(takeUntil(this.ngUnsubscribe))
+      this.handleUnsubscribe(
+        this.segmentsService.deleteSegment(this.segment.id)!)
         .subscribe(genericPostResponse(this.appStateService));
     } catch (e) { // delete failed, segments length is < 2
       // TODO show form error instead of toast (?)
@@ -152,32 +151,32 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
   }
 
   private toggleOn(isOn: boolean) {
-    this.segmentsService.setSegmentOn(this.segment.id, isOn)
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.handleUnsubscribe(
+      this.segmentsService.setSegmentOn(this.segment.id, isOn))
       .subscribe(genericPostResponse(this.appStateService));
   }
 
   private toggleSelected(isSelected: boolean) {
-    this.segmentsService.selectSegment(this.segment.id, isSelected)
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.handleUnsubscribe(
+      this.segmentsService.selectSegment(this.segment.id, isSelected))
       .subscribe(genericPostResponse(this.appStateService));
   }
 
   private setBrightness(brightness: number) {
-    this.segmentsService.setSegmentBrightness(this.segment.id, brightness)
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.handleUnsubscribe(
+      this.segmentsService.setSegmentBrightness(this.segment.id, brightness))
       .subscribe(genericPostResponse(this.appStateService));
   }
 
   private toggleReverse(isReverse: boolean) {
-    this.segmentsService.setSegmentReverse(this.segment.id, isReverse)
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.handleUnsubscribe(
+      this.segmentsService.setSegmentReverse(this.segment.id, isReverse))
       .subscribe(genericPostResponse(this.appStateService));
   }
 
   private toggleMirror(isMirror: boolean) {
-    this.segmentsService.setSegmentMirror(this.segment.id, isMirror)
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.handleUnsubscribe(
+      this.segmentsService.setSegmentMirror(this.segment.id, isMirror))
       .subscribe(genericPostResponse(this.appStateService));
   }
 
@@ -216,24 +215,19 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
       isMirror: this.formBuilder.control(this.segment.mi),
     });
 
-    form.get('isSelected')!.valueChanges
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((isSelected) => this.toggleSelected(isSelected));
+    this.getValueChanges<boolean>(form, 'isSelected')
+      .subscribe((isSelected: boolean) => this.toggleSelected(isSelected));
 
-    form.get('isOn')!.valueChanges
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.getValueChanges<boolean>(form, 'isOn')
       .subscribe((isOn: boolean) => this.toggleOn(isOn));
 
-    form.get('brightness')!.valueChanges
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.getValueChanges<number>(form, 'brightness')
       .subscribe((brightness: number) => this.setBrightness(brightness));
 
-    form.get('isReverse')!.valueChanges
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.getValueChanges<boolean>(form, 'isReverse')
       .subscribe((isReverse: boolean) => this.toggleReverse(isReverse));
 
-    form.get('isMirror')!.valueChanges
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.getValueChanges<boolean>(form, 'isMirror')
       .subscribe((isMirror: boolean) => this.toggleMirror(isMirror));
 
     return form;

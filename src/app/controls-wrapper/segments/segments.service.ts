@@ -19,7 +19,7 @@ import { WledSegment } from '../../shared/api-types';
 import { ApiService } from '../../shared/api.service';
 import { Segment } from '../../shared/app-types';
 import { LocalStorageService } from '../../shared/local-storage.service';
-import { UnsubscribingService } from '../../shared/unsubscribing.service';
+import { UnsubscribingService } from '../../shared/unsubscribing/unsubscribing.service';
 import { ControlsServicesModule } from '../controls-services.module';
 
 @Injectable({ providedIn: ControlsServicesModule })

@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { takeUntil } from 'rxjs';
 import { UIConfigService } from '../../shared/ui-config.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { Segment } from '../../shared/app-types';
-import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
+import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
 import { genericPostResponse, getInput } from '../utils';
 import { SegmentsService } from './segments.service';
 
@@ -45,8 +44,8 @@ export class SegmentsComponent extends UnsubscribingComponent implements OnInit 
         this.useSegmentLength = uiConfig.useSegmentLength;
       });
 
-    this.segmentsService.getSegmentsStore()
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.handleUnsubscribe<any /* TODO type */>(
+      this.segmentsService.getSegmentsStore())
       .subscribe((segments) => {
         this.segments = segments.ids
           .map((id: number) => segments.UIEntities[id]);
@@ -74,8 +73,8 @@ export class SegmentsComponent extends UnsubscribingComponent implements OnInit 
   }
 
   selectAllSegments() {
-    this.segmentsService.selectAllSegments()
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.handleUnsubscribe(
+      this.segmentsService.selectAllSegments())
       .subscribe(genericPostResponse(this.appStateService));
   }
 
@@ -129,8 +128,8 @@ export class SegmentsComponent extends UnsubscribingComponent implements OnInit 
       this.confirmedResetSegments = true;
     } else {
       this.confirmedResetSegments = false;
-      this.segmentsService.resetSegments()
-        .pipe(takeUntil(this.ngUnsubscribe))
+      this.handleUnsubscribe(
+        this.segmentsService.resetSegments())
         .subscribe(genericPostResponse(this.appStateService));
     }
   }

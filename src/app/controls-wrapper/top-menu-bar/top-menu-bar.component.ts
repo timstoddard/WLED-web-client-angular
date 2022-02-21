@@ -1,12 +1,11 @@
 import { OriginConnectionPosition, OverlayConnectionPosition, ConnectionPositionPair } from '@angular/cdk/overlay';
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Subject, takeUntil } from 'rxjs';
 import { WledApiResponse } from '../../shared/api-types';
-import { AppUIConfig, UIConfigService } from '../../shared/ui-config.service';
+import { UIConfigService } from '../../shared/ui-config.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { LocalStorageService } from '../../shared/local-storage.service';
-import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
+import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
 import { WebSocketService } from '../../shared/web-socket.service';
 import { generateApiUrl } from '../json.service';
 import { genericPostResponse, MenuBarButton, setCssColor } from '../utils';
@@ -83,7 +82,6 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     this.appStateService.getAppState(this.ngUnsubscribe)
       .subscribe(({ state, info, uiSettings }) => {
         // update UI data
-        const isOnChanged = this.isOn === state.on;
         this.isOn = state.on;
         this.isNightLightActive = state.nightLight.on;
         this.shouldSync = state.udp.shouldSend;
@@ -94,13 +92,11 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
         // TODO set transition value
         // this.topMenuBarForm.get('transitionTime')!.setValue(transitionTime, { emitEvent: false });
 
-        // TODO some way to keep track of which requests were returned by which function calls?
+        // TODO some way to keep track of which requests were returned by which function calls? queue?
         this.processingStatus = {};
 
         // update backend with current setting (no json api setting for this)
-        if (isOnChanged) {
-          this.webSocketService.sendMessage({ lv: this.isLiveViewActive });
-        }
+        this.webSocketService.sendMessage({ lv: this.isLiveViewActive });
 
         this.changeDetectorRef.markForCheck();
       });
@@ -172,6 +168,15 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     return !!this.processingStatus[name];
   }
 
+  /**
+   * Toggles between light and dark mode.
+   * @param config 
+   */
+  toggleTheme() {
+    const newBase = this.isDarkMode ? 'light' : 'dark';
+    this.uiConfigService.setThemeBase(newBase);
+  }
+
   private setProcessingStatus(name: string, status: boolean) {
     this.processingStatus[name] = status;
   }
@@ -228,17 +233,17 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
   private togglePower() {
     if (!this.getProcessingStatus(TopMenuBarButtonName.POWER)) {
       this.setProcessingStatus(TopMenuBarButtonName.POWER, true);
-      this.topMenuBarService.togglePower(!this.isOn)
-        .pipe(takeUntil(this.ngUnsubscribe))
+      this.handleUnsubscribe(
+        this.topMenuBarService.togglePower(!this.isOn))
         .subscribe(genericPostResponse(this.appStateService));
     }
   }
 
   private toggleNightLight() {
-    if (!this.getProcessingStatus(TopMenuBarButtonName.POWER)) {
+    if (!this.getProcessingStatus(TopMenuBarButtonName.TIMER)) {
       this.setProcessingStatus(TopMenuBarButtonName.TIMER, true);
-      this.topMenuBarService.toggleNightLight(!this.isNightLightActive)
-        .pipe(takeUntil(this.ngUnsubscribe))
+      this.handleUnsubscribe(
+        this.topMenuBarService.toggleNightLight(!this.isNightLightActive))
         .subscribe((response: WledApiResponse) => {
           genericPostResponse(this.appStateService)(response);
           const message = this.isNightLightActive
@@ -250,10 +255,10 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
   }
 
   private toggleSync() {
-    if (!this.getProcessingStatus(TopMenuBarButtonName.POWER)) {
+    if (!this.getProcessingStatus(TopMenuBarButtonName.SYNC)) {
       this.setProcessingStatus(TopMenuBarButtonName.SYNC, true);
-      this.topMenuBarService.toggleSync(!this.shouldSync, this.shouldToggleReceiveWithSend)
-        .pipe(takeUntil(this.ngUnsubscribe))
+      this.handleUnsubscribe(
+        this.topMenuBarService.toggleSync(!this.shouldSync, this.shouldToggleReceiveWithSend))
         .subscribe((response: WledApiResponse) => {
           genericPostResponse(this.appStateService)(response);
           const message = this.shouldSync
@@ -265,10 +270,7 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
   }
 
   private toggleLiveView() {
-    if (!this.getProcessingStatus(TopMenuBarButtonName.POWER)) {
-      this.setProcessingStatus(TopMenuBarButtonName.LIVE, true);
-      this.topMenuBarService.toggleIsLiveViewActive(!this.isLiveViewActive);
-    }
+    this.topMenuBarService.toggleIsLiveViewActive(!this.isLiveViewActive);
     
     // TODO call size() (maybe not needed?)
     // this.size();
@@ -330,15 +332,6 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
       });
   }
 
-  /**
-   * Toggles between light and dark mode.
-   * @param config 
-   */
-  toggleTheme() {
-    const newBase = this.isDarkMode ? 'light' : 'dark';
-    this.uiConfigService.setThemeBase(newBase);
-  }
-
   private togglePcMode(fromB = false) { // TODO "from b" seems to be "called from button"
     if (fromB) {
       this.pcModeA = !this.pcModeA;
@@ -392,28 +385,24 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
       transitionTime: this.formBuilder.control(DEFAULT_TRANSITION_DURATION_SECONDS),
     });
 
-    // TODO move to utils and use everywhere
-    const getValueChanges = (form: FormGroup, controlName: string, ngUnsubscribe: Subject<void>) =>
-      form.get(controlName)!.valueChanges.pipe(takeUntil(ngUnsubscribe));
-
-    getValueChanges(form, 'brightness', this.ngUnsubscribe)
+    this.getValueChanges<number>(form, 'brightness')
       .subscribe((brightness: number) => this.setBrightness(brightness));
 
-    getValueChanges(form, 'transitionTime', this.ngUnsubscribe)
+    this.getValueChanges<number>(form, 'transitionTime')
       .subscribe((seconds: number) => this.setTransitionDuration(seconds));
 
     return form;
   }
 
   private setBrightness(brightness: number) {
-    this.topMenuBarService.setBrightness(brightness)
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.handleUnsubscribe(
+      this.topMenuBarService.setBrightness(brightness))
       .subscribe(genericPostResponse(this.appStateService));
   }
 
   private setTransitionDuration(seconds: number) {
-    this.topMenuBarService.setTransitionDuration(seconds)
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.handleUnsubscribe(
+      this.topMenuBarService.setTransitionDuration(seconds))
       .subscribe(genericPostResponse(this.appStateService));
   }
 

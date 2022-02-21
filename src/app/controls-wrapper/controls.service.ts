@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { takeUntil } from 'rxjs';
 import { ApiService } from '../shared/api.service';
 import { AppStateService } from '../shared/app-state/app-state.service';
-import { UnsubscribingService } from '../shared/unsubscribing.service';
+import { UnsubscribingService } from '../shared/unsubscribing/unsubscribing.service';
 import { WebSocketService } from '../shared/web-socket.service';
 import { ControlsServicesModule } from './controls-services.module';
 import { SegmentsService } from './segments/segments.service';
@@ -24,8 +23,7 @@ export class ControlsService extends UnsubscribingService {
   }
 
   private subscribeToAppStateChanges() {
-    this.webSocketService.getStateInfoSocket()
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.handleUnsubscribe(this.webSocketService.getStateInfoSocket())
       .subscribe(response => {
         this.appStateService.setAll(response);
         this.segmentsService.loadApiSegments(response.state.seg);

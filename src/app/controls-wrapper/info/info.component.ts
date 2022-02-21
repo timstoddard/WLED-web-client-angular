@@ -110,7 +110,7 @@ export class InfoComponent implements OnInit {
 
   private cycleHeartIconColor() {
     // TODO make a function for this
-    // TODO store interval
+    // TODO use rxjs interval
     setInterval(() => {
       // TODO clear this interval when info not shown
       // if (!this.isInfo) {

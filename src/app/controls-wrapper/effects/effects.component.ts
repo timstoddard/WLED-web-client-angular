@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { takeUntil } from 'rxjs';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { UIConfigService } from '../../shared/ui-config.service';
-import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
+import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
 import { genericPostResponse } from '../utils';
 import { Effect, EffectsService } from './effects.service';
 
@@ -60,21 +59,20 @@ export class EffectsComponent extends UnsubscribingComponent implements OnInit {
   private setEffect(effectId: number) {
     const result = this.effectsService.setEffect(effectId);
     if (result) {
-      result
-        .pipe(takeUntil(this.ngUnsubscribe))
+      this.handleUnsubscribe(result)
         .subscribe(genericPostResponse(this.appStateService));
     }
   }
 
   private setSpeed(effectId: number) {
-    this.effectsService.setSpeed(effectId)
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.handleUnsubscribe(
+      this.effectsService.setSpeed(effectId))
       .subscribe(genericPostResponse(this.appStateService));
   }
 
   private setIntensity(effectId: number) {
-    this.effectsService.setIntensity(effectId)
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.handleUnsubscribe(
+      this.effectsService.setIntensity(effectId))
       .subscribe(genericPostResponse(this.appStateService));
   }
 
@@ -85,16 +83,13 @@ export class EffectsComponent extends UnsubscribingComponent implements OnInit {
       intensity: this.formBuilder.control(DEFAULT_EFFECT_INTENSITY),
     });
 
-    form.get('selectedEffect')!.valueChanges
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.getValueChanges<number>(form, 'selectedEffect')
       .subscribe((effectId: number) => this.setEffect(effectId));
 
-    form.get('speed')!.valueChanges
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.getValueChanges<number>(form, 'speed')
       .subscribe((speed: number) => this.setSpeed(speed));
 
-    form.get('intensity')!.valueChanges
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.getValueChanges<number>(form, 'intensity')
       .subscribe((intensity: number) => this.setIntensity(intensity));
 
     return form;

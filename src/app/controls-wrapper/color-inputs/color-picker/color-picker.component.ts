@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import iro from '@jaames/iro';
-import { UnsubscribingComponent } from '../../../shared/unsubscribing.component';
+import { UnsubscribingComponent } from '../../../shared/unsubscribing/unsubscribing.component';
 import { ColorService } from '../../color.service';
 
 const COLOR_PICKER_HEIGHT_SCALAR = 0.9; // TODO tune this value

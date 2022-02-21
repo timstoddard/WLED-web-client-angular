@@ -36,7 +36,7 @@
     align-items: center;
     display: flex;
     justify-content: space-between;
-    margin: 8px auto 5px;
+    margin: 10px auto 5px;
   }
 
   &__buttonWrapper {
@@ -48,31 +48,42 @@
 
   &__button {
     $buttonSize: 40px;
+
     @include iconButton($buttonSize);
     margin-bottom: 2px;
     padding: 3px;
     position: relative;
     
     &:before {
-      $borderWidth: 2px;
+      $borderWidth: 4px;
       $borderSpacing: 2px;
+      $borderDimension: $buttonSize + ($borderWidth + $borderSpacing) * 2;
+      $dashSpacing: 12deg;
+      $totalDashes: 12;
 
-      animation: spin 10s linear infinite; // TODO is this ok for performance? will it use any rendering logic even with opacity 0?
-      border: $borderWidth dashed var(--borderColorAccent);
-      border-radius: #{math.div($buttonSize, 2) + $borderWidth + $borderSpacing};
+      background: repeating-conic-gradient(
+        var(--borderColorAccent) 0 calc(360deg/$totalDashes - $dashSpacing), 
+        transparent 0 calc(360deg/$totalDashes));
+      mask: radial-gradient(
+        farthest-side,
+        transparent calc(100% - $borderWidth),
+        var(--backgroundColorPrimary) calc(100% - $borderWidth + 1px));
+      border-radius: #{math.div($borderDimension, 2)};
       content: '';
-      height: calc($buttonSize + $borderSpacing * 2);
+      height: $borderDimension;
       left: #{-$borderSpacing - 1 - $borderWidth};
       opacity: 0;
       position: absolute;
       top: #{-$borderSpacing - 1 - $borderWidth};
-      transition: 0.25s opacity ease;
-      width: calc($buttonSize + $borderSpacing * 2);
+      transition: all 0.25s ease;
+      width: $borderDimension;
       z-index: -1;
     }
 
     &--processing {
       &:before {
+        // TODO how to still spin while fading out?
+        animation: spin 10s linear infinite;
         opacity: 1;
       }
     }

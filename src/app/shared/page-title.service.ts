@@ -3,6 +3,7 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, LoadChildrenCallback, NavigationEnd, Route, Router } from '@angular/router';
 import { filter, takeUntil } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
+import { UnsubscribingService } from './unsubscribing/unsubscribing.service';
 
 const DEFAULT_PAGE_TITLE = 'WLED';
 
@@ -23,11 +24,13 @@ interface PageTitle {
 }
 
 @Injectable({ providedIn: 'root' })
-export class PageTitleService {
+export class PageTitleService extends UnsubscribingService {
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private titleService: Title) {
+    private titleService: Title,
+  ) {
+    super();
   }
 
   // TODO add unit tests
@@ -46,8 +49,7 @@ export class PageTitleService {
       const currentChildRoute = this.getChild(this.activatedRoute);
       if (currentChildRoute && currentChildRoute.data) {
         const routeData = currentChildRoute.data as Observable<PageTitle>;
-        routeData
-          .pipe(takeUntil(ngUnsubscribe))
+        this.handleUnsubscribe(routeData)
           .subscribe(data => {
             const newTitle = data.title || DEFAULT_PAGE_TITLE;
             this.titleService.setTitle(newTitle);

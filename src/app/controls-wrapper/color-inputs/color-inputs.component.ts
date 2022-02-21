@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { merge, takeUntil } from 'rxjs';
-import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
+import { merge } from 'rxjs';
+import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
 import { ColorService, CurrentColor } from '../color.service';
 
 @Component({
@@ -28,8 +28,8 @@ export class ColorInputsComponent extends UnsubscribingComponent implements OnIn
     // since we cannot subscribe in ngOnInit (see below comment)
     setTimeout(() => {
       // have to do this here instead of in ngOnInit so that the ColorPicker exists
-      this.colorService.getCurrentColorData()
-        .pipe(takeUntil(this.ngUnsubscribe))
+      this.handleUnsubscribe(
+        this.colorService.getCurrentColorData())
         .subscribe((colorData: CurrentColor) => this.populateForm(colorData));
     });
     // subscribe to valueChanges observables after setting initial value,
@@ -63,21 +63,16 @@ export class ColorInputsComponent extends UnsubscribingComponent implements OnIn
   }
 
   private subscribeToValueChanges() {
-    this.colorInputsForm.get('colorPicker')!.get('hsvValue')!.valueChanges
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.getValueChanges<number>(this.colorInputsForm, ['colorPicker', 'hsvValue'])
       .subscribe((hsvValue: number) => this.colorService.setHsvValue(hsvValue));
 
-    this.colorInputsForm.get('colorPicker')!.get('kelvin')!.valueChanges
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.getValueChanges<number>(this.colorInputsForm, ['colorPicker', 'kelvin'])
       .subscribe((kelvin: number) => this.colorService.setKelvin(kelvin));
 
     const rgb = merge(
-      this.colorInputsForm.get('rgb')!.get('r')!.valueChanges
-        .pipe(takeUntil(this.ngUnsubscribe)),
-      this.colorInputsForm.get('rgb')!.get('g')!.valueChanges
-        .pipe(takeUntil(this.ngUnsubscribe)),
-      this.colorInputsForm.get('rgb')!.get('b')!.valueChanges
-        .pipe(takeUntil(this.ngUnsubscribe)),
+      this.getValueChanges<number>(this.colorInputsForm, ['rgb', 'r']),
+      this.getValueChanges<number>(this.colorInputsForm, ['rgb', 'g']),
+      this.getValueChanges<number>(this.colorInputsForm, ['rgb', 'b'])
     );
     rgb.subscribe(() => {
       const r = this.colorInputsForm.get('rgb')!.get('r')!.value;
@@ -86,12 +81,10 @@ export class ColorInputsComponent extends UnsubscribingComponent implements OnIn
       this.colorService.setRgb(r, g, b);
     });
 
-    this.colorInputsForm.get('whiteness')!.get('whiteChannel')!.valueChanges
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.getValueChanges<number>(this.colorInputsForm, ['whiteness', 'whiteChannel'])
       .subscribe((whiteValue: number) => this.colorService.setWhiteValue(whiteValue));
 
-    this.colorInputsForm.get('whiteness')!.get('whiteBalance')!.valueChanges
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.getValueChanges<number>(this.colorInputsForm, ['whiteness', 'whiteBalance'])
       .subscribe((whiteBalance: number) => this.colorService.setWhiteBalance(whiteBalance));
   }
 

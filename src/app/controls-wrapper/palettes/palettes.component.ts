@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
-import { takeUntil } from 'rxjs';
 import { AppStateService } from '../../shared/app-state/app-state.service';
-import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
+import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
 import { genericPostResponse } from '../utils';
 import { PaletteWithBackground, PalettesService } from './palettes.service';
 
@@ -46,8 +45,7 @@ export class PalettesComponent extends UnsubscribingComponent implements OnInit 
   private setPalette(paletteId: number) {
     const result = this.palettesService.setPalette(paletteId);
     if (result) {
-      result
-        .pipe(takeUntil(this.ngUnsubscribe))
+      this.handleUnsubscribe(result)
         .subscribe(genericPostResponse(this.appStateService));
     }
   }
@@ -55,8 +53,7 @@ export class PalettesComponent extends UnsubscribingComponent implements OnInit 
   private createFormControl() {
     const control = this.formBuilder.control(DEFAULT_PALETTE_ID);
 
-    control.valueChanges
-      .pipe(takeUntil(this.ngUnsubscribe))
+    this.handleUnsubscribe<number>(control.valueChanges)
       .subscribe((paletteId: number) => this.setPalette(paletteId));
 
     return control;

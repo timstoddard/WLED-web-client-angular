@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { LocalStorageKey, LocalStorageService } from './shared/local-storage.service';
 import { PageTitleService } from './shared/page-title.service';
-import { UnsubscribingComponent } from './shared/unsubscribing.component';
+import { UnsubscribingComponent } from './shared/unsubscribing/unsubscribing.component';
 
 @Component({
   selector: 'app-root',

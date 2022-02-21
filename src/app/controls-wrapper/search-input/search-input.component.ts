@@ -1,7 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
-import { takeUntil } from 'rxjs';
-import { UnsubscribingComponent } from '../../shared/unsubscribing.component';
+import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
 
 @Component({
   selector: 'app-search-input',
@@ -56,9 +55,10 @@ export class SearchInputComponent extends UnsubscribingComponent implements OnIn
 
   private createFormControl() {
     const control =  this.formBuilder.control('');
-    control.valueChanges
-      .pipe(takeUntil(this.ngUnsubscribe))
+
+    this.handleUnsubscribe<string>(control.valueChanges)
       .subscribe(() => this.onChange());
+
     return control;
   }
 }
