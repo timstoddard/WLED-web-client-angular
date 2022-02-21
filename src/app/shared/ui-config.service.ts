@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Store, createState, withProps, select } from '@ngneat/elf';
 import { Subject, takeUntil } from 'rxjs';
+import { LocalStorageKey, LocalStorageService } from './local-storage.service';
 
 export interface AppUIConfig {
   /** Theme settings. */
@@ -11,7 +12,7 @@ export interface AppUIConfig {
   showLabels: boolean;
   // TODO is this needed?
   /** Show bottom tab bar in PC mode. */
-  pcmbot: boolean;
+  // pcmbot: boolean;
   /** Show/hide preset IDs. */
   showPresetIds: boolean;
   /** Set segment length instead of stop LED. */
@@ -77,7 +78,7 @@ const DEFAULT_UI_CONFIG: AppUIConfig = {
     hex: true,
   },
   showLabels: true,
-  pcmbot: false,
+  // pcmbot: false,
   showPresetIds: true,
   useSegmentLength: false,
   useCustomCss: true,
@@ -89,7 +90,7 @@ const DEFAULT_UI_CONFIG: AppUIConfig = {
 export class UIConfigService {
   private uiConfigStore: Store;
 
-  constructor() {
+  constructor(private localStorageService: LocalStorageService) {
     this.uiConfigStore = new Store({
       name: 'WLED UI Config',
       ...createState(withProps<AppUIConfig>(DEFAULT_UI_CONFIG)),
@@ -123,12 +124,13 @@ export class UIConfigService {
         hex: uiConfig.showColorInputs.hex,
       },
       showLabels: uiConfig.showLabels,
-      pcmbot: uiConfig.pcmbot,
+      // pcmbot: uiConfig.pcmbot,
       showPresetIds: uiConfig.showPresetIds,
       useSegmentLength: uiConfig.useSegmentLength,
       useCustomCss: uiConfig.useCustomCss,
       enableHolidays: uiConfig.enableHolidays,
     }));
+    this.localStorageService.set(LocalStorageKey.UI_CONFIG, uiConfig);
   }
 
   setThemeBase = (base: AppTheme['base']) =>

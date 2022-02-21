@@ -288,9 +288,16 @@ export class ApiService {
       this.createApiUrl('json/state'), body);
   }
 
+  /** Submits wifi settings form data to server. */
   setWifiSettings(wifiSettings: any /* TODO type */) {
     return this.http.post<any /* TODO type */>(
       this.createApiUrl('settings/wifi'), wifiSettings);
+  }
+
+  /** Submits ui settings form data to server. */
+  setUISettings(uiSettings: any /* TODO type */) {
+    return this.http.post<any /* TODO type */>(
+      this.createApiUrl('settings/ui'), uiSettings);
   }
 
   private createBody(body: { [key: string]: unknown }) {

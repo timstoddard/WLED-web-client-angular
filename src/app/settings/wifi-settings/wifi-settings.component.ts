@@ -93,7 +93,7 @@ export class WifiSettingsComponent extends UnsubscribingComponent implements OnI
     const staticGatewayParts = ipAddress.staticGateway.match(ipAddressRegex);
     const staticSubnetMaskParts = ipAddress.staticSubnetMask.match(ipAddressRegex);
 
-    const formValues: any /* TODO type */ = {
+    const formValue: any /* TODO type */ = {
       I0: parseInt(staticIpParts[1], 10),
       I1: parseInt(staticIpParts[2], 10),
       I2: parseInt(staticIpParts[3], 10),
@@ -109,25 +109,24 @@ export class WifiSettingsComponent extends UnsubscribingComponent implements OnI
       CM: ipAddress.mDNS,
       AS: wledAccessPoint.ssid,
       AP: wledAccessPoint.password,
-      AH: wledAccessPoint.hideAPName,
+      // TODO server checks for existence not truthiness
+      AH: wledAccessPoint.hideAPName ? true : undefined,
       AC: wledAccessPoint.wifiChannel,
       AB: wledAccessPoint.openAP,
-      WS: other.disableWifiSleep,
+      // TODO server checks for existence not truthiness 
+      WS: other.disableWifiSleep ? true : undefined,
       ETH: other.ethernetType,
     };
 
     if (localNetwork.ssid && localNetwork.password) {
-      formValues.CS = localNetwork.ssid;
-      formValues.CP = localNetwork.password;
+      formValue.CS = localNetwork.ssid;
+      formValue.CP = localNetwork.password;
     }
 
-    console.log(formValues);
+    console.log(formValue);
     this.handleUnsubscribe(
-      this.wifiSettingsService.setWifiSettings(formValues))
-      .subscribe(n => {
-        // TODO why doesnt this log anything?
-        console.log(n)
-      });
+      this.wifiSettingsService.setWifiSettings(formValue));
+    // TODO redirect
   }
 
   private createForm() {
