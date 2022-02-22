@@ -3,7 +3,10 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { DmxSettingsComponent } from './dmx-settings/dmx-settings.component';
 import { LedSettingsComponent } from './led-settings/led-settings.component';
 import { SecuritySettingsComponent } from './security-settings/security-settings.component';
@@ -34,7 +37,10 @@ const COMPONENTS = [
     CommonModule,
     MatCheckboxModule,
     MatFormFieldModule,
+    MatIconModule,
     MatInputModule,
+    MatSidenavModule,
+    MatToolbarModule,
     ReactiveFormsModule,
     SettingsRoutingModule,
   ]

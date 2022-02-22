@@ -1,16 +1,39 @@
-<nav class="settings__nav">
-  <ul class="settings__links">
-    <li
-      *ngFor="let link of links"
-      class="settings__linkWrapper">
-      <a
-        [routerLink]="['./', link.path]"
-        routerLinkActive="settings__link--active"
-        class="settings__link">
-        {{ link.component }}
-      </a>
-    </li>
-  </ul>
-</nav>
+<mat-drawer-container class="settings">
+  <mat-drawer
+    #drawer
+    mode="over"
+    class="settings__drawer">
+    <!-- TODO hide blank space under links -->
+    <nav class="settings__nav">
+      <ul class="settings__links">
+        <li
+          *ngFor="let link of links"
+          class="settings__linkWrapper">
+          <a
+            [routerLink]="['./', link.path]"
+            (click)="drawer.toggle()"
+            routerLinkActive="settings__link--active"
+            class="settings__link">
+            {{ link.component }}
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </mat-drawer>
+  <mat-drawer-content class="settings__content">
+    <mat-toolbar class="settings__toolbar">
+      <button
+        mat-icon-button
+        (click)="drawer.toggle()"
+        class="settings__menuButton"
+        aria-label="Button to toggle menu">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span class="settings__menuButtonText">
+        Settings
+      </span>
+    </mat-toolbar>
 
-<router-outlet #routerOutlet="outlet"></router-outlet>
+    <router-outlet #routerOutlet="outlet"></router-outlet>
+  </mat-drawer-content>
+</mat-drawer-container>
