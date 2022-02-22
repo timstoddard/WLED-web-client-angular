@@ -1,4 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { UIConfigService } from '../../shared/ui-config.service';
+import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
 import { updateTablinks } from '../utils';
 
 @Component({
@@ -6,8 +8,9 @@ import { updateTablinks } from '../utils';
   templateUrl: './bottom-menu-bar.component.html',
   styleUrls: ['./bottom-menu-bar.component.scss']
 })
-export class BottomMenuBarComponent implements OnInit {
+export class BottomMenuBarComponent extends UnsubscribingComponent implements OnInit {
   @Input() pcMode: boolean = false; // TODO is this needed?
+  showLabels!: boolean;
   buttons = [
     {
       name: 'Controls',
@@ -31,7 +34,16 @@ export class BottomMenuBarComponent implements OnInit {
     },
   ];
 
+  constructor(private uiConfigService: UIConfigService) {
+    super();
+  }
+
   ngOnInit() {
+    this.handleUnsubscribe(
+      this.uiConfigService.getUIConfig(this.ngUnsubscribe))
+      .subscribe((uiConfig) => {
+        this.showLabels = uiConfig.showLabels;
+      })
   }
 
   // TODO no longer used

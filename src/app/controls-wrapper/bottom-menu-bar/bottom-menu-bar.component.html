@@ -8,7 +8,9 @@
     [innerHTML]="button.icon"
     class="bottomMenuBar__button__icon icons">
   </i>
-  <div class="bottomMenuBar__button__text">
+  <div
+    *ngIf="showLabels"
+    class="bottomMenuBar__button__text">
     {{ button.name }}
   </div>
 </a>

@@ -1,19 +1,19 @@
 :host {
   display: grid;
   grid-template-columns: auto;
-  grid-template-rows: auto 1fr 72px;
+  grid-template-rows: auto 1fr auto;
   height: 100vh;
 }
 
 .controlsWrapper {
   &__topMenu {
     grid-area: 1 / 1 / 2 / 2;
-    overflow-y: auto; // TODO remove
+    margin-bottom: 4px;
   }
 
   &__routerOutlet + ::ng-deep * {
     grid-area: 2 / 1 / 3 / 2;
-    overflow-y: auto; // TODO needed to set grid height (right?)
+    overflow-y: auto; // needed to set grid height
   }
 
   &__bottomMenu {

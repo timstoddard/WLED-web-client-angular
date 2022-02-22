@@ -37,6 +37,7 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
   showToggleSettingsButton: boolean = false;
   showPcModeButton: boolean = false;
   isDarkMode!: boolean;
+  showLabels!: boolean;
 
   // button controls
   private isOn = false;
@@ -104,6 +105,7 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     this.uiConfigService.getUIConfig(this.ngUnsubscribe)
       .subscribe((uiConfig) => {
         this.isDarkMode = uiConfig.theme.base === 'dark';
+        this.showLabels = uiConfig.showLabels;
       });
 
     // TODO evaluate if needed

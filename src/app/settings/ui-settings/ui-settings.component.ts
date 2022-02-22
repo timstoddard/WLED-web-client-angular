@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { LocalStorageKey, LocalStorageService } from '../../shared/local-storage.service';
 import { AppUIConfig, UIConfigService } from '../../shared/ui-config.service';
 import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
 import { UISettingsService } from './ui-settings.service';
@@ -37,6 +38,7 @@ export class UISettingsComponent extends UnsubscribingComponent implements OnIni
     private uiSettingsService: UISettingsService,
     private uiConfigService: UIConfigService,
     private router: Router,
+    private localStorageService: LocalStorageService,
   ) {
     super();
   }
@@ -122,8 +124,7 @@ export class UISettingsComponent extends UnsubscribingComponent implements OnIni
   }
 
   private createForm() {
-    // TODO get default values from server/api (is this currently possible? existing website has them hardcoded into the html)
-    return this.formBuilder.group({
+    const form = this.formBuilder.group({
       serverDescription: this.formBuilder.control('WLED'),
       shouldToggleReceiveWithSend: this.formBuilder.control(false),
       showColorInputs: this.formBuilder.group({
@@ -147,5 +148,32 @@ export class UISettingsComponent extends UnsubscribingComponent implements OnIni
       enableHolidays: this.formBuilder.control(false),
       holidaysFile: this.formBuilder.control(null),
     });
+
+    const config = this.localStorageService.get<AppUIConfig>(LocalStorageKey.UI_CONFIG);
+    if (config) {
+      const formValue = {
+        showColorInputs: {
+          picker: config.showColorInputs.picker,
+          rgb: config.showColorInputs.rgb,
+          presets: config.showColorInputs.presets,
+          hex: config.showColorInputs.hex,
+        },
+        showLabels: config.showLabels,
+        showPresetIds: config.showPresetIds,
+        useSegmentLength: config.useSegmentLength,
+        isDarkMode: config.theme.base === 'dark',
+        backgroundOpacity: config.theme.alpha.background,
+        buttonOpacity: config.theme.alpha.buttons,
+        backgroundHexColor: config.theme.color.background,
+        backgroundImageUrl: config.theme.background.url,
+        useRandomBackgroundImage: config.theme.background.random,
+        useCustomCss: config.useCustomCss,
+        enableHolidays: config.enableHolidays,
+      };
+      form.patchValue(formValue, { emitEvent: false });
+      this.uiConfigService.setAll(config);
+    }
+
+    return form;
   }
 }
