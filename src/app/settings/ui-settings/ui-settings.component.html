@@ -1,1 +1,175 @@
-<p>ui-settings works!</p>
+<div
+  [formGroup]="uiSettingsForm"
+  class="uiSettings">
+  <div>{{ uiSettingsForm.value | json }}</div>
+
+  <h2 class="uiSettingsForm__title">
+    UI Settings
+  </h2>
+  <div class="uiSettingsForm__formGroup">
+    <h3>
+      Web Setup
+    </h3>
+
+    <mat-form-field
+      appearance="fill"
+      class="uiSettingsForm__formField">
+      <!-- TODO server description? -->
+      <mat-label>Server Name</mat-label>
+      <input
+        matInput
+        formControlName="serverDescription"
+        placeholder="WLED"
+        class="uiSettingsForm__input">
+    </mat-form-field>
+
+    <mat-checkbox
+      formControlName="shouldToggleReceiveWithSend"
+      class="">
+      {{ getShouldToggleReceiveWithSendDescription() }}
+    </mat-checkbox>
+  </div>
+
+  <div class="uiSettingsForm__note">
+    The following UI customization settings are unique both to the WLED device and this browser.
+    (<span style="font-style:italic">You will need to set them again if using a different browser, device or WLED IP address.</span>)
+  </div>
+
+  <div
+    formGroupName="showColorInputs"
+    class="uiSettingsForm__formGroup">
+    <h3>
+      Color Inputs
+    </h3>
+    <mat-checkbox
+      *ngFor="let checkbox of colorInputCheckboxes"
+      [formControlName]="checkbox.name"
+      class="uiSettingsForm__checkbox">
+      {{ checkbox.label }}
+    </mat-checkbox>
+  </div>
+
+  <div class="uiSettingsForm__formGroup">
+    <h3>
+      Appearance
+    </h3>
+
+    <mat-checkbox
+      formControlName="showLabels"
+      class="uiSettingsForm__checkbox">
+      Show button labels on top and bottom menu bars
+    </mat-checkbox>
+
+    <mat-checkbox
+      formControlName="showPresetIds"
+      class="uiSettingsForm__checkbox">
+      Show preset IDs
+    </mat-checkbox>
+
+    <mat-checkbox
+      formControlName="useSegmentLength"
+      class="uiSettingsForm__checkbox">
+      Set segment length instead of stop LED
+    </mat-checkbox>
+
+    <mat-checkbox
+      formControlName="isDarkMode"
+      class="uiSettingsForm__checkbox">
+      Dark mode
+    </mat-checkbox>
+
+    <!-- TODO slider? -->
+    <mat-form-field
+      appearance="fill"
+      class="uiSettingsForm__formField">
+      <mat-label>Background Opacity</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="backgroundOpacity"
+        step="0.1"
+        placeholder="0.6"
+        class="uiSettingsForm__input">
+    </mat-form-field>
+
+    <!-- TODO slider? -->
+    <mat-form-field
+      appearance="fill"
+      class="uiSettingsForm__formField">
+      <mat-label>Button Opacity</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="buttonOpacity"
+        step="0.1"
+        placeholder="0.8"
+        class="uiSettingsForm__input">
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="fill"
+      class="uiSettingsForm__formField">
+      <mat-label>Background hex color</mat-label>
+      <input
+        matInput
+        formControlName="backgroundHexColor"
+        placeholder="ffffff"
+        class="uiSettingsForm__input">
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="fill"
+      class="uiSettingsForm__formField">
+      <mat-label>Background image URL</mat-label>
+      <input
+        matInput
+        formControlName="backgroundImageUrl"
+        placeholder=""
+        class="uiSettingsForm__input">
+    </mat-form-field>
+
+    <mat-checkbox
+      formControlName="useRandomBackgroundImage"
+      class="uiSettingsForm__checkbox">
+      Use random background image
+    </mat-checkbox>
+
+    <mat-checkbox
+      formControlName="useCustomCss"
+      class="uiSettingsForm__checkbox">
+      Use custom CSS file
+    </mat-checkbox>
+
+    <!-- https://github.com/angular/components/issues/17922 -->
+    <!-- ng material doesn't support file input yet -->
+    <input
+      type="file"
+      formControlName="customCssFile"
+      class="uiSettingsForm__fileInput">
+
+    <mat-checkbox
+      formControlName="enableHolidays"
+      class="uiSettingsForm__checkbox">
+      Use holiday backgrounds
+    </mat-checkbox>
+
+    <!-- https://github.com/angular/components/issues/17922 -->
+    <!-- ng material doesn't support file input yet -->
+    <input
+      type="file"
+      formControlName="holidaysFile"
+      class="uiSettingsForm__fileInput">
+  </div>
+
+  <div class="uiSettingsForm__buttons">
+    <button
+      class="uiSettingsForm__backButton">
+      Back
+    </button>
+    <button
+      (click)="submitForm()"
+      class="uiSettingsForm__submitButton">
+      Save
+    </button>
+  </div>
+</div>

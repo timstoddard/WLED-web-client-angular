@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AppUIConfig, UIConfigService } from '../../shared/ui-config.service';
 import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
 import { UISettingsService } from './ui-settings.service';
@@ -12,10 +13,30 @@ import { UISettingsService } from './ui-settings.service';
 export class UISettingsComponent extends UnsubscribingComponent implements OnInit {
   uiSettingsForm!: FormGroup;
 
+  colorInputCheckboxes = [
+    {
+      name: 'picker',
+      label: 'Color wheel',
+    },
+    {
+      name: 'rgb',
+      label: 'RGB Sliders',
+    },
+    {
+      name: 'presets',
+      label: 'Preset Buttons',
+    },
+    {
+      name: 'hex',
+      label: 'Hex Color Input',
+    },
+  ];
+
   constructor(
     private formBuilder: FormBuilder,
     private uiSettingsService: UISettingsService,
     private uiConfigService: UIConfigService,
+    private router: Router,
   ) {
     super();
   }
@@ -85,7 +106,19 @@ export class UISettingsComponent extends UnsubscribingComponent implements OnIni
     console.log(formValue);
     this.handleUnsubscribe(
       this.uiSettingsService.setUISettings(formValue));
-    // TODO redirect
+    
+    // TODO should this be conditional?
+    this.router.navigate(['controls']);
+  }
+
+  uploadFile() {
+    // TODO implement
+  }
+
+  getShouldToggleReceiveWithSendDescription() {
+    const { value } = this.uiSettingsForm.get('shouldToggleReceiveWithSend')!;
+    // TODO changing text on click is jarring
+    return `Control ${value ? 'both' : 'only' } send ${value ? 'and receive ' : '' }with Sync button`;
   }
 
   private createForm() {
