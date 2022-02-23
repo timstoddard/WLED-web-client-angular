@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "npm run clean && ng build",
+    "deploy": "npm run build && ./deploy/prod.sh",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "clean": "rm -rf dist"
