@@ -68,10 +68,24 @@ export class AppComponent extends UnsubscribingComponent {
   ngOnInit() {
     this.pageTitleService.updateOnRouteChange(this.ngUnsubscribe);
     this.showDevNavBar = this.localStorageService.get(LocalStorageKey.SHOW_DEV_NAV_BAR)!;
+
+    // window.addEventListener('resize', this.appHeight);
+    // this.appHeight();
   }
 
   hideDevNavBar() {
     this.showDevNavBar = false;
     this.localStorageService.set(LocalStorageKey.SHOW_DEV_NAV_BAR, false);
+  }
+
+  /**
+   * Used for testing mobile safari viewport height fix.
+   * 
+   * TODO: remove after testing
+   */
+  private appHeight() {
+    console.log('--app-height', `${window.innerHeight}px`)
+    document.documentElement.style
+      .setProperty('--app-height', `${window.innerHeight}px`);
   }
 }

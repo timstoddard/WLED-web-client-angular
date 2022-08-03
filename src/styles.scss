@@ -1,9 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
 
-@import url(https://fonts.googleapis.com/icon?family=Material+Icons);
-
+@import 'src/app/shared/scss/fonts';
 @import 'src/app/shared/scss/icons';
 @import 'src/app/shared/scss/material-theme';
+@import 'src/app/shared/scss/mixins';
 @import 'src/app/shared/scss/variables';
 
 // TODO add normalize.scss or similar
@@ -12,12 +12,15 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  @include mobileSafariViewportHeightFix();
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
 html {
   background: var(--backgroundColorPrimary);
   color: var(--textColorPrimary);
-}
-
-body {
-  margin: 0;
-  padding: 0;
 }

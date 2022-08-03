@@ -16,6 +16,15 @@ export class ControlsResolver implements Resolve<WledApiResponse> {
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     // TODO set up playground with mock data
 
+    // TODO detect offline status and don't use local storage anymore
+
+    /**
+     * To enable:
+     * localStorage.setItem('IS_OFFLINE', true);localStorage.getItem('IS_OFFLINE');
+     * 
+     * To disable:
+     * localStorage.setItem('IS_OFFLINE', false);localStorage.getItem('IS_OFFLINE');
+     */
     const isOffline = this.localStorageService.get(LocalStorageKey.IS_OFFLINE);
     return isOffline
       ? of(data)
