@@ -1,7 +1,7 @@
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { Observable, Subject, takeUntil } from 'rxjs';
 
-export class UnsubscribingBaseComponent {
+export class UnsubscribingBaseClass {
   protected ngUnsubscribe = new Subject<void>();
 
   handleUnsubscribe<T>(observable: Observable<T>) {

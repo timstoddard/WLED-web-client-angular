@@ -1,8 +1,8 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { UnsubscribingBaseComponent } from './unsubscribing-base.component';
+import { UnsubscribingBaseClass } from './unsubscribing-base.component';
 
 @Injectable({ providedIn: 'root' })
-export class UnsubscribingService extends UnsubscribingBaseComponent implements OnDestroy {
+export class UnsubscribingService extends UnsubscribingBaseClass implements OnDestroy {
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
