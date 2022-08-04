@@ -40,3 +40,240 @@
 
   <app-preset-form></app-preset-form>
 </div>
+
+<ng-template #resetPUtil>
+  <button
+    class="btn btn-s btn-i"
+    onclick="makePUtil()">
+    <i class="icons btn-icon">&#xe18a;</i>
+    Create preset
+  </button>
+  <br>
+  <button
+    class="btn btn-s btn-i"
+    onclick="makePlUtil()">
+    <i class='icons btn-icon'>&#xe139;</i>
+    Create playlist
+  </button>
+</ng-template>
+
+<ng-template #createPlaylist>
+  <div class="seg pres">
+    <div class="segname newseg">
+      New playlist
+    </div>
+    <div
+      class="segin expanded"
+      id="seg100">
+      {{ createPresetOrPlaylist(0, true) }}
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #createPreset>
+  <div class="seg pres">
+    <div class="segname newseg">
+      New preset
+    </div>
+    <div class="segin expanded">
+      {{ createPresetOrPlaylist(0) }}
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #createForm1>
+  <div class="first c">
+    Playlist Entries
+  </div>
+  <div id="ple{{ id }}"></div>
+  <label class="check revchkl">
+    Shuffle
+    <input
+      type="checkbox"
+      id="pl{{ id }}rtgl"
+      (change)="plR({{ id }})"
+      {{ this.plJson[id].r ? 'checked' : '' }}>
+    <span class="checkmark schk"></span>
+  </label>
+  <label class="check revchkl">
+    Repeat indefinitely
+    <input
+      type="checkbox"
+      id="pl{{ id }}rptgl"
+      (change)="plR({{ id }})"
+      {{ rep ? "" : "checked"  }}>
+    <span class="checkmark schk"></span>
+  </label>
+  <div
+    id="pl{{ id }}o1"
+    [style]="display:{{ rep ? " block" : "none" }}">
+    <div class="c">
+      Repeat&nbsp;
+      <input
+        class="noslide"
+        type="number"
+        id="pl{{ id }}rp"
+        (input)="plR({{ id }})"
+        max=127
+        min=0
+        value={{ rep > 0 ? rep : 1 }}>
+        &nbsp;times
+    </div>
+    End preset:
+    <br>
+    <select
+      class="btn sel sel-ple"
+      id="pl{{ id }}selEnd"
+      (change)="plR({{ id }})"
+      data-val={{ this.plJson[id].end ?
+      this.plJson[id].end : 0 }}>
+      <option value=0>
+        None
+      </option>
+      {{ makePlSel(true)}}
+      <option
+        *ngFor="let preset of getPresetsList()"
+        [value]="preset[0]">
+        {{ getPresetNameV2(preset) }}
+      </option>
+    </select>
+  </div>
+  <button
+    class="btn btn-i btn-p"
+    (click)="testPl({{ id }}, this)">
+    <i class='icons btn-icon'>
+      &#xe139;
+    </i>
+    Test
+  </button>
+</ng-template>
+
+<ng-template #createForm2>
+  <label class="check revchkl">
+    Include brightness
+    <input
+      type="checkbox"
+      id="p{{ id }}ibtgl"
+      checked>
+    <span class="checkmark schk"></span>
+  </label>
+  <label class="check revchkl">
+    Save segment bounds
+    <input
+      type="checkbox"
+      id="p{{ id }}sbtgl"
+      checked>
+    <span class="checkmark schk"></span>
+  </label>
+</ng-template>
+
+<ng-template #something>
+  <input
+    type="text"
+    class="ptxt noslide"
+    id="p{{ id }}txt"
+    autocomplete="off"
+    maxlength=32
+    value="${(id > 0) ? this.getPresetNameById(id) : ""}"
+    placeholder="Enter name..." />
+    <br>
+  <div class="c">
+    Quick load label:&nbsp;
+    <input
+      type="text"
+      class="qltxt noslide"
+      maxlength=2
+      value="{{ getQuickLoadLabel(id) }}"
+      id="p{{ id }}ql" 
+      autocomplete="off" />
+    </div>
+  <div class="h">
+    (leave empty for no Quick load button)
+  </div>
+  <div style="{{ (isPlaylist && id===0) ? 'display:none' : '' }}">
+    <label class="check revchkl">
+      {{
+        isPlaylist
+          ? "Show playlist editor"
+          : ((id > 0)
+            ? "Overwrite with state"
+            : "Use current state")
+      }}
+      <input
+        type="checkbox"
+        id="p{{ id }}cstgl"
+        (change)="toggleUseCurrentState({{ id }})"
+        {{(id===0 || isPlaylist) ? "checked" : "" }}>
+      <span class="checkmark schk"></span>
+    </label>
+    <br>
+  </div>
+  <div
+    class="po2"
+    id="p{{ id }}o2">
+    API command
+    <br>
+    <textarea
+      class="noslide"
+      id="p{{ id }}api">
+    </textarea>
+  </div>
+  <div
+    class="po1"
+    id="p{{ id }}o1">
+    {{ content }}
+  </div>
+  <div class="c">
+    Save to ID&nbsp;
+    <input
+      class="noslide"
+      id="p{{ id }}id"
+      type="number"
+      (input)="checkUsed({{ id }})"
+      max=250
+      min=1
+      value="{{ (id> 0) ? id : getLowestUnusedPlId() }}"">
+    </div>
+  <div class="c">
+    <button
+      class="btn btn-i btn-p"
+      (click)="savePlaylistOrPreset({{ id }},{{ isPlaylist }})">
+      <i
+        class="icons btn-icon">
+        &#xe390;
+      </i>
+      Save {{ isPlaylist ? 'playlist' : ((id > 0) ? 'changes' : 'preset') }}
+    </button>
+    <button
+      *ngIf="id > 0; else cancelButton"
+      class="btn btn-i btn-p"
+      id="p{{ id }}del"
+      (click)="deleteP(id)">
+      <i
+        class="icons btn-icon">
+        &#xe037;
+      </i>
+      Delete {{ isPlaylist ? 'playlist' : 'preset' }}
+    </button>
+    <ng-template #cancelButton>
+      <button
+        class="btn btn-p"
+        (click)="resetPUtil()">
+        Cancel
+      </button>
+    </ng-template>
+  </div>
+  <div
+    [ngClass]="{
+      'pwarn': true,
+      'c': true,
+      'bp': id > 0,
+    }"
+    id="p{{ id }}warn">
+  </div>
+  <div
+    *ngIf="id > 0"
+    class="h">
+    ID {{ id }}
+  </div>
+</ng-template>
