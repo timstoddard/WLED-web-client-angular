@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { UIConfigService } from '../../shared/ui-config.service';
 import { LocalStorageKey, LocalStorageService } from '../../shared/local-storage.service';
 import { generateApiUrl } from '../json.service';
@@ -27,6 +27,12 @@ interface Obj {
   ql: string;
 }
 
+interface PresetError {
+  isEmpty: boolean;
+  message: string;
+  backupString: string;
+}
+
 @Component({
   selector: 'app-presets',
   templateUrl: './presets.component.html',
@@ -34,7 +40,9 @@ interface Obj {
 })
 export class PresetsComponent extends UnsubscribingComponent implements OnInit {
   @Input() useLocalStorage: boolean = true;
+  @ViewChild('backupString', { read: ElementRef }) backupStringTextArea!: ElementRef<HTMLTextAreaElement>;
   showPresetIds!: boolean;
+  presetError!: PresetError;
   private pJson: any = {}; /* TODO type */
   private pQL: any[] = [];
   private pNum = 0;
@@ -122,7 +130,7 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
       }
       // this.makePlSel(arr);
     } else {
-      this.presetError(true);
+      this.showPresetError(true);
     }
     this.updatePA();
     this.populateQL();
@@ -174,7 +182,7 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
       .catch((error) => {
         // showToast(error, true);
         console.log(error);
-        this.presetError(false);
+        this.showPresetError(false);
       })
       .finally(() => {
         if (callback) {
@@ -218,38 +226,28 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
     return a[1].n.localeCompare(b[1].n, undefined, { numeric: true });
   }
 
-  private presetError(isEmpty: boolean) {
-    let hasBackup = false;
+  getPresetErrorMessage(isEmpty: boolean) {
+    return isEmpty
+      ? `You have no presets yet!`
+      : `Sorry, there was an issue loading your presets!`
+  }
+
+  private showPresetError(isEmpty: boolean) {
     let backupString = '';
     try {
       backupString = JSON.stringify(this.localStorageService.get(LocalStorageKey.SAVED_PRESETS));
-      if (backupString.length > 10) {
-        hasBackup = true;
-      }
     } catch (e) {
+      // TODO display message in UI
+    }
 
-    }
-    let cn = `<div class="seg c">`;
-    if (isEmpty)
-      cn += `You have no presets yet!`;
-    else
-      cn += `Sorry, there was an issue loading your presets!`;
-
-    if (hasBackup) {
-      cn += `<br><br>`;
-      if (isEmpty)
-        cn += `However, there is backup preset data of a previous installation available.<br>
-        (Saving a preset will hide this and overwrite the backup)`;
-      else
-        cn += `Here is a backup of the last known good state:`;
-      cn += `<textarea id="bck"></textarea><br>
-        <button class="btn btn-p" onclick="cpBck()">Copy to clipboard</button>`;
-    }
-    cn += `</div>`;
-    // document.getElementById('pcont')!.innerHTML = cn;
-    if (hasBackup) {
-      (document.getElementById('bck')! as HTMLTextAreaElement).value = backupString;
-    }
+    const message = isEmpty
+      ? 'You have no presets yet!'
+      : 'Sorry, there was an issue loading your presets!';
+    this.presetError = {
+      isEmpty,
+      message,
+      backupString,
+    };
   }
 
   private setPreset(presetIndex: number) { // TODO is presetId better??
@@ -687,13 +685,16 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
   /**
    * Copies "backup" json value to clipboard.
    */
-  private cpBck() {
-    const copyText = document.getElementById('bck')! as HTMLTextAreaElement;
+  copyBackupJsonString() {
+    const copyText = this.backupStringTextArea.nativeElement;
 
     copyText.select();
+    // TODO better way to copy? small lib maybe?
+    // TODO can we not hardcode the upper limit?
     copyText.setSelectionRange(0, 999999);
     document.execCommand('copy');
 
+    // TODO display message in UI 
     // showToast('Copied to clipboard!');
   }
 

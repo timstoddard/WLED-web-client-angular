@@ -4,10 +4,37 @@
   <div id="putil">
   </div>
   <div id="pql">
+    <!-- TODO -->
   </div>
-  <!-- <div id="pcont">
-    Loading...
-  </div> -->
+  <div id="pcont" *ngIf="presetError">
+    <div class="seg c">
+      <div>
+        {{ presetError.message }}
+      </div>
+      <ng-container *ngIf="presetError.backupString.length > 10">
+        <div *ngIf="presetError.isEmpty; else backupCopyText">
+          <div>
+            However, there is backup preset data of a previous installation available.
+          </div>
+          <div>
+            (Saving a preset will hide this message and overwrite the backup.)
+          </div>
+        </div>
+        <ng-template #backupCopyText>
+          <div>
+            Here is a backup of the last known good state:
+          </div>
+          <textarea #backupString></textarea>
+          <br> <!-- TODO -->
+          <button
+            class="btn btn-p"
+            (click)="copyBackupJsonString()">
+            Copy to clipboard
+          </button>
+        </ng-template>
+      </ng-container>
+    </div>
+  </div>
 
   <app-preset-quick-load></app-preset-quick-load>
 
