@@ -3,9 +3,25 @@
   class="tabcontent">
   <div id="putil">
   </div>
-  <div id="pql">
-    <!-- TODO -->
+
+  <div
+    *ngIf="quickLoadLabels.length > 0"
+    class="preset__quickLoad">
+    <p class="labels">Quick load</p>
+
+    <!-- TODO max 4 labels per line -->
+    <!-- (use flex wrap prolly) -->
+    <button
+      *ngFor="let key of quickLoadLabels"
+      class="xxs btn psts"
+      id="p{{ key.index }}qlb"
+      (click)="setPreset(key.index)">
+      {{ key.label }}
+    </button>
+
+    <p class="labels">All presets</p>
   </div>
+
   <div id="pcont" *ngIf="presetError">
     <div class="seg c">
       <div>
@@ -96,7 +112,7 @@
     <span class="checkmark schk"></span>
   </label>
   <label class="check revchkl">
-    Repeat indefinitely
+    Repeat forever
     <input
       type="checkbox"
       id="pl{{ id }}rptgl"
@@ -275,5 +291,92 @@
     *ngIf="id > 0"
     class="h">
     ID {{ id }}
+  </div>
+</ng-template>
+
+<ng-template #plEntry>
+  <div class="plentry">
+    <select
+      class="btn sel sel-pl"
+      (change)="setPlaylistPs(playlistId,psIndex,this)"
+      data-val="{{ playlists[playlistId].ps[psIndex] }}"
+      data-index="{{ psIndex }}">
+      {{ makePlSel() }}
+    </select>
+    <button
+      class="btn btn-i btn-xs btn-pl-del"
+      (click)="deletePlaylist(playlistId,psIndex)">
+      <i
+        class="icons btn-icon">
+        &#xe037;
+      </i>
+    </button>
+    <div class="h plnl">
+      Duration
+    </div>
+    <div class="h plnl">
+      Transition
+    </div>
+    <div class="h pli">
+      #{{ psIndex } + 1}
+    </div>
+    <br>
+    <input
+      class="noslide pln"
+      type="number"
+      max=6553.0
+      min=0.2
+      step=0.1
+      (input)="setPlaylistDuration(playlistId,psIndex,this)"
+      value="{{ this.playlists[playlistId].dur[psIndex] / 10.0 }}">
+    <input
+      class="noslide pln"
+      type="number"
+      max=65.0
+      min=0.0
+      step=0.1
+      (input)="setPlaylistTransition(playlistId,psIndex,this)"
+      value="{{ playlists[playlistId].transition[psIndex] / 10.0 }}"> s
+    <button
+      class="btn btn-i btn-xs btn-pl-add"
+      (click)="addPl(playlistId,psIndex)">
+      <i
+        class="icons btn-icon">
+        &#xe18a;
+      </i>
+    </button>
+    <div class="hrz"></div>
+  </div>
+</ng-template>
+
+<ng-template #something>
+  <div
+    class="seg pres"
+    id="p${i}o">
+    <div
+      *ngIf="showPresetIds"
+      class="pid">
+      ${i}
+    </div>
+    <div
+      class="segname pname"
+      onclick="setPreset(${i})">
+      <i
+        *ngIf="isPlaylist(i)"
+        class='icons btn-icon'>
+        &#xe139;
+      </i>
+      {{ getPresetNameById(i) }}
+    </div>
+    <i
+      class="icons e-icon flr ${this.expanded[i + 100] ? " exp" : '' }"
+      id="sege${i + 100}"
+      (click)="expand(${i + 100})">
+      &#xe395;
+    </i>
+    <div
+      class="segin"
+      id="seg${i + 100}">
+    </div>
   </div>
 </ng-template>
