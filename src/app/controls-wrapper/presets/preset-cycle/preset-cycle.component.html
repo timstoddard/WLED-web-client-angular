@@ -1,0 +1,60 @@
+<h2 class="presetCycle__title">
+  <span>
+    Preset Cycle
+  </span>
+  <!-- TODO use toggle button/switch -->
+  <button
+    (click)="toggleIsOn()"
+    class="presetCycle__toggle">
+    On/off
+  </button>
+</h2>
+<form
+  *ngIf="isOn"
+  [formGroup]="formGroup"
+  class="presetCycle__form">
+
+  <mat-form-field
+    appearance="fill"
+    class="">
+    <mat-label>First preset</mat-label>
+    <input
+      matInput
+      type="number"
+      formControlName="firstPreset"
+      class="">
+  </mat-form-field>
+  
+  <mat-form-field
+    appearance="fill"
+    class="">
+    <mat-label>Last preset</mat-label>
+    <input
+      matInput
+      type="number"
+      formControlName="lastPreset"
+      class="">
+  </mat-form-field>
+  
+  <mat-form-field
+    appearance="fill"
+    class="">
+    <mat-label>Preset duration</mat-label>
+    <input
+      matInput
+      type="number"
+      formControlName="presetDuration"
+      class="">
+  </mat-form-field>
+  
+  <mat-form-field
+    appearance="fill"
+    class="">
+    <mat-label>Transition duration</mat-label>
+    <input
+      matInput
+      type="number"
+      formControlName="transitionDuration"
+      class="">
+  </mat-form-field>
+</form>

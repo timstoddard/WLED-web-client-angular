@@ -1,0 +1,24 @@
+<h2 class="presetList__title">
+  <span>
+    All Presets
+  </span>
+  <button class="presetList__title__createNew">
+    +
+  </button>
+</h2>
+<div class="presetList__items">
+  <div
+    *ngFor="let preset of presets"
+    class="presetListItem">
+    <div class="presetListItem__id">
+      {{ preset.id }}
+    </div>
+    <div class="presetListItem__name">
+      {{ preset.name }}
+    </div>
+    <!-- TODO pencil icon -->
+    <div class="presetListItem__edit">
+      Edit
+    </div>
+  </div>
+</div>

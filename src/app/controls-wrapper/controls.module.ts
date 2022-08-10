@@ -23,7 +23,9 @@ import { LiveViewModule } from '../shared/live-view/live-view.module';
 import { NewSegmentComponent } from './segments/new-segment/new-segment.component';
 // import { NodesComponent } from './nodes/nodes.component';
 import { PalettesComponent } from './palettes/palettes.component';
+import { PresetCycleComponent } from './presets/preset-cycle/preset-cycle.component';
 import { PresetFormComponent } from './presets/preset-form/preset-form.component';
+import { PresetListComponent } from './presets/preset-list/preset-list.component';
 import { PresetQuickLoadComponent } from './presets/preset-quick-load/preset-quick-load.component';
 import { PresetsComponent } from './presets/presets.component';
 import { RgbSlidersComponent } from './color-inputs/rgb-sliders/rgb-sliders.component';
@@ -57,7 +59,9 @@ const COMPONENTS = [
   NewSegmentComponent,
   // NodesComponent,
   PalettesComponent,
+  PresetCycleComponent,
   PresetFormComponent,
+  PresetListComponent,
   PresetQuickLoadComponent,
   PresetsComponent,
   // RoverComponent,

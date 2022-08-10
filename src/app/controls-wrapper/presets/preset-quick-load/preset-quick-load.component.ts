@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Preset, PresetsService } from '../presets.service';
 
 @Component({
@@ -7,12 +7,18 @@ import { Preset, PresetsService } from '../presets.service';
   styleUrls: ['./preset-quick-load.component.scss']
 })
 export class PresetQuickLoadComponent implements OnInit {
-  presets: Preset[] = [];
+  @Input()
+  get presets(): Preset[] { return this.presetsWithLabels; }
+  set presets(presets: Preset[]) {
+    // only display presets with a quick load label
+    this.presetsWithLabels = presets
+      .filter(preset => !!preset.quickLoadLabel);
+  }
+  private presetsWithLabels: Preset[] = [];
 
   constructor(private presetsService: PresetsService) { }
 
   ngOnInit() {
-    this.presets = this.presetsService.getPresets();
   }
 
   loadPreset(presetId: number) {

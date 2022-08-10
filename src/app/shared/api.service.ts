@@ -15,7 +15,7 @@ const LIVE_PATH = 'json/live';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
-  readonly BASE_URL = '192.168.100.154';
+  readonly BASE_URL = '192.168.100.171';
 
   constructor(private http: HttpClient) {}
 

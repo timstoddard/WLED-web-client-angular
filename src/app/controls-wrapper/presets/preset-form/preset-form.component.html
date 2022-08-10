@@ -14,6 +14,7 @@
         formControlName="id"
         class="">
     </mat-form-field>
+
     <mat-form-field
       appearance="fill"
       class="">
@@ -23,6 +24,7 @@
         formControlName="name"
         class="">
     </mat-form-field>
+
     <mat-form-field
       appearance="fill"
       class="">
@@ -40,16 +42,33 @@
       class="">
       Use current state
     </mat-checkbox>
-    <mat-checkbox
-      formControlName="includeBrightness"
-      class="">
-      Include brightness
-    </mat-checkbox>
-    <mat-checkbox
-      formControlName="saveSegmentBounds"
-      class="">
-      Save segment bounds
-    </mat-checkbox>
+
+    <ng-container *ngIf="newPreset.get('useCurrentState')?.value === true; else apiCommandInput">
+      <mat-checkbox
+        formControlName="includeBrightness"
+        class="">
+        Include brightness
+      </mat-checkbox>
+      <mat-checkbox
+        formControlName="saveSegmentBounds"
+        class="">
+        Save segment bounds
+      </mat-checkbox>
+    </ng-container>
+
+    <ng-template #apiCommandInput>
+      <mat-form-field
+        class=""
+        appearance="fill">
+        <mat-label>API Command</mat-label>
+        <!-- TODO better placeholder -->
+        <textarea
+          matInput
+          formControlName="apiCommand"
+          placeholder="{}">
+        </textarea>
+      </mat-form-field>
+    </ng-template>
   </div>
 
   <div class="presetForm__row">

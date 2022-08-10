@@ -1,0 +1,34 @@
+.presetList {
+  &__title {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+    &__createNew {
+      margin: 4px 8px;
+    }
+  }
+
+  &__items {
+    //
+  }
+
+  &Item {
+    display: flex;
+    padding: 5px 8px;
+    justify-content: space-between;
+  
+    &__id {
+      //
+    }
+  
+    &__name {
+      //
+    }
+  
+    &__edit {
+      //
+    }
+  }
+}

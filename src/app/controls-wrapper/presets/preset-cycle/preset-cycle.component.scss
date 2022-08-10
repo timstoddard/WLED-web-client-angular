@@ -1,0 +1,11 @@
+:host {
+}
+
+.presetCycle {
+  &__form {
+    align-items: center;
+    background: var(--backgroundColorAccent);
+    display: flex;
+    flex-direction: column;
+  }
+}

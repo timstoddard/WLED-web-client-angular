@@ -1,80 +1,64 @@
-<div
-  id="Presets"
-  class="tabcontent">
-  <div id="putil">
-  </div>
+<app-preset-quick-load [presets]="presetsV2"></app-preset-quick-load>
 
-  <div
-    *ngIf="quickLoadLabels.length > 0"
-    class="preset__quickLoad">
-    <p class="labels">Quick load</p>
+<app-preset-form [presets]="presetsV2"></app-preset-form>
 
-    <!-- TODO max 4 labels per line -->
-    <!-- (use flex wrap prolly) -->
-    <button
-      *ngFor="let key of quickLoadLabels"
-      class="xxs btn psts"
-      id="p{{ key.index }}qlb"
-      (click)="setPreset(key.index)">
-      {{ key.label }}
-    </button>
+<app-preset-list [presets]="presetsV2"></app-preset-list>
 
-    <p class="labels">All presets</p>
-  </div>
+<app-preset-cycle [presets]="presetsV2"></app-preset-cycle>
 
-  <div id="pcont" *ngIf="presetError">
-    <div class="seg c">
-      <div>
-        {{ presetError.message }}
-      </div>
-      <ng-container *ngIf="presetError.backupString.length > 10">
-        <div *ngIf="presetError.isEmpty; else backupCopyText">
-          <div>
-            However, there is backup preset data of a previous installation available.
-          </div>
-          <div>
-            (Saving a preset will hide this message and overwrite the backup.)
-          </div>
-        </div>
-        <ng-template #backupCopyText>
-          <div>
-            Here is a backup of the last known good state:
-          </div>
-          <textarea #backupString></textarea>
-          <br> <!-- TODO -->
-          <button
-            class="btn btn-p"
-            (click)="copyBackupJsonString()">
-            Copy to clipboard
-          </button>
-        </ng-template>
-      </ng-container>
-    </div>
-  </div>
 
-  <app-preset-quick-load></app-preset-quick-load>
 
-  <app-preset-form></app-preset-form>
-</div>
 
-<ng-template #resetPUtil>
-  <button
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <div id="putil"> -->
+
+  <!-- create form step 1 -->
+  <!-- <button
     class="btn btn-s btn-i"
-    onclick="makePUtil()">
+    (click)="makePUtil()">
     <i class="icons btn-icon">&#xe18a;</i>
     Create preset
   </button>
-  <br>
   <button
     class="btn btn-s btn-i"
-    onclick="makePlUtil()">
-    <i class='icons btn-icon'>&#xe139;</i>
+    (click)="makePlUtil()">
+    <i class="icons btn-icon">
+      &#xe139;
+    </i>
     Create playlist
-  </button>
-</ng-template>
+  </button> -->
 
-<ng-template #createPlaylist>
-  <div class="seg pres">
+  <!-- create form step 2.1 -->
+  <!-- create preset -->
+  <!-- <div class="seg pres">
+    <div class="segname newseg">
+      New preset
+    </div>
+    <div class="segin expanded">
+      {{ createPresetOrPlaylist(0) }}
+    </div>
+  </div> -->
+
+  <!-- create form step 2.2 -->
+  <!-- create playlist -->
+  <!-- <div class="seg pres">
     <div class="segname newseg">
       New playlist
     </div>
@@ -83,21 +67,60 @@
       id="seg100">
       {{ createPresetOrPlaylist(0, true) }}
     </div>
-  </div>
-</ng-template>
+  </div> -->
+<!-- </div> -->
 
-<ng-template #createPreset>
-  <div class="seg pres">
-    <div class="segname newseg">
-      New preset
-    </div>
-    <div class="segin expanded">
-      {{ createPresetOrPlaylist(0) }}
-    </div>
-  </div>
-</ng-template>
+<!-- <div
+  *ngIf="quickLoadLabels.length > 0"
+  class="preset__quickLoad">
+  <p class="labels">Quick load</p> -->
 
-<ng-template #createForm1>
+  <!-- TODO max 4 labels per line -->
+  <!-- (use flex wrap prolly) -->
+  <!-- <button
+    *ngFor="let key of quickLoadLabels"
+    class="xxs btn psts"
+    id="p{{ key.index }}qlb"
+    (click)="setPreset(key.index)">
+    {{ key.label }}
+  </button>
+
+  <p class="labels">All presets</p>
+</div> -->
+
+<!-- <div
+  id="pcont"
+  *ngIf="presetError">
+  <div class="seg c">
+    <div>
+      {{ presetError.message }}
+    </div>
+    <ng-container *ngIf="presetError.backupString.length > 10">
+      <div *ngIf="presetError.isEmpty; else backupCopyText">
+        <div>
+          However, there is backup preset data of a previous installation available.
+        </div>
+        <div>
+          (Saving a preset will hide this message and overwrite the backup.)
+        </div>
+      </div>
+      <ng-template #backupCopyText>
+        <div>
+          Here is a backup of the last known good state:
+        </div>
+        <textarea #backupString></textarea> -->
+        <br> <!-- TODO -->
+        <!-- <button
+          class="btn btn-p"
+          (click)="copyBackupJsonString()">
+          Copy to clipboard
+        </button>
+      </ng-template>
+    </ng-container>
+  </div>
+</div> -->
+
+<!-- <ng-template #createForm1>
   <div class="first c">
     Playlist Entries
   </div>
@@ -108,7 +131,7 @@
       type="checkbox"
       id="pl{{ id }}rtgl"
       (change)="plR({{ id }})"
-      {{ this.plJson[id].r ? 'checked' : '' }}>
+      [checked]="playlists[id].r">
     <span class="checkmark schk"></span>
   </label>
   <label class="check revchkl">
@@ -117,22 +140,24 @@
       type="checkbox"
       id="pl{{ id }}rptgl"
       (change)="plR({{ id }})"
-      {{ rep ? "" : "checked"  }}>
+      [checked]="rep">
     <span class="checkmark schk"></span>
   </label>
   <div
     id="pl{{ id }}o1"
-    [style]="display:{{ rep ? " block" : "none" }}">
+    [ngStyle]="{
+      display: rep ? 'block' : 'none'
+    }">
     <div class="c">
       Repeat&nbsp;
       <input
         class="noslide"
         type="number"
         id="pl{{ id }}rp"
-        (input)="plR({{ id }})"
-        max=127
-        min=0
-        value={{ rep > 0 ? rep : 1 }}>
+        (input)="plR(id)"
+        max="127"
+        min="0"
+        [value]="rep > 0 ? rep : 1">
         &nbsp;times
     </div>
     End preset:
@@ -141,12 +166,13 @@
       class="btn sel sel-ple"
       id="pl{{ id }}selEnd"
       (change)="plR({{ id }})"
-      data-val={{ this.plJson[id].end ?
-      this.plJson[id].end : 0 }}>
-      <option value=0>
+      data-val="{{ playlists[id].end
+        ? playlists[id].end
+        : 0 }}">
+      <option value="0">
         None
       </option>
-      {{ makePlSel(true)}}
+      {{ makePlSel(true) }}
       <option
         *ngFor="let preset of getPresetsList()"
         [value]="preset[0]">
@@ -156,8 +182,8 @@
   </div>
   <button
     class="btn btn-i btn-p"
-    (click)="testPl({{ id }}, this)">
-    <i class='icons btn-icon'>
+    (click)="testPl(id, this)">
+    <i class="icons btn-icon">
       &#xe139;
     </i>
     Test
@@ -189,8 +215,10 @@
     class="ptxt noslide"
     id="p{{ id }}txt"
     autocomplete="off"
-    maxlength=32
-    value="${(id > 0) ? this.getPresetNameById(id) : ""}"
+    maxlength="32"
+    value="{{ (id > 0)
+      ? getPresetNameById(id)
+      : ''}}"
     placeholder="Enter name..." />
     <br>
   <div class="c">
@@ -198,28 +226,30 @@
     <input
       type="text"
       class="qltxt noslide"
-      maxlength=2
-      value="{{ getQuickLoadLabel(id) }}"
+      maxlength="2"
+      [value]="getQuickLoadLabel(id)"
       id="p{{ id }}ql" 
       autocomplete="off" />
     </div>
   <div class="h">
     (leave empty for no Quick load button)
   </div>
-  <div style="{{ (isPlaylist && id===0) ? 'display:none' : '' }}">
+  <div [ngStyle]="{
+    display: (isPlaylist && id===0) ? 'none' : ''
+    }">
     <label class="check revchkl">
       {{
         isPlaylist
-          ? "Show playlist editor"
-          : ((id > 0)
-            ? "Overwrite with state"
-            : "Use current state")
+          ? 'Show playlist editor'
+          : (id > 0
+            ? 'Overwrite with state'
+            : 'Use current state')
       }}
       <input
         type="checkbox"
         id="p{{ id }}cstgl"
-        (change)="toggleUseCurrentState({{ id }})"
-        {{(id===0 || isPlaylist) ? "checked" : "" }}>
+        (change)="toggleUseCurrentState(id)"
+        [checked]="id===0 || isPlaylist">
       <span class="checkmark schk"></span>
     </label>
     <br>
@@ -245,20 +275,24 @@
       class="noslide"
       id="p{{ id }}id"
       type="number"
-      (input)="checkUsed({{ id }})"
-      max=250
-      min=1
-      value="{{ (id> 0) ? id : getLowestUnusedPlId() }}"">
+      (input)="checkUsed(id)"
+      max="250"
+      min="1"
+      value="{{ (id > 0)
+        ? id
+        : getLowestUnusedPlId() }}">
     </div>
   <div class="c">
     <button
       class="btn btn-i btn-p"
-      (click)="savePlaylistOrPreset({{ id }},{{ isPlaylist }})">
+      (click)="savePlaylistOrPreset(id,isPlaylist)">
       <i
         class="icons btn-icon">
         &#xe390;
       </i>
-      Save {{ isPlaylist ? 'playlist' : ((id > 0) ? 'changes' : 'preset') }}
+      Save {{ isPlaylist
+        ? 'playlist'
+        : ((id > 0) ? 'changes' : 'preset') }}
     </button>
     <button
       *ngIf="id > 0; else cancelButton"
@@ -269,7 +303,9 @@
         class="icons btn-icon">
         &#xe037;
       </i>
-      Delete {{ isPlaylist ? 'playlist' : 'preset' }}
+      Delete {{ isPlaylist
+        ? 'playlist'
+        : 'preset' }}
     </button>
     <ng-template #cancelButton>
       <button
@@ -280,9 +316,8 @@
     </ng-template>
   </div>
   <div
+    class="pwarn c"
     [ngClass]="{
-      'pwarn': true,
-      'c': true,
       'bp': id > 0,
     }"
     id="p{{ id }}warn">
@@ -318,25 +353,25 @@
       Transition
     </div>
     <div class="h pli">
-      #{{ psIndex } + 1}
+      #{{ psIndex + 1}}
     </div>
     <br>
     <input
       class="noslide pln"
       type="number"
-      max=6553.0
-      min=0.2
-      step=0.1
+      max="6553.0"
+      min="0.2"
+      step="0.1"
       (input)="setPlaylistDuration(playlistId,psIndex,this)"
-      value="{{ this.playlists[playlistId].dur[psIndex] / 10.0 }}">
+      [value]="playlists[playlistId].dur[psIndex] / 10.0">
     <input
       class="noslide pln"
       type="number"
-      max=65.0
-      min=0.0
-      step=0.1
+      max="65.0"
+      min="0.0"
+      step="0.1"
       (input)="setPlaylistTransition(playlistId,psIndex,this)"
-      value="{{ playlists[playlistId].transition[psIndex] / 10.0 }}"> s
+      [value]="playlists[playlistId].transition[psIndex] / 10.0"> s
     <button
       class="btn btn-i btn-xs btn-pl-add"
       (click)="addPl(playlistId,psIndex)">
@@ -352,31 +387,34 @@
 <ng-template #something>
   <div
     class="seg pres"
-    id="p${i}o">
+    id="p{{ i }}o">
     <div
       *ngIf="showPresetIds"
       class="pid">
-      ${i}
+      {{ i }}
     </div>
     <div
       class="segname pname"
-      onclick="setPreset(${i})">
+      (click)="setPreset(i)">
       <i
         *ngIf="isPlaylist(i)"
-        class='icons btn-icon'>
+        class="icons btn-icon">
         &#xe139;
       </i>
       {{ getPresetNameById(i) }}
     </div>
     <i
-      class="icons e-icon flr ${this.expanded[i + 100] ? " exp" : '' }"
-      id="sege${i + 100}"
-      (click)="expand(${i + 100})">
+      [ngClass]="{
+        exp: expanded[i + 100]
+      }"
+      class="icons e-icon flr"
+      id="sege{{ i + 100 }}"
+      (click)="expand(i + 100)">
       &#xe395;
     </i>
     <div
       class="segin"
-      id="seg${i + 100}">
+      id="seg{{ i + 100 }}">
     </div>
   </div>
-</ng-template>
+</ng-template> -->

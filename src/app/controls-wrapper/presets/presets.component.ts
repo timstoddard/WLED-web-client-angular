@@ -2,11 +2,12 @@ import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { UIConfigService } from '../../shared/ui-config.service';
 import { LocalStorageKey, LocalStorageService } from '../../shared/local-storage.service';
 import { generateApiUrl } from '../json.service';
-import { getInput, isObject } from '../utils';
+import { getInput } from '../utils';
 import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
+import { Preset, PresetsService } from './presets.service';
 
-interface Playlists { [key: number]: Playlist }
-interface Playlist {
+interface APIPlaylists { [key: number]: APIPlaylist }
+interface APIPlaylist {
   /** Preset IDs in this playlist */
   ps: number[];
   /** Duration of each preset in `ps` */
@@ -18,7 +19,7 @@ interface Playlist {
   r: boolean;
 }
 
-const getDefaultPlaylist = (partial: Partial<Playlist> = {}): Playlist => {
+const getDefaultPlaylist = (partial: Partial<APIPlaylist> = {}): APIPlaylist => {
   const defaultPlaylist = {
     ps: [0],
     dur: [100],
@@ -32,13 +33,13 @@ const getDefaultPlaylist = (partial: Partial<Playlist> = {}): Playlist => {
   return newPlaylist;
 }
 
-interface Presets { [key: number]: Preset }
+interface APIPresets { [key: number]: APIPreset }
 
-interface Preset {
+interface APIPreset {
   /** Preset name */
   n: string
   /** Playlist associated with this preset */
-  playlist: Playlist
+  playlist: APIPlaylist
   psave: number
   o: boolean
   v: any /* TODO type */
@@ -78,7 +79,8 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
   showPresetIds!: boolean;
   presetError!: PresetError;
   templateType: string = 'default'; // TODO more specific type
-  private presets: Presets = {};
+  private presets: APIPresets = {};
+  presetsV2: Preset[] = [];
   private quickLoadLabels: QuickLoadLabel[] = [];
   private pmt = 1;
   private pmtLS = 0;
@@ -88,22 +90,26 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
   private tr = 0.7;
   private pName = ''; // current playlist/preset name
   private playlistIndex = 0; // current playlist/preset id
-  private playlists: Playlists = this.getDefaultPlaylists();
+  private playlists: APIPlaylists = this.getDefaultPlaylists();
 
   constructor(
     private localStorageService: LocalStorageService,
     private uiConfigService: UIConfigService,
+    private presetsService: PresetsService,
   ) {
     super();
   }
 
   ngOnInit() {
+    // TODO update usage of this.presets
+    this.presetsV2 = this.presetsService.getPresets();
+
     this.uiConfigService.getUIConfig(this.ngUnsubscribe)
       .subscribe((uiConfig) => {
         this.showPresetIds = uiConfig.showPresetIds;
       });
 
-    if (this.useLocalStorage) {
+    /*if (this.useLocalStorage) {
       const storedPresets = this.localStorageService.get<Presets>(LocalStorageKey.SAVED_PRESETS);
       if (storedPresets) {
         this.presets = storedPresets;
@@ -168,7 +174,7 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
     } else {
       this.showPresetError(true);
     }
-    this.updateSelectedPresetBackground();
+    this.updateSelectedPresetBackground();*/
   }
 
   private getDefaultPlaylists() {
@@ -229,7 +235,7 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
    * 
    * Returns a negative value if the first argument is less than the second argument, zero if they're equal, and a positive value otherwise.
    */
-  private sortPresetsByName = (a: Preset, b: Preset) => {
+  private sortPresetsByName = (a: APIPreset, b: APIPreset) => {
     if (!a.n) {
       // TODO better way to sort?
       return a < b ? -1 : 1;
@@ -285,29 +291,31 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
       : `Preset ${presetId}`;
   }
 
-  getPresetNameV2(preset: Preset) {
-    return preset.n
-      ? preset.n
-      : `Preset ${preset[0]}`;
+  getPresetNameV2(preset: APIPreset) {
+    // TODO fix type error
+    return 'TODO'
+    // return preset.n
+    //   ? preset.n
+    //   : `Preset ${preset[0]}`;
   }
 
-  private expand(i: number, a: any /* TODO type & default */) {
+  private expand(index: number, a: any /* TODO type & default */) {
     if (!a) {
-      this.expanded[i] = !this.expanded[i];
+      this.expanded[index] = !this.expanded[index];
     }
-    document.getElementById('seg' + i)!.style.display = (this.expanded[i]) ? 'block' : 'none';
-    document.getElementById('sege' + i)!.style.transform = (this.expanded[i]) ? 'rotate(180deg)' : 'rotate(0deg)';
-    if (i < 100) {
-      document.getElementById(`seg${i}nedit`)!.style.display = (this.expanded[i]) ? 'inline' : 'none';
+    document.getElementById('seg' + index)!.style.display = (this.expanded[index]) ? 'block' : 'none';
+    document.getElementById('sege' + index)!.style.transform = (this.expanded[index]) ? 'rotate(180deg)' : 'rotate(0deg)';
+    if (index < 100) {
+      document.getElementById(`seg${index}nedit`)!.style.display = (this.expanded[index]) ? 'inline' : 'none';
       return; // no preset, we are done
     }
 
-    const p = i - 100;
+    const p = index - 100;
     document.getElementById(`p${p}o`)!.style.background =
-      (this.expanded[i] || p !== this.currentPreset)
+      (this.expanded[index] || p !== this.currentPreset)
         ? 'var(--c-2)'
         : 'var(--c-6)';
-    if (document.getElementById('seg' + i)!.innerHTML !== '') {
+    if (document.getElementById('seg' + index)!.innerHTML !== '') {
       return;
     }
     if (this.isPlaylist(p)) {
@@ -325,10 +333,10 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
         this.playlists[p].end = 0;
       }
 
-      document.getElementById('seg' + i)!.innerHTML = this.createPresetOrPlaylist(p, true);
+      document.getElementById('seg' + index)!.innerHTML = this.createPresetOrPlaylist(p, true);
       this.refreshPlE(p);
     } else {
-      document.getElementById('seg' + i)!.innerHTML = this.createPresetOrPlaylist(p);
+      document.getElementById('seg' + index)!.innerHTML = this.createPresetOrPlaylist(p);
     }
     const plApiValue = this.getPlApiValue(p);
     (document.getElementById(`p${p}api`)! as HTMLTextAreaElement).value = plApiValue;
@@ -397,7 +405,7 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
   }
 
   private createPresetOrPlaylist(id: number, isPlaylist = false) {
-    let content = '';
+    // let content = '';
     if (isPlaylist) {
       const rep = this.playlists[id].repeat
         ? this.playlists[id].repeat
@@ -583,10 +591,10 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
    * @param incPl 
    * @returns 
    */
-  getPresetsList(incPl = false /* TODO better name*/): Preset[] {
+  getPresetsList(incPl = false /* TODO better name*/): APIPreset[] {
     return Object
       .values(this.presets)
-      .filter((preset: Preset) => {
+      .filter((preset: APIPreset) => {
         const isPlaylist = preset.playlist && preset.playlist.ps
         // remove playlists, sub-playlists not yet supported
         return incPl || !isPlaylist
@@ -596,20 +604,46 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
   private makePlSel(incPl = false /* TODO better name*/) {
     let plSelContent = '';
     delete this.presets[0];	// remove filler preset
-    const presetsList = Object.values(this.presets);
-    for (const preset of presetsList) {
-      const presetData = preset[1] as any; // TODO type
-      const presetName = presetData.n
-        ? presetData.n
-        : `Preset ${preset[0]}`;
-      if (!incPl && presetData.playlist && presetData.playlist.ps) {
+
+    const presetsList: [string, APIPreset][] = Object.entries(this.presets);
+    for (const [presetKey, presetValue] of presetsList) {
+      const presetName = presetValue.n
+        ? presetValue.n
+        : `Preset ${presetKey}`;
+      if (!incPl && presetValue.playlist && presetValue.playlist.ps) {
         continue; // remove playlists, sub-playlists not yet supported
       }
-      plSelContent += `<option value=${preset[0]}>${presetName}</option>`
+      plSelContent += `<option value=${presetKey}>${presetName}</option>`
     }
-    for (let i = 0; i < presetsList.length; i++) {
-    }
+    // for (let i = 0; i < presetsList.length; i++) {
+    // }
     return plSelContent;
+  }
+
+  getPresetSelectValues(incPl = false /* TODO better name*/) {
+    delete this.presets[0];	// remove filler preset
+
+    const presetsList: Array<{
+      presetKey: string,
+      presetName: string,
+    }> = Object
+    .entries(this.presets)
+    .filter((entry: [string, APIPreset]) => {
+      const [presetKey, presetValue] = entry
+      // remove playlists, sub-playlists not yet supported
+      return incPl || presetValue.playlist?.ps;
+    })
+    .map((entry: [string, APIPreset]) => {
+      const [presetKey, presetValue] = entry
+      const presetName = presetValue.n
+        ? presetValue.n
+        : `Preset ${presetKey}`;
+      return {
+        presetKey,
+        presetName,
+      }
+    })
+    return presetsList
   }
 
   private toggleUseCurrentState(i: number) {
@@ -621,7 +655,8 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
   private savePlaylistOrPreset(pIndex: number, isPlaylist: boolean) {
     this.playlistIndex = parseInt(getInput(`p${pIndex}id`).value);
     if (!this.playlistIndex || this.playlistIndex <= 0) {
-      this.playlistIndex = (pIndex > 0) ? pIndex : this.getLowestUnusedPlId();
+      // TODO get next id from preset service
+      // this.playlistIndex = (pIndex > 0) ? pIndex : this.getLowestUnusedPlId();
     }
     this.pName = getInput(`p${pIndex}txt`).value;
 
@@ -629,7 +664,7 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
       const pType = isPlaylist ? 'Playlist' : 'Preset';
       this.pName = `${pType} ${this.playlistIndex}`;
     }
-    let preset: Partial<Preset> = {};
+    let preset: Partial<APIPreset> = {};
 
     if (!getInput(`p${pIndex}cstgl`).checked) {
       const raw = (document.getElementById(`p${pIndex}api`)! as HTMLTextAreaElement).value;
@@ -644,6 +679,9 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
             return '&#9888; Syntax error in custom JSON API command';
           } else if (raw.indexOf('Please') === 0) {
             return '&#9888; Please refresh the page before modifying this preset';
+          } else {
+            // TODO required for TS to be happy?
+            return ''
           }
         }
         const warningMessage = getWarning()
@@ -674,7 +712,7 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
     // TODO api call to save
     // showToast(`Saving ${this.pN} (${pI})`);
     // this.requestJson(obj);
-    if (preset.o) {
+    /*if (preset.o) {
       this.presets[this.playlistIndex] = preset;
       delete this.presets[this.playlistIndex].psave;
       delete this.presets[this.playlistIndex].o;
@@ -691,7 +729,7 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
       if (preset.ql) {
         this.presets[this.playlistIndex].ql = preset.ql;
       }
-    }
+    }*/
     // this.populatePresets();
     this.resetPUtil();
   }
@@ -709,19 +747,6 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
       deleteButton.innerHTML = '<i class="icons btn-icon">&#xe037;</i>Confirm delete';
       (deleteButton as any).dataset.cnf = 1; // TODO fix type issue
     }
-  }
-
-  // TODO better way to keep track of this?
-  getLowestUnusedPlId() {
-    let min = 1;
-    const sortedPresetIds = Object.keys(this.presets)
-    sortedPresetIds.sort()
-    for (const key in sortedPresetIds) {
-      if (key === `${min}`) {
-        min++;
-      }
-    }
-    return min > 250 ? 250 : min;
   }
 
   private checkUsed(presetFormId: number) {
@@ -744,7 +769,7 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
     if (preset.win) {
       return preset.win;
     }
-    const fieldsToRemove: Array<keyof Preset> = ['n', 'p', 'ql']
+    const fieldsToRemove: Array<keyof APIPreset> = ['n', 'p', 'ql']
     for (const fieldName of fieldsToRemove) {
       delete preset[fieldName]
     }
@@ -786,7 +811,7 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
     } else {
       (bt as any).dataset.test = 1;
       bt.innerHTML = "<i class='icons btn-icon'>&#xe38f;</i>Stop";
-      const preset: Partial<Preset> = {};
+      const preset: Partial<APIPreset> = {};
       preset.playlist = this.playlists[playlistId];
       preset.on = true;
 
@@ -804,7 +829,7 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
    * Ensure that `dur` and `transition` are arrays with at least the length of `ps`.
    * @param playlist 
    */
-  private validatePlaylist = (playlist: Playlist) => {
+  private validatePlaylist = (playlist: APIPlaylist) => {
     const length1 = playlist.ps.length;
     if (!Array.isArray(playlist.dur)) {
       // TODO according to typescript this is an impossible case

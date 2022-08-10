@@ -10,6 +10,8 @@
 .presetForm {
   &__row {
     align-items: center;
+    background: var(--backgroundColorAccent);
+    color: var(--textColorPrimary);
     display: flex;
     justify-content: space-evenly;
     padding: 4px;
