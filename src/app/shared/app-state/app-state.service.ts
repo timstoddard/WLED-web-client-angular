@@ -11,7 +11,7 @@ interface AppStateProps {
   uiSettings: AppUISettings;
 }
 
-interface AppState {
+export interface AppState {
   on: boolean;
   brightness: number;
   transition: number;

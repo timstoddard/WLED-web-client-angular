@@ -1,8 +1,9 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { PalettesApiData } from '../controls-wrapper/palettes/palettes.service';
-import { WledApiResponse, WledInfo, WledState } from './api-types';
-import { Segment } from './app-types';
+import { Preset } from '../controls-wrapper/presets/presets.service';
+import { SavePresetRequest, WledApiResponse, WledInfo, WledState } from './api-types';
+import { AppState, Segment } from './app-types';
 import { LiveViewData } from './live-view/live-view.service';
 
 const ALL_JSON_PATH = 'json';
@@ -279,6 +280,45 @@ export class ApiService {
     });
     return this.http.post<WledApiResponse>(
       this.createApiUrl('json/state'), body);
+  }
+
+  loadPreset(presetId: number) {
+    const body = this.createBody({
+      ps: presetId,
+    });
+    return this.http.post<WledApiResponse>(
+      this.createApiUrl('json/si'), body);
+  }
+
+  savePreset(
+    preset: Preset,
+    useCurrentState: boolean,
+    includeBrightness: boolean,
+    saveSegmentBounds: boolean,
+    state: AppState,
+  ) {
+    let request: SavePresetRequest;
+    const name = preset.name || `Preset ${preset.id}`;
+    let base = {
+      psave: preset.id,
+      n: name,
+      ql: preset.quickLoadLabel,
+    };
+    if (useCurrentState) {
+      request = {
+        ...base,
+        ib: includeBrightness,
+        sb: saveSegmentBounds,
+      };
+    } else {
+      request = {
+        ...base,
+        ...state,
+      };
+    }
+    const body = this.createBody(request as {});
+    return this.http.post<WledApiResponse>(
+      this.createApiUrl('json/si'), body);
   }
 
   /** Sets the transition duration. The `transition` unit is 1/10 of a second (eg: `transition = 7` is 0.7s). */

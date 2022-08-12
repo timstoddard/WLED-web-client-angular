@@ -5,19 +5,13 @@ import { generateApiUrl } from '../json.service';
 import { getInput } from '../utils';
 import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
 import { Preset, PresetsService } from './presets.service';
-
-interface APIPlaylists { [key: number]: APIPlaylist }
-interface APIPlaylist {
-  /** Preset IDs in this playlist */
-  ps: number[];
-  /** Duration of each preset in `ps` */
-  dur: number[];
-  transition: number[];
-  repeat: number;
-  end: number | null;
-  /** Toggle shuffle on/off */
-  r: boolean;
-}
+import {
+  APIPlaylists,
+  APIPlaylist,
+  APIPresets,
+  APIPreset,
+  PresetError,
+} from './presets.api';
 
 const getDefaultPlaylist = (partial: Partial<APIPlaylist> = {}): APIPlaylist => {
   const defaultPlaylist = {
@@ -33,41 +27,6 @@ const getDefaultPlaylist = (partial: Partial<APIPlaylist> = {}): APIPlaylist => 
   return newPlaylist;
 }
 
-interface APIPresets { [key: number]: APIPreset }
-
-interface APIPreset {
-  /** Preset name */
-  n: string
-  /** Playlist associated with this preset */
-  playlist: APIPlaylist
-  psave: number
-  o: boolean
-  v: any /* TODO type */
-  time: any /* TODO type */
-  /** backup stringified json */
-  win: string
-  /** Quick load label */
-  ql: string
-  on: boolean
-  /** Include brightness */
-  ib: boolean
-  /** Save segment bounds */
-  sb: boolean
-
-  p: any // TODO seems to be used?
-}
-
-interface PresetError {
-  isEmpty: boolean;
-  message: string;
-  backupString: string;
-}
-
-interface QuickLoadLabel {
-  index: number
-  label: string
-}
-
 @Component({
   selector: 'app-presets',
   templateUrl: './presets.component.html',
@@ -81,15 +40,15 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
   templateType: string = 'default'; // TODO more specific type
   private presets: APIPresets = {};
   presetsV2: Preset[] = [];
-  private quickLoadLabels: QuickLoadLabel[] = [];
+  // private quickLoadLabels: QuickLoadLabel[] = [];
   private pmt = 1;
   private pmtLS = 0;
   private pmtLast = 0;
   private expanded = [false];
   private currentPreset = -1;
   private tr = 0.7;
-  private pName = ''; // current playlist/preset name
-  private playlistIndex = 0; // current playlist/preset id
+  private currentPresetName = ''; // current playlist/preset name
+  private currentPresetId = 0; // current playlist/preset id
   private playlists: APIPlaylists = this.getDefaultPlaylists();
 
   constructor(
@@ -238,6 +197,7 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
   private sortPresetsByName = (a: APIPreset, b: APIPreset) => {
     if (!a.n) {
       // TODO better way to sort?
+      // (can we assume they will always have a name?)
       return a < b ? -1 : 1;
     } else {
       const localeCompare = a.n.localeCompare(b.n, undefined, { numeric: true });
@@ -292,11 +252,9 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
   }
 
   getPresetNameV2(preset: APIPreset) {
-    // TODO fix type error
-    return 'TODO'
-    // return preset.n
-    //   ? preset.n
-    //   : `Preset ${preset[0]}`;
+    return preset.n
+      ? preset.n
+      : `Preset ${preset.psave}`;
   }
 
   private expand(index: number, a: any /* TODO type & default */) {
@@ -323,6 +281,7 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
       // make sure all keys are present in this.plJson[p]
       this.validatePlaylist(this.playlists[p]);
       
+      // TODO use getDefaultPlaylist
       if (isNaN(this.playlists[p].repeat)) {
         this.playlists[p].repeat = 0;
       }
@@ -333,10 +292,10 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
         this.playlists[p].end = 0;
       }
 
-      document.getElementById('seg' + index)!.innerHTML = this.createPresetOrPlaylist(p, true);
+      document.getElementById('seg' + index)!.innerHTML = this.createPreset(p, true);
       this.refreshPlE(p);
     } else {
-      document.getElementById('seg' + index)!.innerHTML = this.createPresetOrPlaylist(p);
+      document.getElementById('seg' + index)!.innerHTML = this.createPreset(p);
     }
     const plApiValue = this.getPlApiValue(p);
     (document.getElementById(`p${p}api`)! as HTMLTextAreaElement).value = plApiValue;
@@ -404,8 +363,9 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
     this.refreshPlE(0);
   }
 
-  private createPresetOrPlaylist(id: number, isPlaylist = false) {
+  private createPreset(id: number, isPlaylist = false) {
     // let content = '';
+    // TODO use getDefaultPlaylist()
     if (isPlaylist) {
       const rep = this.playlists[id].repeat
         ? this.playlists[id].repeat
@@ -464,7 +424,7 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
   // </div>
   // <div class="c">Save to ID <input class="noslide" id="p${id}id" type="number" oninput="checkUsed(${id})" max=250 min=1 value=${(id > 0) ? id : this.getLowestUnusedPlId()}></div>
   // <div class="c">
-  //   <button class="btn btn-i btn-p" onclick="savePlaylistOrPreset(${id},${isPlaylist})"><i class="icons btn-icon">&#xe390;</i>Save ${(isPlaylist) ? 'playlist' : (id > 0) ? 'changes' : 'preset'}</button>
+  //   <button class="btn btn-i btn-p" onclick="savePreset(${id},${isPlaylist})"><i class="icons btn-icon">&#xe390;</i>Save ${(isPlaylist) ? 'playlist' : (id > 0) ? 'changes' : 'preset'}</button>
   //   ${(id > 0) ? '<button class="btn btn-i btn-p" id="p' + id + 'del" onclick="deleteP(' + id + ')"><i class="icons btn-icon">&#xe037;</i>Delete ' + (isPlaylist ? 'playlist' : 'preset') :
   //       '<button class="btn btn-p" onclick="resetPUtil()">Cancel'}</button>
   // </div>
@@ -652,17 +612,17 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
     document.getElementById(`p${i}o2`)!.style.display = !shouldUseCurrentState ? 'block' : 'none';
   }
 
-  private savePlaylistOrPreset(pIndex: number, isPlaylist: boolean) {
-    this.playlistIndex = parseInt(getInput(`p${pIndex}id`).value);
-    if (!this.playlistIndex || this.playlistIndex <= 0) {
+  private savePreset(pIndex: number, isPlaylist: boolean) {
+    this.currentPresetId = parseInt(getInput(`p${pIndex}id`).value);
+    if (!this.currentPresetId || this.currentPresetId <= 0) {
       // TODO get next id from preset service
       // this.playlistIndex = (pIndex > 0) ? pIndex : this.getLowestUnusedPlId();
     }
-    this.pName = getInput(`p${pIndex}txt`).value;
+    this.currentPresetName = getInput(`p${pIndex}txt`).value;
 
-    if (!this.pName) {
+    if (!this.currentPresetName) {
       const pType = isPlaylist ? 'Playlist' : 'Preset';
-      this.pName = `${pType} ${this.playlistIndex}`;
+      this.currentPresetName = `${pType} ${this.currentPresetId}`;
     }
     let preset: Partial<APIPreset> = {};
 
@@ -702,8 +662,8 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
       }
     }
 
-    preset.psave = this.playlistIndex;
-    preset.n = this.pName;
+    preset.psave = this.currentPresetId;
+    preset.n = this.currentPresetName;
     const plQuickLoadLabel = getInput(`p${pIndex}ql`).value;
     if (plQuickLoadLabel.length > 0) {
       preset.ql = plQuickLoadLabel;
@@ -730,8 +690,12 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
         this.presets[this.playlistIndex].ql = preset.ql;
       }
     }*/
+
+    // TODO rerender presets
     // this.populatePresets();
-    this.resetPUtil();
+    
+    // TODO hide form
+    // this.resetPUtil();
   }
 
   private deleteP(presetIndex: number) {

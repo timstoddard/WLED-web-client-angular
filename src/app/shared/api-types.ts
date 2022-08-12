@@ -1,5 +1,7 @@
 // Types based the WLED JSON API info page: https://kno.wled.ge/interfaces/json-api
 
+import { AppState } from './app-types';
+
 export interface WledApiResponse {
   /** WLED app state, all fields are settable. */
   state: WledState;
@@ -233,3 +235,15 @@ export interface WledFileSystemOverview {
   /** Unix timestamp for the last modification to the `presets.json` file. Not accurate after boot or after using `/edit`. */
   readonly pmt: number;
 }
+
+interface SavePresetRequestBase {
+  psave: number
+  n: string
+  ql: string
+}
+export interface SavePresetRequest1 extends SavePresetRequestBase {
+  ib: boolean
+  sb: boolean
+}
+export type SavePresetRequest2 = SavePresetRequestBase & AppState
+export type SavePresetRequest = SavePresetRequest1 | SavePresetRequest2

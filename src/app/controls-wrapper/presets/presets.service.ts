@@ -1,18 +1,25 @@
 import { Injectable } from '@angular/core';
+import { ApiService } from '../../shared/api.service';
+import { AppStateService } from '../../shared/app-state/app-state.service';
+import { UnsubscribingService } from '../../shared/unsubscribing/unsubscribing.service';
 import { ControlsServicesModule } from '../controls-services.module';
 
 export interface Preset {
   id: number;
   name: string;
   quickLoadLabel: string;
-  includeBrightness: boolean;
-  saveSegmentBounds: boolean;
   apiCommand: string;
-  // TODO add other fields
 }
 
 @Injectable({ providedIn: ControlsServicesModule })
-export class PresetsService {
+export class PresetsService extends UnsubscribingService {
+  constructor(
+    private apiService: ApiService,
+    private appStateService: AppStateService,
+  ) {
+    super();
+  }
+
   getPresets(): Preset[] {
     // TODO get actual preset data (from route resolver)
     return [
@@ -20,31 +27,42 @@ export class PresetsService {
         id: 1,
         name: 'Preset One',
         quickLoadLabel: 'P1',
-        includeBrightness: true,
-        saveSegmentBounds: true,
         apiCommand: '',
       },
       {
         id: 2,
         name: 'Number 2',
         quickLoadLabel: '#2',
-        includeBrightness: true,
-        saveSegmentBounds: true,
         apiCommand: '',
       },
       {
         id: 3,
         name: 'Thr33!!!',
         quickLoadLabel: '',
-        includeBrightness: true,
-        saveSegmentBounds: true,
         apiCommand: '',
       },
     ];
   }
 
   loadPreset(presetId: number) {
-    // TODO implement
+    this.apiService.loadPreset(presetId);
+  }
+
+  savePreset(
+    preset: Preset,
+    useCurrentState: boolean,
+    includeBrightness: boolean,
+    saveSegmentBounds: boolean,
+  ) {
+    this.appStateService.getAppState(this.ngUnsubscribe)
+      .subscribe(state => {
+        this.apiService.savePreset(
+          preset,
+          useCurrentState,
+          includeBrightness,
+          saveSegmentBounds,
+          state);
+      });
   }
 
   // TODO better way to keep track of this?

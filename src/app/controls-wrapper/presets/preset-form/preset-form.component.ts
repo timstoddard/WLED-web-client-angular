@@ -20,8 +20,28 @@ export class PresetFormComponent implements OnInit {
     this.newPreset = this.createForm();
   }
 
-  createPreset() {
-    // TODO pass form data to api
+  savePreset() {
+    // TODO get typed form values (new ng feature)
+    const {
+      id,
+      name,
+      quickLoadLabel,
+      apiCommand,
+      useCurrentState,
+      includeBrightness,
+      saveSegmentBounds,
+    } = this.newPreset.value
+    const preset: Preset = {
+      id,
+      name,
+      quickLoadLabel,
+      apiCommand,
+    };
+    this.presetsService.savePreset(
+      preset,
+      useCurrentState,
+      includeBrightness,
+      saveSegmentBounds);
   }
 
   private createForm() {
