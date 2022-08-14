@@ -1,6 +1,8 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { map } from 'rxjs';
 import { PalettesApiData } from '../controls-wrapper/palettes/palettes.service';
+import { APIPresets } from '../controls-wrapper/presets/presets.api';
 import { Preset } from '../controls-wrapper/presets/presets.service';
 import { SavePresetRequest, WledApiResponse, WledInfo, WledState } from './api-types';
 import { AppState, Segment } from './app-types';
@@ -280,6 +282,18 @@ export class ApiService {
     });
     return this.http.post<WledApiResponse>(
       this.createApiUrl('json/state'), body);
+  }
+
+  fetchPresets() {
+    const url = this.createApiUrl('presets.json');
+    const presets = this.http.get<APIPresets>(url)
+      .pipe(
+        map((presets: APIPresets) => {
+          delete presets[0];
+          return presets;
+        })
+      );
+    return presets;
   }
 
   loadPreset(presetId: number) {

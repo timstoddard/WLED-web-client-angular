@@ -1,7 +1,6 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { UIConfigService } from '../../shared/ui-config.service';
 import { LocalStorageKey, LocalStorageService } from '../../shared/local-storage.service';
-import { generateApiUrl } from '../json.service';
 import { getInput } from '../utils';
 import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
 import { Preset, PresetsService } from './presets.service';
@@ -12,6 +11,7 @@ import {
   APIPreset,
   PresetError,
 } from './presets.api';
+import { ActivatedRoute } from '@angular/router';
 
 const getDefaultPlaylist = (partial: Partial<APIPlaylist> = {}): APIPlaylist => {
   const defaultPlaylist = {
@@ -55,13 +55,14 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
     private localStorageService: LocalStorageService,
     private uiConfigService: UIConfigService,
     private presetsService: PresetsService,
+    private route: ActivatedRoute,
   ) {
     super();
   }
 
   ngOnInit() {
-    // TODO update usage of this.presets
-    this.presetsV2 = this.presetsService.getPresets();
+    this.presetsV2 = this.route.snapshot.data['presets'] as Preset[];
+    console.log('PRESETS', this.presetsV2);
 
     this.uiConfigService.getUIConfig(this.ngUnsubscribe)
       .subscribe((uiConfig) => {
@@ -160,29 +161,29 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
 
     this.pmtLast = this.pmt;
 
-    const url = generateApiUrl('presets.json', true);
+    // const url = generateApiUrl('presets.json', true);
 
-    fetch(url, { method: 'get' })
-      .then(res => {
-        if (!res.ok) {
-          // this.showErrorToast();
-        }
-        return res.json();
-      })
-      .then(json => {
-        this.presets = json;
-        // this.populatePresets();
-      })
-      .catch((error) => {
-        // showToast(error, true);
-        console.log(error);
-        this.showPresetError(false);
-      })
-      .finally(() => {
-        if (callback) {
-          setTimeout(callback, 99);
-        }
-      });
+    // fetch(url, { method: 'get' })
+    //   .then(res => {
+    //     if (!res.ok) {
+    //       // this.showErrorToast();
+    //     }
+    //     return res.json();
+    //   })
+    //   .then(json => {
+    //     this.presets = json;
+    //     // this.populatePresets();
+    //   })
+    //   .catch((error) => {
+    //     // showToast(error, true);
+    //     console.log(error);
+    //     this.showPresetError(false);
+    //   })
+    //   .finally(() => {
+    //     if (callback) {
+    //       setTimeout(callback, 99);
+    //     }
+    //   });
   }
 
   private isPlaylist(i: number) {
@@ -672,6 +673,8 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
     // TODO api call to save
     // showToast(`Saving ${this.pN} (${pI})`);
     // this.requestJson(obj);
+
+    // TODO figure out this logic...
     /*if (preset.o) {
       this.presets[this.playlistIndex] = preset;
       delete this.presets[this.playlistIndex].psave;

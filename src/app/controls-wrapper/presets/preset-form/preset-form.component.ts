@@ -31,17 +31,28 @@ export class PresetFormComponent implements OnInit {
       includeBrightness,
       saveSegmentBounds,
     } = this.newPreset.value
-    const preset: Preset = {
-      id,
-      name,
-      quickLoadLabel,
-      apiCommand,
-    };
-    this.presetsService.savePreset(
-      preset,
-      useCurrentState,
-      includeBrightness,
-      saveSegmentBounds);
+    let preset: Partial<Preset> = {};
+    if (useCurrentState) {
+      try {
+        // TODO need to figure out better how this works
+        preset = JSON.parse(apiCommand);
+      } catch (e) {
+        preset.apiValue = apiCommand;
+        // TODO display error message
+      }
+    } else {
+      const preset: Preset = {
+        id,
+        name,
+        quickLoadLabel,
+        apiValue: apiCommand,
+      };
+      this.presetsService.savePreset(
+        preset,
+        useCurrentState,
+        includeBrightness,
+        saveSegmentBounds);
+    }
   }
 
   private createForm() {

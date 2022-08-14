@@ -1,18 +1,22 @@
 import { Injectable } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import { ApiService } from '../../shared/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { UnsubscribingService } from '../../shared/unsubscribing/unsubscribing.service';
 import { ControlsServicesModule } from '../controls-services.module';
+import { APIPreset } from './presets.api';
 
 export interface Preset {
   id: number;
   name: string;
   quickLoadLabel: string;
-  apiCommand: string;
+  apiValue: string;
 }
 
 @Injectable({ providedIn: ControlsServicesModule })
 export class PresetsService extends UnsubscribingService {
+  private presets: Preset[] = [];
+
   constructor(
     private apiService: ApiService,
     private appStateService: AppStateService,
@@ -20,28 +24,40 @@ export class PresetsService extends UnsubscribingService {
     super();
   }
 
-  getPresets(): Preset[] {
-    // TODO get actual preset data (from route resolver)
-    return [
-      {
-        id: 1,
-        name: 'Preset One',
-        quickLoadLabel: 'P1',
-        apiCommand: '',
-      },
-      {
-        id: 2,
-        name: 'Number 2',
-        quickLoadLabel: '#2',
-        apiCommand: '',
-      },
-      {
-        id: 3,
-        name: 'Thr33!!!',
-        quickLoadLabel: '',
-        apiCommand: '',
-      },
-    ];
+  private async fetchPresets() {
+    const presets = await firstValueFrom(this.apiService.fetchPresets())
+    return presets
+  }
+
+  async getPresets(forceUpdate = false): Promise<Preset[]> {
+    const shouldUpdate = !this.presets
+      || this.presets.length === 0
+      || forceUpdate
+    if (shouldUpdate) {
+      const apiPresets = await this.fetchPresets()
+      const presets: Preset[] = []
+
+      const getApiValue = (preset: APIPreset) => {
+        const presetCopy: any = { ...preset }
+        delete presetCopy.n
+        delete presetCopy.ql
+        return JSON.stringify(presetCopy)
+      }
+
+      for (const presetId in apiPresets) {
+        const preset = apiPresets[presetId]
+        presets.push({
+          id: parseInt(presetId, 10),
+          name: preset.n,
+          quickLoadLabel: preset.ql,
+          apiValue: getApiValue(preset),
+        })
+      }
+
+      this.presets = presets
+      return presets
+    }
+    return this.presets
   }
 
   loadPreset(presetId: number) {
