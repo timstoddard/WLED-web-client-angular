@@ -30,7 +30,8 @@ const getDefaultPlaylist = (partial: Partial<APIPlaylist> = {}): APIPlaylist => 
 @Component({
   selector: 'app-presets',
   templateUrl: './presets.component.html',
-  styleUrls: ['./presets.component.scss']
+  styleUrls: ['./presets.component.scss'],
+  providers: [PresetsService],
 })
 export class PresetsComponent extends UnsubscribingComponent implements OnInit {
   @Input() useLocalStorage: boolean = true;
@@ -40,7 +41,7 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
   templateType: string = 'default'; // TODO more specific type
   private presets: APIPresets = {};
   presetsV2: Preset[] = [];
-  // private quickLoadLabels: QuickLoadLabel[] = [];
+  showCreateForm = false;
   private pmt = 1;
   private pmtLS = 0;
   private pmtLast = 0;
@@ -135,6 +136,10 @@ export class PresetsComponent extends UnsubscribingComponent implements OnInit {
       this.showPresetError(true);
     }
     this.updateSelectedPresetBackground();*/
+  }
+
+  setShowCreateForm(show: boolean) {
+    this.showCreateForm = show;
   }
 
   private getDefaultPlaylists() {

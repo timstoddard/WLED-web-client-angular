@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../shared/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { UnsubscribingService } from '../../shared/unsubscribing/unsubscribing.service';
 import { ControlsServicesModule } from '../controls-services.module';
-import { APIPreset } from './presets.api';
 
 export interface Preset {
   id: number;
@@ -15,49 +14,17 @@ export interface Preset {
 
 @Injectable({ providedIn: ControlsServicesModule })
 export class PresetsService extends UnsubscribingService {
-  private presets: Preset[] = [];
-
   constructor(
     private apiService: ApiService,
+    private route: ActivatedRoute,
     private appStateService: AppStateService,
   ) {
     super();
   }
 
-  private async fetchPresets() {
-    const presets = await firstValueFrom(this.apiService.fetchPresets())
-    return presets
-  }
-
-  async getPresets(forceUpdate = false): Promise<Preset[]> {
-    const shouldUpdate = !this.presets
-      || this.presets.length === 0
-      || forceUpdate
-    if (shouldUpdate) {
-      const apiPresets = await this.fetchPresets()
-      const presets: Preset[] = []
-
-      const getApiValue = (preset: APIPreset) => {
-        const presetCopy: any = { ...preset }
-        delete presetCopy.n
-        delete presetCopy.ql
-        return JSON.stringify(presetCopy)
-      }
-
-      for (const presetId in apiPresets) {
-        const preset = apiPresets[presetId]
-        presets.push({
-          id: parseInt(presetId, 10),
-          name: preset.n,
-          quickLoadLabel: preset.ql,
-          apiValue: getApiValue(preset),
-        })
-      }
-
-      this.presets = presets
-      return presets
-    }
-    return this.presets
+  getPresets() {
+    const presets = (this.route.snapshot.data['presets'] || []) as Preset[]
+    return presets;
   }
 
   loadPreset(presetId: number) {
@@ -87,14 +54,13 @@ export class PresetsService extends UnsubscribingService {
    * @returns 
    */
   getNextPresetId() {
-    let minimum = 1;
-    const sortedPresetIds = Object.keys(this.getPresets())
-    sortedPresetIds.sort()
-    for (const presetId in sortedPresetIds) {
-      if (presetId === `${minimum}`) {
-        minimum++;
+    let min = 1;
+    const max = 250; // TODO can this be raised/changed?
+    for (const preset of this.getPresets()) {
+      if (preset.id === min) {
+        min++;
       }
     }
-    return minimum > 250 ? 250 : minimum;
+    return Math.min(min, max);
   }
 }

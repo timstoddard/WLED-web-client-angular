@@ -2,6 +2,17 @@
 }
 
 .presetCycle {
+  &__header {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  &__toggle {
+    margin: 4px 8px;
+  }
+
   &__form {
     align-items: center;
     background: var(--backgroundColorAccent);

@@ -1,10 +1,20 @@
-<app-preset-quick-load [presets]="presetsV2"></app-preset-quick-load>
+<app-preset-quick-load
+  [presets]="presetsV2">
+</app-preset-quick-load>
 
-<app-preset-form [presets]="presetsV2"></app-preset-form>
+<app-preset-form
+  *ngIf="showCreateForm"
+  (closeForm)="setShowCreateForm(false)">
+</app-preset-form>
 
-<app-preset-list [presets]="presetsV2"></app-preset-list>
+<app-preset-list
+  (addPreset)="setShowCreateForm(true)"
+  [presets]="presetsV2">
+</app-preset-list>
 
-<app-preset-cycle [presets]="presetsV2"></app-preset-cycle>
+<app-preset-cycle
+  [presets]="presetsV2">
+</app-preset-cycle>
 
 
 

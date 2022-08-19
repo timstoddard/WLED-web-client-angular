@@ -1,31 +1,69 @@
+@import 'src/app/shared/scss/mixins';
+
 :host {
-  border: 1px solid black;
-  border-radius: 6px;
+  @include overrideMatTextInputStyles(--backgroundColorPrimary);
   display: flex;
+  justify-content: center;
   margin: 10px auto;
-  max-width: 600px;
+  overflow-x: auto; // TODO remove?
   padding: 6px;
 }
 
 .presetForm {
+  background: var(--backgroundColorAccent);
+  border-radius: 10px;
+  max-width: 600px;
+  padding: 4px 8px 10px;
+  width: 90vw;
+
+  &__header {
+    text-align: center;
+  }
+
   &__row {
     align-items: center;
-    background: var(--backgroundColorAccent);
     color: var(--textColorPrimary);
     display: flex;
-    justify-content: space-evenly;
-    padding: 4px;
+    justify-content: center;
   }
 
   &__row1 {
-    //
+      display: block;
+      text-align: center;
+
+    & > * {
+      margin: 0 0 -12px;
+      padding: 4px 10px;
+    }
+  }
+
+  &__id {
+    @include forceWidth(100px);
+  }
+
+  &__name {
+    @include forceWidth(300px);
+  }
+
+  &__quickLoadLabel {
+    @include forceWidth(200px);
   }
 
   &__row2 {
     flex-direction: column;
+
+    & > * {
+      padding: 6px 0;
+    }
+  }
+
+  &__apiValue {
+    margin: 0px 0 -16px;
   }
 
   &__row3 {
-    //
+    & > * {
+      margin: 12px;
+    }
   }
 }

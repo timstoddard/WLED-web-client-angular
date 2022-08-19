@@ -20,6 +20,6 @@ export class OnlineStatusService {
      * localStorage.setItem('IS_OFFLINE', false);localStorage.getItem('IS_OFFLINE');
      */
     const isOffline = this.localStorageService.get(LocalStorageKey.IS_OFFLINE);
-    return isOffline
+    return isOffline as boolean
   }
 }

@@ -12,7 +12,7 @@ export class SearchInputComponent extends UnsubscribingComponent implements OnIn
   @Input() title: string = '';
   /** Input element label. */
   @Input() label: string = '';
-  @Output() searchValueChanges = new EventEmitter();
+  @Output() searchValueChanges = new EventEmitter<string>();
   @ViewChild('searchInput', { read: ElementRef }) searchInputElement!: ElementRef<HTMLInputElement>;
   searchText!: FormControl;
   showInput!: boolean;

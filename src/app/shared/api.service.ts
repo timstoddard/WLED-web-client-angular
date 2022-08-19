@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { PalettesApiData } from '../controls-wrapper/palettes/palettes.service';
-import { APIPresets } from '../controls-wrapper/presets/presets.api';
+import { APIPreset, APIPresets } from '../controls-wrapper/presets/presets.api';
 import { Preset } from '../controls-wrapper/presets/presets.service';
 import { SavePresetRequest, WledApiResponse, WledInfo, WledState } from './api-types';
 import { AppState, Segment } from './app-types';
@@ -284,12 +284,40 @@ export class ApiService {
       this.createApiUrl('json/state'), body);
   }
 
-  fetchPresets() {
+  /**
+   * Returns list of saved presets, sorted by ID in ascending order.
+   * @returns 
+   */
+  getPresets() {
+    const getApiValue = (preset: APIPreset) => {
+      const presetCopy: Partial<APIPreset> = { ...preset }
+      delete presetCopy.n
+      delete presetCopy.ql
+      return JSON.stringify(presetCopy)
+    }
+
     const url = this.createApiUrl('presets.json');
     const presets = this.http.get<APIPresets>(url)
       .pipe(
-        map((presets: APIPresets) => {
-          delete presets[0];
+        map((apiPresets: APIPresets) => {
+          // delete empty default preset
+          delete apiPresets[0];
+
+          // convert presets to list
+          const presets: Preset[] = []
+          for (const presetId in apiPresets) {
+            const preset = apiPresets[presetId]
+            presets.push({
+              id: parseInt(presetId, 10),
+              name: preset.n,
+              quickLoadLabel: preset.ql,
+              apiValue: getApiValue(preset),
+            })
+          }
+
+          // sort presets by id ascending
+          presets.sort((a: Preset, b: Preset) => a.id - b.id);
+
           return presets;
         })
       );

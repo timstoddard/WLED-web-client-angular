@@ -127,11 +127,15 @@
     padding-top: 6px;
   }
 
-  & ::ng-deep .mat-form-field:not(.mat-focused) .mat-form-field-label { // only for not focused
+  // override the label color for text input fields,
+  // but only when not focused, and not if the field
+  // is both touched and invalid (keep default error styling)
+  & ::ng-deep .mat-form-field:not(.mat-focused):not(.ng-touched.ng-invalid) .mat-form-field-label {
     color: var(--textColorPrimary);
   }
 
-  & ::ng-deep input::placeholder {
+  & ::ng-deep input::placeholder,
+  & ::ng-deep textarea::placeholder {
     color: var(--textColorAccent);
   }
 }

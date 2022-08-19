@@ -2,7 +2,9 @@
   <span>
     All Presets
   </span>
-  <button class="presetList__title__createNew">
+  <button
+    (click)="onAddPresetClick()"
+    class="presetList__title__createNew">
     +
   </button>
 </h2>
@@ -10,15 +12,24 @@
   <div
     *ngFor="let preset of presets"
     class="presetListItem">
-    <div class="presetListItem__id">
-      {{ preset.id }}
+    <div class="presetListItem__display">
+      <div class="presetListItem__id">
+        {{ preset.id }}
+      </div>
+      <div class="presetListItem__name">
+        {{ renderPresetName(preset) }}
+      </div>
+      <button
+        (click)="toggleEditPreset(preset.id)"
+        class="presetListItem__editButton">
+        <!-- TODO pencil icon (?) -->
+        {{ preset.id === editPresetId ? 'Cancel' : 'Edit' }}
+      </button>
     </div>
-    <div class="presetListItem__name">
-      {{ preset.name }}
-    </div>
-    <!-- TODO pencil icon -->
-    <div class="presetListItem__edit">
-      Edit
-    </div>
+    <app-preset-form
+      *ngIf="preset.id === editPresetId"
+      (closeForm)="toggleEditPreset(preset.id)"
+      [preset]="preset">
+    </app-preset-form>
   </div>
 </div>

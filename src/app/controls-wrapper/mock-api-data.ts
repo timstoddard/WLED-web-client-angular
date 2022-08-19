@@ -297,3 +297,24 @@ export const palettesData: PalettesApiData[] = [{
     70: [[0, 39, 33, 34], [25, 4, 6, 15], [48, 49, 29, 22], [73, 224, 173, 1], [89, 177, 35, 5], [130, 4, 6, 15], [163, 255, 114, 6], [186, 224, 173, 1], [211, 39, 33, 34], [255, 1, 1, 1]],
   },
 }];
+
+export const presets = [
+  {
+    id: 1,
+    name: 'Preset One',
+    quickLoadLabel: 'P1',
+    apiValue: 'TODO',
+  },
+  {
+    id: 2,
+    name: 'Number 2',
+    quickLoadLabel: '#2',
+    apiValue: 'TODO',
+  },
+  {
+    id: 3,
+    name: 'Thr33!!!',
+    quickLoadLabel: '',
+    apiValue: 'TODO',
+  },
+];

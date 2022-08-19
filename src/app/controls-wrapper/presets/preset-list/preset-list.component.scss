@@ -1,3 +1,9 @@
+:host {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
 .presetList {
   &__title {
     align-items: center;
@@ -11,13 +17,28 @@
   }
 
   &__items {
-    //
+    display: flex;
+    flex-direction: column;
+    max-width: 600px;
+    text-align: center;
+    width: 90%; // 90vw;
   }
 
   &Item {
     display: flex;
-    padding: 5px 8px;
-    justify-content: space-between;
+    flex-direction: column;
+
+    &__display {
+      align-items: flex-start;
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 8px;
+      width: 100%;
+    
+      & > * {
+        padding: 4px 8px;
+      }
+    }
   
     &__id {
       //
@@ -27,7 +48,7 @@
       //
     }
   
-    &__edit {
+    &__editButton {
       //
     }
   }
