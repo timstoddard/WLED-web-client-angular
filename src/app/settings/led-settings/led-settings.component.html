@@ -1,1 +1,280 @@
-<p>led-settings works!</p>
+<form
+  [formGroup]="ledSettingsForm"
+  class="ledSettingsForm">
+  <div>{{ ledSettingsForm.value | json }}</div>
+  
+  <!-- TODO how to implement '?' button? make a new route for help? -->
+  <div>
+    <button type="button">?</button>
+  </div>
+  <a [routerLink]="['../']">
+    Back
+  </a>
+  <!-- TODO does this need `type="submit"`? -->
+  <button (click)="submitForm()">
+    Save
+  </button>
+
+  <h2>Led & Hardware Settings</h2>
+
+  <mat-form-field
+    appearance="fill"
+    class="">
+    <mat-label>Total LED count</mat-label>
+    <input
+      matInput
+      type="number"
+      formControlName="totalLedCount"
+      placeholder="100"
+      class="">
+  </mat-form-field>
+  <div>
+    <p>Recommended power supply for brightest white:</p>
+    <p>WS2815 12V 21A connected to LEDs</p>
+  </div>
+
+  <mat-checkbox
+    formControlName="autoBrightnessLimit"
+    class="">
+    <mat-label>Enable automatic brightness limiter</mat-label>
+  </mat-checkbox>
+  <div>
+    <p>Automatically limits brightness to stay close to the limit.</p>
+    <p>Keep at &lt;1A if powering LEDs directly from the ESP 5V pin!</p>
+    <p>If you are using an external power supply, enter its rating.</p>
+    <p>Current estimated usage: XXX mA</p>
+  </div>
+
+  <mat-form-field
+    appearance="fill"
+    class="">
+    <mat-label>Maximum current (mA)</mat-label>
+    <input
+      matInput
+      type="number"
+      formControlName="maxCurrent"
+      placeholder="1000"
+      class="">
+  </mat-form-field>
+
+  <div
+    *ngIf="hasHighCurrent"
+    class="">
+    <p>Your power supply provides high current.</p>
+    <p>To improve the safety of your setup, PLEASE USE the following:</p>
+    <ol>
+      <li>Thick cables</li>
+      <li>Multiple power injection points</li>
+      <li>A fuse</li>
+    </ol>
+  </div>
+
+  <!-- TODO get select to work -->
+  <div>LED Voltage</div>
+  <!-- <mat-form-field
+    appearance="fill"
+    class="">
+    <mat-label>LED Voltage</mat-label>
+    <mat-select formControlName="ledVoltage">
+      <mat-option
+        *ngFor="let voltage of ledVoltageByStripType"
+        [value]="voltage.value">
+        {{ voltage.name }}
+      </mat-option>
+    </mat-select>
+    <mat-hint>Max current for a single LED</mat-hint>
+  </mat-form-field> -->
+  <div>
+    <p>Keep at default if you are unsure about your LED type.</p>
+  </div>
+
+  <div>LED Outputs</div>
+  <div formArrayName="ledOutputs">
+    <!-- <div *ngFor="let ledOutputGroup of ledOutputs.controls">TODO create list for LED output configs</div> -->
+    <div>
+      <button>+</button>
+      <!-- TODO each list item should have a delete button? -->
+      <button>-</button>
+    </div>
+  </div>
+  <!-- example iterating a formarray -->
+  <!-- <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div formArrayName="cities">
+      <div *ngFor="let city of cities.controls; index as i">
+        <input [formControlName]="i" placeholder="City">
+      </div>
+    </div>
+    <button>Submit</button>
+  </form> -->
+
+  <!-- TODO get this value from backend -->
+  <div>LED Memory Usage: ### / ### B</div>
+  <!-- TODO add graphic of used memory -->
+  <div>[###_______]</div>
+
+  <div>
+    <p>TODO warning icon</p>
+    <p>You might run into stability or lag issues.</p>
+    <p>For best experience, use &lt;800 LEDs per pin!</p>
+  </div>
+
+  <mat-form-field
+    appearance="fill"
+    class="">
+    <mat-label>Button Pin</mat-label>
+    <input
+      matInput
+      type="number"
+      formControlName="buttonPin"
+      placeholder=""
+      class="">
+  </mat-form-field>
+  <mat-form-field
+    appearance="fill"
+    class="">
+    <mat-label>IR Pin</mat-label>
+    <input
+      matInput
+      type="number"
+      formControlName="irPin"
+      placeholder=""
+      class="">
+  </mat-form-field>
+  <mat-form-field
+    appearance="fill"
+    class="">
+    <mat-label>Relay Pin</mat-label>
+    <input
+      matInput
+      type="number"
+      formControlName="relayPin"
+      placeholder=""
+      class="">
+  </mat-form-field>
+  <mat-checkbox
+    formControlName="activeHigh"
+    class="">
+    <mat-label>Active High</mat-label>
+  </mat-checkbox>
+
+  <mat-checkbox
+    formControlName="turnOnAfterReset"
+    class="">
+    <mat-label>Turn on after reset</mat-label>
+  </mat-checkbox>
+
+  <mat-form-field
+    appearance="fill"
+    class="">
+    <mat-label>Default Brightness (1-255)</mat-label>
+    <input
+      matInput
+      type="number"
+      formControlName="defaultBrightness"
+      placeholder="128"
+      class="">
+  </mat-form-field>
+  <mat-form-field
+    appearance="fill"
+    class="">
+    <mat-label>Default Preset</mat-label>
+    <input
+      matInput
+      type="number"
+      formControlName="defaultPreset"
+      placeholder="0"
+      class="">
+  </mat-form-field>
+
+  <mat-checkbox
+    formControlName="useGammaCorrectionForColor"
+    class="">
+    <mat-label>Use Gamma correction for Color (strongly recommended)</mat-label>
+  </mat-checkbox>
+  <mat-checkbox
+    formControlName="useGammaCorrectionForBrightness"
+    class="">
+    <mat-label>Use Gamma correction for Brightness (not recommended)</mat-label>
+  </mat-checkbox>
+
+  <mat-form-field
+    appearance="fill"
+    class="">
+    <mat-label>Brightness Factor</mat-label>
+    <input
+      matInput
+      type="number"
+      formControlName="brightnessFactor"
+      placeholder="0"
+      class="">
+  </mat-form-field>
+
+  <mat-checkbox
+    formControlName="useCrossfade"
+    class="">
+    <mat-label>Use Crossfade</mat-label>
+  </mat-checkbox>
+
+  <mat-form-field
+    appearance="fill"
+    class="">
+    <mat-label>Transition Time (ms)</mat-label>
+    <input
+      matInput
+      type="number"
+      formControlName="transitionTimeMs"
+      placeholder="70"
+      class="">
+  </mat-form-field>
+
+  <mat-checkbox
+    formControlName="usePaletteTransitions"
+    class="">
+    <mat-label>Enable Palette Transitions</mat-label>
+  </mat-checkbox>
+
+  <div formGroupName="timer">
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Timer Duration (mins)</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="durationMins"
+        placeholder="5"
+        class="">
+    </mat-form-field>
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Target Brightness (0-255)</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="targetBrightness"
+        placeholder="0"
+        class="">
+    </mat-form-field>
+    <!-- TODO this should be a select -->
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Timer Mode</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="mode"
+        placeholder=""
+        class="">
+    </mat-form-field>
+  </div>
+
+  <a [routerLink]="['../']">
+    Back
+  </a>
+  <!-- TODO does this need `type="submit"`? -->
+  <button (click)="submitForm()">
+    Save
+  </button>
+</form>

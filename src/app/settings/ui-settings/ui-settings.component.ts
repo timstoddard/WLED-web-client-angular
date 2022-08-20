@@ -25,6 +25,7 @@ export class UISettingsComponent extends UnsubscribingComponent implements OnIni
     },
     {
       name: 'presets',
+      // TODO rename to not have 'preset' in the name
       label: 'Preset Buttons',
     },
     {

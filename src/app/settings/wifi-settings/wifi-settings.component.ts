@@ -1,12 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
+import { SelectItem } from '../shared/settings-types';
 import { WifiSettingsService } from './wifi-settings.service';
-
-interface SelectItem {
-  name: string;
-  value: number;
-}
 
 const DEFAULT_ETHERNET_TYPE = 0;
 const DEFAULT_OPEN_AP_OPTION = 0;
@@ -17,7 +13,7 @@ const DEFAULT_OPEN_AP_OPTION = 0;
   styleUrls: ['./wifi-settings.component.scss']
 })
 export class WifiSettingsComponent extends UnsubscribingComponent implements OnInit {
-  openAPOptions: SelectItem[] = [
+  openAPOptions: SelectItem<number>[] = [
     {
       name: 'No connection after boot',
       value: 0,
@@ -35,7 +31,7 @@ export class WifiSettingsComponent extends UnsubscribingComponent implements OnI
       value: 3,
     },
   ];
-  ethernetTypes: SelectItem[] = [
+  ethernetTypes: SelectItem<number>[] = [
     {
       name: 'None',
       value: 0,
