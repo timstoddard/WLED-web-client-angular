@@ -1,1 +1,27 @@
-<p>dmx-settings works!</p>
+<form
+  [formGroup]="dmxSettingsForm"
+  class="dmxSettingsForm">
+  <div>{{ dmxSettingsForm.value | json }}</div>
+  
+  <!-- TODO how to implement '?' button? make a new route for help? -->
+  <div>
+    <button type="button">?</button>
+  </div>
+  <a [routerLink]="['../']">
+    Back
+  </a>
+  <!-- TODO does this need `type="submit"`? -->
+  <button (click)="submitForm()">
+    Save
+  </button>
+
+  <!-- TODO add form controls here -->
+
+  <a [routerLink]="['../']">
+    Back
+  </a>
+  <!-- TODO does this need `type="submit"`? -->
+  <button (click)="submitForm()">
+    Save
+  </button>
+</form>

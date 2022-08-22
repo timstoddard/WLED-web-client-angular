@@ -15,6 +15,10 @@ export class SyncSettingsComponent implements OnInit {
     this.syncSettingsForm = this.createForm();
   }
 
+  submitForm() {
+    // TODO
+  }
+
   private createForm() {
     return this.formBuilder.group({
       buttonType: this.formBuilder.control('', Validators.required),

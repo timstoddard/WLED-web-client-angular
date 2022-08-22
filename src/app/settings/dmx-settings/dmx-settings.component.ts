@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-dmx-settings',
@@ -6,10 +7,21 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./dmx-settings.component.scss']
 })
 export class DmxSettingsComponent implements OnInit {
+  dmxSettingsForm!: FormGroup;
 
-  constructor() { }
+  constructor(private formBuilder: FormBuilder) {}
 
   ngOnInit() {
+    this.dmxSettingsForm = this.createForm();
   }
 
+  submitForm() {
+    // TODO
+  }
+
+  private createForm() {
+    return this.formBuilder.group({
+      //
+    });
+  }
 }

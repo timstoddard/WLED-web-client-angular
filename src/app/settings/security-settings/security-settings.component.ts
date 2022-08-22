@@ -15,6 +15,10 @@ export class SecuritySettingsComponent implements OnInit {
     this.securitySettingsForm = this.createForm();
   }
 
+  submitForm() {
+    // TODO
+  }
+
   private createForm() {
     return this.formBuilder.group({
       otaUpdatePassword: this.formBuilder.control('', Validators.required),

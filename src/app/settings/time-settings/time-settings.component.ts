@@ -15,6 +15,10 @@ export class TimeSettingsComponent implements OnInit {
     this.timeSettingsForm = this.createForm();
   }
 
+  submitForm() {
+    // TODO
+  }
+
   private createForm() {
     return this.formBuilder.group({
       ntp: this.formBuilder.group({
