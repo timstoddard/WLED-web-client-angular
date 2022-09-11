@@ -32,8 +32,8 @@
   }
 
   &__list {
+    @include radioButtonList();
     grid-area: 4 / 1 / 5 / 2;
-    overflow-y: auto;
   }
 
   &__radioButton {
