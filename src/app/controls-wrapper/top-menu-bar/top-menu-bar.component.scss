@@ -106,9 +106,8 @@
     padding: 4px 0 0;
 
     &--inOverlay {
-      box-shadow: 0 0 8px 4px rgba(var(--borderColorPrimaryRgb),0.8);
+      @include overlayContainer();
       flex-direction: column;
-      padding: 10px;
 
       & .topMenuBar__slider {
         margin: 0;

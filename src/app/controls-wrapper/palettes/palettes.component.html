@@ -1,16 +1,12 @@
 <!-- TODO make this "Palettes" header and show search input on search icon click -->
 <app-search-input
   (searchValueChanges)="filterList($event)"
+  [selectedName]="getSelectedPaletteName()"
   title="Palettes"
   label="Search palettes"
   class="palettes__searchInput">
+  <app-color-slots class="palettes__colorSlots"></app-color-slots>
 </app-search-input>
-
-<app-color-slots class="palettes__colorSlots"></app-color-slots>
-
-<div class="palettes__selectedName">
-  Selected: {{ getSelectedPaletteName() | async }}
-</div>
 
 <div class="palettes__list">
   <label

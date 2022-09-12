@@ -1,34 +1,58 @@
-<ng-container *ngIf="showInput; else showTitle">
-  <mat-form-field
-    appearance="fill"
-    class="searchInput__inputWrapper">
-    <mat-label>{{ label }}</mat-label>
-    <input
-      #searchInput
-      matInput
-      [formControl]="searchText"
-      (keydown)="onKeyDown($event)"
-      placeholder="Search"
-      class="searchInput__input">
-    <mat-icon matSuffix>
-      <i
-        *ngIf="searchText.value?.length > 0"
-        (click)="cancelSearch()"
-        class="searchInput__cancelIcon icons">
-        &#xe38f;
-      </i>
-    </mat-icon>
-  </mat-form-field>
-</ng-container>
+ <i
+  [innerHTML]="'&#xe0a1;'"
+  (click)="toggleSearchInput()"
+  class="searchInput__icon icons">
+</i>
 
-<ng-template #showTitle>
-  <h2 class="searchInput__title">
-    {{ title }}
-  </h2>
-</ng-template>
+<div class="searchInput__header">
+  <div *ngIf="showInput; else showTitle">
+    <mat-form-field
+      appearance="fill"
+      class="searchInput__inputWrapper">
+      <mat-label>{{ label }}</mat-label>
+      <input
+        #searchInput
+        matInput
+        [formControl]="searchText"
+        (keydown)="onKeyDown($event)"
+        placeholder="Search"
+        class="searchInput__input">
+      <mat-icon matSuffix>
+        <i
+          *ngIf="searchText.value?.length > 0"
+          [innerHTML]="'&#xe38f;'"
+          (click)="cancelSearch()"
+          class="searchInput__icon icons">
+        </i>
+      </mat-icon>
+    </mat-form-field>
+  </div>
+  
+  <ng-template #showTitle>
+    <h2 class="searchInput__title">
+      {{ title }}
+    </h2>
+  </ng-template>
+
+  <div class="searchInput__selectedName">
+    {{ selectedName | async }}
+  </div>
+</div>
 
 <i
-  (click)="toggleSearchInput()"
-  class="searchInput__searchIcon icons">
-  &#xe0a1;
+  cdkOverlayOrigin
+  #trigger="cdkOverlayOrigin"
+  [innerHTML]="'&#xe2a6;'"
+  (click)="toggleContextMenu()"
+  class="searchInput__icon icons">
 </i>
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="trigger"
+  [cdkConnectedOverlayOpen]="isContextMenuOpen"
+  [cdkConnectedOverlayPositions]="getOverlayPositions()"
+  [cdkConnectedOverlayFlexibleDimensions]="true">
+  <div class="searchInput__contextMenu">
+    <ng-content></ng-content>
+  </div>
+</ng-template>

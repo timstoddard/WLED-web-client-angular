@@ -106,6 +106,13 @@
   }
 }
 
+@mixin overlayContainer() {
+  background: var(--backgroundColorPrimary);
+  border-radius: 6px;
+  box-shadow: 0 0 8px 4px rgba(var(--borderColorPrimaryRgb), 0.8);
+  padding: 10px;
+}
+
 @mixin forceWidth($width) {
   max-width: $width;
   min-width: $width;

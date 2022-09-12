@@ -1,5 +1,7 @@
+import { OriginConnectionPosition, OverlayConnectionPosition, ConnectionPositionPair } from '@angular/cdk/overlay';
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
+import { Observable } from 'rxjs';
 import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
 
 @Component({
@@ -12,10 +14,12 @@ export class SearchInputComponent extends UnsubscribingComponent implements OnIn
   @Input() title: string = '';
   /** Input element label. */
   @Input() label: string = '';
+  @Input() selectedName!: Observable<string>;
   @Output() searchValueChanges = new EventEmitter<string>();
   @ViewChild('searchInput', { read: ElementRef }) searchInputElement!: ElementRef<HTMLInputElement>;
   searchText!: FormControl;
   showInput!: boolean;
+  isContextMenuOpen!: boolean;
 
   constructor(private formBuilder: FormBuilder) {
     super();
@@ -23,7 +27,8 @@ export class SearchInputComponent extends UnsubscribingComponent implements OnIn
 
   ngOnInit() {
     this.searchText = this.createFormControl();
-    this.showInput = !this.title;
+    this.showInput = false;
+    this.isContextMenuOpen = false;
   }
 
   onChange = () => {
@@ -51,6 +56,25 @@ export class SearchInputComponent extends UnsubscribingComponent implements OnIn
     if (this.title) {
       this.showInput = !this.showInput;
     }
+  }
+
+  toggleContextMenu() {
+    this.isContextMenuOpen = !this.isContextMenuOpen;
+  }
+
+  getOverlayPositions() {
+    const OFFSET_X_PX = 0;
+    const OFFSET_Y_PX = 12;
+    const originRightSide: OriginConnectionPosition = {
+      originX: 'end',
+      originY: 'bottom',
+    };
+    const overlayRightSide: OverlayConnectionPosition = {
+      overlayX: 'end',
+      overlayY: 'top',
+    };
+    const rightSidePosition = new ConnectionPositionPair(originRightSide, overlayRightSide, OFFSET_X_PX, OFFSET_Y_PX);
+    return [rightSidePosition];
   }
 
   private createFormControl() {

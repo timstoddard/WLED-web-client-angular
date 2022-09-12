@@ -1,42 +1,38 @@
 <!-- TODO make this "Effects" header and show search input on search icon click -->
 <app-search-input
   (searchValueChanges)="filterList($event)"
+  [selectedName]="getSelectedEffectName()"
   title="Effects"
   label="Search effects"
   class="effects__searchInput">
+  <div class="effects__sliders">
+    <!-- TODO these used to show value in a toast above while sliding, I'm thinking not keep that -->
+    <app-color-slider
+      [control]="effectsForm.get('speed')!"
+      [min]="0"
+      [max]="255"
+      label="Speed"
+      sliderClass="effects__slider">
+      <i class="icons slider-icon">
+        &#xe325;
+      </i>
+    </app-color-slider>
+    <!-- TODO these used to show value in a toast above while sliding, I'm thinking not keep that -->
+    <app-color-slider
+      [control]="effectsForm.get('intensity')!"
+      [min]="0"
+      [max]="255"
+      label="Intensity"
+      sliderClass="effects__slider">
+      <!-- TODO should icons be built into the slider component -->
+      <i
+        class="icons slider-icon"
+        (click)="toggleLabels()">
+        &#xe409;
+      </i>
+    </app-color-slider>
+  </div>
 </app-search-input>
-
-<div class="effects__sliders">
-  <!-- TODO these used to show value in a toast above while sliding, I'm thinking not keep that -->
-  <app-color-slider
-    [control]="effectsForm.get('speed')!"
-    [min]="0"
-    [max]="255"
-    label="Speed"
-    sliderClass="effects__slider">
-    <i class="icons slider-icon">
-      &#xe325;
-    </i>
-  </app-color-slider>
-  <!-- TODO these used to show value in a toast above while sliding, I'm thinking not keep that -->
-  <app-color-slider
-    [control]="effectsForm.get('intensity')!"
-    [min]="0"
-    [max]="255"
-    label="Intensity"
-    sliderClass="effects__slider">
-    <!-- TODO should icons be built into the slider component -->
-    <i
-      class="icons slider-icon"
-      (click)="toggleLabels()">
-      &#xe409;
-    </i>
-  </app-color-slider>
-</div>
-
-<div class="effects__selectedName">
-  Selected: {{ getSelectedEffectName() | async }}
-</div>
 
 <div
   [formGroup]="effectsForm"

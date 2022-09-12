@@ -4,7 +4,7 @@ import { AppStateService } from '../../shared/app-state/app-state.service';
 import { UIConfigService } from '../../shared/ui-config.service';
 import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
 import { genericPostResponse } from '../utils';
-import { Effect, EffectsService } from './effects.service';
+import { EffectsService } from './effects.service';
 
 const DEFAULT_EFFECT_ID = -1; // TODO get from first selected segment
 const DEFAULT_EFFECT_SPEED = 128;

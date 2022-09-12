@@ -123,7 +123,7 @@ export class PalettesService extends UnsubscribingService {
   }
 
   private getPaletteName(paletteId: number) {
-    let paletteName = 'none';
+    let paletteName = 'None selected';
     if (paletteId !== NONE_SELECTED) {
       const selectedPalette = this.sortedPalettes
         .find(((palette) => palette.id === paletteId));

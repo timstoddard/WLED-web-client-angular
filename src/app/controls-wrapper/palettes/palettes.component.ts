@@ -3,7 +3,7 @@ import { FormBuilder, FormControl } from '@angular/forms';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
 import { genericPostResponse } from '../utils';
-import { PaletteWithBackground, PalettesService } from './palettes.service';
+import { PalettesService } from './palettes.service';
 
 const DEFAULT_PALETTE_ID = -1; // TODO get from first selected segment
 

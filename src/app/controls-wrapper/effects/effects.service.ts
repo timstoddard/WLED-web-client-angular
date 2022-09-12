@@ -86,7 +86,7 @@ export class EffectsService extends UnsubscribingService {
   }
 
   private getEffectName(effectId: number) {
-    let effectName = 'none';
+    let effectName = 'None selected';
     if (effectId !== NONE_SELECTED) {
       const selectedEffect = this.sortedEffects
         .find(((effect) => effect.id === effectId));
