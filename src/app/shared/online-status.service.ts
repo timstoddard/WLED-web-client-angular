@@ -1,25 +1,30 @@
 import { Injectable } from '@angular/core';
-import { LocalStorageKey, LocalStorageService } from './local-storage.service';
 
 @Injectable({ providedIn: 'root' })
 export class OnlineStatusService {
-  constructor(private localStorageService: LocalStorageService) {}
+  constructor() {
+    window.addEventListener('online', this.handleOnline);
+    window.addEventListener('offline', this.handleOffline);
+  }
+
+  ngOnDestroy() {
+    window.removeEventListener('online', this.handleOnline);
+    window.removeEventListener('offline', this.handleOffline);
+  }
 
   /**
    * Returns boolean for online status.
    * @returns true if online, false otherwise
    */
   getIsOffline() {
-    // TODO detect online/offline status, don't use local storage anymore
+    return !window.navigator.onLine;
+  }
 
-    /**
-     * To enable:
-     * localStorage.setItem('IS_OFFLINE', true);localStorage.getItem('IS_OFFLINE');
-     * 
-     * To disable:
-     * localStorage.setItem('IS_OFFLINE', false);localStorage.getItem('IS_OFFLINE');
-     */
-    const isOffline = this.localStorageService.get(LocalStorageKey.IS_OFFLINE);
-    return isOffline as boolean
+  private handleOnline = () => {
+    alert('Network connection restored.')
+  }
+
+  private handleOffline = () => {
+    alert('Network connection terminated.')
   }
 }

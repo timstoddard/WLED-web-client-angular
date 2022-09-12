@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 
 export class LocalStorageKey {
-  static readonly IS_OFFLINE = 'IS_OFFLINE';
   static readonly PALETTES_DATA = 'PALETTES_DATA';
   static readonly SAVED_PRESETS = 'SAVED_PRESETS';
   static readonly SHOW_DEV_NAV_BAR = 'SHOW_DEV_NAV_BAR';

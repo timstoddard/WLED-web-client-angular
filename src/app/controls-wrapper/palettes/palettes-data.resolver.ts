@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
 import { ApiService } from '../../shared/api.service';
-import { LocalStorageKey, LocalStorageService } from '../../shared/local-storage.service';
+import { OnlineStatusService } from '../../shared/online-status.service';
 import { ControlsServicesModule } from '../controls-services.module';
 import { palettesData } from '../mock-api-data';
 import { PalettesApiData } from './palettes.service';
@@ -11,11 +11,11 @@ import { PalettesApiData } from './palettes.service';
 export class PalettesDataResolver implements Resolve<PalettesApiData[]> {
   constructor(
     private apiService: ApiService,
-    private localStorageService: LocalStorageService) { }
+    private onlineStatusService: OnlineStatusService,
+  ) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    const isOffline = this.localStorageService.get(LocalStorageKey.IS_OFFLINE);
-    return isOffline
+    return this.onlineStatusService.getIsOffline()
       ? of(palettesData)
       : this.getAllPages();
   }

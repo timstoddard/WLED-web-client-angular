@@ -10,7 +10,7 @@ import { UnsubscribingComponent } from './shared/unsubscribing/unsubscribing.com
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent extends UnsubscribingComponent {
-  showDevNavBar: boolean = false;
+  showDevNavBar!: boolean;
   links = [
     {
       path: 'controls',
@@ -66,6 +66,8 @@ export class AppComponent extends UnsubscribingComponent {
   }
 
   ngOnInit() {
+    this.showDevNavBar = false;
+
     this.pageTitleService.updateOnRouteChange(this.ngUnsubscribe);
     this.showDevNavBar = this.localStorageService.get(LocalStorageKey.SHOW_DEV_NAV_BAR)!;
 
