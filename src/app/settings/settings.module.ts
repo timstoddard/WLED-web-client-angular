@@ -9,6 +9,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { DmxSettingsComponent } from './dmx-settings/dmx-settings.component';
+import { ExternalLinkComponent } from '../shared/external-link/external-link.component';
 import { LedSettingsComponent } from './led-settings/led-settings.component';
 import { SecuritySettingsComponent } from './security-settings/security-settings.component';
 import { SettingsComponent } from './settings.component';
@@ -24,6 +25,7 @@ import { WifiSettingsComponent } from './wifi-settings/wifi-settings.component';
 
 const COMPONENTS = [
   DmxSettingsComponent,
+  ExternalLinkComponent,
   LedSettingsComponent,
   SecuritySettingsComponent,
   SettingsComponent,

@@ -3,7 +3,10 @@
   class="ledSettingsForm">
   <div>{{ ledSettingsForm.value | json }}</div>
   
-  <app-settings-header (save)="submitForm()"></app-settings-header>
+  <app-settings-header
+    helpUrl="https://github.com/Aircoookie/WLED/wiki/Settings#led-settings"
+    (save)="submitForm()">
+  </app-settings-header>
 
   <h1>
     Led Settings

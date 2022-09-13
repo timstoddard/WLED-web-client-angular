@@ -4,7 +4,10 @@
   <div>{{ wifiSettingsForm.value | json }}</div>
   
   <!-- TODO save button should say "Save & Connect" -->
-  <app-settings-header (save)="submitForm()"></app-settings-header>
+  <app-settings-header
+    helpUrl="https://github.com/Aircoookie/WLED/wiki/Settings#wifi-settings"
+    (save)="submitForm()">
+  </app-settings-header>
 
   <h1>
     Wifi Settings

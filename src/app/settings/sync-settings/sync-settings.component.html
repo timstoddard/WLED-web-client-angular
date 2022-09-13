@@ -3,7 +3,10 @@
   class="syncSettingsForm">
   <div>{{ syncSettingsForm.value | json }}</div>
   
-  <app-settings-header (save)="submitForm()"></app-settings-header>
+  <app-settings-header
+    helpUrl="https://github.com/Aircoookie/WLED/wiki/Settings#sync-settings"
+    (save)="submitForm()">
+  </app-settings-header>
 
   <h1>
     Sync Settings
@@ -33,12 +36,11 @@
     </select>
 
     <div>
-      Infrared Details:&nbsp;
-      <a
+      <app-external-link
         href="https://github.com/Aircoookie/WLED/wiki/Infrared-Control"
-        target="_blank">
-        link
-      </a>
+        text="Infrared">
+      </app-external-link>
+      &nbsp;Info
     </div>
   </app-settings-group>
 
@@ -186,12 +188,11 @@
         Reboot required.
       </p>
       <p>
-        <a
+        <app-external-link
           href="https://github.com/LedFx/LedFx"
-          target="_blank">
-          LedFx
-        </a>
-        &nbsp;Info.
+          text="LedFx">
+        </app-external-link>
+        &nbsp;Info
       </p>
     </div>
 
@@ -223,12 +224,11 @@
 
     <div>
       <p>
-        <a
+        <app-external-link
           href="https://github.com/Aircoookie/WLED/wiki/E1.31-DMX"
-          target="_blank">
-          E1.31
-        </a>
-        &nbsp;Info.
+          text="E1.31">
+        </app-external-link>
+        &nbsp;Info
       </p>
     </div>
 
@@ -346,12 +346,11 @@
         Clear the token field to disable.
       </p>
       <p>
-        <a
+        <app-external-link
           href="https://github.com/Aircoookie/WLED/wiki/E1.31-DMX"
-          target="_blank">
-          Blynk
-        </a>
-        &nbsp;Info.
+          text="Blynk">
+        </app-external-link>
+        &nbsp;Info
       </p>
     </div>
   </app-settings-group>
@@ -439,10 +438,11 @@
         Reboot required to apply changes.
       </p>
       <p>
-        <a href="https://github.com/Aircoookie/WLED/wiki/E1.31-DMX" target="_blank">
-          MQTT
-        </a>
-        &nbsp;Info.
+        <app-external-link
+          href="https://github.com/Aircoookie/WLED/wiki/E1.31-DMX" 
+          text="MQTT">
+        </app-external-link>
+        &nbsp;Info
       </p>
     </div>
   </app-settings-group>

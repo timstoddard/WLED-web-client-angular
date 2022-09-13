@@ -3,7 +3,10 @@
   class="timeSettingsForm">
   <div>{{ timeSettingsForm.value | json }}</div>
   
-  <app-settings-header (save)="submitForm()"></app-settings-header>
+  <app-settings-header
+    helpUrl="https://github.com/Aircoookie/WLED/wiki/Settings#time-settings"
+    (save)="submitForm()">
+  </app-settings-header>
 
   <h1>
     Time Settings

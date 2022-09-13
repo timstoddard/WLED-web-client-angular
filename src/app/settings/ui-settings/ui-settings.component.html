@@ -3,7 +3,10 @@
   class="uiSettingsForm">
   <div>{{ uiSettingsForm.value | json }}</div>
 
-  <app-settings-header (save)="submitForm()"></app-settings-header>
+  <app-settings-header
+    helpUrl="https://github.com/Aircoookie/WLED/wiki/Settings#user-interface-settings"
+    (save)="submitForm()">
+  </app-settings-header>
 
   <h1>
     UI Settings
