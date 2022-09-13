@@ -6,4 +6,10 @@
 
 .timeSettingsForm {
   @include settingsPageContainer();
+
+  &__scheduledHour,
+  &__scheduledMinute,
+  &__presetId {
+    max-width: 100px;
+  }
 }

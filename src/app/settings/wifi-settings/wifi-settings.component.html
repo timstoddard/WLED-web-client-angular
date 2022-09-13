@@ -6,12 +6,14 @@
   <!-- TODO save button should say "Save & Connect" -->
   <app-settings-header (save)="submitForm()"></app-settings-header>
 
-  <h2>Wifi Settings</h2>
+  <h1>
+    Wifi Settings
+  </h1>
 
-  <div formGroupName="localNetwork">
-    <h3>Connect to Network</h3>
+  <app-settings-group
+    title="Connect to Network"
+    formGroupName="localNetwork">
     <i>Leave SSID empty to not connect</i>
-    <br>
     <mat-form-field
       appearance="fill"
       class="">
@@ -22,11 +24,11 @@
         maxlength="32"
         class="">
     </mat-form-field>
-    <br>
     <mat-form-field
       appearance="fill"
       class="">
       <mat-label>Password</mat-label>
+      <!-- TODO type="text" ? -->
       <input
         matInput
         type="password"
@@ -34,80 +36,72 @@
         maxlength="63"
         class="">
     </mat-form-field>
-  </div>
 
-  <div formGroupName="ipAddress">
-    <i>Leave at 0.0.0.0 for DHCP</i>
-    <br>
-    <!-- TODO Add text mask/validation for IP address -->
-    <!-- TODO create IP address input component? -->
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Static IP</mat-label>
-      <input
-        matInput
-        formControlName="staticIp"
+    <div formGroupName="ipAddress">
+      <i>Leave at 0.0.0.0 for DHCP</i>
+      <!-- TODO Add text mask/validation for IP address -->
+      <!-- TODO create IP address input component? -->
+      <mat-form-field
+        appearance="fill"
         class="">
-    </mat-form-field>
-    <!-- <input name="I0" type="number" class="s" min="0" max="255" required> .
-      <input name="I1" type="number" class="s" min="0" max="255" required> . <input name="I2" type="number" class="s" min="0" max="255" required> . <input name="I3" type="number" class="s" min="0" max="255" required> -->
-    <br>
-    <br>
-    <!-- TODO Add text mask for IP address -->
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Static gateway</mat-label>
-      <input
-        matInput
-        formControlName="staticGateway"
+        <mat-label>Static IP</mat-label>
+        <input
+          matInput
+          formControlName="staticIp"
+          class="">
+      </mat-form-field>
+      <!-- <input name="I0" type="number" class="s" min="0" max="255" required> .
+        <input name="I1" type="number" class="s" min="0" max="255" required> . <input name="I2" type="number" class="s" min="0" max="255" required> . <input name="I3" type="number" class="s" min="0" max="255" required> -->
+      <!-- TODO Add text mask for IP address -->
+      <mat-form-field
+        appearance="fill"
         class="">
-    </mat-form-field>
-    <!-- <input name="G0" type="number" class="s" min="0" max="255" required> . <input name="G1" type="number" class="s" min="0" max="255" required> . <input name="G2" type="number" class="s" min="0" max="255" required> .
-      <input name="G3" type="number" class="s" min="0" max="255" required> -->
-    <br>
-    <br>
-    <!-- TODO Add text mask for IP address -->
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Static subnet mask</mat-label>
-      <input
-        matInput
-        formControlName="staticSubnetMask"
+        <mat-label>Static gateway</mat-label>
+        <input
+          matInput
+          formControlName="staticGateway"
+          class="">
+      </mat-form-field>
+      <!-- <input name="G0" type="number" class="s" min="0" max="255" required> . <input name="G1" type="number" class="s" min="0" max="255" required> . <input name="G2" type="number" class="s" min="0" max="255" required> .
+        <input name="G3" type="number" class="s" min="0" max="255" required> -->
+      <!-- TODO Add text mask for IP address -->
+      <mat-form-field
+        appearance="fill"
         class="">
-    </mat-form-field>
-    <!-- <input name="S0" type="number" class="s" min="0" max="255" required> . <input name="S1" type="number" class="s" min="0" max="255" required> . <input name="S2" type="number" class="s" min="0" max="255" required> . <input name="S3" type="number" class="s" min="0" max="255" required> -->
-    <br>
-    <div>mDNS address</div>
-    <div>
-      <i>Leave empty for no mDNS</i>
+        <mat-label>Static subnet mask</mat-label>
+        <input
+          matInput
+          formControlName="staticSubnetMask"
+          class="">
+      </mat-form-field>
+      <!-- <input name="S0" type="number" class="s" min="0" max="255" required> . <input name="S1" type="number" class="s" min="0" max="255" required> . <input name="S2" type="number" class="s" min="0" max="255" required> . <input name="S3" type="number" class="s" min="0" max="255" required> -->
+      <div>mDNS address</div>
+      <div>
+        <i>Leave empty for no mDNS</i>
+      </div>
+      http://
+      <mat-form-field
+        appearance="fill"
+        class="">
+        <mat-label>mDNS</mat-label>
+        <input
+          matInput
+          formControlName="mDNS"
+          maxlength="32"
+          class="">
+      </mat-form-field>
+      .local
+      <!-- TODO wire this up -->
+      Client IP: <span class="sip">Not connected</span>
     </div>
-    <br>
-    http://
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>mDNS</mat-label>
-      <input
-        matInput
-        formControlName="mDNS"
-        maxlength="32"
-        class="">
-    </mat-form-field>
-    .local
-    <br>
-    <!-- TODO wire this up -->
-    Client IP: <span class="sip">Not connected</span>
-  </div>
+  </app-settings-group>
 
-  <h3>Configure Access Point</h3>
-  <div formGroupName="wledAccessPoint">
+  <app-settings-group
+    title="WLED Access Point"
+    formGroupName="wledAccessPoint">
     <div>
       <i>Leave empty for no AP</i>
     </div>
-    <br>
     <mat-form-field
       appearance="fill"
       class="">
@@ -118,18 +112,15 @@
         maxlength=32
         class="">
     </mat-form-field>
-    <br>
     <mat-checkbox
       formControlName="hideAPName"
       class="">
       Hide AP name
     </mat-checkbox>
-    <br>
     <div>
       <i>Leave empty for open</i>
       <i>Empty or min. 8 characters</i>
     </div>
-    <br>
     <mat-form-field
       appearance="fill"
       class="">
@@ -142,12 +133,11 @@
         pattern="(.{8,63})|()"
         class="">
     </mat-form-field>
-    <br>
 
     <mat-form-field
       appearance="fill"
       class="">
-      <mat-label>Access Point WiFi channel</mat-label>
+      <mat-label>Access Point Wifi channel</mat-label>
       <input
         matInput
         type="number"
@@ -156,7 +146,6 @@
         max="13"
         class="">
     </mat-form-field>
-    <br>
     
     AP opens:
     <select formControlName="openAP">
@@ -167,29 +156,25 @@
       </option>
     </select>
     
-    <br>
     <i>
       <!-- TODO wire this up -->
       AP IP: <span class="sip">Not active</span>
     </i>
-    <br>
-  </div>
+  </app-settings-group>
 
-  <div formGroupName="other">
-    <h3>Other</h3>
+  <app-settings-group
+    title="Advanced"
+    formGroupName="advanced">
     <mat-checkbox
       formControlName="disableWifiSleep"
       class="">
-      Disable WiFi sleep
+      Disable Wifi sleep
     </mat-checkbox>
-    <br>
     <i>
       Experimental: Can help with connectivity issues.
-      <br>
-      Do not enable if WiFi is working correctly, increases power consumption.
+      Do not enable if Wifi is working correctly, increases power consumption.
     </i>
-    <br>
-    <br>
+    <!-- TODO find a way to test this and compare to existing app -->
     <ng-container *ngIf="hasEthernet">
       <div>Ethernet Type</div>
       <select formControlName="ethernetType">
@@ -200,9 +185,7 @@
         </option>
       </select>
     </ng-container>
-    <br>
-    <br>
-  </div>
+  </app-settings-group>
 
   <!-- TODO save button should say "Save & Connect" -->
   <app-settings-footer (save)="submitForm()"></app-settings-footer>

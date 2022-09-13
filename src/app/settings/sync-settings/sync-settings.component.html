@@ -5,14 +5,15 @@
   
   <app-settings-header (save)="submitForm()"></app-settings-header>
 
-  <div
+  <h1>
+    Sync Settings
+  </h1>
+
+  <!-- TODO (title) "settings" or "config"? -->
+  <app-settings-group
+    title="Button Config"
     formGroupName="button"
     class="syncSettingsForm__button">
-    <h3>
-      <!-- TODO "settings" or "config"? -->
-      Button Config
-    </h3>
-
     Button Type
     <select formControlName="type">
       <option
@@ -39,15 +40,12 @@
         link
       </a>
     </div>
-  </div>
+  </app-settings-group>
 
-  <div
+  <app-settings-group
+    title="WLED Broadcast"
     formGroupName="broadcast"
     class="syncSettingsForm__broadcast">
-    <h3>
-      WLED Broadcast
-    </h3>
-
     <mat-form-field
       appearance="fill"
       class="">
@@ -125,15 +123,12 @@
         Reboot required to apply changes.
       </div>
     </div>
-  </div>
+  </app-settings-group>
 
-  <div
+  <app-settings-group
+    title="Instance List"
     formGroupName="instanceList"
     class="syncSettingsForm__instanceList">
-    <h3>
-      Instance List
-    </h3>
-
     <mat-checkbox
       formControlName="enable"
       class="">
@@ -144,15 +139,12 @@
       class="">
       <mat-label>Make this instance discoverable</mat-label>
     </mat-checkbox>
-  </div>
+  </app-settings-group>
 
-  <div
+  <app-settings-group
+    title="Realtime"
     formGroupName="realTime"
     class="syncSettingsForm__realTime">
-    <h3>
-      Realtime
-    </h3>
-
     <mat-checkbox
       formControlName="receiveUdpRealTime"
       class="">
@@ -273,15 +265,12 @@
         formControlName="ledOffset"
         class="">
     </mat-form-field>
-  </div>
+  </app-settings-group>
 
-  <div
+  <app-settings-group
+    title="Alexa"
     formGroupName="alexaConfig"
     class="syncSettingsForm__alexaConfig">
-    <h3>
-      Alexa
-    </h3>
-
     <mat-checkbox
       formControlName="emulateDevice"
       class="">
@@ -300,9 +289,9 @@
         formControlName="invocationName"
         class="">
     </mat-form-field>
-  </div>
+  </app-settings-group>
 
-  <div>
+  <app-settings-group>
     <p>
       Blynk, MQTT and Hue sync all connect to external hosts!
     </p>
@@ -315,15 +304,12 @@
     <p>
       Alternatively, connect a second ESP to them and use the UDP sync.
     </p>
-  </div>
+  </app-settings-group>
 
-  <div
+  <app-settings-group
+    title="Blynk"
     formGroupName="blynkConfig"
     class="syncSettingsForm__blynkConfig">
-    <h3>
-      Blynk
-    </h3>
-
     <mat-form-field
       appearance="fill"
       class="">
@@ -368,15 +354,12 @@
         &nbsp;Info.
       </p>
     </div>
-  </div>
+  </app-settings-group>
 
-  <div
+  <app-settings-group
+    title="MQTT"
     formGroupName="mqttConfig"
     class="syncSettingsForm__mqttConfig">
-    <h3>
-      MQTT
-    </h3>
-
     <mat-checkbox
       formControlName="enable"
       class="">
@@ -462,15 +445,12 @@
         &nbsp;Info.
       </p>
     </div>
-  </div>
+  </app-settings-group>
 
-  <div
+  <app-settings-group
+    title="Philips Hue"
     formGroupName="philipsHueConfig"
     class="syncSettingsForm__philipsHueConfig">
-    <h3>
-      Philips Hue
-    </h3>
-
     <mat-checkbox
       formControlName="enable"
       class="">
@@ -537,7 +517,7 @@
         Hue status: Inactive
       </p>
     </div>
-  </div>
+  </app-settings-group>
 
   <app-settings-footer (save)="submitForm()"></app-settings-footer>
 </form>

@@ -8,82 +8,103 @@
     (save)="submitForm()">
   </app-settings-header>
 
-  <h2>Security & Update Settings</h2>
+  <h1>
+    Security Settings
+  </h1>
 
-  <mat-checkbox formControlName="secureWirelessUpdate" class="">
-    <mat-label>Require password for OTA (wireless) software update</mat-label>
-  </mat-checkbox>
-  
-  <mat-form-field
-    appearance="fill"
-    class="">
-    <mat-label>OTA Update Password</mat-label>
-    <input
-      matInput
-      type="password"
-      formControlName="otaUpdatePassword"
+  <app-settings-group title="Security">
+    <mat-checkbox formControlName="secureWirelessUpdate" class="">
+      <mat-label>Require password for OTA (wireless) software update</mat-label>
+    </mat-checkbox>
+    
+    <mat-form-field
+      appearance="fill"
       class="">
-  </mat-form-field>
-
-  <!-- TODO add info toggle -->
-  <div class="securitySettingsForm__infoToggle"></div>
-  <div>
-    To enable OTA, for security reasons you need to enter the correct password.
-  </div>
-  <div>
-    <!-- TODO clarify meaning of this -->
-    Your password should be changed when OTA is enabled.
-  </div>
-  <div>
-      Disable OTA when not in use, otherwise a malicious actor can tamper with device software.
-  </div>
-  <div>
-    Settings on this page will only be saved if OTA lock is disabled!
-  </div>
+      <mat-label>OTA Update Password</mat-label>
+      <input
+        matInput
+        type="password"
+        formControlName="otaUpdatePassword"
+        class="">
+    </mat-form-field>
   
-  <mat-checkbox
-    formControlName="denyWifiSettingsAccessIfLocked"
-    class="">
-    <mat-label>Deny access to wifi settings if locked</mat-label>
-  </mat-checkbox>
-  <mat-checkbox
-    formControlName="triggerFactoryReset"
-    class="">
-    <mat-label>Trigger factory reset (on save)</mat-label>
+    <!-- TODO add info toggle -->
+    <div class="securitySettingsForm__infoToggle"></div>
     <div>
-      <!-- TODO put this in an info/detail comp -->
-      All settings and presets will be erased.
+      To enable OTA, for security reasons you need to enter the correct password.
     </div>
-  </mat-checkbox>
+    <div>
+      <!-- TODO clarify meaning of this -->
+      Your password should be changed when OTA is enabled.
+    </div>
+    <div>
+        Disable OTA when not in use, otherwise a malicious actor can tamper with device software.
+    </div>
+    <div>
+      Settings on this page will only be saved if OTA lock is disabled!
+    </div>
+    
+    <mat-checkbox
+      formControlName="denyWifiSettingsAccessIfLocked"
+      class="">
+      <mat-label>Deny access to wifi settings if locked</mat-label>
+    </mat-checkbox>
+    <mat-checkbox
+      formControlName="triggerFactoryReset"
+      class="">
+      <mat-label>Trigger factory reset (on save)</mat-label>
+      <div>
+        <!-- TODO put this in an info/detail comp -->
+        All settings and presets will be erased.
+      </div>
+    </mat-checkbox>
+  
+    <div>
+      HTTP traffic is <span style="font-weight: bold; text-decoration: underline;">unencrypted</span>. A malicious actor on the same network can intercept form data!
+    </div>
+  </app-settings-group>
 
-  <div>
-    HTTP traffic is <span style="font-weight: bold; text-decoration: underline;">unencrypted</span>. A malicious actor on the same network can intercept form data!
-  </div>
-
-  <div>
-    Software Update
-  </div>
-
-  <a [routerLink]="['../../update']">
-    Manual OTA Update
-  </a>
-
-  <mat-checkbox
-    formControlName="enableArduinoOTA"
-    class="">
-    <mat-label>Enable Arduino OTA</mat-label>
-  </mat-checkbox>
-
-  <div>
-    About
-  </div>
-
-  <div>
-    <a href="https://github.com/Aircoookie/WLED/">
-      WLED
+  <app-settings-group title="Software Update">
+    <a [routerLink]="['../../update']">
+      Manual OTA Update
     </a>
-    Version {{ versionNumber }}
-  </div>
+
+    <mat-checkbox
+      formControlName="enableArduinoOTA"
+      class="">
+      <mat-label>Enable Arduino OTA</mat-label>
+    </mat-checkbox>
+  </app-settings-group>
+
+  <app-settings-group title="About">
+    <div>
+      <a
+        href="https://github.com/Aircoookie/WLED"
+        target="_blank">
+        WLED
+      </a>
+      Version {{ versionNumber }}
+    </div>
+
+    <div>
+      WLED
+      <a
+        href="https://kno.wled.ge/about/contributors"
+        target="_blank">
+        Contributors
+      </a>
+    </div>
+
+    <div>
+      WLED was created by
+      <a
+        href="https://github.com/Aircoookie"
+        target="_blank">
+        Christian Schwinne
+      </a>
+      .
+    </div>
+  </app-settings-group>
 
   <app-settings-footer (save)="submitForm()"></app-settings-footer>
 </form>

@@ -6,34 +6,4 @@
 
 .uiSettingsForm {
   @include settingsPageContainer();
-
-  &__title {
-    text-align: center;
-  }
-
-  &__formGroup,
-  &__note {
-    max-width: 500px;
-    text-align: center;
-    width: 85%;
-  }
-
-  &__formGroup {
-    align-items: center;
-    border: 1px solid var(--borderColorPrimary);
-    border-radius: 6px;
-    display: flex;
-    flex-direction: column;
-    margin: 10px auto;
-    padding: 10px;
-  }
-
-  &__note {
-    margin: 0 auto;
-    padding: 6px;
-  }
-
-  &__checkbox {
-    margin: 6px;
-  }
 }

@@ -5,97 +5,96 @@
   
   <app-settings-header (save)="submitForm()"></app-settings-header>
 
-  <h2>
+  <h1>
     Time Settings
-  </h2>
+  </h1>
 
-  <div
-    formGroupName="ntp"
-    class="timeSettingsForm__ntp">
+  <app-settings-group title="Time">
+    <div
+      formGroupName="ntp"
+      class="timeSettingsForm__ntp">
+      <mat-checkbox
+        formControlName="enable"
+        class="">
+        <mat-label>Sync time from NTP server</mat-label>
+      </mat-checkbox>
+  
+      <mat-form-field
+        appearance="fill"
+        class="">
+        <mat-label>NTP Server</mat-label>
+        <input
+          matInput
+          formControlName="ntpServer"
+          class="">
+      </mat-form-field>
+    </div>
+  
     <mat-checkbox
-      formControlName="enable"
+      formControlName="use24HourTime"
       class="">
-      <mat-label>Sync time from NTP server</mat-label>
+      <mat-label>Use 24H Format</mat-label>
     </mat-checkbox>
-
+  
+    Time Zone:
+    <select formControlName="timeZone">
+      <option
+        *ngFor="let option of timeZoneOptions"
+        [value]="option.value">
+        {{ option.name }}
+      </option>
+    </select>
+  
     <mat-form-field
       appearance="fill"
       class="">
-      <mat-label>NTP Server</mat-label>
-      <input
-        matInput
-        formControlName="ntpServer"
-        class="">
-    </mat-form-field>
-  </div>
-
-  <mat-checkbox
-    formControlName="use24HourTime"
-    class="">
-    <mat-label>Use 24H Format</mat-label>
-  </mat-checkbox>
-
-  Time Zone:
-  <select formControlName="timeZone">
-    <option
-      *ngFor="let option of timeZoneOptions"
-      [value]="option.value">
-      {{ option.name }}
-    </option>
-  </select>
-
-  <mat-form-field
-    appearance="fill"
-    class="">
-    <mat-label>UTC Offset (seconds)</mat-label>
-    <input
-      type="number"
-      matInput
-      formControlName="utcOffsetSeconds"
-      class="">
-      <div>
-        <!-- TODO make this an info/detail comp -->
-        Max 18 hours.
-      </div>
-  </mat-form-field>
-
-  <div>
-    Current local time is: <span>TODO</span>
-  </div>
-
-  <div formGroupName="geoCoordinates">
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <!-- TODO add "N" help label -->
-      <mat-label>Latitude</mat-label>
+      <mat-label>UTC Offset (seconds)</mat-label>
       <input
         type="number"
         matInput
-        formControlName="latitude"
+        formControlName="utcOffsetSeconds"
         class="">
+        <div>
+          <!-- TODO make this an info/detail comp -->
+          Max 18 hours.
+        </div>
     </mat-form-field>
-    
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <!-- TODO add "E" help label -->
-      <mat-label>Longitude</mat-label>
-      <input
-        type="number"
-        matInput
-        formControlName="longitude"
+  
+    <div>
+      Current local time is: <span>TODO</span>
+    </div>
+  
+    <div formGroupName="geoCoordinates">
+      <mat-form-field
+        appearance="fill"
         class="">
-    </mat-form-field>
-  </div>
+        <!-- TODO add "N" help label -->
+        <mat-label>Latitude</mat-label>
+        <input
+          type="number"
+          matInput
+          formControlName="latitude"
+          class="">
+      </mat-form-field>
+      
+      <mat-form-field
+        appearance="fill"
+        class="">
+        <!-- TODO add "E" help label -->
+        <mat-label>Longitude</mat-label>
+        <input
+          type="number"
+          matInput
+          formControlName="longitude"
+          class="">
+      </mat-form-field>
+    </div>
+  </app-settings-group>
 
-  <div
+  <app-settings-group
+    title="Clock"
     formGroupName="clock"
     class="timeSettingsForm__clock">
-    <h2>
-      Clock
-    </h2>
-  
     Clock Overlay:
     <select formControlName="overlay">
       <option
@@ -181,15 +180,12 @@
           class="">
       </mat-form-field>
     </div>
-  </div>
+  </app-settings-group>
 
-  <div
+  <app-settings-group
+    title="Macro Presets"
     formGroupName="macroPresets"
     class="timeSettingsForm__macros">
-    <h3>
-      Macro presets
-    </h3>
-
     <div>
       Macros have moved!
     </div>
@@ -269,13 +265,11 @@
         formControlName="timerEnd"
         class="">
     </mat-form-field>
-  </div>
+  </app-settings-group>
 
-  <div class="timeSettingsForm__scheduledPresets">
-    <h2>
-      Scheduled Presets
-    </h2>
-
+  <app-settings-group
+    title="Scheduled Presets"
+    class="timeSettingsForm__scheduledPresets">
     <table
       formArrayName="scheduledPresets"
       class="timeSettingsForm__table">
@@ -302,7 +296,7 @@
           <ng-container *ngSwitchCase="'TIME'">
             <mat-form-field
               appearance="fill"
-              class="">
+              class="timeSettingsForm__scheduledHour">
               <mat-label>Hour</mat-label>
               <input
                 type="number"
@@ -312,7 +306,7 @@
             </mat-form-field>
             <mat-form-field
               appearance="fill"
-              class="">
+              class="timeSettingsForm__scheduledMinute">
               <mat-label>Minute</mat-label>
               <input
                 type="number"
@@ -338,7 +332,7 @@
         <td>
           <mat-form-field
             appearance="fill"
-            class="">
+            class="timeSettingsForm__presetId">
             <mat-label>Preset ID</mat-label>
             <input
               type="number"
@@ -358,7 +352,7 @@
         </ng-container>
       </tr>
     </table>
-  </div>
+  </app-settings-group>
   
   <app-settings-footer (save)="submitForm()"></app-settings-footer>
 </form>

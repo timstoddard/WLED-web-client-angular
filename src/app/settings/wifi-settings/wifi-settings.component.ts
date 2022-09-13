@@ -136,14 +136,14 @@ export class WifiSettingsComponent extends UnsubscribingComponent implements OnI
         ssid: this.formService.formBuilder.control(''),
         // TODO how is password handled server side?
         password: this.formService.formBuilder.control(''),
-      }),
-      ipAddress: this.formService.formBuilder.group({
-        // TODO add validators & text mask for IP inputs
-        staticIp: this.formService.formBuilder.control('0.0.0.0', Validators.required),
-        staticGateway: this.formService.formBuilder.control('0.0.0.0', Validators.required),
-        staticSubnetMask: this.formService.formBuilder.control('255.255.255.0', Validators.required),
-        // TODO better default?
-        mDNS: this.formService.formBuilder.control('wled-55a9b0'),
+        ipAddress: this.formService.formBuilder.group({
+          // TODO add validators & text mask for IP inputs
+          staticIp: this.formService.formBuilder.control('0.0.0.0', Validators.required),
+          staticGateway: this.formService.formBuilder.control('0.0.0.0', Validators.required),
+          staticSubnetMask: this.formService.formBuilder.control('255.255.255.0', Validators.required),
+          // TODO better default?
+          mDNS: this.formService.formBuilder.control('wled-55a9b0'),
+        }),
       }),
       wledAccessPoint: this.formService.formBuilder.group({
         ssid: this.formService.formBuilder.control('WLED-AP'),
@@ -153,7 +153,7 @@ export class WifiSettingsComponent extends UnsubscribingComponent implements OnI
         wifiChannel: this.formService.formBuilder.control(1, Validators.required),
         openAP: this.formService.formBuilder.control(DEFAULT_OPEN_AP_OPTION),
       }),
-      other: this.formService.formBuilder.group({
+      advanced: this.formService.formBuilder.group({
         disableWifiSleep: this.formService.formBuilder.control(true),
         ethernetType: this.formService.formBuilder.control(DEFAULT_ETHERNET_TYPE),
       }),

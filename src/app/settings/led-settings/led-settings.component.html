@@ -5,77 +5,78 @@
   
   <app-settings-header (save)="submitForm()"></app-settings-header>
 
-  <h2>Led & Hardware Settings</h2>
+  <h1>
+    Led Settings
+  </h1>
 
-  <mat-form-field
-    appearance="fill"
-    class="">
-    <mat-label>Total LED count</mat-label>
-    <input
-      matInput
-      type="number"
-      formControlName="totalLedCount"
-      placeholder="100"
+  <app-settings-group title="Hardware Settings">
+    <mat-form-field
+      appearance="fill"
       class="">
-  </mat-form-field>
-  <div>
-    <p>Recommended power supply for brightest white:</p>
-    <p>WS2815 12V 21A connected to LEDs</p>
-  </div>
-
-  <mat-checkbox
-    formControlName="autoBrightnessLimit"
-    class="">
-    <mat-label>Enable automatic brightness limiter</mat-label>
-  </mat-checkbox>
-  <div>
-    <p>Automatically limits brightness to stay close to the limit.</p>
-    <p>Keep at &lt;1A if powering LEDs directly from the ESP 5V pin!</p>
-    <p>If you are using an external power supply, enter its rating.</p>
-    <p>Current estimated usage: XXX mA</p>
-  </div>
-
-  <mat-form-field
-    appearance="fill"
-    class="">
-    <mat-label>Maximum current (mA)</mat-label>
-    <input
-      matInput
-      type="number"
-      formControlName="maxCurrent"
-      placeholder="1000"
+      <mat-label>Total LED count</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="totalLedCount"
+        placeholder="100"
+        class="">
+    </mat-form-field>
+    <div>
+      <p>Recommended power supply for brightest white:</p>
+      <p>WS2815 12V 21A connected to LEDs</p>
+    </div>
+  
+    <mat-checkbox
+      formControlName="autoBrightnessLimit"
       class="">
-  </mat-form-field>
+      <mat-label>Enable automatic brightness limiter</mat-label>
+    </mat-checkbox>
+    <div>
+      <p>Automatically limits brightness to stay close to the limit.</p>
+      <p>Keep at &lt;1A if powering LEDs directly from the ESP 5V pin!</p>
+      <p>If you are using an external power supply, enter its rating.</p>
+      <p>Current estimated usage: XXX mA</p>
+    </div>
+  
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Maximum current (mA)</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="maxCurrent"
+        placeholder="1000"
+        class="">
+    </mat-form-field>
+  
+    <div
+      *ngIf="hasHighCurrent"
+      class="">
+      <p>Your power supply provides high current.</p>
+      <p>To improve the safety of your setup, PLEASE USE the following:</p>
+      <ol>
+        <li>Thick cables</li>
+        <li>Multiple power injection points</li>
+        <li>A fuse</li>
+      </ol>
+    </div>
+  
+    <div>LED Voltage</div>
+    <select formControlName="ledVoltage">
+      <option
+        *ngFor="let voltage of ledVoltageByStripType"
+        [value]="voltage.value">
+        {{ voltage.name }}
+      </option>
+    </select>
+    <div>
+      <p>Max current for a single LED</p>
+      <p>Keep at default if you are unsure about your LED type.</p>
+    </div>
+  </app-settings-group>
 
-  <div
-    *ngIf="hasHighCurrent"
-    class="">
-    <p>Your power supply provides high current.</p>
-    <p>To improve the safety of your setup, PLEASE USE the following:</p>
-    <ol>
-      <li>Thick cables</li>
-      <li>Multiple power injection points</li>
-      <li>A fuse</li>
-    </ol>
-  </div>
-
-  <div>LED Voltage</div>
-  <select formControlName="ledVoltage">
-    <option
-      *ngFor="let voltage of ledVoltageByStripType"
-      [value]="voltage.value">
-      {{ voltage.name }}
-    </option>
-  </select>
-  <div>
-    <p>Max current for a single LED</p>
-    <p>Keep at default if you are unsure about your LED type.</p>
-  </div>
-
-  <div class="ledSettingsForm__ledOutputs">
-    <h2>
-      LED Outputs
-    </h2>
+  <app-settings-group title="LED Outputs">
     <!-- TODO add + button at top of list? -->
 
     <div formArrayName="ledOutputs">
@@ -162,57 +163,53 @@
         </button>
       </div>
     </div>
-  </div>
 
-  <!-- TODO get this value from backend -->
-  <div>LED Memory Usage: ### / ### B</div>
-  <!-- TODO add graphic of used memory -->
-  <div>[###_______]</div>
+    <!-- TODO get this value from backend -->
+    <div>LED Memory Usage: ### / ### B</div>
+    <!-- TODO add graphic of used memory -->
+    <div>[###_______]</div>
 
-  <mat-form-field
-    appearance="fill"
-    class="">
-    <mat-label>Button Pin</mat-label>
-    <input
-      matInput
-      type="number"
-      formControlName="buttonPin"
-      placeholder=""
+    <mat-form-field
+      appearance="fill"
       class="">
-  </mat-form-field>
-  <mat-form-field
-    appearance="fill"
-    class="">
-    <mat-label>IR Pin</mat-label>
-    <input
-      matInput
-      type="number"
-      formControlName="irPin"
-      placeholder=""
+      <mat-label>Button Pin</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="buttonPin"
+        placeholder=""
+        class="">
+    </mat-form-field>
+    <mat-form-field
+      appearance="fill"
       class="">
-  </mat-form-field>
-  <mat-form-field
-    appearance="fill"
-    class="">
-    <mat-label>Relay Pin</mat-label>
-    <input
-      matInput
-      type="number"
-      formControlName="relayPin"
-      placeholder=""
+      <mat-label>IR Pin</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="irPin"
+        placeholder=""
+        class="">
+    </mat-form-field>
+    <mat-form-field
+      appearance="fill"
       class="">
-  </mat-form-field>
-  <mat-checkbox
-    formControlName="activeHigh"
-    class="">
-    <mat-label>Active High</mat-label>
-  </mat-checkbox>
+      <mat-label>Relay Pin</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="relayPin"
+        placeholder=""
+        class="">
+    </mat-form-field>
+    <mat-checkbox
+      formControlName="activeHigh"
+      class="">
+      <mat-label>Active High</mat-label>
+    </mat-checkbox>
+  </app-settings-group>
 
-  <div class="ledSettingsForm__rebootDefaults">
-    <h2>
-      Reboot Defaults
-    </h2>
-  
+  <app-settings-group title="Reboot Defaults">
     <mat-checkbox
       formControlName="turnOnAfterReboot"
       class="">
@@ -248,37 +245,35 @@
       class="">
       <mat-label>Set current preset cycle setting as boot default</mat-label>
     </mat-checkbox>
-  </div>
+  </app-settings-group>
 
-  <!-- TODO are the 3 below part of reboot defaults?? -->
-  <mat-checkbox
-    formControlName="useGammaCorrectionForColor"
-    class="">
-    <mat-label>Use Gamma correction for Color (strongly recommended)</mat-label>
-  </mat-checkbox>
-  <mat-checkbox
-    formControlName="useGammaCorrectionForBrightness"
-    class="">
-    <mat-label>Use Gamma correction for Brightness (not recommended)</mat-label>
-  </mat-checkbox>
-  <mat-form-field
-    appearance="fill"
-    class="">
-    <mat-label>Brightness Factor</mat-label>
-    <input
-      matInput
-      type="number"
-      formControlName="brightnessFactor"
-      placeholder="0"
+  <app-settings-group>
+    <!-- TODO are the 3 below part of reboot defaults?? -->
+    <mat-checkbox
+      formControlName="useGammaCorrectionForColor"
       class="">
-      <!-- TODO add % symbol -->
-  </mat-form-field>
+      <mat-label>Use Gamma correction for Color (strongly recommended)</mat-label>
+    </mat-checkbox>
+    <mat-checkbox
+      formControlName="useGammaCorrectionForBrightness"
+      class="">
+      <mat-label>Use Gamma correction for Brightness (not recommended)</mat-label>
+    </mat-checkbox>
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Brightness Factor</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="brightnessFactor"
+        placeholder="0"
+        class="">
+        <!-- TODO add % symbol -->
+    </mat-form-field>
+  </app-settings-group>
 
-  <div class="ledSettingsForm__transitions">
-    <h2>
-      Transitions
-    </h2>
-
+  <app-settings-group title="Transitions">
     <mat-checkbox
       formControlName="useCrossfade"
       class="">
@@ -302,15 +297,11 @@
       class="">
       <mat-label>Enable Palette Transitions</mat-label>
     </mat-checkbox>
-  </div>
+  </app-settings-group>
 
-  <div
-    formGroupName="timer"
-    class="ledFormSettings__timer">
-    <h2>
-      Timer
-    </h2>
-
+  <app-settings-group
+    title="Timer"
+    formGroupName="timer">
     <mat-form-field
       appearance="fill"
       class="">
@@ -342,13 +333,9 @@
         {{ option.name }}
       </option>
     </select>
-  </div>
+  </app-settings-group>
 
-  <div class="ledSettingsForm__advanced">
-    <h2>
-      Advanced
-    </h2>
-
+  <app-settings-group title="Advanced">
     Palette Blending
     <select formControlName="paletteBlending">
       <option
@@ -363,7 +350,7 @@
       class="">
       <mat-label>Skip First LED</mat-label>
     </mat-checkbox>
-  </div>
+  </app-settings-group>
 
   <app-settings-footer (save)="submitForm()"></app-settings-footer>
 </form>

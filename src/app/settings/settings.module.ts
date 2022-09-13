@@ -13,6 +13,7 @@ import { LedSettingsComponent } from './led-settings/led-settings.component';
 import { SecuritySettingsComponent } from './security-settings/security-settings.component';
 import { SettingsComponent } from './settings.component';
 import { SettingsFooterComponent } from './shared/settings-footer/settings-footer.component';
+import { SettingsGroupComponent } from './shared/settings-group/settings-group.component';
 import { SettingsHeaderComponent } from './shared/settings-header/settings-header.component';
 import { SettingsRoutingModule } from './settings-routing.module';
 import { SyncSettingsComponent } from './sync-settings/sync-settings.component';
@@ -27,6 +28,7 @@ const COMPONENTS = [
   SecuritySettingsComponent,
   SettingsComponent,
   SettingsFooterComponent,
+  SettingsGroupComponent,
   SettingsHeaderComponent,
   SyncSettingsComponent,
   TimeSettingsComponent,

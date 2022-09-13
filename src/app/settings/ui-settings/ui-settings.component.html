@@ -5,14 +5,11 @@
 
   <app-settings-header (save)="submitForm()"></app-settings-header>
 
-  <h2 class="uiSettingsForm__title">
+  <h1>
     UI Settings
-  </h2>
-  <div class="uiSettingsForm__formGroup">
-    <h3>
-      Web Setup
-    </h3>
-
+  </h1>
+  
+  <app-settings-group title="Web Config">
     <mat-form-field
       appearance="fill"
       class="uiSettingsForm__formField">
@@ -28,34 +25,32 @@
     <mat-checkbox
       formControlName="shouldToggleReceiveWithSend"
       class="">
+      <!-- TODO this text gets confusing -->
       {{ getShouldToggleReceiveWithSendDescription() }}
     </mat-checkbox>
-  </div>
+  </app-settings-group>
 
-  <div class="uiSettingsForm__note">
-    The following UI customization settings are unique both to the WLED device and this browser.
-    (<span style="font-style:italic">You will need to set them again if using a different browser, device or WLED IP address.</span>)
-  </div>
+  <app-settings-group>
+    <div>
+      The following UI customization settings are unique both to the WLED device and this browser.
+    </div>
+    <div style="font-style:italic">
+      You will need to set them again if using a different browser, device or WLED IP address.
+    </div>
+  </app-settings-group>
 
-  <div
-    formGroupName="showColorInputs"
-    class="uiSettingsForm__formGroup">
-    <h3>
-      Color Inputs
-    </h3>
+  <app-settings-group
+    title="Color Inputs"
+    formGroupName="showColorInputs">
     <mat-checkbox
       *ngFor="let checkbox of colorInputCheckboxes"
       [formControlName]="checkbox.name"
       class="uiSettingsForm__checkbox">
       {{ checkbox.label }}
     </mat-checkbox>
-  </div>
+  </app-settings-group>
 
-  <div class="uiSettingsForm__formGroup">
-    <h3>
-      Appearance
-    </h3>
-
+  <app-settings-group title="Appearance">
     <mat-checkbox
       formControlName="showLabels"
       class="uiSettingsForm__checkbox">
@@ -163,7 +158,7 @@
       type="file"
       formControlName="holidaysFile"
       class="uiSettingsForm__fileInput">
-  </div>
+  </app-settings-group>
 
   <app-settings-footer (save)="submitForm()"></app-settings-footer>
 </div>
