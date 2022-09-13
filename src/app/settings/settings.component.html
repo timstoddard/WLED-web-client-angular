@@ -1,9 +1,9 @@
 <mat-drawer-container class="settings">
   <mat-drawer
     #drawer
+    (click)="closeDrawer(drawer)"
     mode="over"
     class="settings__drawer">
-    <!-- TODO hide blank space under links -->
     <nav class="settings__nav">
       <ul class="settings__links">
         <li
@@ -11,10 +11,10 @@
           class="settings__linkWrapper">
           <a
             [routerLink]="['./', link.path]"
-            (click)="drawer.toggle()"
+            (click)="onLinkClick(drawer, $event)"
             routerLinkActive="settings__link--active"
             class="settings__link">
-            {{ link.component }}
+            {{ link.name }}
           </a>
         </li>
       </ul>
@@ -22,18 +22,49 @@
   </mat-drawer>
   <mat-drawer-content class="settings__content">
     <mat-toolbar class="settings__toolbar">
-      <button
-        mat-icon-button
-        (click)="drawer.toggle()"
-        class="settings__menuButton"
-        aria-label="Button to toggle menu">
-        <mat-icon>menu</mat-icon>
-      </button>
-      <span class="settings__menuButtonText">
-        Settings
-      </span>
+      <div class="settings__toolbar__left">
+        <button
+          mat-icon-button
+          (click)="drawer.open()"
+          class="settings__menuButton"
+          aria-label="Open navigation menu">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <a
+          routerLink="/settings"
+          class="settings__title">
+          WLED Settings
+        </a>
+      </div>
+      <div class="settings__toolbar__right">
+        <a
+          routerLink="/controls"
+          class="settings__title">
+          Controls
+        </a>
+      </div>
     </mat-toolbar>
 
-    <router-outlet #routerOutlet="outlet"></router-outlet>
+    <nav
+      *ngIf="!routerOutlet.isActivated"
+      class="settings__nav">
+      <ul class="settings__links">
+        <li
+          *ngFor="let link of links"
+          class="settings__linkWrapper">
+          <a
+            [routerLink]="['./', link.path]"
+            routerLinkActive="settings__link--active"
+            class="settings__link">
+            {{ link.name }}
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <router-outlet
+      #routerOutlet="outlet"
+      hidden>
+    </router-outlet>
   </mat-drawer-content>
 </mat-drawer-container>

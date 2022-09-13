@@ -1,24 +1,61 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { MatDrawer } from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss']
 })
-export class SettingsComponent implements OnInit {
+export class SettingsComponent {
   links = [
-    { path: 'dmx', component: 'DmxSettings' },
-    { path: 'leds', component: 'LedSettings' },
-    { path: 'security', component: 'SecuritySettings' },
-    { path: 'sync', component: 'SyncSettings' },
-    { path: 'time', component: 'TimeSettings' },
-    { path: 'ui', component: 'UISettings' },
-    { path: 'usermod', component: 'UserModSettings' },
-    { path: 'wifi', component: 'WifiSettings' },
+    // most common
+    {
+      path: 'leds',
+      name: 'Leds & Hardware',
+    },
+    {
+      path: 'wifi',
+      name: 'Wifi',
+    },
+
+    // semi common
+    {
+      path: 'sync',
+      name: 'Synced Devices',
+    },
+    {
+      path: 'security',
+      name: 'Security',
+    },
+    {
+      path: 'ui',
+      name: 'UI',
+    },
+    {
+      path: 'time',
+      name: 'Time',
+    },
+
+    // less common
+    {
+      path: 'dmx',
+      name: 'DMX',
+    },
+    {
+      path: 'usermod',
+      name: 'User Mods',
+    },
   ];
 
-  constructor() { }
+  closeDrawer(drawer: MatDrawer) {
+    drawer.close();
+  }
 
-  ngOnInit() {
+  onLinkClick(drawer: MatDrawer, event: MouseEvent) {
+    // prevent drawer from handling this click
+    event.stopImmediatePropagation();
+    event.stopPropagation();
+
+    this.closeDrawer(drawer);
   }
 }

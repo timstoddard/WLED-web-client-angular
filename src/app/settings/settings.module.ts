@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -25,6 +27,7 @@ import { WifiSettingsComponent } from './wifi-settings/wifi-settings.component';
 
 const COMPONENTS = [
   DmxSettingsComponent,
+  // TODO share with controls module and/or app module?
   ExternalLinkComponent,
   LedSettingsComponent,
   SecuritySettingsComponent,
@@ -44,6 +47,7 @@ const COMPONENTS = [
   exports: COMPONENTS,
   imports: [
     CommonModule,
+    MatButtonModule,
     MatCheckboxModule,
     MatFormFieldModule,
     MatIconModule,

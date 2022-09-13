@@ -1,11 +1,17 @@
 <div>
-  <a [routerLink]="['../']">
+  <a
+    routerLink="/settings"
+    mat-raised-button
+    color="accent">
     Back
   </a>
 </div>
 <div>
   <!-- TODO does this need `type="submit"`? -->
-  <button (click)="onSave()">
+  <button
+    (click)="onSave()"
+    mat-raised-button
+    color="primary">
     Save
   </button>
 </div>
