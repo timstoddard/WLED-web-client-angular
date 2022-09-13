@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { merge } from 'rxjs';
+import { FormService } from '../../shared/form-utils';
 import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
 import { ColorService, CurrentColor } from '../color.service';
 
@@ -14,7 +15,7 @@ export class ColorInputsComponent extends UnsubscribingComponent implements OnIn
 
   constructor(
     private colorService: ColorService,
-    private formBuilder: FormBuilder,
+    private formSerivce: FormService,
   ) {
     super();
   }
@@ -93,21 +94,21 @@ export class ColorInputsComponent extends UnsubscribingComponent implements OnIn
    * @returns 
    */
   private createForm() {
-    return this.formBuilder.group({
-      colorPicker: this.formBuilder.group({
-        hsvValue: this.formBuilder.control(0),
-        kelvin: this.formBuilder.control(0),
-      }),
-      rgb: this.formBuilder.group({
-        r: this.formBuilder.control(0),
-        g: this.formBuilder.control(0),
-        b: this.formBuilder.control(0),
-      }),
-      whiteness: this.formBuilder.group({
-        whiteChannel: this.formBuilder.control(0),
-        whiteBalance: this.formBuilder.control(0),
-      }),
-      hex: this.formBuilder.control(''),
+    return this.formSerivce.createFormGroup({
+      colorPicker: {
+        hsvValue: 0,
+        kelvin: 0,
+      },
+      rgb: {
+        r: 0,
+        g: 0,
+        b: 0,
+      },
+      whiteness: {
+        whiteChannel: 0,
+        whiteBalance: 0,
+      },
+      hex: '',
     });
   }
 }

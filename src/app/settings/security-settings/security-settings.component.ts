@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
+import { FormService, FormValues } from '../../shared/form-utils';
 
 @Component({
   selector: 'app-security-settings',
@@ -8,14 +9,10 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 })
 export class SecuritySettingsComponent implements OnInit {
   securitySettingsForm!: FormGroup;
-  private defaultFormValues: any = {
-    otaUpdatePassword: '',
-    denyWifiSettingsAccessIfLocked: false,
-    triggerFactoryReset: false,
-    enableArduinoOTA: true,
-  };
+  // TODO how to get this from wled repo?
+  versionNumber = '0.12.0';
 
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(private formService: FormService) {}
 
   ngOnInit() {
     this.securitySettingsForm = this.createForm();
@@ -28,10 +25,21 @@ export class SecuritySettingsComponent implements OnInit {
       triggerFactoryReset,
       enableArduinoOTA,
     } = this.securitySettingsForm.value;
+
+    // TODO api call
   }
 
   private createForm() {
-    // TODO does this add proper validators (all required)?
-    return this.formBuilder.group(this.defaultFormValues);
+    return this.formService.createFormGroup(this.getDefaultFormValues());
+  }
+
+  private getDefaultFormValues(): FormValues {
+    return {
+      secureWirelessUpdate: false,
+      otaUpdatePassword: '',
+      denyWifiSettingsAccessIfLocked: false,
+      triggerFactoryReset: false,
+      enableArduinoOTA: true,
+    };
   }
 }

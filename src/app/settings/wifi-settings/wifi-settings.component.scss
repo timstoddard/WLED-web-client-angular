@@ -3,3 +3,7 @@
 :host {
   @include overrideMatTextInputStyles(--backgroundColorAccent);
 }
+
+.wifiSettingsForm {
+  @include settingsPageContainer();
+}

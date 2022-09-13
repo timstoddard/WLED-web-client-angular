@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
+import { FormService, FormValues } from '../../shared/form-utils';
 
 @Component({
   selector: 'app-user-mod-settings',
@@ -9,7 +10,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 export class UserModSettingsComponent implements OnInit {
   userModSettingsForm!: FormGroup;
 
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(private formService: FormService) {}
 
   ngOnInit() {
     this.userModSettingsForm = this.createForm();
@@ -20,8 +21,12 @@ export class UserModSettingsComponent implements OnInit {
   }
 
   private createForm() {
-    return this.formBuilder.group({
-      //
-    });
+    return this.formService.createFormGroup(this.getDefaultFormValues());
+  }
+
+  private getDefaultFormValues(): FormValues {
+    return {
+      // TODO
+    };
   }
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
+import { FormService, FormValues } from '../../shared/form-utils';
 
 @Component({
   selector: 'app-dmx-settings',
@@ -9,7 +10,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 export class DmxSettingsComponent implements OnInit {
   dmxSettingsForm!: FormGroup;
 
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(private formService: FormService) {}
 
   ngOnInit() {
     this.dmxSettingsForm = this.createForm();
@@ -20,8 +21,12 @@ export class DmxSettingsComponent implements OnInit {
   }
 
   private createForm() {
-    return this.formBuilder.group({
-      //
-    });
+    return this.formService.createFormGroup(this.getDefaultFormValues());
+  }
+
+  private getDefaultFormValues(): FormValues {
+    return {
+      // TODO
+    };
   }
 }

@@ -1,6 +1,11 @@
 <!-- TODO how to implement '?' button? make a new route for help? -->
 <div>
-  <button type="button">?</button>
+  <a
+    *ngIf="helpUrl"
+    target="_blank"
+    [href]="helpUrl">
+    ?
+  </a>
 </div>
 <div>
   <a [routerLink]="['../']">

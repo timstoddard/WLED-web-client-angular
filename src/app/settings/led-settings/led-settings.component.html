@@ -59,54 +59,115 @@
     </ol>
   </div>
 
-  <!-- TODO get select to work -->
   <div>LED Voltage</div>
-  <!-- <mat-form-field
-    appearance="fill"
-    class="">
-    <mat-label>LED Voltage</mat-label>
-    <mat-select formControlName="ledVoltage">
-      <mat-option
-        *ngFor="let voltage of ledVoltageByStripType"
-        [value]="voltage.value">
-        {{ voltage.name }}
-      </mat-option>
-    </mat-select>
-    <mat-hint>Max current for a single LED</mat-hint>
-  </mat-form-field> -->
+  <select formControlName="ledVoltage">
+    <option
+      *ngFor="let voltage of ledVoltageByStripType"
+      [value]="voltage.value">
+      {{ voltage.name }}
+    </option>
+  </select>
   <div>
+    <p>Max current for a single LED</p>
     <p>Keep at default if you are unsure about your LED type.</p>
   </div>
 
-  <div>LED Outputs</div>
-  <div formArrayName="ledOutputs">
-    <!-- <div *ngFor="let ledOutputGroup of ledOutputs.controls">TODO create list for LED output configs</div> -->
-    <div>
-      <button>+</button>
-      <!-- TODO each list item should have a delete button? -->
-      <button>-</button>
-    </div>
-  </div>
-  <!-- example iterating a formarray -->
-  <!-- <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <div formArrayName="cities">
-      <div *ngFor="let city of cities.controls; index as i">
-        <input [formControlName]="i" placeholder="City">
+  <div class="ledSettingsForm__ledOutputs">
+    <h2>
+      LED Outputs
+    </h2>
+    <!-- TODO add + button at top of list? -->
+
+    <div formArrayName="ledOutputs">
+      <div
+        *ngFor="let ledOutput of ledOutputs.controls; let i = index"
+        [formGroupName]="i"
+        class="timeSettingsForm__tableRow">
+        <div>{{ i + 1 }}</div>
+        <button
+          (click)="ledOutputs.removeAt(i)">
+          X
+        </button>
+
+        Strip Type
+        <select formControlName="stripType">
+          <option
+            *ngFor="let option of stripTypes"
+            [value]="option.value">
+            {{ option.name }}
+          </option>
+        </select>
+
+        Color Order
+        <select formControlName="colorOrder">
+          <option
+            *ngFor="let option of colorOrders"
+            [value]="option.value">
+            {{ option.name }}
+          </option>
+        </select>
+
+        <mat-form-field
+          appearance="fill"
+          class="">
+          <mat-label>Pin</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="pin"
+            placeholder=""
+            class="">
+        </mat-form-field>
+        <mat-form-field
+          appearance="fill"
+          class="">
+          <mat-label>Start</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="start"
+            placeholder=""
+            class="">
+        </mat-form-field>
+        <mat-form-field
+          appearance="fill"
+          class="">
+          <mat-label>Count</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="count"
+            placeholder=""
+            class="">
+        </mat-form-field>
+
+        <mat-checkbox
+          formControlName="isReverse"
+          class="">
+          <mat-label>Reverse</mat-label>
+        </mat-checkbox>
+
+        <div *ngIf="ledOutput.get('count')!.value > 800">
+          <p>TODO warning icon</p>
+          <p>You might run into stability or lag issues.</p>
+          <p>For best experience, use &lt;800 LEDs per pin!</p>
+        </div>
+      </div>
+      <!-- <div *ngFor="let ledOutputGroup of ledOutputs.controls">TODO create list for LED output configs</div> -->
+      <div>
+        <button
+          (click)="addLedOutput()"
+          class="">
+          +
+        </button>
       </div>
     </div>
-    <button>Submit</button>
-  </form> -->
+  </div>
 
   <!-- TODO get this value from backend -->
   <div>LED Memory Usage: ### / ### B</div>
   <!-- TODO add graphic of used memory -->
   <div>[###_______]</div>
-
-  <div>
-    <p>TODO warning icon</p>
-    <p>You might run into stability or lag issues.</p>
-    <p>For best experience, use &lt;800 LEDs per pin!</p>
-  </div>
 
   <mat-form-field
     appearance="fill"
@@ -147,35 +208,49 @@
     <mat-label>Active High</mat-label>
   </mat-checkbox>
 
-  <mat-checkbox
-    formControlName="turnOnAfterReset"
-    class="">
-    <mat-label>Turn on after reset</mat-label>
-  </mat-checkbox>
-
-  <mat-form-field
-    appearance="fill"
-    class="">
-    <mat-label>Default Brightness (1-255)</mat-label>
-    <input
-      matInput
-      type="number"
-      formControlName="defaultBrightness"
-      placeholder="128"
+  <div class="ledSettingsForm__rebootDefaults">
+    <h2>
+      Reboot Defaults
+    </h2>
+  
+    <mat-checkbox
+      formControlName="turnOnAfterReboot"
       class="">
-  </mat-form-field>
-  <mat-form-field
-    appearance="fill"
-    class="">
-    <mat-label>Default Preset</mat-label>
-    <input
-      matInput
-      type="number"
-      formControlName="defaultPreset"
-      placeholder="0"
+      <mat-label>Turn on after reboot</mat-label>
+    </mat-checkbox>
+  
+    <mat-form-field
+      appearance="fill"
       class="">
-  </mat-form-field>
+      <!-- TODO start at 0 or 1? -->
+      <mat-label>Default Brightness on Reboot (0-255)</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="rebootDefaultBrightness"
+        placeholder="128"
+        class="">
+    </mat-form-field>
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Default Preset on Reboot</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="rebootDefaultPreset"
+        placeholder="0"
+        class="">
+    </mat-form-field>
+  
+    <mat-checkbox
+      formControlName="setCurrentPresetAsRebootDefault"
+      class="">
+      <mat-label>Set current preset cycle setting as boot default</mat-label>
+    </mat-checkbox>
+  </div>
 
+  <!-- TODO are the 3 below part of reboot defaults?? -->
   <mat-checkbox
     formControlName="useGammaCorrectionForColor"
     class="">
@@ -186,7 +261,6 @@
     class="">
     <mat-label>Use Gamma correction for Brightness (not recommended)</mat-label>
   </mat-checkbox>
-
   <mat-form-field
     appearance="fill"
     class="">
@@ -197,33 +271,46 @@
       formControlName="brightnessFactor"
       placeholder="0"
       class="">
+      <!-- TODO add % symbol -->
   </mat-form-field>
 
-  <mat-checkbox
-    formControlName="useCrossfade"
-    class="">
-    <mat-label>Use Crossfade</mat-label>
-  </mat-checkbox>
+  <div class="ledSettingsForm__transitions">
+    <h2>
+      Transitions
+    </h2>
 
-  <mat-form-field
-    appearance="fill"
-    class="">
-    <mat-label>Transition Time (ms)</mat-label>
-    <input
-      matInput
-      type="number"
-      formControlName="transitionTimeMs"
-      placeholder="70"
+    <mat-checkbox
+      formControlName="useCrossfade"
       class="">
-  </mat-form-field>
+      <mat-label>Use Crossfade</mat-label>
+    </mat-checkbox>
+  
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Transition Time (ms)</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="transitionTimeMs"
+        placeholder="70"
+        class="">
+    </mat-form-field>
+  
+    <mat-checkbox
+      formControlName="usePaletteTransitions"
+      class="">
+      <mat-label>Enable Palette Transitions</mat-label>
+    </mat-checkbox>
+  </div>
 
-  <mat-checkbox
-    formControlName="usePaletteTransitions"
-    class="">
-    <mat-label>Enable Palette Transitions</mat-label>
-  </mat-checkbox>
+  <div
+    formGroupName="timer"
+    class="ledFormSettings__timer">
+    <h2>
+      Timer
+    </h2>
 
-  <div formGroupName="timer">
     <mat-form-field
       appearance="fill"
       class="">
@@ -246,18 +333,36 @@
         placeholder="0"
         class="">
     </mat-form-field>
-    <!-- TODO this should be a select -->
-    <mat-form-field
-      appearance="fill"
+
+    Timer Mode
+    <select formControlName="mode">
+      <option
+        *ngFor="let option of timerModes"
+        [value]="option.value">
+        {{ option.name }}
+      </option>
+    </select>
+  </div>
+
+  <div class="ledSettingsForm__advanced">
+    <h2>
+      Advanced
+    </h2>
+
+    Palette Blending
+    <select formControlName="paletteBlending">
+      <option
+        *ngFor="let option of paletteBlendingOptions"
+        [value]="option.value">
+        {{ option.name }}
+      </option>
+    </select>
+
+    <mat-checkbox
+      formControlName="skipFirstLED"
       class="">
-      <mat-label>Timer Mode</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="mode"
-        placeholder=""
-        class="">
-    </mat-form-field>
+      <mat-label>Skip First LED</mat-label>
+    </mat-checkbox>
   </div>
 
   <app-settings-footer (save)="submitForm()"></app-settings-footer>

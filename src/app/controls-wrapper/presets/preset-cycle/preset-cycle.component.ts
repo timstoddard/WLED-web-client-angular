@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
+import { FormService } from '../../../shared/form-utils';
 import { Preset } from '../presets.service';
 
 @Component({
@@ -12,7 +13,7 @@ export class PresetCycleComponent implements OnInit {
   formGroup!: FormGroup;
   isOn: boolean = false;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formService: FormService) {
   }
 
   ngOnInit() {
@@ -24,11 +25,11 @@ export class PresetCycleComponent implements OnInit {
   }
 
   private createForm() {
-    return this.formBuilder.group({
-      firstPreset: this.formBuilder.control('', Validators.required),
-      lastPreset: this.formBuilder.control('', Validators.required),
-      presetDuration: this.formBuilder.control('', Validators.required),
-      transitionDuration: this.formBuilder.control('', Validators.required),
+    return this.formService.createFormGroup({
+      firstPreset: '',
+      lastPreset: '',
+      presetDuration: '',
+      transitionDuration: '',
     });
   }
 }

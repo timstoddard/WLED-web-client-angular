@@ -6,7 +6,7 @@ import { UnsubscribingComponent } from '../unsubscribing/unsubscribing.component
 import { generateApiUrl } from '../../controls-wrapper/json.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { LiveViewService } from './live-view.service';
-import { interval, takeUntil } from 'rxjs';
+import { interval } from 'rxjs';
 
 // TODO better change detection (?) so this component doesnt cause perf issues
 
@@ -85,8 +85,7 @@ export class LiveViewComponent extends UnsubscribingComponent implements OnInit 
     const LIVE_VIEW_WS_FPS = 1; // 10; // TODO add setting in UI
     const timeoutMs = 1000 / LIVE_VIEW_WS_FPS;
     // TODO this works without interval??
-    // interval(timeoutMs)
-    //   .pipe(takeUntil(this.ngUnsubscribe))
+    // this.handleUnsubscribe(interval(timeoutMs))
     //   .subscribe(() => { this.update(); });
   }
 
@@ -104,8 +103,7 @@ export class LiveViewComponent extends UnsubscribingComponent implements OnInit 
     const LIVE_VIEW_API_FPS = 1; // 5; // TODO add setting in UI
     const timeoutMs = 1000 / LIVE_VIEW_API_FPS;
     // TODO this works without interval??
-    // interval(timeoutMs)
-    //   .pipe(takeUntil(this.ngUnsubscribe))
+    // this.handleUnsubscribe(interval(timeoutMs))
     //   .subscribe(() => { this.updateWithWebSocket(); });
   }
 

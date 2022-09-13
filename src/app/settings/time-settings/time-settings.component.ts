@@ -1,15 +1,177 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormGroup } from '@angular/forms';
+import { FormService, FormValues } from '../../shared/form-utils';
+import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
+import { SelectItem } from '../shared/settings-types';
+
+enum ScheduledPresetType {
+  TIME = 'TIME',
+  SUNRISE = 'SUNRISE',
+  SUNSET = 'SUNSET',
+}
 
 @Component({
   selector: 'app-time-settings',
   templateUrl: './time-settings.component.html',
   styleUrls: ['./time-settings.component.scss']
 })
-export class TimeSettingsComponent implements OnInit {
+export class TimeSettingsComponent extends UnsubscribingComponent implements OnInit {
   timeSettingsForm!: FormGroup;
 
-  constructor(private formBuilder: FormBuilder) {}
+  // TODO move select option lists like this into shared
+  // file `select-option-lists.ts`.
+  // maybe some lists can be reused across components
+  // or can create some nifty helper functions.
+  // also would store the `SelectItem` interface.
+  timeZoneOptions: SelectItem<number>[] = [
+    {
+      name: 'GMT(UTC)',
+      value: 0,
+    },
+    {
+      name: 'GMT/BST',
+      value: 1,
+    },
+    {
+      name: 'CET/CEST',
+      value: 2,
+    },
+    {
+      name: 'EET/EEST',
+      value: 3,
+    },
+    {
+      name: 'US-EST/EDT',
+      value: 4,
+    },
+    {
+      name: 'US-CST/CDT',
+      value: 5,
+    },
+    {
+      name: 'US-MST/MDT',
+      value: 6,
+    },
+    {
+      name: 'US-AZ',
+      value: 7,
+    },
+    {
+      name: 'US-PST/PDT',
+      value: 8,
+    },
+    {
+      name: 'CST(AWST)',
+      value: 9,
+    },
+    {
+      name: 'JST(KST)',
+      value: 10,
+    },
+    {
+      name: 'AEST/AEDT',
+      value: 11,
+    },
+    {
+      name: 'NZST/NZDT',
+      value: 12,
+    },
+    {
+      name: 'North Korea',
+      value: 13,
+    },
+    {
+      name: 'IST (India)',
+      value: 14,
+    },
+    {
+      name: 'CA-Saskatchewan',
+      value: 15,
+    },
+    {
+      name: 'ACST',
+      value: 16,
+    },
+    {
+      name: 'ACST/ACDT',
+      value: 17,
+    },
+    {
+      name: 'HST (Hawaii)',
+      value: 18,
+    },
+    {
+      name: 'NOVT (Novosibirsk)',
+      value: 19,
+    },
+    {
+      name: 'AKST/AKDT (Anchorage)',
+      value: 20,
+    },
+    {
+      name: 'MX-CST/CDT',
+      value: 21,
+    },
+  ];
+
+  clockOverlayOptions: SelectItem<string>[] = [
+    // gId("cac").style.display="none";
+		// gId("coc").style.display="block";
+		// gId("ccc").style.display="none";
+		// if (gId("ca").selected) {
+		// 	gId("cac").style.display="block";
+		// }
+		// if (gId("cc").selected) {
+		// 	gId("coc").style.display="none";
+		// 	gId("ccc").style.display="block";
+		// }
+		// if (gId("cn").selected) {
+		// 	gId("coc").style.display="none";
+		// }
+    {
+      name: 'None',
+      value: '',
+    },
+    {
+      name: 'Analog Clock',
+      value: '',
+    },
+    {
+      name: 'Single Digit Clock',
+      value: '',
+    },
+    {
+      name: 'Cronixie Clock',
+      value: '',
+    },
+  ];
+
+  scheduledPresetsHeaders = [
+    'Active',
+    'Hour/Minute',
+    'Preset',
+    'Sun',
+    'Mon',
+    'Tue',
+    'Wed',
+    'Thu',
+    'Fri',
+    'Sat',
+  ];
+
+  weekdayNames = [
+    'sunday',
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday',
+  ];
+
+  constructor(private formService: FormService) {
+    super();
+  }
 
   ngOnInit() {
     this.timeSettingsForm = this.createForm();
@@ -19,66 +181,123 @@ export class TimeSettingsComponent implements OnInit {
     // TODO
   }
 
+  get scheduledPresets() {
+    return this.timeSettingsForm.get('scheduledPresets') as FormArray;
+  }
+
   private createForm() {
-    return this.formBuilder.group({
-      ntp: this.formBuilder.group({
-        enable: this.formBuilder.control(false, Validators.required),
-        ntpServer: this.formBuilder.control('0.wled.pool.ntp.org', Validators.required),
-      }),
-      use24HourTime: this.formBuilder.control(true, Validators.required),
-      timeZone: this.formBuilder.control('', Validators.required),
-      utcOffsetSeconds: this.formBuilder.control(0, Validators.required),
-      latitude: this.formBuilder.control(0, Validators.required),
-      longitude: this.formBuilder.control(0, Validators.required),
-      clock: this.formBuilder.group({
-        overlay: this.formBuilder.control('', Validators.required),
-        isCountdown: this.formBuilder.control(false, Validators.required),
-        countdownEnd: this.formBuilder.group({
-          year: this.formBuilder.control(2022, Validators.required),
-          month: this.formBuilder.control(1, Validators.required),
-          day: this.formBuilder.control(1, Validators.required),
-          hour: this.formBuilder.control(0, Validators.required),
-          minute: this.formBuilder.control(0, Validators.required),
-          second: this.formBuilder.control(0, Validators.required),
-        }),
-      }),
-      macroPresets: this.formBuilder.group({
-        alexaOn: this.formBuilder.control(0, Validators.required),
-        alexaOff: this.formBuilder.control(0, Validators.required),
-        buttonShortPress: this.formBuilder.control(0, Validators.required),
-        buttonLongPress: this.formBuilder.control(0, Validators.required),
-        buttonDoublePress: this.formBuilder.control(0, Validators.required),
-        countdownEnd: this.formBuilder.control(0, Validators.required),
-        timerEnd: this.formBuilder.control(0, Validators.required),
-      }),
-      timeBasedPresets: this.createTimeBasedPresetsForm(),
+    return this.formService.createFormGroup(this.getDefaultFormValues(), {
+      scheduledPresets: this.createScheduledPresetsForm(),
     });
   }
 
-  private createTimeBasedPresetsForm() {
-    return this.formBuilder.array([
-      this.createTimeBasedPresetFormGroup(),
-      this.createTimeBasedPresetFormGroup(),
-      this.createTimeBasedPresetFormGroup(),
-      // TODO need sunrise/sunset options too
+  private getDefaultFormValues(): FormValues {
+    return {
+      ntp: {
+        enable: false,
+        ntpServer: '0.wled.pool.ntp.org',
+      },
+      use24HourTime: true,
+      timeZone: 0,
+      utcOffsetSeconds: 0,
+      geoCoordinates: {
+        latitude: 0,
+        longitude: 0,
+      },
+      clock: {
+        overlay: '',
+        isCountdown: false,
+        countdownEnd: {
+          year: 2022,
+          month: 1,
+          day: 1,
+          hour: 0,
+          minute: 0,
+          second: 0,
+        },
+      },
+      macroPresets: {
+        alexaOn: 0,
+        alexaOff: 0,
+        buttonShortPress: 0,
+        buttonLongPress: 0,
+        buttonDoublePress: 0,
+        countdownEnd: 0,
+        timerEnd: 0,
+      },
+    };
+  }
+
+  private createScheduledPresetsForm() {
+    return this.formService.formBuilder.array([
+      this.createScheduledPresetFormGroup(),
+      this.createScheduledPresetFormGroup(),
+      this.createScheduledPresetFormGroup(),
+      this.createScheduledPresetFormGroup(),
+      this.createScheduledPresetFormGroup(ScheduledPresetType.SUNRISE),
+      this.createScheduledPresetFormGroup(ScheduledPresetType.SUNSET),
     ]);
   }
 
-  private createTimeBasedPresetFormGroup() {
-    return this.formBuilder.group({
-      enabled: this.formBuilder.control(true, Validators.required),
-      hour: this.formBuilder.control(0, Validators.required),
-      minute: this.formBuilder.control(0, Validators.required),
-      presetId: this.formBuilder.control(0, Validators.required),
-      enabledDays: this.formBuilder.group({
-        sunday: this.formBuilder.control(true, Validators.required),
-        monday: this.formBuilder.control(true, Validators.required),
-        tuesday: this.formBuilder.control(true, Validators.required),
-        wednesday: this.formBuilder.control(true, Validators.required),
-        thursday: this.formBuilder.control(true, Validators.required),
-        friday: this.formBuilder.control(true, Validators.required),
-        saturday: this.formBuilder.control(true, Validators.required),
-      }),
-    });
+  private createScheduledPresetFormGroup(type = ScheduledPresetType.TIME) {
+    const days: { [key: string]: boolean } = {}
+    for (const day of this.weekdayNames) {
+      days[day] = true;
+    }
+    let customValues: FormValues = {}
+    switch (type) {
+      case ScheduledPresetType.TIME:
+        customValues = {
+          hour: 0,
+          minute: 0,
+        };
+        break;
+      case ScheduledPresetType.SUNRISE:
+        customValues = {
+          sunrise: true,
+        };
+        break;
+      case ScheduledPresetType.SUNSET:
+        customValues = {
+          sunset: true,
+        };
+        break;
+      }
+      const defaultValues: FormValues = {
+        enabled: true,
+        type,
+        presetId: 0,
+        days,
+        ...customValues,
+      };
+    const formGroup = this.formService.createFormGroup(defaultValues);
+
+    this.getValueChanges<boolean>(formGroup, 'enabled')
+      .subscribe(value => {
+        this.toggleRowEnabled(formGroup);
+      });
+    // initialize disabled status for this row
+    this.toggleRowEnabled(formGroup);
+    
+    return formGroup;
+  }
+
+  private toggleRowEnabled(rowGroup: FormGroup) {
+    if (rowGroup) {
+      const isEnabled = rowGroup.get('enabled')!.value;
+      if (isEnabled) {
+        // enable all
+        rowGroup.get('hour')?.enable({ emitEvent: false });
+        rowGroup.get('minute')?.enable({ emitEvent: false });
+        rowGroup.get('presetId')!.enable({ emitEvent: false });
+        rowGroup.get('days')!.enable({ emitEvent: false });
+      } else {
+        // disable all
+        rowGroup.get('hour')?.enable({ emitEvent: false });
+        rowGroup.get('minute')?.enable({ emitEvent: false });
+        rowGroup.get('presetId')!.disable({ emitEvent: false });
+        rowGroup.get('days')!.disable({ emitEvent: false });
+      }
+    }
   }
 }

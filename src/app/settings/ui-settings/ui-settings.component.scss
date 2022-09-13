@@ -5,6 +5,8 @@
 }
 
 .uiSettingsForm {
+  @include settingsPageContainer();
+
   &__title {
     text-align: center;
   }

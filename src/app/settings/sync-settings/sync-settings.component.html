@@ -5,7 +5,539 @@
   
   <app-settings-header (save)="submitForm()"></app-settings-header>
 
-  <!-- TODO add form controls here -->
+  <div
+    formGroupName="button"
+    class="syncSettingsForm__button">
+    <h3>
+      <!-- TODO "settings" or "config"? -->
+      Button Config
+    </h3>
+
+    Button Type
+    <select formControlName="type">
+      <option
+        *ngFor="let option of buttonTypeOptions"
+        [value]="option.value">
+        {{ option.name }}
+      </option>
+    </select>
+
+    Infrared Remote
+    <select formControlName="irRemote">
+      <option
+        *ngFor="let option of irRemoteOptions"
+        [value]="option.value">
+        {{ option.name }}
+      </option>
+    </select>
+
+    <div>
+      Infrared Details:&nbsp;
+      <a
+        href="https://github.com/Aircoookie/WLED/wiki/Infrared-Control"
+        target="_blank">
+        link
+      </a>
+    </div>
+  </div>
+
+  <div
+    formGroupName="broadcast"
+    class="syncSettingsForm__broadcast">
+    <h3>
+      WLED Broadcast
+    </h3>
+
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>UDP Port</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="udpPort"
+        class="">
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>2nd Port</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="secondPort"
+        class="">
+    </mat-form-field>
+
+    <div formGroupName="receive">
+      Receive:
+      <mat-checkbox
+        formControlName="brightness"
+        class="">
+        <mat-label>Brightness</mat-label>
+      </mat-checkbox>
+      <mat-checkbox
+        formControlName="color"
+        class="">
+        <mat-label>Color</mat-label>
+      </mat-checkbox>
+      <mat-checkbox
+        formControlName="effects"
+        class="">
+        <mat-label>Effects</mat-label>
+      </mat-checkbox>
+    </div>
+
+    <div formGroupName="notify">
+      <mat-checkbox
+        formControlName="onDirectChange"
+        class="">
+        <mat-label>On direct change</mat-label>
+      </mat-checkbox>
+      <mat-checkbox
+        formControlName="onButtonPressOrIr"
+        class="">
+        <mat-label>On button press or IR</mat-label>
+      </mat-checkbox>
+      <mat-checkbox
+        formControlName="alexa"
+        class="">
+        <mat-label>On Alexa notifications</mat-label>
+      </mat-checkbox>
+      <mat-checkbox
+        formControlName="philipsHue"
+        class="">
+        <mat-label>On Philips Hue notifications</mat-label>
+      </mat-checkbox>
+      <mat-checkbox
+        formControlName="macro"
+        class="">
+        <mat-label>On Macro notifications</mat-label>
+      </mat-checkbox>
+      <mat-checkbox
+        formControlName="sendTwice"
+        class="">
+        <mat-label>Send notifications twice</mat-label>
+      </mat-checkbox>
+
+      <div>
+        Reboot required to apply changes.
+      </div>
+    </div>
+  </div>
+
+  <div
+    formGroupName="instanceList"
+    class="syncSettingsForm__instanceList">
+    <h3>
+      Instance List
+    </h3>
+
+    <mat-checkbox
+      formControlName="enable"
+      class="">
+      <mat-label>Enable instance list</mat-label>
+    </mat-checkbox>
+    <mat-checkbox
+      formControlName="isThisInstanceDiscoverable"
+      class="">
+      <mat-label>Make this instance discoverable</mat-label>
+    </mat-checkbox>
+  </div>
+
+  <div
+    formGroupName="realTime"
+    class="syncSettingsForm__realTime">
+    <h3>
+      Realtime
+    </h3>
+
+    <mat-checkbox
+      formControlName="receiveUdpRealTime"
+      class="">
+      <mat-label>Receive UDP realtime</mat-label>
+    </mat-checkbox>
+
+    <div>
+      Network DMX input
+    </div>
+
+    Type
+    <select formControlName="dmxType">
+      <option
+        *ngFor="let option of dmxTypeOptions"
+        [value]="option.value">
+        {{ option.name }}
+      </option>
+    </select>
+
+    <mat-checkbox
+      formControlName="multicast"
+      class="">
+      <mat-label>Multicast</mat-label>
+    </mat-checkbox>
+
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Start Universe</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="startUniverse"
+        class="">
+    </mat-form-field>
+
+    <div>
+      <p>
+        Reboot required.
+      </p>
+      <p>
+        <a
+          href="https://github.com/LedFx/LedFx"
+          target="_blank">
+          LedFx
+        </a>
+        &nbsp;Info.
+      </p>
+    </div>
+
+    <mat-checkbox
+      formControlName="skipOutOfSequencePackets"
+      class="">
+      <mat-label>Skip out-of-sequence packets</mat-label>
+    </mat-checkbox>
+
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>DMX Start Address</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="dmxStartAddress"
+        class="">
+    </mat-form-field>
+
+    DMX Mode
+    <select formControlName="dmxMode">
+      <option
+        *ngFor="let option of dmxModeOptions"
+        [value]="option.value">
+        {{ option.name }}
+      </option>
+    </select>
+
+    <div>
+      <p>
+        <a
+          href="https://github.com/Aircoookie/WLED/wiki/E1.31-DMX"
+          target="_blank">
+          E1.31
+        </a>
+        &nbsp;Info.
+      </p>
+    </div>
+
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Timeout (ms)</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="timeoutMs"
+        class="">
+    </mat-form-field>
+
+    <mat-checkbox
+      formControlName="forceMaxBrightness"
+      class="">
+      <mat-label>Force Max Brightness</mat-label>
+    </mat-checkbox>
+
+    <mat-checkbox
+      formControlName="disableGammaCorrection"
+      class="">
+      <mat-label>Disable realtime gamma correction</mat-label>
+    </mat-checkbox>
+
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Realtime LED offset</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="ledOffset"
+        class="">
+    </mat-form-field>
+  </div>
+
+  <div
+    formGroupName="alexaConfig"
+    class="syncSettingsForm__alexaConfig">
+    <h3>
+      Alexa
+    </h3>
+
+    <mat-checkbox
+      formControlName="emulateDevice"
+      class="">
+      <!-- TODO better wording -->
+      <!-- TODO what does this actually do/affect? -->
+      <mat-label>Emulate Alexa device</mat-label>
+    </mat-checkbox>
+
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <!-- TODO better wording -->
+      <mat-label>Alexa invocation name</mat-label>
+      <input
+        matInput
+        formControlName="invocationName"
+        class="">
+    </mat-form-field>
+  </div>
+
+  <div>
+    <p>
+      Blynk, MQTT and Hue sync all connect to external hosts!
+    </p>
+    <p>
+      This may impact the responsiveness of the ESP8266.
+    </p>
+    <p>
+      For best results, only use one of these services at a time.
+    </p>
+    <p>
+      Alternatively, connect a second ESP to them and use the UDP sync.
+    </p>
+  </div>
+
+  <div
+    formGroupName="blynkConfig"
+    class="syncSettingsForm__blynkConfig">
+    <h3>
+      Blynk
+    </h3>
+
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Host</mat-label>
+      <input
+        matInput
+        formControlName="host"
+        class="">
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Post</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="port"
+        class="">
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Device Auth Token</mat-label>
+      <input
+        matInput
+        formControlName="deviceAuthToken"
+        class="">
+    </mat-form-field>
+
+    <div>
+      <p>
+        Clear the token field to disable.
+      </p>
+      <p>
+        <a
+          href="https://github.com/Aircoookie/WLED/wiki/E1.31-DMX"
+          target="_blank">
+          Blynk
+        </a>
+        &nbsp;Info.
+      </p>
+    </div>
+  </div>
+
+  <div
+    formGroupName="mqttConfig"
+    class="syncSettingsForm__mqttConfig">
+    <h3>
+      MQTT
+    </h3>
+
+    <mat-checkbox
+      formControlName="enable"
+      class="">
+      <mat-label>Enable</mat-label>
+    </mat-checkbox>
+
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Broker</mat-label>
+      <input
+        matInput
+        formControlName="broker"
+        class="">
+    </mat-form-field>
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Port</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="port"
+        class="">
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Username</mat-label>
+      <input
+        matInput
+        formControlName="username"
+        class="">
+    </mat-form-field>
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Password</mat-label>
+      <input
+        matInput
+        type="password"
+        formControlName="password"
+        class="">
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Client ID</mat-label>
+      <input
+        matInput
+        formControlName="clientId"
+        class="">
+    </mat-form-field>
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Device Topic</mat-label>
+      <input
+        matInput
+        formControlName="deviceTopic"
+        class="">
+    </mat-form-field>
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Group Topic</mat-label>
+      <input
+        matInput
+        formControlName="groupTopic"
+        class="">
+    </mat-form-field>
+
+    <div>
+      <p>
+        Reboot required to apply changes.
+      </p>
+      <p>
+        <a href="https://github.com/Aircoookie/WLED/wiki/E1.31-DMX" target="_blank">
+          MQTT
+        </a>
+        &nbsp;Info.
+      </p>
+    </div>
+  </div>
+
+  <div
+    formGroupName="philipsHueConfig"
+    class="syncSettingsForm__philipsHueConfig">
+    <h3>
+      Philips Hue
+    </h3>
+
+    <mat-checkbox
+      formControlName="enable"
+      class="">
+      <mat-label>Enable</mat-label>
+    </mat-checkbox>
+    
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Poll Hue Light</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="pollLightId"
+        class="">
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Poll Interval (ms)</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="pollIntervalMs"
+        class="">
+    </mat-form-field>
+
+    <div formGroupName="receive">
+      Receive:
+      <mat-checkbox
+        formControlName="onOff"
+        class="">
+        <mat-label>On/Off</mat-label>
+      </mat-checkbox>
+      <mat-checkbox
+        formControlName="brightness"
+        class="">
+        <mat-label>Brightness</mat-label>
+      </mat-checkbox>
+      <mat-checkbox
+        formControlName="color"
+        class="">
+        <mat-label>Color</mat-label>
+      </mat-checkbox>
+    </div>
+
+     <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Hue Bridge IP Address</mat-label>
+      <input
+        matInput
+        formControlName="hueBridgeIpAddress"
+        class="">
+    </mat-form-field>
+
+    <div>
+      <p>
+        First time connecting: press the button on the Hue bridge, then save this page!
+      </p>
+      <p>
+        <!-- TODO get hue status from API -->
+        Hue status: Inactive
+      </p>
+    </div>
+  </div>
 
   <app-settings-footer (save)="submitForm()"></app-settings-footer>
 </form>

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { FormService, FormValues } from '../../shared/form-utils';
 import { LocalStorageKey, LocalStorageService } from '../../shared/local-storage.service';
 import { AppUIConfig, UIConfigService } from '../../shared/ui-config.service';
 import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
@@ -35,7 +36,7 @@ export class UISettingsComponent extends UnsubscribingComponent implements OnIni
   ];
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formService: FormService,
     private uiSettingsService: UISettingsService,
     private uiConfigService: UIConfigService,
     private router: Router,
@@ -125,30 +126,7 @@ export class UISettingsComponent extends UnsubscribingComponent implements OnIni
   }
 
   private createForm() {
-    const form = this.formBuilder.group({
-      serverDescription: this.formBuilder.control('WLED'),
-      shouldToggleReceiveWithSend: this.formBuilder.control(false),
-      showColorInputs: this.formBuilder.group({
-        picker: this.formBuilder.control(true),
-        rgb: this.formBuilder.control(false),
-        presets: this.formBuilder.control(true),
-        hex: this.formBuilder.control(false),
-      }),
-      showLabels: this.formBuilder.control(true),
-      // TODO add toggle for showing bottom menu in pc mode?
-      showPresetIds: this.formBuilder.control(true),
-      useSegmentLength: this.formBuilder.control(false),
-      isDarkMode: this.formBuilder.control(true),
-      backgroundOpacity: this.formBuilder.control(0.6),
-      buttonOpacity: this.formBuilder.control(0.8),
-      backgroundHexColor: this.formBuilder.control(''),
-      backgroundImageUrl: this.formBuilder.control(''),
-      useRandomBackgroundImage: this.formBuilder.control(false),
-      useCustomCss: this.formBuilder.control(false),
-      customCssFile: this.formBuilder.control(null),
-      enableHolidays: this.formBuilder.control(false),
-      holidaysFile: this.formBuilder.control(null),
-    });
+    const form = this.formService.createFormGroup(this.getDefaultFormValues());
 
     const config = this.localStorageService.get<AppUIConfig>(LocalStorageKey.UI_CONFIG);
     if (config) {
@@ -176,5 +154,32 @@ export class UISettingsComponent extends UnsubscribingComponent implements OnIni
     }
 
     return form;
+  }
+
+  private getDefaultFormValues(): FormValues {
+    return {
+      serverDescription: 'WLED',
+      shouldToggleReceiveWithSend: false,
+      showColorInputs: {
+        picker: true,
+        rgb: false,
+        presets: true,
+        hex: false,
+      },
+      showLabels: true,
+      // TODO add toggle for showing bottom menu in pc mode?
+      showPresetIds: true,
+      useSegmentLength: false,
+      isDarkMode: true,
+      backgroundOpacity: 0.6,
+      buttonOpacity: 0.8,
+      backgroundHexColor: '',
+      backgroundImageUrl: '',
+      useRandomBackgroundImage: false,
+      useCustomCss: false,
+      customCssFile: null,
+      enableHolidays: false,
+      holidaysFile: null,
+    };
   }
 }

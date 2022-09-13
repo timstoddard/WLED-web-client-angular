@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { AppStateService } from '../../../shared/app-state/app-state.service';
 import { Segment } from '../../../shared/app-types';
+import { FormService } from '../../../shared/form-utils';
 import { UIConfigService } from '../../../shared/ui-config.service';
 import { UnsubscribingComponent } from '../../../shared/unsubscribing/unsubscribing.component';
 import { formatPlural, genericPostResponse } from '../../utils';
@@ -49,7 +50,7 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
 
   constructor(
     private segmentsService: SegmentsService,
-    private formBuilder: FormBuilder,
+    private formService: FormService,
     private appStateService: AppStateService,
     private uiConfigService: UIConfigService,
   ) {
@@ -201,32 +202,32 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
   }
 
   private createForm() {
-    const form = this.formBuilder.group({
-      isSelected: this.formBuilder.control(this.segment.sel),
-      name: this.formBuilder.control(this.segment.name),
-      isOn: this.formBuilder.control(this.segment.on),
-      brightness: this.formBuilder.control(this.segment.bri),
-      start: this.formBuilder.control(this.segment.start),
-      stop: this.formBuilder.control(this.segment.stop, this.validateStopGreaterThanStart()),
-      offset: this.formBuilder.control(this.segment.of),
-      grouping: this.formBuilder.control(this.segment.grp),
-      spacing: this.formBuilder.control(this.segment.spc),
-      isReverse: this.formBuilder.control(this.segment.rev),
-      isMirror: this.formBuilder.control(this.segment.mi),
+    const form = this.formService.createFormGroup({
+      isSelected: this.segment.sel,
+      name: this.segment.name,
+      isOn: this.segment.on,
+      brightness: this.segment.bri,
+      start: this.segment.start,
+      stop: this.segment.stop,
+      offset: this.segment.of,
+      grouping: this.segment.grp,
+      spacing: this.segment.spc,
+      isReverse: this.segment.rev,
+      isMirror: this.segment.mi,
     });
 
+    // add validators
+    form.get('stop')?.addValidators(this.validateStopGreaterThanStart());
+
+    // listen to value changes
     this.getValueChanges<boolean>(form, 'isSelected')
       .subscribe((isSelected: boolean) => this.toggleSelected(isSelected));
-
     this.getValueChanges<boolean>(form, 'isOn')
       .subscribe((isOn: boolean) => this.toggleOn(isOn));
-
     this.getValueChanges<number>(form, 'brightness')
       .subscribe((brightness: number) => this.setBrightness(brightness));
-
     this.getValueChanges<boolean>(form, 'isReverse')
       .subscribe((isReverse: boolean) => this.toggleReverse(isReverse));
-
     this.getValueChanges<boolean>(form, 'isMirror')
       .subscribe((isMirror: boolean) => this.toggleMirror(isMirror));
 

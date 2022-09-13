@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { AppStateService } from '../../../shared/app-state/app-state.service';
+import { FormService } from '../../../shared/form-utils';
 import { UIConfigService } from '../../../shared/ui-config.service';
 import { UnsubscribingComponent } from '../../../shared/unsubscribing/unsubscribing.component';
 import { formatPlural, genericPostResponse } from '../../utils';
@@ -22,7 +23,7 @@ export class NewSegmentComponent extends UnsubscribingComponent implements OnIni
   useSegmentLength!: boolean;
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formService: FormService,
     private segmentsService: SegmentsService,
     private appStateService: AppStateService,
     private uiConfigService: UIConfigService,
@@ -90,11 +91,11 @@ export class NewSegmentComponent extends UnsubscribingComponent implements OnIni
 
   private createForm() {
     const defaultName = `Segment ${this.segmentsService.getSegmentsLength() + 1}`;
-    return this.formBuilder.group({
-      name: this.formBuilder.control(defaultName),
-      start: this.formBuilder.control(0),
+    return this.formService.createFormGroup({
+      name: defaultName,
+      start: 0,
       // TODO move validator to shared location and use here
-      stop: this.formBuilder.control(0 /*, this.validateStopGreaterThanStart()*/),
+      stop: 0 /*, this.validateStopGreaterThanStart() */,
     });
   }
 }

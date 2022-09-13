@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { AppStateService } from '../../shared/app-state/app-state.service';
+import { FormService } from '../../shared/form-utils';
 import { UIConfigService } from '../../shared/ui-config.service';
 import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
 import { genericPostResponse } from '../utils';
@@ -22,8 +23,8 @@ export class EffectsComponent extends UnsubscribingComponent implements OnInit {
   private showLabels!: boolean;
 
   constructor(
-    private formBuilder: FormBuilder,
     private effectsService: EffectsService,
+    private formSerivce: FormService,
     private appStateService: AppStateService,
     private uiConfigService: UIConfigService,
   ) {
@@ -77,10 +78,10 @@ export class EffectsComponent extends UnsubscribingComponent implements OnInit {
   }
 
   private createForm() {
-    const form = this.formBuilder.group({
-      selectedEffect: this.formBuilder.control(DEFAULT_EFFECT_ID),
-      speed: this.formBuilder.control(DEFAULT_EFFECT_SPEED),
-      intensity: this.formBuilder.control(DEFAULT_EFFECT_INTENSITY),
+    const form = this.formSerivce.createFormGroup({
+      selectedEffect: DEFAULT_EFFECT_ID,
+      speed: DEFAULT_EFFECT_SPEED,
+      intensity: DEFAULT_EFFECT_INTENSITY,
     });
 
     this.getValueChanges<number>(form, 'selectedEffect')

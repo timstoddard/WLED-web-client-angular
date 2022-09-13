@@ -3,7 +3,16 @@
   class="securitySettingsForm">
   <div>{{ securitySettingsForm.value | json }}</div>
 
-  <app-settings-header (save)="submitForm()"></app-settings-header>
+  <app-settings-header
+    helpUrl="https://github.com/Aircoookie/WLED/wiki/Settings#security-settings"
+    (save)="submitForm()">
+  </app-settings-header>
+
+  <h2>Security & Update Settings</h2>
+
+  <mat-checkbox formControlName="secureWirelessUpdate" class="">
+    <mat-label>Require password for OTA (wireless) software update</mat-label>
+  </mat-checkbox>
   
   <mat-form-field
     appearance="fill"
@@ -15,6 +24,22 @@
       formControlName="otaUpdatePassword"
       class="">
   </mat-form-field>
+
+  <!-- TODO add info toggle -->
+  <div class="securitySettingsForm__infoToggle"></div>
+  <div>
+    To enable OTA, for security reasons you need to enter the correct password.
+  </div>
+  <div>
+    <!-- TODO clarify meaning of this -->
+    Your password should be changed when OTA is enabled.
+  </div>
+  <div>
+      Disable OTA when not in use, otherwise a malicious actor can tamper with device software.
+  </div>
+  <div>
+    Settings on this page will only be saved if OTA lock is disabled!
+  </div>
   
   <mat-checkbox
     formControlName="denyWifiSettingsAccessIfLocked"
@@ -25,12 +50,40 @@
     formControlName="triggerFactoryReset"
     class="">
     <mat-label>Trigger factory reset (on save)</mat-label>
+    <div>
+      <!-- TODO put this in an info/detail comp -->
+      All settings and presets will be erased.
+    </div>
   </mat-checkbox>
+
+  <div>
+    HTTP traffic is <span style="font-weight: bold; text-decoration: underline;">unencrypted</span>. A malicious actor on the same network can intercept form data!
+  </div>
+
+  <div>
+    Software Update
+  </div>
+
+  <a [routerLink]="['../../update']">
+    Manual OTA Update
+  </a>
+
   <mat-checkbox
     formControlName="enableArduinoOTA"
     class="">
     <mat-label>Enable Arduino OTA</mat-label>
   </mat-checkbox>
+
+  <div>
+    About
+  </div>
+
+  <div>
+    <a href="https://github.com/Aircoookie/WLED/">
+      WLED
+    </a>
+    Version {{ versionNumber }}
+  </div>
 
   <app-settings-footer (save)="submitForm()"></app-settings-footer>
 </form>

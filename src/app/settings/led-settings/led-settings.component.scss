@@ -1,3 +1,9 @@
+@import 'src/app/shared/scss/mixins';
+
+:host {
+  @include overrideMatTextInputStyles(--backgroundColorAccent);
+}
+
 .ledSettingsForm {
-  background: var(--backgroundColorAccent);
+  @include settingsPageContainer();
 }

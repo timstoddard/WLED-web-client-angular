@@ -1,24 +1,27 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
+import { FormService } from '../shared/form-utils';
+import { UnsubscribingComponent } from '../shared/unsubscribing/unsubscribing.component';
 
 @Component({
   selector: 'app-update',
   templateUrl: './update.component.html',
   styleUrls: ['./update.component.scss']
 })
-export class UpdateComponent implements OnInit {
-  updateForm: FormGroup;
-  isUpdating: boolean;
+export class UpdateComponent extends UnsubscribingComponent implements OnInit {
+  updateForm!: FormGroup;
+  isUpdating!: boolean;
 
-  constructor(private formBuilder: FormBuilder) {
-    this.updateForm = this.createForm();
-    this.isUpdating = false;
+  constructor(private formService: FormService) {
+    super();
   }
 
   ngOnInit() {
-    console.log(this.updateForm.controls['firmwareBinary'])
-    this.updateForm.controls['firmwareBinary']
-      .valueChanges.subscribe(e => console.log(e))
+    this.updateForm = this.createForm();
+    this.isUpdating = false;
+
+    this.getValueChanges(this.updateForm, 'firmwareBinary')
+      .subscribe(e => console.log(e))
   }
 
   submitForm() {
@@ -34,8 +37,9 @@ export class UpdateComponent implements OnInit {
   }
 
   private createForm() {
-    return this.formBuilder.group({
-      firmwareBinary: this.formBuilder.control(''),
+    // TODO just use a form control
+    return this.formService.createFormGroup({
+      firmwareBinary: '',
     });
   }
 }

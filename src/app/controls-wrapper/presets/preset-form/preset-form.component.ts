@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { FormService } from '../../../shared/form-utils';
 import { OnlineStatusService } from '../../../shared/online-status.service';
 import { Preset, PresetsService } from '../presets.service';
 
@@ -14,7 +15,7 @@ export class PresetFormComponent implements OnInit {
   @Output() closeForm = new EventEmitter();
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formSerivce: FormService,
     private presetsService: PresetsService,
     private onlineStatusService: OnlineStatusService,
   ) { }
@@ -80,14 +81,15 @@ export class PresetFormComponent implements OnInit {
       apiValue = existingPreset.apiValue
     }
 
-    const form = this.formBuilder.group({
-      id: this.formBuilder.control(id, Validators.required),
-      name: this.formBuilder.control(name, Validators.required),
-      quickLoadLabel: this.formBuilder.control(quickLoadLabel),
-      useCurrentState: this.formBuilder.control(true, Validators.required),
-      includeBrightness: this.formBuilder.control(true, this.requiredIfUseCurrentStateEquals(true)),
-      saveSegmentBounds: this.formBuilder.control(true, this.requiredIfUseCurrentStateEquals(true)),
-      apiValue: this.formBuilder.control(apiValue, this.requiredIfUseCurrentStateEquals(false)),
+    // TODO use formSerivce.createFormGroup()
+    const form = this.formSerivce.formBuilder.group({
+      id: this.formSerivce.formBuilder.control(id, Validators.required),
+      name: this.formSerivce.formBuilder.control(name, Validators.required),
+      quickLoadLabel: this.formSerivce.formBuilder.control(quickLoadLabel),
+      useCurrentState: this.formSerivce.formBuilder.control(true, Validators.required),
+      includeBrightness: this.formSerivce.formBuilder.control(true, this.requiredIfUseCurrentStateEquals(true)),
+      saveSegmentBounds: this.formSerivce.formBuilder.control(true, this.requiredIfUseCurrentStateEquals(true)),
+      apiValue: this.formSerivce.formBuilder.control(apiValue, this.requiredIfUseCurrentStateEquals(false)),
     });
 
     return form;

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormService } from '../../shared/form-utils';
 import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
 import { SelectItem } from '../shared/settings-types';
 import { WifiSettingsService } from './wifi-settings.service';
@@ -66,7 +67,7 @@ export class WifiSettingsComponent extends UnsubscribingComponent implements OnI
   hasEthernet: boolean = true; // TODO how to get this?
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formService: FormService,
     private wifiSettingsService: WifiSettingsService,
   ) {
     super();
@@ -126,32 +127,35 @@ export class WifiSettingsComponent extends UnsubscribingComponent implements OnI
   }
 
   private createForm() {
+    // TODO use formService.createFormGroup()
+
     // TODO get default values from server/api (is this currently possible? existing website has them hardcoded into the html)
-    return this.formBuilder.group({
-      localNetwork: this.formBuilder.group({
-        ssid: this.formBuilder.control(''),
+
+    return this.formService.formBuilder.group({
+      localNetwork: this.formService.formBuilder.group({
+        ssid: this.formService.formBuilder.control(''),
         // TODO how is password handled server side?
-        password: this.formBuilder.control(''),
+        password: this.formService.formBuilder.control(''),
       }),
-      ipAddress: this.formBuilder.group({
+      ipAddress: this.formService.formBuilder.group({
         // TODO add validators & text mask for IP inputs
-        staticIp: this.formBuilder.control('0.0.0.0', Validators.required),
-        staticGateway: this.formBuilder.control('0.0.0.0', Validators.required),
-        staticSubnetMask: this.formBuilder.control('255.255.255.0', Validators.required),
+        staticIp: this.formService.formBuilder.control('0.0.0.0', Validators.required),
+        staticGateway: this.formService.formBuilder.control('0.0.0.0', Validators.required),
+        staticSubnetMask: this.formService.formBuilder.control('255.255.255.0', Validators.required),
         // TODO better default?
-        mDNS: this.formBuilder.control('wled-55a9b0'),
+        mDNS: this.formService.formBuilder.control('wled-55a9b0'),
       }),
-      wledAccessPoint: this.formBuilder.group({
-        ssid: this.formBuilder.control('WLED-AP'),
+      wledAccessPoint: this.formService.formBuilder.group({
+        ssid: this.formService.formBuilder.control('WLED-AP'),
         // TODO better default? how is asterisk password handled server side?
-        password: this.formBuilder.control('********'),
-        hideAPName: this.formBuilder.control(false),
-        wifiChannel: this.formBuilder.control(1, Validators.required),
-        openAP: this.formBuilder.control(DEFAULT_OPEN_AP_OPTION),
+        password: this.formService.formBuilder.control('********'),
+        hideAPName: this.formService.formBuilder.control(false),
+        wifiChannel: this.formService.formBuilder.control(1, Validators.required),
+        openAP: this.formService.formBuilder.control(DEFAULT_OPEN_AP_OPTION),
       }),
-      other: this.formBuilder.group({
-        disableWifiSleep: this.formBuilder.control(true),
-        ethernetType: this.formBuilder.control(DEFAULT_ETHERNET_TYPE),
+      other: this.formService.formBuilder.group({
+        disableWifiSleep: this.formService.formBuilder.control(true),
+        ethernetType: this.formService.formBuilder.control(DEFAULT_ETHERNET_TYPE),
       }),
     });
   }

@@ -1,5 +1,6 @@
 <form
-  [formGroup]="wifiSettingsForm">
+  [formGroup]="wifiSettingsForm"
+  class="wifiSettingsForm">
   <div>{{ wifiSettingsForm.value | json }}</div>
   
   <!-- TODO save button should say "Save & Connect" -->
@@ -160,9 +161,9 @@
     AP opens:
     <select formControlName="openAP">
       <option
-        *ngFor="let openAPOption of openAPOptions"
-        [value]="openAPOption.value">
-        {{ openAPOption.name }}
+        *ngFor="let option of openAPOptions"
+        [value]="option.value">
+        {{ option.name }}
       </option>
     </select>
     

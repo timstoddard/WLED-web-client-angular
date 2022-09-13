@@ -5,7 +5,360 @@
   
   <app-settings-header (save)="submitForm()"></app-settings-header>
 
-  <!-- TODO add form controls here -->
+  <h2>
+    Time Settings
+  </h2>
 
+  <div
+    formGroupName="ntp"
+    class="timeSettingsForm__ntp">
+    <mat-checkbox
+      formControlName="enable"
+      class="">
+      <mat-label>Sync time from NTP server</mat-label>
+    </mat-checkbox>
+
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>NTP Server</mat-label>
+      <input
+        matInput
+        formControlName="ntpServer"
+        class="">
+    </mat-form-field>
+  </div>
+
+  <mat-checkbox
+    formControlName="use24HourTime"
+    class="">
+    <mat-label>Use 24H Format</mat-label>
+  </mat-checkbox>
+
+  Time Zone:
+  <select formControlName="timeZone">
+    <option
+      *ngFor="let option of timeZoneOptions"
+      [value]="option.value">
+      {{ option.name }}
+    </option>
+  </select>
+
+  <mat-form-field
+    appearance="fill"
+    class="">
+    <mat-label>UTC Offset (seconds)</mat-label>
+    <input
+      type="number"
+      matInput
+      formControlName="utcOffsetSeconds"
+      class="">
+      <div>
+        <!-- TODO make this an info/detail comp -->
+        Max 18 hours.
+      </div>
+  </mat-form-field>
+
+  <div>
+    Current local time is: <span>TODO</span>
+  </div>
+
+  <div formGroupName="geoCoordinates">
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <!-- TODO add "N" help label -->
+      <mat-label>Latitude</mat-label>
+      <input
+        type="number"
+        matInput
+        formControlName="latitude"
+        class="">
+    </mat-form-field>
+    
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <!-- TODO add "E" help label -->
+      <mat-label>Longitude</mat-label>
+      <input
+        type="number"
+        matInput
+        formControlName="longitude"
+        class="">
+    </mat-form-field>
+  </div>
+
+  <div
+    formGroupName="clock"
+    class="timeSettingsForm__clock">
+    <h2>
+      Clock
+    </h2>
+  
+    Clock Overlay:
+    <select formControlName="overlay">
+      <option
+        *ngFor="let option of clockOverlayOptions"
+        [value]="option.value">
+        {{ option.name }}
+      </option>
+    </select>
+
+    <mat-checkbox
+      formControlName="isCountdown"
+      class="">
+      <mat-label>Enable Countdown Mode</mat-label>
+    </mat-checkbox>
+
+    <div
+      *ngIf="timeSettingsForm.get('clock')!.get('isCountdown')!.value"
+      formGroupName="countdownEnd">
+      <h3>
+        Countdown End
+      </h3>
+
+      <!-- TODO better datepicker!! -->
+      <!-- TODO allow transform of epoch ms to datetime -->
+
+      <mat-form-field
+        appearance="fill"
+        class="">
+        <mat-label>Year</mat-label>
+        <input
+          matInput
+          formControlName="year"
+          class="">
+      </mat-form-field>
+
+      <mat-form-field
+        appearance="fill"
+        class="">
+        <mat-label>Month</mat-label>
+        <input
+          matInput
+          formControlName="month"
+          class="">
+      </mat-form-field>
+
+      <mat-form-field
+        appearance="fill"
+        class="">
+        <mat-label>Day</mat-label>
+        <input
+          matInput
+          formControlName="day"
+          class="">
+      </mat-form-field>
+
+      <mat-form-field
+        appearance="fill"
+        class="">
+        <mat-label>Hour</mat-label>
+        <input
+          matInput
+          formControlName="hour"
+          class="">
+      </mat-form-field>
+
+      <mat-form-field
+        appearance="fill"
+        class="">
+        <mat-label>Minute</mat-label>
+        <input
+          matInput
+          formControlName="minute"
+          class="">
+      </mat-form-field>
+
+      <mat-form-field
+        appearance="fill"
+        class="">
+        <mat-label>Second</mat-label>
+        <input
+          matInput
+          formControlName="second"
+          class="">
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div
+    formGroupName="macroPresets"
+    class="timeSettingsForm__macros">
+    <h3>
+      Macro presets
+    </h3>
+
+    <div>
+      Macros have moved!
+    </div>
+    <div>
+      Presets now also can be used as macros to save both JSON and HTTP API commands.
+    </div>
+    <div>
+      Just enter the preset id below! Use 0 for the default action instead of a preset.
+    </div>
+
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Alexa ON Preset</mat-label>
+      <input
+        matInput
+        formControlName="alexaOn"
+        class="">
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Alexa OFF Preset</mat-label>
+      <input
+        matInput
+        formControlName="alexaOff"
+        class="">
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Button SHORT PRESS</mat-label>
+      <input
+        matInput
+        formControlName="buttonShortPress"
+        class="">
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Button LONG PRESS</mat-label>
+      <input
+        matInput
+        formControlName="buttonLongPress"
+        class="">
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Button DOUBLE PRESS</mat-label>
+      <input
+        matInput
+        formControlName="buttonDoublePress"
+        class="">
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Countdown End</mat-label>
+      <input
+        matInput
+        formControlName="countdownEnd"
+        class="">
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Timer End</mat-label>
+      <input
+        matInput
+        formControlName="timerEnd"
+        class="">
+    </mat-form-field>
+  </div>
+
+  <div class="timeSettingsForm__scheduledPresets">
+    <h2>
+      Scheduled Presets
+    </h2>
+
+    <table
+      formArrayName="scheduledPresets"
+      class="timeSettingsForm__table">
+      <tr>
+        <th
+          *ngFor="let header of scheduledPresetsHeaders"
+          class="timeSettingsForm__tableHeader">
+          {{ header }}
+        </th>
+      </tr>
+
+      <tr
+        *ngFor="let scheduledPreset of scheduledPresets.controls; let i = index"
+        [formGroupName]="i"
+        class="timeSettingsForm__tableRow">
+        <td>
+          <mat-checkbox
+            formControlName="enabled"
+            class="">
+          </mat-checkbox>
+        </td>
+        <!-- TODO better time picker!! -->
+        <td [ngSwitch]="scheduledPreset.get('type')!.value">
+          <ng-container *ngSwitchCase="'TIME'">
+            <mat-form-field
+              appearance="fill"
+              class="">
+              <mat-label>Hour</mat-label>
+              <input
+                type="number"
+                matInput
+                formControlName="hour"
+                class="">
+            </mat-form-field>
+            <mat-form-field
+              appearance="fill"
+              class="">
+              <mat-label>Minute</mat-label>
+              <input
+                type="number"
+                matInput
+                formControlName="minute"
+                class="">
+            </mat-form-field>
+          </ng-container>
+
+          <div *ngSwitchCase="'SUNRISE'">
+            Sunrise
+          </div>
+
+          <div *ngSwitchCase="'SUNSET'">
+            Sunset
+          </div>
+
+          <div *ngSwitchDefault>
+            Error...
+          </div>
+        </td>
+
+        <td>
+          <mat-form-field
+            appearance="fill"
+            class="">
+            <mat-label>Preset ID</mat-label>
+            <input
+              type="number"
+              matInput
+              formControlName="presetId"
+              class="">
+          </mat-form-field>
+        </td>
+
+        <ng-container formGroupName="days">
+          <td *ngFor="let day of weekdayNames">
+            <mat-checkbox
+              [formControlName]="day"
+              class="">
+            </mat-checkbox>
+          </td>
+        </ng-container>
+      </tr>
+    </table>
+  </div>
+  
   <app-settings-footer (save)="submitForm()"></app-settings-footer>
 </form>

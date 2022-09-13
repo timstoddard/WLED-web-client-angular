@@ -185,3 +185,10 @@
   min-height: 100vh;
   min-height: stretch; // fill-available;
 }
+
+@mixin settingsPageContainer() {
+  align-items: center;
+  background: var(--backgroundColorPrimary);
+  display: flex;
+  flex-direction: column;
+}

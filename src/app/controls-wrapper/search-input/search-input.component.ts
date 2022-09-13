@@ -1,7 +1,8 @@
 import { OriginConnectionPosition, OverlayConnectionPosition, ConnectionPositionPair } from '@angular/cdk/overlay';
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
+import { FormService } from '../../shared/form-utils';
 import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
 
 @Component({
@@ -21,7 +22,7 @@ export class SearchInputComponent extends UnsubscribingComponent implements OnIn
   showInput!: boolean;
   isContextMenuOpen!: boolean;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formSerivce: FormService) {
     super();
   }
 
@@ -78,7 +79,7 @@ export class SearchInputComponent extends UnsubscribingComponent implements OnIn
   }
 
   private createFormControl() {
-    const control =  this.formBuilder.control('');
+    const control = this.formSerivce.formBuilder.control('');
 
     this.handleUnsubscribe<string>(control.valueChanges)
       .subscribe(() => this.onChange());

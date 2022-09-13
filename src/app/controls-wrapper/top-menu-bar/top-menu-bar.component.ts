@@ -1,6 +1,6 @@
 import { OriginConnectionPosition, OverlayConnectionPosition, ConnectionPositionPair } from '@angular/cdk/overlay';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { WledApiResponse } from '../../shared/api-types';
 import { UIConfigService } from '../../shared/ui-config.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
@@ -10,6 +10,7 @@ import { WebSocketService } from '../../shared/web-socket.service';
 import { generateApiUrl } from '../json.service';
 import { genericPostResponse, MenuBarButton, setCssColor } from '../utils';
 import { TopMenuBarService } from './top-menu-bar.service';
+import { FormService } from '../../shared/form-utils';
 
 const DEFAULT_BRIGHTNESS = 128;
 const DEFAULT_TRANSITION_DURATION_SECONDS = 0.7;
@@ -63,7 +64,7 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
   private N = 4;
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formService: FormService,
     private localStorageService: LocalStorageService,
     private topMenuBarService: TopMenuBarService,
     private appStateService: AppStateService,
@@ -382,14 +383,13 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
   }
 
   private createForm() {
-    const form = this.formBuilder.group({
-      brightness: this.formBuilder.control(DEFAULT_BRIGHTNESS),
-      transitionTime: this.formBuilder.control(DEFAULT_TRANSITION_DURATION_SECONDS),
+    const form = this.formService.createFormGroup({
+      brightness: DEFAULT_BRIGHTNESS,
+      transitionTime: DEFAULT_TRANSITION_DURATION_SECONDS,
     });
 
     this.getValueChanges<number>(form, 'brightness')
       .subscribe((brightness: number) => this.setBrightness(brightness));
-
     this.getValueChanges<number>(form, 'transitionTime')
       .subscribe((seconds: number) => this.setTransitionDuration(seconds));
 
