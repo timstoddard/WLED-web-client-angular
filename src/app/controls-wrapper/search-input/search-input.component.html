@@ -5,29 +5,23 @@
 </i>
 
 <div class="searchInput__header">
-  <div *ngIf="showInput; else showTitle">
-    <mat-form-field
-      appearance="fill"
-      class="searchInput__inputWrapper">
-      <mat-label>{{ label }}</mat-label>
-      <input
-        #searchInput
-        matInput
-        [formControl]="searchText"
-        (keydown)="onKeyDown($event)"
-        placeholder="Search"
-        class="searchInput__input">
-      <mat-icon matSuffix>
-        <i
-          *ngIf="searchText.value?.length > 0"
-          [innerHTML]="'&#xe38f;'"
-          (click)="cancelSearch()"
-          class="searchInput__icon icons">
-        </i>
-      </mat-icon>
-    </mat-form-field>
-  </div>
-  
+  <input
+    *ngIf="showInput; else showTitle"
+    #searchInput
+    [formControl]="searchText"
+    (keydown)="onKeyDown($event)"
+    placeholder="Search"
+    class="searchInput__input">
+  <!-- TODO add mat icon suffix to normal input? -->
+  <!-- <mat-icon matSuffix>
+      <i
+        *ngIf="searchText.value?.length > 0"
+        [innerHTML]="'&#xe38f;'"
+        (click)="cancelSearch()"
+        class="searchInput__icon icons">
+      </i>
+    </mat-icon> -->
+
   <ng-template #showTitle>
     <h2 class="searchInput__title">
       {{ title }}

@@ -57,6 +57,12 @@ export class SearchInputComponent extends UnsubscribingComponent implements OnIn
     if (this.title) {
       this.showInput = !this.showInput;
     }
+    if (this.showInput) {
+      // TODO possible to do this without timeout?
+      setTimeout(() => {
+        this.searchInputElement.nativeElement.focus();
+      })
+    }
   }
 
   toggleContextMenu() {
