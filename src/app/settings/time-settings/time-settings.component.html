@@ -345,14 +345,18 @@
           </mat-form-field>
         </td>
 
-        <ng-container formGroupName="days">
-          <td *ngFor="let day of weekdayNames">
-            <mat-checkbox
-              [formControlName]="day"
-              class="">
-            </mat-checkbox>
-          </td>
-        </ng-container>
+        <td>
+          <!-- TODO needs better contrast for checked buttons -->
+          <mat-button-toggle-group
+            multiple>
+            <mat-button-toggle
+              *ngFor="let day of weekdays"
+              (click)="toggleDayByIndex(day.name, i)"
+              [checked]="getDaysByIndex(i)[day.name]">
+              {{ day.abbreviated }}
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </td>
       </tr>
     </table>
   </app-settings-group>

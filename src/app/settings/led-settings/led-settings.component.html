@@ -111,6 +111,7 @@
           </option>
         </select>
 
+        <!-- TODO add link to docs about pin numbers -->
         <mat-form-field
           appearance="fill"
           class="">
@@ -183,6 +184,9 @@
         placeholder=""
         class="">
     </mat-form-field>
+    <button (click)="clearPin('buttonPin')">
+      X
+    </button>
     <mat-form-field
       appearance="fill"
       class="">
@@ -194,6 +198,9 @@
         placeholder=""
         class="">
     </mat-form-field>
+    <button (click)="clearPin('irPin')">
+      X
+    </button>
     <mat-form-field
       appearance="fill"
       class="">
@@ -205,6 +212,9 @@
         placeholder=""
         class="">
     </mat-form-field>
+    <button (click)="clearPin('relayPin')">
+      X
+    </button>
     <mat-checkbox
       formControlName="activeHigh"
       class="">

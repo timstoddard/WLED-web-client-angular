@@ -6,6 +6,7 @@ import { APIPreset, APIPresets } from '../controls-wrapper/presets/presets.api';
 import { Preset } from '../controls-wrapper/presets/presets.service';
 import { SavePresetRequest, WledApiResponse, WledInfo, WledState } from './api-types';
 import { AppState, Segment } from './app-types';
+import { FormValues } from './form-utils';
 import { LiveViewData } from './live-view/live-view.service';
 
 const ALL_JSON_PATH = 'json';
@@ -15,6 +16,10 @@ const EFFECTS_PATH = 'json/eff';
 const PALETTES_PATH = 'json/pal';
 const PALETTES_DATA_PATH = 'json/palx';
 const LIVE_PATH = 'json/live';
+
+const LED_SETTINGS_PATH = 'settings/leds';
+const UI_SETTINGS_PATH = 'settings/ui';
+const WIFI_SETTINGS_PATH = 'settings/wifi';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
@@ -371,15 +376,21 @@ export class ApiService {
   }
 
   /** Submits wifi settings form data to server. */
-  setWifiSettings(wifiSettings: any /* TODO type */) {
+  setLedSettings(ledSettings: FormValues) {
     return this.http.post<any /* TODO type */>(
-      this.createApiUrl('settings/wifi'), wifiSettings);
+      this.createApiUrl(LED_SETTINGS_PATH), ledSettings);
   }
 
   /** Submits ui settings form data to server. */
-  setUISettings(uiSettings: any /* TODO type */) {
+  setUISettings(uiSettings: FormValues) {
     return this.http.post<any /* TODO type */>(
       this.createApiUrl('settings/ui'), uiSettings);
+  }
+
+  /** Submits wifi settings form data to server. */
+  setWifiSettings(wifiSettings: FormValues) {
+    return this.http.post<any /* TODO type */>(
+      this.createApiUrl('settings/wifi'), wifiSettings);
   }
 
   private createBody(body: { [key: string]: unknown }) {

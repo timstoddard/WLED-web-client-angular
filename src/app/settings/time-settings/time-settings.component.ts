@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { FormService, FormValues } from '../../shared/form-utils';
 import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
 import { SelectItem } from '../shared/settings-types';
@@ -150,23 +150,38 @@ export class TimeSettingsComponent extends UnsubscribingComponent implements OnI
     'Active',
     'Hour/Minute',
     'Preset',
-    'Sun',
-    'Mon',
-    'Tue',
-    'Wed',
-    'Thu',
-    'Fri',
-    'Sat',
+    'Days',
   ];
 
-  weekdayNames = [
-    'sunday',
-    'monday',
-    'tuesday',
-    'wednesday',
-    'thursday',
-    'friday',
-    'saturday',
+  weekdays = [
+    {
+      name: 'sunday',
+      abbreviated: 'Sun',
+    },
+    {
+      name: 'monday',
+      abbreviated: 'Mon',
+    },
+    {
+      name: 'tuesday',
+      abbreviated: 'Tue',
+    },
+    {
+      name: 'wednesday',
+      abbreviated: 'Wed',
+    },
+    {
+      name: 'thursday',
+      abbreviated: 'Thu',
+    },
+    {
+      name: 'friday',
+      abbreviated: 'Fri',
+    },
+    {
+      name: 'saturday',
+      abbreviated: 'Sat',
+    },
   ];
 
   constructor(private formService: FormService) {
@@ -183,6 +198,31 @@ export class TimeSettingsComponent extends UnsubscribingComponent implements OnI
 
   get scheduledPresets() {
     return this.timeSettingsForm.get('scheduledPresets') as FormArray;
+  }
+
+  getDaysByIndex(index: number) {
+    const { value } = this.scheduledPresets.at(index).get('days')!;
+    return value;
+  }
+
+  /**
+   * The multi-button toggle group doesn't support form controls for
+   * the individual buttons so I had to implement the functionality manually.
+   * @param day 
+   * @param index 
+   * @param days 
+   */
+  toggleDayByIndex(day: string, index: number) {
+    const days = this.getDaysByIndex(index);
+    const previousValue = days[day];
+    const newDays = {
+      ...days,
+      [day]: !previousValue,
+    };
+    this.scheduledPresets
+      .at(index)
+      .get('days')!
+      .patchValue(newDays);
   }
 
   private createForm() {
@@ -241,8 +281,8 @@ export class TimeSettingsComponent extends UnsubscribingComponent implements OnI
 
   private createScheduledPresetFormGroup(type = ScheduledPresetType.TIME) {
     const days: { [key: string]: boolean } = {}
-    for (const day of this.weekdayNames) {
-      days[day] = true;
+    for (const day of this.weekdays) {
+      days[day.name] = true;
     }
     let customValues: FormValues = {}
     switch (type) {

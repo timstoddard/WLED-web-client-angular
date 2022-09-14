@@ -183,8 +183,129 @@ export class LedSettingsComponent extends UnsubscribingComponent implements OnIn
   }
 
   submitForm() {
-    // TODO
+    const {
+      totalLedCount,
+      autoBrightnessLimit,
+      maxCurrent,
+      ledVoltage,
+      ledOutputs,
+      buttonPin,
+      irPin,
+      relayPin,
+      activeHigh,
+      turnOnAfterReboot,
+      rebootDefaultBrightness,
+      rebootDefaultPreset,
+      setCurrentPresetAsRebootDefault,
+      useGammaCorrectionForColor,
+      useGammaCorrectionForBrightness,
+      brightnessFactor,
+      useCrossfade,
+      transitionTimeMs,
+      usePaletteTransitions,
+      timer: {
+        durationMins,
+        targetBrightness,
+        mode,
+      },
+      paletteBlending,
+      skipFirstLED,
+    } = this.ledSettingsForm.value;
+
+    let apiValue: FormValues = {};
+    const convertBoolean = (value: boolean) =>
+      value === true ? 'on' : undefined
+
+    // add led output values
+    for (let i = 0; i < ledOutputs.length; i++) {
+      const {
+        stripType,
+        colorOrder,
+        pin,
+        start,
+        count,
+        isReverse,
+      } = ledOutputs[i];
+      apiValue = {
+        ...apiValue,
+        [`LT${i}`]: stripType,
+        [`CO${i}`]: colorOrder,
+        [`L0${i}`]: pin,
+        [`LS${i}`]: start,
+        [`LC${i}`]: count,
+        // TODO if this is false, should leave it out?
+        [`CV${i}`]: convertBoolean(isReverse),
+
+        // TODO are these used for anything?
+        // [`L1${i}`]: '',
+        // [`L2${i}`]: '',
+        // [`L3${i}`]: '',
+        // [`L4${i}`]: '',
+      }
+    }
+
+    // add remaining values
+    apiValue = {
+      ...apiValue,
+      LC: totalLedCount,
+      ABen: convertBoolean(autoBrightnessLimit),
+      MA: maxCurrent,
+      LAsel: ledVoltage,
+      // TODO custom voltage limit (number input, 0-255)
+      // seems to be not used?
+      // LA: 255,
+      BT: buttonPin,
+      IR: irPin,
+      RL: relayPin,
+      RM: convertBoolean(activeHigh),
+      BO: convertBoolean(turnOnAfterReboot),
+      CA: rebootDefaultBrightness,
+      BP: rebootDefaultPreset,
+      PC: convertBoolean(setCurrentPresetAsRebootDefault),
+      GC: convertBoolean(useGammaCorrectionForColor),
+      GB: convertBoolean(useGammaCorrectionForBrightness),
+      BF: brightnessFactor,
+      TF: convertBoolean(useCrossfade),
+      TD: transitionTimeMs,
+      PF: convertBoolean(usePaletteTransitions),
+      TL: durationMins,
+      TB: targetBrightness,
+      TW: mode,
+      PB: paletteBlending,
+      SL: convertBoolean(skipFirstLED),
+      // TODO seems to not be used
+      // "Auto-calculate white channel from RGB"
+      // AW: 0,
+    }
   }
+
+  trySubmit(e: Event) {
+    const d = document;
+    const bquot = 0; // TODO how to get this?
+    const maxM = 0; // TODO how to get this?
+    const Sf = (d as any).Sf;
+    Sf.data.value = '';
+    e.preventDefault();
+    if (!this.pinsOK()) {
+      // Prevent form submission and contact with server
+      e.stopPropagation();
+      return false;
+    }
+    if (bquot > 100) {
+      var msg = "Too many LEDs for me to handle!";
+      if (maxM < 10000)
+        msg += "\n\rConsider using an ESP32.";
+      alert(msg);
+    }
+    if (Sf.checkValidity()) {
+      // https://stackoverflow.com/q/37323914
+      Sf.submit();
+    }
+    return true;
+  }
+
+  // TODO get remaining functions from original app
+  // UI, lastEnd, addLEDs, etc
 
   get ledOutputs() {
     return this.ledSettingsForm.get('ledOutputs') as FormArray;
@@ -192,6 +313,89 @@ export class LedSettingsComponent extends UnsubscribingComponent implements OnIn
 
   addLedOutput() {
     this.ledOutputs.push(this.createLedOutputFormGroup());
+  }
+
+  clearPin(formControlName: 'buttonPin' | 'irPin' | 'relayPin') {
+    const control = this.ledSettingsForm.get(formControlName);
+    if (control) {
+      control.patchValue(-1, { emitEvent: false });
+    }
+  }
+
+  // TODO what is this for?
+  bLimits(b: number, p: number, m: number, l: number) {
+    /*maxB = b;
+    maxM = m;
+    maxPB = p;
+    maxL = l;//*/
+  }
+
+  // TODO refactor this and wire up to form
+  pinsOK() {
+    /*const d = document;
+    const LCs = d.getElementsByTagName("input");
+    for (let i = 0; i < LCs.length; i++) {
+      const nm = LCs[i].name.substring(0, 2);
+      // ignore IP address
+      if (nm == "L0" || nm == "L1" || nm == "L2" || nm == "L3") {
+        const n = LCs[i].name.substring(2);
+        const t = parseInt(d.getElementsByName("LT" + n)[0].value, 10); // LED type SELECT
+        if (t >= 80) continue;
+      }
+      //check for pin conflicts
+      if (nm == "L0" || nm == "L1" || nm == "L2" || nm == "L3" || nm == "L4" || nm == "RL" || nm == "BT" || nm == "IR")
+        if (LCs[i].value != "" && LCs[i].value != "-1") {
+          if (d.um_p && d.um_p.some((e) => e == parseInt(LCs[i].value, 10))) { alert(`Sorry, pins ${JSON.stringify(d.um_p)} can't be used.`); LCs[i].value = ""; LCs[i].focus(); return false; }
+          else if (LCs[i].value > 5 && LCs[i].value < 12) { alert("Sorry, pins 6-11 can not be used."); LCs[i].value = ""; LCs[i].focus(); return false; }
+          else if (!(nm == "IR" || nm == "BT") && LCs[i].value > 33) { alert("Sorry, pins >33 are input only."); LCs[i].value = ""; LCs[i].focus(); return false; }
+          for (j = i + 1; j < LCs.length; j++) {
+            var n2 = LCs[j].name.substring(0, 2);
+            if (n2 == "L0" || n2 == "L1" || n2 == "L2" || n2 == "L3" || n2 == "L4" || n2 == "RL" || n2 == "BT" || n2 == "IR") {
+              if (n2.substring(0, 1) === "L") {
+                var m = LCs[j].name.substring(2);
+                var t2 = parseInt(d.getElementsByName("LT" + m)[0].value, 10);
+                if (t2 >= 80) continue;
+              }
+              if (LCs[j].value != "" && LCs[i].value == LCs[j].value) { alert(`Pin conflict between ${LCs[i].name}/${LCs[j].name}!`); LCs[j].value = ""; LCs[j].focus(); return false; }
+            }
+          }
+        }
+    }
+    return true;*/
+
+    return true; // temp mock return value
+  }
+
+  /**
+   * Gets memory usage.
+   * @param t 
+   * @param len 
+   * @param p0 
+   * @returns 
+   */
+  getMem(t: number, len: number, p0: number) {
+    const maxM = 0; // TODO how to get this
+    if (t < 32) {
+      if (maxM < 10000 && p0 == 3) {
+        // 8266 DMA uses 5x the mem
+        if (t > 29) return len * 20; // RGBW
+        return len * 15;
+      } else if (maxM >= 10000) {
+        // ESP32 RMT uses double buffer?
+        return t > 29
+          ? len * 8 // RGBW
+          : len * 6;
+      }
+      return t > 29
+        ? len * 4 // RGBW
+        : len * 3;
+    } else if (t > 31 && t < 48) {
+      return 5;
+    } else if (t == 44 || t == 45) {
+      return len * 4; // RGBW
+    } else {
+      return len * 3;
+    }
   }
 
   /**
