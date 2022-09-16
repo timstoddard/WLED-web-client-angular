@@ -1,0 +1,15 @@
+node_modules
+
+# typescript output
+*.js
+!jest.config.js
+*.d.ts
+
+# temp files for cdk
+built-files
+built-files/*
+output-s3-bucket-name
+
+# CDK asset staging directory
+.cdk.staging
+cdk.out
