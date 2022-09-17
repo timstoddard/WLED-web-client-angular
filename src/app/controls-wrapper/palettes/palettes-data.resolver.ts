@@ -4,7 +4,7 @@ import { forkJoin, of } from 'rxjs';
 import { ApiService } from '../../shared/api.service';
 import { OnlineStatusService } from '../../shared/online-status.service';
 import { ControlsServicesModule } from '../controls-services.module';
-import { palettesData } from '../mock-api-data';
+import { MOCK_PALETTES_DATA } from '../mock-api-data';
 import { PalettesApiData } from './palettes.service';
 
 @Injectable({ providedIn: ControlsServicesModule })
@@ -16,7 +16,7 @@ export class PalettesDataResolver implements Resolve<PalettesApiData[]> {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     return this.onlineStatusService.getIsOffline()
-      ? of(palettesData)
+      ? of(MOCK_PALETTES_DATA)
       : this.getAllPages();
   }
 

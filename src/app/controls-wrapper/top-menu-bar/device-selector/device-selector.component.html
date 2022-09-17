@@ -1,9 +1,6 @@
 <select
   [formControl]="selectedWledIpAddress"
   class="deviceSelector">
-  <option [value]="NO_DEVICE_IP_SELECTED.ipv4Address">
-    {{ NO_DEVICE_IP_SELECTED.name }}
-  </option>
   <option
     *ngFor="let option of wledIpAddresses"
     [value]="option.ipv4Address">

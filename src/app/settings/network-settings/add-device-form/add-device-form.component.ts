@@ -1,8 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormArray, FormGroup, Validators } from '@angular/forms';
-import { NO_DEVICE_IP_SELECTED } from '../../../controls-wrapper/top-menu-bar/device-selector/device-selector.component';
 import { ApiService } from '../../../shared/api.service';
-import { AppLocalSettings, AppStateService, WledIpAddress } from '../../../shared/app-state/app-state.service';
+import { AppStateService, NO_DEVICE_IP_SELECTED, WledIpAddress } from '../../../shared/app-state/app-state.service';
 import { FormService } from '../../../shared/form-utils';
 import { UnsubscribingComponent } from '../../../shared/unsubscribing/unsubscribing.component';
 

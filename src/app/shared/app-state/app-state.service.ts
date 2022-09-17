@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Store, createState, withProps, select } from '@ngneat/elf';
 import { Subject, takeUntil } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { WledApiResponse } from '../api-types';
 
 interface AppStateProps {
@@ -87,12 +88,19 @@ export interface WledIpAddress {
   ipv4Address: string,
 }
 
-// TODO better defaults
-const DEFAULT_WLED_IP_ADDRESS = {
-  name: 'Living Room',
-  ipv4Address: '192.168.100.171',
+export const NO_DEVICE_IP_SELECTED: WledIpAddress = {
+  name: 'None',
+  ipv4Address: '',
 };
-const DEFAULT_WLED_IP_ADDRESSES = [
+
+// TODO better defaults
+const DEFAULT_WLED_IP_ADDRESS: WledIpAddress = environment.production
+  ? NO_DEVICE_IP_SELECTED
+  : {
+    name: 'Living Room',
+    ipv4Address: '192.168.100.171',
+  };
+const DEFAULT_WLED_IP_ADDRESSES: WledIpAddress[] = [
   DEFAULT_WLED_IP_ADDRESS,
   {
     name: 'Bedroom',
@@ -105,7 +113,7 @@ const DEFAULT_WLED_IP_ADDRESSES = [
 ]
 
 /** State of the app before hydration. Everything is turned off. */
-const DEFAULT_APP_STATE: AppStateProps = {
+export const DEFAULT_APP_STATE: AppStateProps = {
   state: {
     on: false,
     brightness: 0,

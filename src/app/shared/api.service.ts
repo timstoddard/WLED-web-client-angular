@@ -1,11 +1,11 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, of, timeout } from 'rxjs';
+import { ALL_PALETTES_DATA, MOCK_API_PRESETS, MOCK_API_RESPONSE, MOCK_LIVE_DATA } from '../controls-wrapper/mock-api-data';
 import { PalettesApiData } from '../controls-wrapper/palettes/palettes.service';
-import { APIPreset, APIPresets } from '../controls-wrapper/presets/presets.api';
 import { Preset } from '../controls-wrapper/presets/presets.service';
-import { SavePresetRequest, WledApiResponse, WledInfo, WledState } from './api-types';
-import { AppStateService } from './app-state/app-state.service';
+import { APIPreset, APIPresets, SavePresetRequest, WledApiResponse, WledInfo, WledState } from './api-types';
+import { AppStateService, NO_DEVICE_IP_SELECTED } from './app-state/app-state.service';
 import { AppState, Segment } from './app-types';
 import { FormValues } from './form-utils';
 import { LiveViewData } from './live-view/live-view.service';
@@ -27,8 +27,6 @@ const WIFI_SETTINGS_PATH = 'settings/wifi';
 export class ApiService extends UnsubscribingService {
   private baseUrl = '';
 
-  // !!! TODO need to handle app loading without any WLED instances connected !!!
-
   constructor(
     private http: HttpClient,
     appStateService: AppStateService,
@@ -48,11 +46,40 @@ export class ApiService extends UnsubscribingService {
     return `http://${this.baseUrl}/${path}`;
   }
 
+  private isBaseUrlUnset = () => {
+    return this.baseUrl === NO_DEVICE_IP_SELECTED.ipv4Address;
+  }
+
+  private httpGet = <T>(
+    url: string,
+    offlineDefault: T,
+    options: {
+      // subset of options for http.get()
+      params?: HttpParams,
+    } = {},
+  ) => {
+    if (this.isBaseUrlUnset()) {
+      // return fake data
+      return of(offlineDefault);
+    } else {
+      return this.http.get<T>(url, options);
+    }
+  }
+
+  private httpPost = (url: string, body: any) => {
+    if (this.isBaseUrlUnset()) {
+      console.log('MOCK POST:', url, body);
+      return of(MOCK_API_RESPONSE);
+    } else {
+      return this.http.post<WledApiResponse>(url, body);
+    }
+  }
+
   testIpAddressAsBaseUrl(ipAddress: string) {
     const TIMEOUT_MS = 3000;
     const FAILED = 'FAILED';
     const url = `http://${ipAddress}/${ALL_JSON_PATH}`;
-    return this.http.get<WledApiResponse>(url)
+    return this.httpGet<WledApiResponse>(url, MOCK_API_RESPONSE)
       .pipe(
         timeout({
           first: TIMEOUT_MS,
@@ -81,46 +108,46 @@ export class ApiService extends UnsubscribingService {
 
   /** Returns an object containing the state, info, effects, and palettes. */
   getJson() {
-    return this.http.get<WledApiResponse>(
-      this.createApiUrl(ALL_JSON_PATH));
+    return this.httpGet<WledApiResponse>(
+      this.createApiUrl(ALL_JSON_PATH), MOCK_API_RESPONSE);
   }
 
   /** Contains the current state of the light. All values may be modified by the client. */
   getState() {
-    return this.http.get<WledState>(
-      this.createApiUrl(STATES_PATH));
+    return this.httpGet<WledState>(
+      this.createApiUrl(STATES_PATH), MOCK_API_RESPONSE.state);
   }
 
   /** Contains general information about the device. All values are read-only. */
   getInfo() {
-    return this.http.get<WledInfo>(
-      this.createApiUrl(INFO_PATH));
+    return this.httpGet<WledInfo>(
+      this.createApiUrl(INFO_PATH), MOCK_API_RESPONSE.info);
   }
 
   /** Contains an array of the effect mode names. */
   getEffects() {
-    return this.http.get<string[]>(
-      this.createApiUrl(EFFECTS_PATH));
+    return this.httpGet<string[]>(
+      this.createApiUrl(EFFECTS_PATH), MOCK_API_RESPONSE.effects);
   }
 
   /** Contains an array of the palette names. */
   getPalettes() {
-    return this.http.get<string[]>(
-      this.createApiUrl(PALETTES_PATH));
+    return this.httpGet<string[]>(
+      this.createApiUrl(PALETTES_PATH), MOCK_API_RESPONSE.palettes);
   }
 
   /** Gets palettes data, 8 palettes per page. */
   getPalettesData(page: number) {
     const params = new HttpParams()
       .set('page', page);
-    return this.http.get<PalettesApiData>(
-      this.createApiUrl(PALETTES_DATA_PATH), { params });
+    return this.httpGet<PalettesApiData>(
+      this.createApiUrl(PALETTES_DATA_PATH), ALL_PALETTES_DATA, { params });
   }
 
   /** Gets live data for all LEDs. */
   getLiveData() {
-    return this.http.get<LiveViewData>(
-      this.createApiUrl(LIVE_PATH));
+    return this.httpGet<LiveViewData>(
+      this.createApiUrl(LIVE_PATH), MOCK_LIVE_DATA);
   }
 
   /** Sets current palette by id. */
@@ -128,7 +155,7 @@ export class ApiService extends UnsubscribingService {
     const body = this.createBody({
       seg: { pal: paletteId },
     });
-    return this.http.post<WledApiResponse>(
+    return this.httpPost(
       this.createApiUrl('json/si'), body);
   }
 
@@ -137,14 +164,14 @@ export class ApiService extends UnsubscribingService {
     const body = this.createBody({
       seg: { fx: effectId },
     });
-    return this.http.post<WledApiResponse>(
+    return this.httpPost(
       this.createApiUrl('json/si'), body);
   }
 
   /** Sets light brightness. */
   setBrightness(brightness: number) {
     const body = this.createBody({ bri: brightness });
-    return this.http.post<WledApiResponse>(
+    return this.httpPost(
       this.createApiUrl('json/si'), body);
   }
 
@@ -153,7 +180,7 @@ export class ApiService extends UnsubscribingService {
     const body = this.createBody({
       seg: { sx: speed },
     });
-    return this.http.post<WledApiResponse>(
+    return this.httpPost(
       this.createApiUrl('json/state'), body);
   }
 
@@ -162,14 +189,14 @@ export class ApiService extends UnsubscribingService {
     const body = this.createBody({
       seg: { ix: intensity },
     });
-    return this.http.post<WledApiResponse>(
+    return this.httpPost(
       this.createApiUrl('json/state'), body);
   }
 
   /** Toggles the LED strip(s) on/off. */
   togglePower(isOn: boolean) {
     const body = this.createBody({ on: isOn });
-    return this.http.post<WledApiResponse>(
+    return this.httpPost(
       this.createApiUrl('json/si'), body);
   }
 
@@ -178,7 +205,7 @@ export class ApiService extends UnsubscribingService {
     const body = this.createBody({
       nl: { on: isNightLightActive },
     });
-    return this.http.post<WledApiResponse>(
+    return this.httpPost(
       this.createApiUrl('json/si'), body);
   }
 
@@ -190,7 +217,7 @@ export class ApiService extends UnsubscribingService {
     if (shouldToggleReceiveWithSend) {
       (body as any /* TODO no any */)['udpn'].recv = shouldSync;
     }
-    return this.http.post<WledApiResponse>(
+    return this.httpPost(
       this.createApiUrl('json/si'), body);
   }
 
@@ -202,7 +229,7 @@ export class ApiService extends UnsubscribingService {
         sel: isSelected,
       },
     });
-    return this.http.post<WledApiResponse>(
+    return this.httpPost(
       this.createApiUrl('json/state'), body);
   }
 
@@ -213,7 +240,7 @@ export class ApiService extends UnsubscribingService {
       seg.push({ sel: i === segmentId });
     }
     const body = this.createBody({ seg });
-    return this.http.post<WledApiResponse>(
+    return this.httpPost(
       this.createApiUrl('json/si'), body);
   }
 
@@ -224,7 +251,7 @@ export class ApiService extends UnsubscribingService {
       seg.push({ sel: true });
     }
     const body = this.createBody({ seg });
-    return this.http.post<WledApiResponse>(
+    return this.httpPost(
       this.createApiUrl('json/si'), body);
   }
 
@@ -257,7 +284,7 @@ export class ApiService extends UnsubscribingService {
     }
 
     const body = this.createBody({ seg });
-    return this.http.post<WledApiResponse>(
+    return this.httpPost(
       this.createApiUrl('json/si'), body);
   }
 
@@ -269,7 +296,7 @@ export class ApiService extends UnsubscribingService {
         stop: 0,
       },
     });
-    return this.http.post<WledApiResponse>(
+    return this.httpPost(
       this.createApiUrl('json/state'), body);
   }
 
@@ -285,7 +312,7 @@ export class ApiService extends UnsubscribingService {
       segments.push({ stop: 0 });
     }
     const body = this.createBody({ seg: segments });
-    return this.http.post<WledApiResponse>(
+    return this.httpPost(
       this.createApiUrl('json/si'), body);
   }
 
@@ -297,7 +324,7 @@ export class ApiService extends UnsubscribingService {
         on: isOn,
       },
     });
-    return this.http.post<WledApiResponse>(
+    return this.httpPost(
       this.createApiUrl('json/si'), body);
   }
   
@@ -309,7 +336,7 @@ export class ApiService extends UnsubscribingService {
         bri: brightness,
       },
     });
-    return this.http.post<WledApiResponse>(
+    return this.httpPost(
       this.createApiUrl('json/si'), body);
   }
 
@@ -321,7 +348,7 @@ export class ApiService extends UnsubscribingService {
         rev: isReverse,
       },
     });
-    return this.http.post<WledApiResponse>(
+    return this.httpPost(
       this.createApiUrl('json/state'), body);
   }
 
@@ -333,7 +360,7 @@ export class ApiService extends UnsubscribingService {
         mi: isMirror,
       },
     });
-    return this.http.post<WledApiResponse>(
+    return this.httpPost(
       this.createApiUrl('json/state'), body);
   }
 
@@ -350,7 +377,7 @@ export class ApiService extends UnsubscribingService {
     }
 
     const url = this.createApiUrl('presets.json');
-    const presets = this.http.get<APIPresets>(url)
+    const presets = this.httpGet<APIPresets>(url, MOCK_API_PRESETS)
       .pipe(
         map((apiPresets: APIPresets) => {
           // delete empty default preset
@@ -381,7 +408,7 @@ export class ApiService extends UnsubscribingService {
     const body = this.createBody({
       ps: presetId,
     });
-    return this.http.post<WledApiResponse>(
+    return this.httpPost(
       this.createApiUrl('json/si'), body);
   }
 
@@ -412,32 +439,35 @@ export class ApiService extends UnsubscribingService {
       };
     }
     const body = this.createBody(request as {});
-    return this.http.post<WledApiResponse>(
+    return this.httpPost(
       this.createApiUrl('json/si'), body);
   }
 
   /** Sets the transition duration. The `transition` unit is 1/10 of a second (eg: `transition = 7` is 0.7s). */
   setTransitionDuration(seconds: number) {
     const body = this.createBody({ transition: seconds * 10 });
-    return this.http.post<WledApiResponse>(
+    return this.httpPost(
       this.createApiUrl('json/state'), body);
   }
 
   /** Submits LED settings form data to server. */
   setLedSettings(ledSettings: FormValues) {
-    return this.http.post<any /* TODO type */>(
+    // TODO does this return WledApiResponse type or other type?
+    return this.httpPost(
       this.createApiUrl(LED_SETTINGS_PATH), ledSettings);
   }
 
   /** Submits ui settings form data to server. */
   setUISettings(uiSettings: FormValues) {
-    return this.http.post<any /* TODO type */>(
+    // TODO does this return WledApiResponse type or other type?
+    return this.httpPost(
       this.createApiUrl(UI_SETTINGS_PATH), uiSettings);
   }
 
   /** Submits wifi settings form data to server. */
   setWifiSettings(wifiSettings: FormValues) {
-    return this.http.post<any /* TODO type */>(
+    // TODO does this return WledApiResponse type or other type?
+    return this.httpPost(
       this.createApiUrl(WIFI_SETTINGS_PATH), wifiSettings);
   }
 
@@ -472,7 +502,7 @@ export class ApiService extends UnsubscribingService {
 
   setLor(lor: number) {
     const obj = { lor };
-    this.http.post('/json/si', obj);
+    this.httpPost('/json/si', obj);
     // this.requestJson(obj);
   }
 
@@ -480,24 +510,24 @@ export class ApiService extends UnsubscribingService {
     const obj = {
       seg: { cct: balance },
     };
-    this.http.post('/json/si', obj);
+    this.httpPost('/json/si', obj);
     // this.requestJson(obj);
   }
 
   // setSi(lor: number) {
   //   const obj = { lor };
-  //   this.http.post('/json/si', obj);
+  //   this.httpPost('/json/si', obj);
   //   // this.requestJson(obj);
   // }
 
   // getSi(lor: number) {
   //   const obj = { lor };
-  //   this.http.post('/json/si', obj);
+  //   this.httpPost('/json/si', obj);
   //   // this.requestJson(obj);
   // }
 
   getNodes() {
-    return this.http.get('/json/nodes');
+    return this.httpGet<any /* TODO type */>('/json/nodes', {});
   }
 
   // TODO better name

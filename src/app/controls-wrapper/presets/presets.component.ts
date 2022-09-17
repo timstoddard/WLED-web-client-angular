@@ -4,14 +4,14 @@ import { LocalStorageKey, LocalStorageService } from '../../shared/local-storage
 import { getInput } from '../utils';
 import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
 import { Preset, PresetsService } from './presets.service';
-import {
-  APIPlaylists,
-  APIPlaylist,
-  APIPresets,
-  APIPreset,
-  PresetError,
-} from './presets.api';
 import { ActivatedRoute } from '@angular/router';
+import { APIPlaylist, APIPlaylists, APIPreset, APIPresets } from '../../shared/api-types';
+
+interface PresetError {
+  isEmpty: boolean;
+  message: string;
+  backupString: string;
+}
 
 const getDefaultPlaylist = (partial: Partial<APIPlaylist> = {}): APIPlaylist => {
   const defaultPlaylist = {

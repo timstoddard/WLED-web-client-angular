@@ -4,7 +4,7 @@ import { of } from 'rxjs';
 import { ApiService } from '../shared/api.service';
 import { WledApiResponse } from '../shared/api-types';
 import { ControlsServicesModule } from './controls-services.module';
-import { data } from './mock-api-data';
+import { MOCK_API_RESPONSE } from './mock-api-data';
 import { OnlineStatusService } from '../shared/online-status.service';
 
 @Injectable({ providedIn: ControlsServicesModule })
@@ -17,7 +17,7 @@ export class ControlsResolver implements Resolve<WledApiResponse> {
     // TODO set up playground with mock data
 
     return this.onlineStatusService.getIsOffline()
-      ? of(data)
+      ? of(MOCK_API_RESPONSE)
       : this.apiService.getJson()
   }
 }

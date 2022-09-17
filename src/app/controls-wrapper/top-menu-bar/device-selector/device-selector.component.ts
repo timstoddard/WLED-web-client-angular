@@ -1,14 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ApiService } from '../../../shared/api.service';
-import { AppStateService, WledIpAddress } from '../../../shared/app-state/app-state.service';
+import { AppStateService, NO_DEVICE_IP_SELECTED, WledIpAddress } from '../../../shared/app-state/app-state.service';
 import { FormService } from '../../../shared/form-utils';
 import { UnsubscribingComponent } from '../../../shared/unsubscribing/unsubscribing.component';
-
-export const NO_DEVICE_IP_SELECTED: WledIpAddress = {
-  name: 'None',
-  ipv4Address: '',
-};
 
 @Component({
   selector: 'app-device-selector',
@@ -18,7 +13,6 @@ export const NO_DEVICE_IP_SELECTED: WledIpAddress = {
 export class DeviceSelectorComponent extends UnsubscribingComponent implements OnInit {
   wledIpAddresses!: WledIpAddress[];
   selectedWledIpAddress!: FormControl;
-  NO_DEVICE_IP_SELECTED = NO_DEVICE_IP_SELECTED;
 
   constructor(
     private appStateService: AppStateService,
@@ -39,7 +33,10 @@ export class DeviceSelectorComponent extends UnsubscribingComponent implements O
         selectedWledIpAddress,
         wledIpAddresses,
       }) => {
-        this.wledIpAddresses = wledIpAddresses;
+        this.wledIpAddresses = [
+          NO_DEVICE_IP_SELECTED,
+          ...wledIpAddresses,
+        ];
         this.selectedWledIpAddress.patchValue(selectedWledIpAddress.ipv4Address, { emitEvent: false });
       });
   }

@@ -4,7 +4,7 @@ import { of } from 'rxjs';
 import { ApiService } from '../../shared/api.service';
 import { OnlineStatusService } from '../../shared/online-status.service';
 import { ControlsServicesModule } from '../controls-services.module';
-import { presets } from '../mock-api-data';
+import { MOCK_LOCAL_PRESETS } from '../mock-api-data';
 import { Preset } from './presets.service';
 
 @Injectable({ providedIn: ControlsServicesModule })
@@ -17,7 +17,7 @@ export class PresetsResolver implements Resolve<Preset[]> {
     // TODO set up playground with mock data
 
     return this.onlineStatusService.getIsOffline()
-      ? of(presets)
+      ? of(MOCK_LOCAL_PRESETS)
       : this.apiService.getPresets()
   }
 }
