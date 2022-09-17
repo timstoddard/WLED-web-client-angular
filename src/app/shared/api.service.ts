@@ -42,12 +42,12 @@ export class ApiService extends UnsubscribingService {
     return this.baseUrl;
   }
 
-  private createApiUrl = (path: string) => {
-    return `http://${this.baseUrl}/${path}`;
+  isBaseUrlUnset = () => {
+    return this.baseUrl === NO_DEVICE_IP_SELECTED.ipv4Address;
   }
 
-  private isBaseUrlUnset = () => {
-    return this.baseUrl === NO_DEVICE_IP_SELECTED.ipv4Address;
+  private createApiUrl = (path: string) => {
+    return `http://${this.baseUrl}/${path}`;
   }
 
   private httpGet = <T>(

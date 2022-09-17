@@ -20,7 +20,10 @@ export class WebSocketService {
     private apiService: ApiService,
     private onlineStatusService: OnlineStatusService,
   ) {
-    if (this.onlineStatusService.getIsOffline()) {
+    if (
+      this.onlineStatusService.getIsOffline()
+      || this.apiService.isBaseUrlUnset()
+    ) {
       this.fakeConnect();
     } else {
       this.connect();
