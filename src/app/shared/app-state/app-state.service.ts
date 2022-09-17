@@ -94,14 +94,11 @@ export const NO_DEVICE_IP_SELECTED: WledIpAddress = {
 };
 
 // TODO better defaults
-const DEFAULT_WLED_IP_ADDRESS: WledIpAddress = environment.production
-  ? NO_DEVICE_IP_SELECTED
-  : {
+const DEFAULT_WLED_IP_ADDRESSES: WledIpAddress[] = [
+  {
     name: 'Living Room',
     ipv4Address: '192.168.100.171',
-  };
-const DEFAULT_WLED_IP_ADDRESSES: WledIpAddress[] = [
-  DEFAULT_WLED_IP_ADDRESS,
+  },
   {
     name: 'Bedroom',
     ipv4Address: '192.168.100.21',
@@ -110,7 +107,10 @@ const DEFAULT_WLED_IP_ADDRESSES: WledIpAddress[] = [
     name: 'Office',
     ipv4Address: '192.168.100.5',
   },
-]
+];
+const DEFAULT_SELECTED_WLED_IP_ADDRESS: WledIpAddress = environment.production
+  ? NO_DEVICE_IP_SELECTED
+  : DEFAULT_WLED_IP_ADDRESSES[0];
 
 /** State of the app before hydration. Everything is turned off. */
 export const DEFAULT_APP_STATE: AppStateProps = {
@@ -180,7 +180,7 @@ export const DEFAULT_APP_STATE: AppStateProps = {
   effects: [],
   localSettings: {
     isLiveViewActive: false,
-    selectedWledIpAddress: DEFAULT_WLED_IP_ADDRESS,
+    selectedWledIpAddress: DEFAULT_SELECTED_WLED_IP_ADDRESS,
     wledIpAddresses: DEFAULT_WLED_IP_ADDRESSES,
   }
 };
