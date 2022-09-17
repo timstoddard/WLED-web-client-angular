@@ -177,17 +177,17 @@ export class CloudFrontStack extends cdk.Stack {
         // TODO set this to show custom page
         responsePagePath: undefined,
       },
+      // generic error for page reload, need to serve index file for front-end routing to work
       {
         ttl: cdk.Duration.seconds(60),
         httpStatus: 403, // Forbidden
-        // TODO set this to show custom page
-        responsePagePath: undefined,
+        responsePagePath: '/index.html',
       },
+      // generic error for incorrect paths, need to serve index file for front-end routing to work
       {
-        ttl: cdk.Duration.seconds(0),
+        ttl: cdk.Duration.seconds(60),
         httpStatus: 404, // Not Found
-        // TODO set this to show custom page
-        responsePagePath: undefined,
+        responsePagePath: '/index.html',
       },
       {
         ttl: cdk.Duration.seconds(60),

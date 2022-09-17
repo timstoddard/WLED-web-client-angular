@@ -1,6 +1,7 @@
 {
   "conventionalCommits.scopes": [
     "settings",
-    "controls"
+    "controls",
+    "infra"
   ]
 }
