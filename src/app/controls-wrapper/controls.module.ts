@@ -16,6 +16,7 @@ import { ControlsComponent } from './controls/controls.component';
 import { ControlsWrapperComponent } from './controls-wrapper.component';
 import { ControlsRoutingModule } from './controls-routing.module';
 import { ControlsServicesModule } from './controls-services.module';
+import { DeviceSelectorComponent } from './top-menu-bar/device-selector/device-selector.component';
 import { EffectsComponent } from './effects/effects.component';
 import { HexInputComponent } from './color-inputs/hex-input/hex-input.component';
 // import { InfoComponent } from './info/info.component';
@@ -54,6 +55,7 @@ const COMPONENTS = [
   BottomMenuBarComponent,
   ControlsComponent,
   ControlsWrapperComponent,
+  DeviceSelectorComponent,
   EffectsComponent,
   // InfoComponent,
   NewSegmentComponent,

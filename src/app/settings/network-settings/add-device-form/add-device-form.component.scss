@@ -1,0 +1,47 @@
+:host {
+  max-width: 100%;
+}
+
+.addDeviceForm {
+  &__formGroup {
+    border: 1px solid var(--borderColorAccent);
+    border-radius: 4px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 12px 0;
+    padding: 4px 8px;
+
+    & > * {
+      margin: 4px;
+    }
+
+    & ::ng-deep mat-form-field {
+      max-width: 150px;
+    }
+  }
+
+  &__testSuccess,
+  &__testFail {
+    border-radius: 10px;
+    height: 20px;
+    width: 20px;
+  }
+
+  &__testSuccess {
+    background: rgb(0,255,0);
+  }
+
+  &__testFail {
+    background: rgb(255,0,0);
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: center;
+
+    & > * {
+      margin: 5px;
+    }
+  }
+}

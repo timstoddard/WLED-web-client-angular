@@ -11,9 +11,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { AddDeviceFormComponent } from './network-settings/add-device-form/add-device-form.component';
 import { DmxSettingsComponent } from './dmx-settings/dmx-settings.component';
 import { ExternalLinkComponent } from '../shared/external-link/external-link.component';
 import { LedSettingsComponent } from './led-settings/led-settings.component';
+import { NetworkSettingsComponent } from './network-settings/network-settings.component';
 import { SecuritySettingsComponent } from './security-settings/security-settings.component';
 import { SettingsComponent } from './settings.component';
 import { SettingsFooterComponent } from './shared/settings-footer/settings-footer.component';
@@ -24,13 +26,14 @@ import { SyncSettingsComponent } from './sync-settings/sync-settings.component';
 import { TimeSettingsComponent } from './time-settings/time-settings.component';
 import { UISettingsComponent } from './ui-settings/ui-settings.component';
 import { UserModSettingsComponent } from './user-mod-settings/user-mod-settings.component';
-import { WifiSettingsComponent } from './wifi-settings/wifi-settings.component';
 
 const COMPONENTS = [
+  AddDeviceFormComponent,
   DmxSettingsComponent,
   // TODO share with controls module and/or app module?
   ExternalLinkComponent,
   LedSettingsComponent,
+  NetworkSettingsComponent,
   SecuritySettingsComponent,
   SettingsComponent,
   SettingsFooterComponent,
@@ -40,7 +43,6 @@ const COMPONENTS = [
   TimeSettingsComponent,
   UISettingsComponent,
   UserModSettingsComponent,
-  WifiSettingsComponent,
 ];
 
 @NgModule({

@@ -1,19 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormGroup, Validators } from '@angular/forms';
+import { AppStateService, WledIpAddress } from '../../shared/app-state/app-state.service';
 import { FormService } from '../../shared/form-utils';
 import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
 import { SelectItem } from '../shared/settings-types';
-import { WifiSettingsService } from './wifi-settings.service';
+import { NetworkSettingsService } from './network-settings.service';
 
 const DEFAULT_ETHERNET_TYPE = 0;
 const DEFAULT_OPEN_AP_OPTION = 0;
 
 @Component({
-  selector: 'app-wifi-settings',
-  templateUrl: './wifi-settings.component.html',
-  styleUrls: ['./wifi-settings.component.scss']
+  selector: 'app-network-settings',
+  templateUrl: './network-settings.component.html',
+  styleUrls: ['./network-settings.component.scss']
 })
-export class WifiSettingsComponent extends UnsubscribingComponent implements OnInit {
+export class NetworkSettingsComponent extends UnsubscribingComponent implements OnInit {
   openAPOptions: SelectItem<number>[] = [
     {
       name: 'No connection after boot',
@@ -63,18 +64,18 @@ export class WifiSettingsComponent extends UnsubscribingComponent implements OnI
     },
   ];
 
-  wifiSettingsForm!: FormGroup;
+  networkSettingsForm!: FormGroup;
   hasEthernet: boolean = true; // TODO how to get this?
 
   constructor(
     private formService: FormService,
-    private wifiSettingsService: WifiSettingsService,
+    private networkSettingsService: NetworkSettingsService,
   ) {
     super();
   }
 
   ngOnInit() {
-    this.wifiSettingsForm = this.createForm();
+    this.networkSettingsForm = this.createForm();
   }
 
   submitForm() {
@@ -83,8 +84,10 @@ export class WifiSettingsComponent extends UnsubscribingComponent implements OnI
       ipAddress,
       wledAccessPoint,
       other,
-    } = this.wifiSettingsForm.value;
+    } = this.networkSettingsForm.value;
 
+
+    // TODO move logic to service class
     const ipAddressRegex = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/;
     const staticIpParts = ipAddress.staticIp.match(ipAddressRegex);
     const staticGatewayParts = ipAddress.staticGateway.match(ipAddressRegex);
@@ -122,7 +125,7 @@ export class WifiSettingsComponent extends UnsubscribingComponent implements OnI
 
     console.log(formValue);
     this.handleUnsubscribe(
-      this.wifiSettingsService.setWifiSettings(formValue));
+      this.networkSettingsService.setWifiSettings(formValue));
     // TODO redirect
   }
 

@@ -1,0 +1,97 @@
+<div>
+  Due to browser limitations, this web app unfortunately cannot perform an mDNS scan for local WLED devices. Please do this through the WLED app or another mDNS scanner, and enter all local WLED IP addresses discovered, below.
+</div>
+<div>
+  This data is saved separately from the rest of the wifi settings.
+</div>
+
+<div>
+  <div
+    *ngFor="let ipAddressFormGroup of getFormGroups(); let i = index"
+    [formGroup]="ipAddressFormGroup"
+    class="addDeviceForm__formGroup">
+
+    <mat-checkbox
+      formControlName="selected"
+      class="">
+      <mat-label>Selected</mat-label>
+    </mat-checkbox>
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Name</mat-label>
+      <input
+        matInput
+        formControlName="name"
+        class="">
+    </mat-form-field>
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>IPV4 Address</mat-label>
+      <input
+        matInput
+        formControlName="ipv4Address"
+        class="">
+    </mat-form-field>
+
+    <div [ngSwitch]="ipAddressTestResults[i]">
+      <ng-container *ngSwitchCase="true">
+        <div class="addDeviceForm__testSuccess"></div>
+        <button
+          (click)="testWledIpAddress(i)"
+          mat-raised-button
+          color="primary"
+          class="">
+          Re-test
+        </button>
+      </ng-container>
+      <ng-container *ngSwitchCase="false">
+        <div class="addDeviceForm__testFail"></div>
+        <button
+          (click)="testWledIpAddress(i)"
+          mat-raised-button
+          color="primary"
+          class="">
+          Re-test
+        </button>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <button
+          (click)="testWledIpAddress(i)"
+          mat-raised-button
+          color="primary"
+          class="">
+          Test
+        </button>
+      </ng-container>
+    </div>
+
+    <div>
+      <button
+        (click)="removeWledIpAddress(i)"
+        mat-raised-button
+        color="primary"
+        class="">
+        X
+      </button>
+    </div>
+  </div>
+  
+  <div class="addDeviceForm__footer">
+    <button
+      (click)="addWledIpAddress()"
+      mat-raised-button
+      color="primary"
+      class="">
+      +
+    </button>
+    <button
+      (click)="saveWledIpAddresses()"
+      mat-raised-button
+      color="primary"
+      class="">
+      Save
+    </button>
+  </div>
+</div>

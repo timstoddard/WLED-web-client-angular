@@ -8,7 +8,7 @@ interface AppStateProps {
   info: AppInfo;
   palettes: string[];
   effects: string[];
-  uiSettings: AppUISettings;
+  localSettings: AppLocalSettings;
 }
 
 export interface AppState {
@@ -75,9 +75,34 @@ interface AppInfo {
   ipAddress: string;
 }
 
-interface AppUISettings {
+export interface AppLocalSettings {
   isLiveViewActive: boolean;
+  // TODO can this be a string? (pros/cons)
+  selectedWledIpAddress: WledIpAddress;
+  wledIpAddresses: WledIpAddress[];
 }
+
+export interface WledIpAddress {
+  name: string,
+  ipv4Address: string,
+}
+
+// TODO better defaults
+const DEFAULT_WLED_IP_ADDRESS = {
+  name: 'Living Room',
+  ipv4Address: '192.168.100.171',
+};
+const DEFAULT_WLED_IP_ADDRESSES = [
+  DEFAULT_WLED_IP_ADDRESS,
+  {
+    name: 'Bedroom',
+    ipv4Address: '192.168.100.21',
+  },
+  {
+    name: 'Office',
+    ipv4Address: '192.168.100.5',
+  },
+]
 
 /** State of the app before hydration. Everything is turned off. */
 const DEFAULT_APP_STATE: AppStateProps = {
@@ -145,8 +170,10 @@ const DEFAULT_APP_STATE: AppStateProps = {
   },
   palettes: [],
   effects: [],
-  uiSettings: {
+  localSettings: {
     isLiveViewActive: false,
+    selectedWledIpAddress: DEFAULT_WLED_IP_ADDRESS,
+    wledIpAddresses: DEFAULT_WLED_IP_ADDRESSES,
   }
 };
 
@@ -163,7 +190,7 @@ export class AppStateService {
 
   /** Set all app state fields using the api response data. */
   setAll = (response: WledApiResponse) => {
-    this.appStateStore.update(({ uiSettings, palettes, effects }) => ({
+    this.appStateStore.update(({ localSettings, palettes, effects }) => ({
       state: {
         on: response.state.on,
         brightness: response.state.bri,
@@ -228,7 +255,7 @@ export class AppStateService {
       },
       palettes: response.palettes ? response.palettes : palettes,
       effects: response.effects ? response.effects : effects,
-      uiSettings,
+      localSettings,
     }));
   }
 
@@ -348,9 +375,18 @@ export class AppStateService {
   getEffects = (ngUnsubscribe: Subject<void>) =>
     this.selectFromAppState((n) => n.effects)
       .pipe<AppStateProps['effects']>(takeUntil(ngUnsubscribe));
+  getLocalSettings = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.localSettings)
+      .pipe<AppStateProps['localSettings']>(takeUntil(ngUnsubscribe));
   getIsLiveViewActive = (ngUnsubscribe: Subject<void>) =>
-    this.selectFromAppState((n) => n.uiSettings.isLiveViewActive)
-      .pipe<AppUISettings['isLiveViewActive']>(takeUntil(ngUnsubscribe));
+    this.selectFromAppState((n) => n.localSettings.isLiveViewActive)
+      .pipe<AppLocalSettings['isLiveViewActive']>(takeUntil(ngUnsubscribe));
+  getSelectedWledIpAddress = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.localSettings.selectedWledIpAddress)
+      .pipe<AppLocalSettings['selectedWledIpAddress']>(takeUntil(ngUnsubscribe));
+  getWledIpAddresses = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.localSettings.wledIpAddresses)
+      .pipe<AppLocalSettings['wledIpAddresses']>(takeUntil(ngUnsubscribe));
 
   // setters
   setOn = (on: AppState['on']) =>
@@ -423,8 +459,14 @@ export class AppStateService {
     this.updatePalettes(palettes);
   setEffects = (effects: AppStateProps['effects']) =>
     this.updateEffects(effects);
-  setIsLiveViewActive = (isLiveViewActive: AppUISettings['isLiveViewActive']) =>
-    this.updateUISettings({ isLiveViewActive });
+  setLocalSettings = (localSettings: Partial<AppStateProps['localSettings']>) =>
+    this.updateLocalSettings(localSettings);
+  setIsLiveViewActive = (isLiveViewActive: AppLocalSettings['isLiveViewActive']) =>
+    this.updateLocalSettings({ isLiveViewActive });
+  setSelectedWledIpAddress = (selectedWledIpAddress: AppLocalSettings['selectedWledIpAddress']) =>
+    this.updateLocalSettings({ selectedWledIpAddress });
+  setWledIpAddresses = (wledIpAddresses: AppLocalSettings['wledIpAddresses']) =>
+    this.updateLocalSettings({ wledIpAddresses });
 
   private selectFromAppState = (selectFn: (state: AppStateProps) => any) =>
     this.appStateStore.pipe(select(selectFn));
@@ -463,12 +505,12 @@ export class AppStateService {
     }));
   }
 
-  private updateUISettings = (newUiSettings: Partial<AppUISettings>) => {
+  private updateLocalSettings = (newLocalSettings: Partial<AppLocalSettings>) => {
     this.appStateStore.update((appState) => ({
       ...appState,
-      uiSettings: {
-        ...appState.uiSettings,
-        ...newUiSettings,
+      localSettings: {
+        ...appState.localSettings,
+        ...newLocalSettings,
       },
     }));
   }

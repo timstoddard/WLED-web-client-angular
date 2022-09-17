@@ -4,6 +4,6 @@
   @include overrideMatTextInputStyles(--backgroundColorAccent);
 }
 
-.wifiSettingsForm {
+.networkSettingsForm {
   @include settingsPageContainer();
 }

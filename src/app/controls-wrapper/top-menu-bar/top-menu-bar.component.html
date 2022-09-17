@@ -23,7 +23,7 @@
         {{ button.name }}
       </div>
     </div>
-  
+
     <div
       *ngIf="!showToggleSettingsButton"
       class="topMenuBar__buttonWrapper">
@@ -94,6 +94,8 @@
         step="0.1"
         class="">
     </mat-form-field>
+
+    <app-device-selector></app-device-selector>
   </div>
 </ng-template>
 

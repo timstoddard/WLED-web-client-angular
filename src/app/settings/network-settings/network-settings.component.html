@@ -1,7 +1,7 @@
 <form
-  [formGroup]="wifiSettingsForm"
-  class="wifiSettingsForm">
-  <div>{{ wifiSettingsForm.value | json }}</div>
+  [formGroup]="networkSettingsForm"
+  class="networkSettingsForm">
+  <div>{{ networkSettingsForm.value | json }}</div>
   
   <!-- TODO save button should say "Save & Connect" -->
   <app-settings-header
@@ -10,11 +10,15 @@
   </app-settings-header>
 
   <h1>
-    Wifi Settings
+    Network Settings
   </h1>
 
+  <app-settings-group title="WLED IP Addresses">
+    <app-add-device-form></app-add-device-form>
+  </app-settings-group>
+
   <app-settings-group
-    title="Connect to Network"
+    title="Connect to Wifi"
     formGroupName="localNetwork">
     <i>Leave SSID empty to not connect</i>
     <mat-form-field

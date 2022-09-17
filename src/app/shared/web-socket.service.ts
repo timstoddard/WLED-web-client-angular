@@ -61,7 +61,7 @@ export class WebSocketService {
   }
 
   private getWebSocketUrl() {
-    const apiUrl = this.apiService.BASE_URL;
+    const apiUrl = this.apiService.getBaseUrl();
     return `ws://${apiUrl}/ws`;
   }
 

@@ -14,7 +14,7 @@ import { FormService } from '../../shared/form-utils';
 
 const DEFAULT_BRIGHTNESS = 128;
 const DEFAULT_TRANSITION_DURATION_SECONDS = 0.7;
-const MIN_SHOW_BRIGHTNESS_SLIDER_THRESHOLD_PX = 690;
+const MIN_SHOW_BRIGHTNESS_SLIDER_THRESHOLD_PX = 800;
 const MIN_SHOW_PC_MODE_BUTTON_THRESHOLD_PX = 1200; // TODO might need to be bigger
 
 class TopMenuBarButtonName {
@@ -82,14 +82,14 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     this.onResize();
 
     this.appStateService.getAppState(this.ngUnsubscribe)
-      .subscribe(({ state, info, uiSettings }) => {
+      .subscribe(({ state, info, localSettings }) => {
         // update UI data
         this.isOn = state.on;
         this.isNightLightActive = state.nightLight.on;
         this.shouldSync = state.udp.shouldSend;
         // TODO add toggle for receive in UI?
         this.shouldToggleReceiveWithSend = info.shouldToggleReceiveWithSend;
-        this.isLiveViewActive = uiSettings.isLiveViewActive;
+        this.isLiveViewActive = localSettings.isLiveViewActive;
         this.topMenuBarForm.get('brightness')!.setValue(state.brightness, { emitEvent: false });
         // TODO set transition value
         // this.topMenuBarForm.get('transitionTime')!.setValue(transitionTime, { emitEvent: false });

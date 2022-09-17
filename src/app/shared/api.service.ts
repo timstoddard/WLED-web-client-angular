@@ -1,13 +1,15 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs';
+import { map, of, timeout } from 'rxjs';
 import { PalettesApiData } from '../controls-wrapper/palettes/palettes.service';
 import { APIPreset, APIPresets } from '../controls-wrapper/presets/presets.api';
 import { Preset } from '../controls-wrapper/presets/presets.service';
 import { SavePresetRequest, WledApiResponse, WledInfo, WledState } from './api-types';
+import { AppStateService } from './app-state/app-state.service';
 import { AppState, Segment } from './app-types';
 import { FormValues } from './form-utils';
 import { LiveViewData } from './live-view/live-view.service';
+import { UnsubscribingService } from './unsubscribing/unsubscribing.service';
 
 const ALL_JSON_PATH = 'json';
 const STATES_PATH = 'json/state';
@@ -22,13 +24,59 @@ const UI_SETTINGS_PATH = 'settings/ui';
 const WIFI_SETTINGS_PATH = 'settings/wifi';
 
 @Injectable({ providedIn: 'root' })
-export class ApiService {
-  readonly BASE_URL = '192.168.100.171';
+export class ApiService extends UnsubscribingService {
+  private baseUrl = '';
 
-  constructor(private http: HttpClient) {}
+  // !!! TODO need to handle app loading without any WLED instances connected !!!
+
+  constructor(
+    private http: HttpClient,
+    appStateService: AppStateService,
+  ) {
+    super();
+    appStateService.getSelectedWledIpAddress(this.ngUnsubscribe)
+      .subscribe(({ ipv4Address  }) => {
+        this.baseUrl = ipv4Address;
+      });
+  }
+
+  getBaseUrl() {
+    return this.baseUrl;
+  }
 
   private createApiUrl = (path: string) => {
-    return `http://${this.BASE_URL}/${path}`;
+    return `http://${this.baseUrl}/${path}`;
+  }
+
+  testIpAddressAsBaseUrl(ipAddress: string) {
+    const TIMEOUT_MS = 3000;
+    const FAILED = 'FAILED';
+    const url = `http://${ipAddress}/${ALL_JSON_PATH}`;
+    return this.http.get<WledApiResponse>(url)
+      .pipe(
+        timeout({
+          first: TIMEOUT_MS,
+          with: () => of<typeof FAILED>(FAILED),
+        }),
+        map(result => {
+          let success = false;
+
+          if (result === FAILED) {
+            // it didn't work
+            success = false;
+          } else if (
+            result.state
+            && result.info
+            && result.palettes
+            && result.effects
+          ) {
+            // it worked
+            success = true;
+          }
+
+          return { success };
+        })
+      );
   }
 
   /** Returns an object containing the state, info, effects, and palettes. */
@@ -191,12 +239,12 @@ export class ApiService {
     grouping?: number,
     spacing?: number,
   }) {
-    const actualStop = (options.useSegmentLength ? options.start : 0) + options.stop;
+    const calculatedStop = (options.useSegmentLength ? options.start : 0) + options.stop;
     const seg: any /* TODO type */ = {
       id: options.segmentId,
       n: options.name, // TODO is this really needed?
       start: options.start,
-      stop: actualStop,
+      stop: calculatedStop,
     };
     if (options.offset) {
       seg.of = options.offset;
@@ -375,7 +423,7 @@ export class ApiService {
       this.createApiUrl('json/state'), body);
   }
 
-  /** Submits wifi settings form data to server. */
+  /** Submits LED settings form data to server. */
   setLedSettings(ledSettings: FormValues) {
     return this.http.post<any /* TODO type */>(
       this.createApiUrl(LED_SETTINGS_PATH), ledSettings);
@@ -384,13 +432,13 @@ export class ApiService {
   /** Submits ui settings form data to server. */
   setUISettings(uiSettings: FormValues) {
     return this.http.post<any /* TODO type */>(
-      this.createApiUrl('settings/ui'), uiSettings);
+      this.createApiUrl(UI_SETTINGS_PATH), uiSettings);
   }
 
   /** Submits wifi settings form data to server. */
   setWifiSettings(wifiSettings: FormValues) {
     return this.http.post<any /* TODO type */>(
-      this.createApiUrl('settings/wifi'), wifiSettings);
+      this.createApiUrl(WIFI_SETTINGS_PATH), wifiSettings);
   }
 
   private createBody(body: { [key: string]: unknown }) {

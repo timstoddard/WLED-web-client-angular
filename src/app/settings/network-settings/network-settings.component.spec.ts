@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WifiSettingsComponent } from './wifi-settings.component';
+import { NetworkSettingsComponent } from './network-settings.component';
 
-describe('WifiSettingsComponent', () => {
-  let component: WifiSettingsComponent;
-  let fixture: ComponentFixture<WifiSettingsComponent>;
+describe('NetworkSettingsComponent', () => {
+  let component: NetworkSettingsComponent;
+  let fixture: ComponentFixture<NetworkSettingsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ WifiSettingsComponent ]
+      declarations: [ NetworkSettingsComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(WifiSettingsComponent);
+    fixture = TestBed.createComponent(NetworkSettingsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -14,8 +14,8 @@ export class SettingsComponent {
       name: 'Leds & Hardware',
     },
     {
-      path: 'wifi',
-      name: 'Wifi',
+      path: 'network',
+      name: 'Network',
     },
 
     // semi common

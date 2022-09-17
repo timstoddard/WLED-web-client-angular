@@ -10,7 +10,7 @@ import { SyncSettingsComponent } from './sync-settings/sync-settings.component';
 import { TimeSettingsComponent } from './time-settings/time-settings.component';
 import { UISettingsComponent } from './ui-settings/ui-settings.component';
 import { UserModSettingsComponent } from './user-mod-settings/user-mod-settings.component';
-import { WifiSettingsComponent } from './wifi-settings/wifi-settings.component';
+import { NetworkSettingsComponent } from './network-settings/network-settings.component';
 
 // TODO page titles should match existing web app (?)
 const routes: RouteWithPageTitle[] = [
@@ -55,9 +55,9 @@ const routes: RouteWithPageTitle[] = [
         data: { title: 'Usermod Settings' },
       },
       {
-        path: 'wifi',
-        component: WifiSettingsComponent,
-        data: { title: 'Wifi Settings' },
+        path: 'network',
+        component: NetworkSettingsComponent,
+        data: { title: 'Network Settings' },
       },
     ],
   },
