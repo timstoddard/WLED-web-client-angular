@@ -164,31 +164,20 @@ export class CloudFrontStack extends cdk.Stack {
     // valid status codes: 400, 403, 404, 405, 414, 416, 500, 501, 502, 503, 504
     // https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GeneratingCustomErrorResponses.html#creating-custom-error-pages
     return [
-      {
-        ttl: cdk.Duration.seconds(0),
-        httpStatus: 400, // Bad Input
-        // TODO set this to show custom page
-        responsePagePath: undefined,
-      },
       // generic error for page reload, need to serve index file for front-end routing to work
       {
-        ttl: cdk.Duration.seconds(60),
         httpStatus: 403, // Forbidden
+        ttl: cdk.Duration.seconds(60),
+        responseHttpStatus: 200,
         responsePagePath: '/index.html',
       },
       // generic error for incorrect paths, need to serve index file for front-end routing to work
       {
-        ttl: cdk.Duration.seconds(60),
         httpStatus: 404, // Not Found
+        ttl: cdk.Duration.seconds(60),
+        responseHttpStatus: 200,
         responsePagePath: '/index.html',
       },
-      {
-        ttl: cdk.Duration.seconds(60),
-        httpStatus: 500, // Internal Server Error
-        // TODO set this to show custom page
-        responsePagePath: undefined,
-      },
-      // TODO add other status codes?
     ]
   }
 
