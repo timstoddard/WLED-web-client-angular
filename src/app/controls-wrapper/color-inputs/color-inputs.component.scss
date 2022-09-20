@@ -2,31 +2,32 @@
   display: flex;
   overflow-x: auto;
   width: 100%;
+}
 
-  > * {
+.colorInputs {
+  &__container {
     display: flex;
-    padding: 10px;
-  }
+    flex-basis: min-content;
+    margin: 0 auto;
 
-  > *:not(:last-child) {
-    border-right: 1px solid var(--borderColorAccent);
-  }
-
-  > :first-child {
-    margin-left: auto;
-  }
-
-  > :last-child {
-    margin-right: auto;
-  }
-
-  & ::ng-deep app-color-slider {
-    $margin: 9px;
-    margin-left: $margin;
-    margin-right: $margin;
-  }
-
-  & ::ng-deep .colorSlider__input {
-    min-height: 100px;
+    > * {
+      flex-basis: min-content;
+      display: flex;
+      padding: 10px;
+    }
+  
+    > *:not(:last-child) {
+      border-right: 1px solid var(--borderColorAccent);
+    }
+  
+    & ::ng-deep app-color-slider {
+      $margin: 9px;
+      margin-left: $margin;
+      margin-right: $margin;
+    }
+  
+    & ::ng-deep .colorSlider__input {
+      min-height: 100px;
+    }
   }
 }

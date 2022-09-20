@@ -24,5 +24,41 @@
 
   &__radioButton {
     @include radioButtonListItem();
+
+    // background colors
+    $normalBackgroundColor: rgba(var(--borderColorPrimaryRgb), 0.6);
+    $hoverBackgroundColor: rgba(var(--borderColorPrimaryRgb), 0.8);
+    $selectedBackgroundColor: rgba(var(--themeColorPrimaryRgb), 0.7);
+  
+    // text colors
+    $normalTextColor: var(--backgroundColorPrimary);
+    $hoverTextColor: var(--backgroundColorPrimary);
+    $selectedTextColor: var(--backgroundColorPrimary);
+
+    // other vars
+    $boxShadowPx: 0px 0px 7px 6px;
+    $grandparentSelector: &;
+  
+    &:hover {
+      & #{$grandparentSelector}__text {
+        background: $hoverBackgroundColor;
+        box-shadow: $boxShadowPx $hoverBackgroundColor;
+        color: $hoverTextColor;
+      }
+    }
+
+    &--selected {
+      & #{$grandparentSelector}__text {
+        background: $selectedBackgroundColor;
+        box-shadow: $boxShadowPx $selectedBackgroundColor;
+        color: $selectedTextColor;
+      }
+    }
+
+    &__text {
+      background: $normalBackgroundColor;
+      box-shadow: $boxShadowPx $normalBackgroundColor;
+      color: $normalTextColor;
+    }
   }
 }

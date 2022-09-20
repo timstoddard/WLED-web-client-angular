@@ -29,5 +29,28 @@
 
   &__radioButton {
     @include radioButtonListItem();
+
+    // background colors
+    $normalBackgroundColor: var(--backgroundColorPrimary);
+    $hoverBackgroundColor: var(--backgroundColorAccent);
+    $selectedBackgroundColor: var(--backgroundColorPrimary);
+  
+    // text colors
+    $normalTextColor: var(--textColorPrimary);
+    $hoverTextColor: var(--textColorPrimary);
+    $selectedTextColor: var(--themeColorPrimary);
+
+    background: $normalBackgroundColor;
+    color: $normalTextColor;
+
+    &:hover {
+      background: $hoverBackgroundColor;
+      color: $hoverTextColor;
+    }
+
+    &--selected {
+      background: $selectedBackgroundColor;
+      color: $selectedTextColor;
+    }
   }
 }

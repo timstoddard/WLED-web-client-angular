@@ -6,58 +6,48 @@
   grid-gap: $spacer;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   justify-content: start;
-  overflow-y: auto;
   padding: $spacer;
+
+  &__container {
+    overflow-y: auto;
+  }
 }
 
 @mixin radioButtonListItem() {
-  $grandparentSelector: &;
-  $boxShadowPx: 0px 0px 7px 6px;
-
-  // background colors
-  $normalBackgroundColor: rgba(var(--borderColorPrimaryRgb),0.6);
-  $hoverBackgroundColor: rgba(var(--borderColorPrimaryRgb),0.8);
-  $selectedBackgroundColor: rgba(var(--themeColorPrimaryRgb),0.7);
-
-  // text colors
-  $normalTextColor: var(--backgroundColorPrimary);
-  $hoverTextColor: var(--backgroundColorPrimary);
-  $selectedTextColor: var(--backgroundColorPrimary);
+  // select animation
+  @keyframes onSelect {
+    0% { transform: scale(1); }
+    35% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+  }
 
   // border colors
   $normalBorderColor: var(--borderColorAccent);
   $hoverBorderColor: var(--borderColorPrimary);
   $selectedBorderColor: var(--themeColorPrimary);
 
+  // other vars
+  $grandparentSelector: &;
+
   align-items: center;
-  background: var(--backgroundColorPrimary);
   border: 1px solid $normalBorderColor;
   border-radius: 4px;
-  color: $selectedTextColor;
+  cursor: pointer;
   display: flex;
   justify-content: center;
   min-height: 36px;
+  user-select: none;
   transition: border-color 0.2s ease;
 
   &:hover {
     border-color: $hoverBorderColor;
-    cursor: pointer;
+  }
+
+  &--selected {
+    animation: onSelect 0.3s cubic-bezier(.25,.75,1,1);
+    border-color: $selectedBorderColor;
 
     & #{$grandparentSelector}__text {
-      background: $hoverBackgroundColor;
-      box-shadow: $boxShadowPx $hoverBackgroundColor;
-      color: $hoverTextColor;
-    }
-  }
-  
-  &--selected {
-    border-color: $selectedBorderColor;
-    cursor: pointer;
-  
-    & #{$grandparentSelector}__text {
-      background: $selectedBackgroundColor;
-      box-shadow: $boxShadowPx $selectedBackgroundColor;
-      color: $selectedTextColor;
       font-weight: bold;
       text-decoration: underline;
     }
@@ -66,14 +56,10 @@
   &__input {
     display: none;
   }
-
-  &__text {
-    background: $normalBackgroundColor;
-    box-shadow: $boxShadowPx $normalBackgroundColor;
-    color: $normalTextColor;
-  }
 }
 
+// TODO is this really needed? since we can
+// add as a normal style instead of a hover style
 @mixin cursorPointerOnHover() {
   &:hover {
     cursor: pointer;
@@ -109,6 +95,7 @@
 @mixin overlayContainer() {
   background: var(--backgroundColorPrimary);
   border-radius: 6px;
+  // TODO revisit how big this box shadow is
   box-shadow: 0 0 8px 4px rgba(var(--borderColorPrimaryRgb), 0.8);
   padding: 10px;
 }

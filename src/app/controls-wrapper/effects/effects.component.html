@@ -1,8 +1,8 @@
 <!-- TODO make this "Effects" header and show search input on search icon click -->
 <app-search-input
   (searchValueChanges)="filterList($event)"
-  [selectedName]="getSelectedEffectName()"
-  title="Effects"
+  [selectedName$]="getSelectedEffectName()"
+  headerText="Effects"
   label="Search effects"
   class="effects__searchInput">
   <div class="effects__sliders">
@@ -34,20 +34,22 @@
   </div>
 </app-search-input>
 
-<div
-  [formGroup]="effectsForm"
-  class="effects__list">
-  <label
-    *ngFor="let effect of getFilteredEffects() | async"
-    [ngClass]="{ 'effects__radioButton--selected': effect.id === effectsForm.get('selectedEffect')!.value }"
-    class="effects__radioButton">
-    <input
-      type="radio"
-      formControlName="selectedEffect"
-      [value]="effect.id"
-      class="effects__radioButton__input">
-    <span class="effects__radioButton__text">
-      {{ effect.name }}
-    </span>
-  </label>
+<div class="effects__list__container">
+  <div
+    [formGroup]="effectsForm"
+    class="effects__list">
+    <label
+      *ngFor="let effect of getFilteredEffects() | async"
+      [ngClass]="{ 'effects__radioButton--selected': effect.id === effectsForm.get('selectedEffect')!.value }"
+      class="effects__radioButton">
+      <input
+        type="radio"
+        formControlName="selectedEffect"
+        [value]="effect.id"
+        class="effects__radioButton__input">
+      <span class="effects__radioButton__text">
+        {{ effect.name }}
+      </span>
+    </label>
+  </div>
 </div>

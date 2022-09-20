@@ -1,26 +1,28 @@
 <!-- TODO make this "Palettes" header and show search input on search icon click -->
 <app-search-input
   (searchValueChanges)="filterList($event)"
-  [selectedName]="getSelectedPaletteName()"
-  title="Palettes"
+  [selectedName$]="getSelectedPaletteName()"
+  headerText="Palettes"
   label="Search palettes"
   class="palettes__searchInput">
   <app-color-slots class="palettes__colorSlots"></app-color-slots>
 </app-search-input>
 
-<div class="palettes__list">
-  <label
-    *ngFor="let palette of getFilteredPalettes() | async"
-    [ngClass]="{ 'palettes__radioButton--selected': palette.id === selectedPalette.value }"
-    class="palettes__radioButton"
-    [ngStyle]="{ background: palette.background }">
-    <input
-      type="radio"
-      [formControl]="selectedPalette"
-      [value]="palette.id"
-      class="palettes__radioButton__input">
-    <span class="palettes__radioButton__text">
-      {{ palette.name }}
-    </span>
-  </label>
+<div class="palettes__list__container">
+  <div class="palettes__list">
+    <label
+      *ngFor="let palette of getFilteredPalettes() | async"
+      [ngClass]="{ 'palettes__radioButton--selected': palette.id === selectedPalette.value }"
+      class="palettes__radioButton"
+      [ngStyle]="{ background: palette.background }">
+      <input
+        type="radio"
+        [formControl]="selectedPalette"
+        [value]="palette.id"
+        class="palettes__radioButton__input">
+      <span class="palettes__radioButton__text">
+        {{ palette.name }}
+      </span>
+    </label>
+  </div>
 </div>

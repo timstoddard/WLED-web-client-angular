@@ -4,6 +4,7 @@
   border: 1px solid var(--borderColorPrimary);
   border-radius: 4px;
   display: flex;
+  flex-basis: min-content;
   flex-direction: column;
   justify-content: space-evenly;
   margin: 2px;
@@ -20,6 +21,7 @@
   &__label {
     align-items: center;
     display: flex;
+    flex-grow: 1;
     justify-content: center;
 
     &__text {

@@ -24,7 +24,7 @@
   }
 
   &__title {
-    margin: 4px 0;
+    margin: 2px 0;
   }
 
   &__input {
@@ -34,7 +34,7 @@
     color: inherit;
     // TODO convert to em/rem
     font-size: 15.5px;
-    margin: 4px 0;
+    margin: 2px 0;
     max-width: 180px;
     outline: 0;
     padding: 4px 8px;
@@ -42,9 +42,19 @@
   }
 
   &__selectedName {
-    font-size: 14px;
-    font-style: italic;
-    padding: 2px 0;
+    // TODO convert to em/rem
+    font-size: 15px;
+    font-weight: bold;
+    margin: 2px 0;
+
+    // TODO clip overflow text
+    // text-overflow: ellipsis;
+    // overflow: hidden;
+    // white-space: nowrap;
+
+    &--hasValue {
+      color: var(--themeColorPrimary);
+    }
   }
 
   &__icon {

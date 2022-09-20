@@ -20,6 +20,7 @@ export class WebSocketService {
     private apiService: ApiService,
     private onlineStatusService: OnlineStatusService,
   ) {
+    // TODO reconnect if api base url changes
     if (
       this.onlineStatusService.getIsOffline()
       || this.apiService.isBaseUrlUnset()

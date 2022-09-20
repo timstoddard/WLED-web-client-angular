@@ -11,11 +11,11 @@ import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing
   styleUrls: ['./search-input.component.scss']
 })
 export class SearchInputComponent extends UnsubscribingComponent implements OnInit {
-  /** Optional title to be shown and toggled with search input. */
-  @Input() title: string = '';
-  /** Input element label. */
+  /** Header title. */
+  @Input() headerText: string = '';
+  /** Search icon hover label. */
   @Input() label: string = '';
-  @Input() selectedName!: Observable<string>;
+  @Input() selectedName$!: Observable<string>;
   @Output() searchValueChanges = new EventEmitter<string>();
   @ViewChild('searchInput', { read: ElementRef }) searchInputElement!: ElementRef<HTMLInputElement>;
   searchText!: FormControl;
@@ -46,7 +46,7 @@ export class SearchInputComponent extends UnsubscribingComponent implements OnIn
     if (event.key === 'Escape') {
       if (this.searchText.value.length > 0) {
         this.cancelSearch();
-      } else if (this.title) {
+      } else {
         this.showInput = false;
       }
       event.stopImmediatePropagation();
@@ -54,9 +54,7 @@ export class SearchInputComponent extends UnsubscribingComponent implements OnIn
   }
 
   toggleSearchInput() {
-    if (this.title) {
-      this.showInput = !this.showInput;
-    }
+    this.showInput = !this.showInput;
     if (this.showInput) {
       // TODO possible to do this without timeout?
       setTimeout(() => {

@@ -1,10 +1,14 @@
  <i
   [innerHTML]="'&#xe0a1;'"
+  [title]="label"
   (click)="toggleSearchInput()"
   class="searchInput__icon icons">
 </i>
 
 <div class="searchInput__header">
+  <!-- TODO display to left of title/subtitle for desktop -->
+  <!-- and show instead of title/subtitle for mobile -->
+  <!-- also: should still display "more" button on mobile when input visible? -->
   <input
     *ngIf="showInput; else showTitle"
     #searchInput
@@ -24,12 +28,19 @@
 
   <ng-template #showTitle>
     <h2 class="searchInput__title">
-      {{ title }}
+      {{ headerText }}
     </h2>
   </ng-template>
 
   <div class="searchInput__selectedName">
-    {{ selectedName | async }}
+    <span
+      *ngIf="selectedName$ | async as selectedName; else noneSelected"
+      class="searchInput__selectedName--hasValue">
+      {{ selectedName }}
+    </span>
+    <ng-template #noneSelected>
+      None selected
+    </ng-template>
   </div>
 </div>
 
