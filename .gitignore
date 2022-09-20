@@ -44,3 +44,10 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# dotenv environment variables file
+.env
+.env.test
+
+# cdk output file
+cdk-output-data

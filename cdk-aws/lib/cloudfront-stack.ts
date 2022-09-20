@@ -4,10 +4,8 @@ import * as cloudfront from 'aws-cdk-lib/aws-cloudfront'
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins'
 import * as s3 from 'aws-cdk-lib/aws-s3'
 import { Construct } from 'constructs'
-import { writeFileSync } from 'fs'
 
 // define constants
-const S3_BUCKET_NAME_FILE = './output-s3-bucket-name'
 // TODO add user flag/prop for this
 const IS_DEV_MODE = true
 
@@ -34,7 +32,7 @@ export class CloudFrontStack extends cdk.Stack {
     const websiteBucket = this.createS3Bucket(bucketName, bucketId)
 
     // set up CF Distribution to serve content from S3 bucket securely
-    new cloudfront.Distribution(this, `${bucketId}-cdn`, {
+    const distribution = new cloudfront.Distribution(this, `${bucketId}-cdn`, {
       defaultBehavior: {
         origin: new origins.S3Origin(websiteBucket, {
           originAccessIdentity: this.createOAI(bucketId),
@@ -67,6 +65,8 @@ export class CloudFrontStack extends cdk.Stack {
       priceClass: cloudfront.PriceClass.PRICE_CLASS_100, // possible future upgrade
       sslSupportMethod: cloudfront.SSLMethod.SNI,
     })
+
+    this.createCdkOutputs(websiteBucket, distribution)
   }
 
   /**
@@ -117,13 +117,6 @@ export class CloudFrontStack extends cdk.Stack {
     }
     const bucketName = `${sanitized}-static-website`
     const bucketId = bucketName.replace(/[.-]+/g, '-')
-
-    // save s3 bucket name to file
-    try {
-      writeFileSync(S3_BUCKET_NAME_FILE, bucketName)
-    } catch (err) {
-      console.error(err)
-    }
 
     return {
       bucketName,
@@ -197,5 +190,22 @@ export class CloudFrontStack extends cdk.Stack {
       },
       // TODO add other status codes?
     ]
+  }
+
+  private createCdkOutputs(
+    bucket: s3.IBucket,
+    distribution: cloudfront.Distribution,
+  ) {
+    new cdk.CfnOutput(this, 'bucketName', {
+      value: bucket.bucketName,
+      description: 'S3 bucket name',
+      exportName: 'bucketName',
+    });
+
+    new cdk.CfnOutput(this, 'distributionId', {
+      value: distribution.distributionId,
+      description: 'CloudFront distribution ID',
+      exportName: 'distributionId',
+    });
   }
 }

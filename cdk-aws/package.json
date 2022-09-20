@@ -5,7 +5,6 @@
     "all-stacks": "bin/index.js"
   },
   "scripts": {
-    "deploy": "./scripts/deploy-website.sh",
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
