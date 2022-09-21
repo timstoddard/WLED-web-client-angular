@@ -29,11 +29,15 @@ export class ApiService extends UnsubscribingService {
 
   constructor(
     private http: HttpClient,
-    appStateService: AppStateService,
+    private appStateService: AppStateService,
   ) {
     super();
-    appStateService.getSelectedWledIpAddress(this.ngUnsubscribe)
-      .subscribe(({ ipv4Address  }) => {
+    this.init();
+  }
+
+  private init() {
+    this.appStateService.getSelectedWledIpAddress(this.ngUnsubscribe)
+      .subscribe(({ ipv4Address }) => {
         this.baseUrl = ipv4Address;
       });
   }

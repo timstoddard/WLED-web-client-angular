@@ -3,15 +3,17 @@ import { Observable, Subject } from 'rxjs';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { WledApiResponse } from './api-types';
 import { ApiService } from './api.service';
+import { AppStateService } from './app-state/app-state.service';
 import { LiveViewData } from './live-view/live-view.service';
 import { OnlineStatusService } from './online-status.service';
+import { UnsubscribingService } from './unsubscribing/unsubscribing.service';
 
 // TODO how are these used by the web socket?
 const LIVE_VIEW_MESSAGE = 'LIVE_VIEW_MESSAGE';
 const STATE_AND_INFO_MESSAGE = 'STATE_AND_INFO_MESSAGE';
 
 @Injectable({ providedIn: 'root' })
-export class WebSocketService {
+export class WebSocketService extends UnsubscribingService {
   private socket$!: WebSocketSubject<any>;
   private stateAndInfoSocket$!: Observable<WledApiResponse>;
   private liveViewSocket$!: Observable<LiveViewData>;
@@ -19,15 +21,20 @@ export class WebSocketService {
   constructor(
     private apiService: ApiService,
     private onlineStatusService: OnlineStatusService,
+    private appStateService: AppStateService,
   ) {
-    // TODO reconnect if api base url changes
-    if (
-      this.onlineStatusService.getIsOffline()
-      || this.apiService.isBaseUrlUnset()
-    ) {
+    super();
+    this.init();
+  }
+
+  private init() {
+    if (this.onlineStatusService.getIsOffline()) {
       this.fakeConnect();
     } else {
-      this.connect();
+      this.appStateService.getSelectedWledIpAddress(this.ngUnsubscribe)
+        .subscribe(({ ipv4Address }) => {
+          this.connect(ipv4Address);
+        });
     }
   }
 
@@ -47,11 +54,11 @@ export class WebSocketService {
     this.socket$.complete();
   }
 
-  private connect() {
+  private connect(apiBaseUrl: string) {
     // TODO handle dropped connections
     // https://javascript-conference.com/blog/real-time-in-angular-a-journey-into-websocket-and-rxjs/
 
-    this.socket$ = webSocket<any /* TODO type */>(this.getWebSocketUrl());
+    this.socket$ = webSocket<any /* TODO type */>(this.getWebSocketUrl(apiBaseUrl));
 
     this.stateAndInfoSocket$ = this.socket$.multiplex(
       () => ({ subscribe: STATE_AND_INFO_MESSAGE }),
@@ -64,9 +71,8 @@ export class WebSocketService {
       message => !!message.leds);
   }
 
-  private getWebSocketUrl() {
-    const apiUrl = this.apiService.getBaseUrl();
-    return `ws://${apiUrl}/ws`;
+  private getWebSocketUrl(apiBaseUrl: string) {
+    return `ws://${apiBaseUrl}/ws`;
   }
 
   private fakeConnect() {

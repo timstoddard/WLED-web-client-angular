@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormArray, FormGroup, Validators } from '@angular/forms';
+import { Observer } from 'rxjs';
 import { ApiService } from '../../../shared/api.service';
 import { AppStateService, NO_DEVICE_IP_SELECTED, WledIpAddress } from '../../../shared/app-state/app-state.service';
 import { FormService } from '../../../shared/form-utils';
@@ -43,28 +44,7 @@ export class AddDeviceFormComponent extends UnsubscribingComponent implements On
         wledIpAddresses,
       }) => {
         this.selectedWledIpAddress = selectedWledIpAddress;
-
-        // wire up form logic
-        this.wledIpAddresses.controls = [];
-        for (const ipAddress of wledIpAddresses) {
-          const selected = ipAddress.ipv4Address === this.selectedWledIpAddress.ipv4Address;
-          const newFormGroup = this.createWledIpAddressGroup({
-            selected,
-            ...ipAddress,
-          });
-          // when one is selected, unselect all others
-          this.getValueChanges(newFormGroup, 'selected')
-            .subscribe((isSelected) => {
-              if (isSelected) {
-                for (const formGroup of this.wledIpAddresses.controls) {
-                  if (formGroup !== newFormGroup) {
-                    formGroup.patchValue({ selected: false }, { emitEvent: false });
-                  }
-                }
-              }
-            });
-          this.wledIpAddresses.push(newFormGroup);
-        }
+        this.updateFormValue(wledIpAddresses);
       });
   }
 
@@ -111,32 +91,65 @@ export class AddDeviceFormComponent extends UnsubscribingComponent implements On
     const wledIpAddress = this.wledIpAddresses.at(index);
     if (wledIpAddress) {
       const ipAddress = (wledIpAddress.value as SelectableWledIpAddress).ipv4Address;
-      this.handleUnsubscribe(this.apiService.testIpAddressAsBaseUrl(ipAddress))
-        .subscribe(result => {
-          this.ipAddressTestResults = {
-            ...this.ipAddressTestResults,
-            [index]: result.success,
-          };
-          this.changeDetectorRef.markForCheck();
+      this.testIpAddress(ipAddress, {
+          next: ({ success }) => {
+            this.updateTestResultAtIndex(index, success);
+            this.changeDetectorRef.markForCheck();
+          },
+          error: () => {
+            this.updateTestResultAtIndex(index, false);
+            this.changeDetectorRef.markForCheck();
+          }
         });
     }
   }
 
   saveWledIpAddresses() {
     if (!this.wledIpAddresses.valid) {
-      // TODO user alert?
+      alert('Please fix the error(s).');
       return;
     }
 
     const newIpAddresses = this.wledIpAddresses.value as WledIpAddress[];
     const selected = this.getSelected();
-    const selectedWledIpAddress = selected
-      ? selected.value as WledIpAddress
-      : NO_DEVICE_IP_SELECTED;
-    this.appStateService.setLocalSettings({
-      selectedWledIpAddress,
-      wledIpAddresses: newIpAddresses,
-    });
+    if (selected) {
+      // test IP address before saving it blindly
+      const selectedWledIpAddress = selected.value as WledIpAddress;
+      this.testIpAddress(selectedWledIpAddress.ipv4Address, {
+        next: ({ success }) => {
+          if (success) {
+            this.appStateService.setLocalSettings({
+              selectedWledIpAddress,
+              wledIpAddresses: newIpAddresses,
+            });
+            // TODO show messages in component/in snackbar instead of alerts
+            alert('Selected device saved!');
+          } else {
+            alert('Network connection failed. Please select a different IP address.');
+          }
+        },
+        error: () => {
+          alert('Network connection failed. Please select a different IP address.');
+        },
+      })
+    } else {
+      this.appStateService.setLocalSettings({
+        selectedWledIpAddress: NO_DEVICE_IP_SELECTED,
+        wledIpAddresses: newIpAddresses,
+      });
+    }
+  }
+
+  private testIpAddress(ipAddress: string, observer: Partial<Observer<{ success: boolean }>>) {
+    this.handleUnsubscribe(this.apiService.testIpAddressAsBaseUrl(ipAddress))
+      .subscribe(observer);
+  }
+
+  private updateTestResultAtIndex = (index: number, testResult: boolean) => {
+    this.ipAddressTestResults = {
+      ...this.ipAddressTestResults,
+      [index]: testResult,
+    };
   }
 
   private createForm() {
@@ -158,6 +171,30 @@ export class AddDeviceFormComponent extends UnsubscribingComponent implements On
     });
     formGroup.get('ipv4Address')!.addValidators(Validators.pattern(IP_ADDRESS_REGEX));
     return formGroup;
+  }
+
+  private updateFormValue(wledIpAddresses: WledIpAddress[]) {
+    // wire up form logic
+    this.wledIpAddresses.controls = [];
+    for (const ipAddress of wledIpAddresses) {
+      const selected = ipAddress.ipv4Address === this.selectedWledIpAddress.ipv4Address;
+      const newFormGroup = this.createWledIpAddressGroup({
+        selected,
+        ...ipAddress,
+      });
+      // when one is selected, unselect all others
+      this.getValueChanges(newFormGroup, 'selected')
+        .subscribe((isSelected) => {
+          if (isSelected) {
+            for (const formGroup of this.wledIpAddresses.controls) {
+              if (formGroup !== newFormGroup) {
+                formGroup.patchValue({ selected: false }, { emitEvent: false });
+              }
+            }
+          }
+        });
+      this.wledIpAddresses.push(newFormGroup);
+    }
   }
 
   private getSelected() {
