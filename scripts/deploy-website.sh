@@ -1,15 +1,17 @@
+#!/bin/bash
+
 ## UPLOAD WEBSITE ##
 
 # IMPORTANT: this script requires `jq` to be installed
 
-# TODO this should be a script param
 # built prod website static files
-BUILT_FILES_DIR='dist/WLED-Web-Client'
-# TODO use fewer vars for file name... (ideally 1)
+BUILT_FILES_DIR=$1
+echo "BUILT_FILES_DIR $BUILT_FILES_DIR"
+# absolute path to script (used below)
+PWD=$(pwd)
+echo "PWD $PWD"
 # output file from cloudfront-stack.ts
-BASE_OUTPUT_FILE='cdk-output-data'
-CDK_OUTPUT_DATA_FILE_INNER="../$BASE_OUTPUT_FILE"
-CDK_OUTPUT_DATA_FILE="./$BASE_OUTPUT_FILE"
+CDK_OUTPUT_FILE="$PWD/cdk-output-data"
 
 # Uploads specified file types to S3 bucket.
 # Param 1: Local directory path
@@ -67,19 +69,30 @@ upload_to_s3() {
   # aws s3 sync media s3://$S3_DIR/media
 }
 
+setup() {
+  # reads in env variables from .env file
+  set -a # automatically export all variables
+  source .env
+  set +a
+}
+
+cleanup() {
+  rm -rf $CDK_OUTPUT_FILE
+}
+
 # Deploys the CDK stack to AWS.
 # Writes output to the provided file.
 cdk_deploy() {
   cd cdk-aws
   cdk synth
-  cdk deploy --outputs-file $CDK_OUTPUT_DATA_FILE_INNER
+  cdk deploy --outputs-file $CDK_OUTPUT_FILE
   cd ..
 }
 
 # Extracts the bucket name and distribution id from the CDK output.
 extract_cdk_output() {
-  S3_BUCKET_NAME=$(cat $CDK_OUTPUT_DATA_FILE | jq -r '.[].bucketName')
-  DISTRIBUTION_ID=$(cat $CDK_OUTPUT_DATA_FILE | jq -r '.[].distributionId')
+  S3_BUCKET_NAME=$(cat $CDK_OUTPUT_FILE | jq -r '.[].bucketName')
+  DISTRIBUTION_ID=$(cat $CDK_OUTPUT_FILE | jq -r '.[].distributionId')
 }
 
 # Purges CloudFront & CloudFlare caches.
@@ -93,9 +106,18 @@ purge_caches() {
   echo "[CloudFront] Cache purge status: $CLOUDFRONT_PURGE_CACHE_STATUS"
 
   # purge cloudflare cache
-  ts-node-esm ./scripts/cloudflare-purge-cache.ts
+  CLOUDFLARE_PURGE_CACHE_OUTPUT=$(curl -X DELETE "https://api.cloudflare.com/client/v4/zones/$CLOUDFLARE_ZONE_ID/purge_cache" \
+  -H "X-Auth-Email: $CLOUDFLARE_EMAIL" \
+  -H "X-Auth-Key: $CLOUDFLARE_API_KEY" \
+  -H "Content-Type:application/json" \
+  --data '{"purge_everything":true}')
+  CLOUDFLARE_PURGE_CACHE_STATUS=$(echo $CLOUDFLARE_PURGE_CACHE_OUTPUT | jq -r '.success')
+
+  echo "[CloudFlare] Cache purge status: success=$CLOUDFLARE_PURGE_CACHE_STATUS"
 }
 
+# main script logic
+setup
 
 cdk_deploy
 
@@ -104,6 +126,8 @@ extract_cdk_output
 upload_to_s3 $BUILT_FILES_DIR $S3_BUCKET_NAME
 
 purge_caches
+
+cleanup
 
 # notification sound after script completes
 # echo $'\a'
