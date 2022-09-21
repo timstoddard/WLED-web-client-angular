@@ -1,18 +1,16 @@
-<!-- TODO put these links into a hamburger menu or similar -->
 <nav
   *ngIf="showDevNavBar"
   class="nav">
   <a *ngFor="let link of links"
     [routerLink]="link.path"
-    routerLinkActive="nav__button--active"
-    class="nav__button">
+    routerLinkActive="nav__link--active"
+    class="nav__link">
     {{ link.component }}
   </a>
-  <!-- TODO remove -->
   <span
     (click)="hideDevNavBar()"
-    class="nav__hideButton">
-    [X]
+    class="nav__closeButton">
+    X
   </span>
 </nav>
 

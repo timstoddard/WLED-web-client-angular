@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-// import RangeTouch from 'rangetouch';
 import { WledApiResponse } from '../shared/api-types';
 import { AppStateService } from '../shared/app-state/app-state.service';
 import { LocalStorageKey, LocalStorageService } from '../shared/local-storage.service';
@@ -116,21 +115,20 @@ export class ControlsWrapperComponent extends UnsubscribingComponent implements 
     }
   }
 
+  // TODO better way to load background
   private loadBackground(imageUrl: string) {
     const backgroundElement = document.getElementById('bg')!;
-    let imgElement = document.createElement('img') as HTMLImageElement;
+    let imgElement = document.createElement('img');
     imgElement.src = imageUrl;
     if (imageUrl === '') {
       this.loadHolidayBackground(imgElement);
     }
-    imgElement.addEventListener('load', (event) => {
-      let alpha = this.backgroundOpacity;
-      if (isNaN(alpha)) {
-        alpha = 0.6;
-      }
+    imgElement.addEventListener('load', () => {
+      const alpha = isNaN(this.backgroundOpacity)
+        ? 0.6
+        : this.backgroundOpacity;
       backgroundElement.style.opacity = `${alpha}`;
       backgroundElement.style.backgroundImage = `url(${imgElement.src})`;
-      // img = null; // TODO is this just fake garbage collection?
     });
   }
 
@@ -174,76 +172,18 @@ export class ControlsWrapperComponent extends UnsubscribingComponent implements 
       [2024, 2, 31, 2, 'https://aircoookie.github.io/easter.png'],
     ];
   }
-
-  /*private setupRanges() {
-    // TODO need to call this in child comps? or just in after view init?
-    const ranges = RangeTouch.setup('input[type="range"]', {});
-    console.log('rangetouch', RangeTouch, ranges)
-
-    // TODO add event listeners to ranges
-    const sls = getElementList('input[type="range"]') as HTMLInputElement[];
-    for (const sl of sls) {
-      sl.addEventListener('input', this.updateBubble, true);
-      sl.addEventListener('touchstart', this.toggleBubble);
-      sl.addEventListener('touchend', this.toggleBubble);
-    }
-  }
-
-  // rangetouch slider function
-  private updateBubble(event: Event) {
-    const element = event.target as HTMLInputElement;
-    const parent = element.parentNode as HTMLElement;
-    const bubble = parent.getElementsByTagName('output')[0];
-    if (bubble) {
-      bubble.innerHTML = element.value;
-    }
-  }
-
-  // rangetouch slider function
-  private toggleBubble(event: Event) {
-    const element = event.target as HTMLInputElement;
-    element.parentNode!.querySelector('output')!.classList.toggle('hidden');
-  }*/
 }
 
 ///////////////////////////////////////////////////
 // helper functions (not tied to any view logic) //
 ///////////////////////////////////////////////////
 
-// TODO probably won't need this once form templates are set up
 const updateUI = () => {
-  // TODO update active appearance of buttons
-  // document.getElementById('buttonPower')!.className = this.isOn ? 'active' : '';
-  // document.getElementById('buttonNl')!.className = this.nlA ? 'active' : '';
-  // document.getElementById('buttonSync')!.className = this.syncSend ? 'active' : '';
-
-  // TODO update slider trails
-
   // TODO show/hide whiteness/kelvin sliders based on config
   // document.getElementById('wwrap')!.style.display = this.isRgbw ? 'block' : 'none';
   // document.getElementById('wbal')!.style.display = this.lastinfo.leds.cct ? 'block' : 'none';
   // document.getElementById('kwrap')!.style.display = this.lastinfo.leds.cct ? 'none' : 'block';
 
-  // TODO update presets UI
-  // this.updatePA();
-
-  // TODO update other sliders
-  // this.updatePSliders();
-}
-
-// TODO unused
-const unfocusSliders = () => {
-  // in top menu bar (for now?)
-  document.getElementById('sliderBri')!.blur();
-  
-  // both in effects component
-  document.getElementById('sliderSpeed')!.blur();
-  document.getElementById('sliderIntensity')!.blur();
-}
-
-// TODO unused
-const openGithubWiki = () => {
-  window.open('https://github.com/Aircoookie/WLED/wiki');
 }
 
 ////////////////////////////////////////

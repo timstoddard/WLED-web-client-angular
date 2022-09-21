@@ -1,26 +1,39 @@
+@mixin linkStyles() {
+  align-items: center;
+  border-radius: 4px;
+  color: var(--textColorAccent);
+  display: flex;
+  justify-content: center;
+  padding: 1px 4px;
+  text-decoration: none;
+
+  &:hover {
+    background: var(--backgroundColorAccent);
+    color: var(--textColorPrimary);
+  }
+}
+
 .nav {
   align-items: center;
+  border-bottom: 1px solid var(--borderColorPrimary);
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  padding: 3px;
 
-  &__button {
-    color: var(--textColorAccent);
-    padding: 4px;
+  &__link {
+    @include linkStyles();
   
     &--active {
       color: var(--textColorPrimary);
       font-weight: bold;
+      text-decoration: underline;
     }
   }
 
-  &__hideButton {
-    color: var(--textColorAccent);
-    margin-left: 10px;
-
-    &:hover {
-      color: var(--textColorPrimary);
-      cursor: pointer;
-    }
+  &__closeButton {
+    @include linkStyles();
+    cursor: pointer;
+    margin-left: 10px;    
   }
 }

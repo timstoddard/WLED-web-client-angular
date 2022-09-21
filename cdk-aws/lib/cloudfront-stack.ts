@@ -150,6 +150,7 @@ export class CloudFrontStack extends cdk.Stack {
    */
   private createOAI = (bucketId: string) => {
     // TODO replace with OAC when available in CDK
+    // https://github.com/aws/aws-cdk/issues/21771#issuecomment-1246128571
     const oai = new cloudfront.OriginAccessIdentity(this, `${bucketId}-oai`, {
       comment: `OAI for ${bucketId} website bucket`,
     })

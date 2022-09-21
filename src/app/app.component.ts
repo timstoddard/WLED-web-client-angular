@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Meta, MetaDefinition } from '@angular/platform-browser';
 import { LocalStorageKey, LocalStorageService } from './shared/local-storage.service';
 import { PageTitleService } from './shared/page-title.service';
 import { UnsubscribingComponent } from './shared/unsubscribing/unsubscribing.component';
@@ -61,16 +62,20 @@ export class AppComponent extends UnsubscribingComponent {
   constructor(
     private pageTitleService: PageTitleService,
     private localStorageService: LocalStorageService,
+    private metaTagService: Meta,
   ) {
     super();
   }
 
   ngOnInit() {
+    this.addMetaTags();
+
     this.showDevNavBar = false;
 
     this.pageTitleService.updateOnRouteChange(this.ngUnsubscribe);
     this.showDevNavBar = this.localStorageService.get(LocalStorageKey.SHOW_DEV_NAV_BAR)!;
 
+    // TODO fix safari viewport height bug
     // window.addEventListener('resize', this.appHeight);
     // this.appHeight();
   }
@@ -78,6 +83,16 @@ export class AppComponent extends UnsubscribingComponent {
   hideDevNavBar() {
     this.showDevNavBar = false;
     this.localStorageService.set(LocalStorageKey.SHOW_DEV_NAV_BAR, false);
+  }
+
+  private addMetaTags() {
+    const tags: MetaDefinition[] = [
+      { viewport: 'width=device-width, initial-scale=1, minimum-scale=1' },
+      // TODO different theme color?
+      { 'theme-color': '#222222' },
+      { 'apple-mobile-web-app-capable': 'yes' },
+    ];
+    this.metaTagService.addTags(tags);
   }
 
   /**
