@@ -32,16 +32,17 @@
     </h2>
   </ng-template>
 
-  <div class="searchInput__selectedName">
-    <span
-      *ngIf="selectedName$ | async as selectedName; else noneSelected"
-      class="searchInput__selectedName--hasValue">
-      {{ selectedName }}
-    </span>
-    <ng-template #noneSelected>
-      None selected
-    </ng-template>
+  <div
+    *ngIf="selectedName$ | async as selectedName; else noneSelected"
+    [ngClass]="{'searchInput__selectedName--hasValue': !!selectedName}"
+    class="searchInput__selectedName">
+    {{ selectedName }}
   </div>
+  <ng-template #noneSelected>
+    <div class="searchInput__selectedName">
+      None selected
+    </div>
+  </ng-template>
 </div>
 
 <i

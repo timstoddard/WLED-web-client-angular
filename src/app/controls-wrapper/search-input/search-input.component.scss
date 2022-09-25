@@ -4,11 +4,10 @@
   @include overrideMatTextInputStyles(--backgroundColorAccent);
   align-items: center;
   border-bottom: solid 1px var(--borderColorPrimary);
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   min-width: 100px;
   padding: 8px 10px 4px;
-  position: relative;
 
   @media screen and (max-width: 400px) {
     padding: 4px 2px;
@@ -20,6 +19,7 @@
     align-items: center;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
     text-align: center;
   }
 
@@ -46,11 +46,10 @@
     font-size: 15px;
     font-weight: bold;
     margin: 2px 0;
-
-    // TODO clip overflow text
-    // text-overflow: ellipsis;
-    // overflow: hidden;
-    // white-space: nowrap;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 
     &--hasValue {
       color: var(--themeColorPrimary);

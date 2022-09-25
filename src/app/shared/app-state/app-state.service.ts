@@ -108,9 +108,10 @@ const DEFAULT_WLED_IP_ADDRESSES: WledIpAddress[] = [
     ipv4Address: '192.168.100.5',
   },
 ];
-const DEFAULT_SELECTED_WLED_IP_ADDRESS: WledIpAddress = environment.production
-  ? NO_DEVICE_IP_SELECTED
-  : DEFAULT_WLED_IP_ADDRESSES[0];
+const DEFAULT_SELECTED_WLED_IP_ADDRESS = NO_DEVICE_IP_SELECTED;
+// const DEFAULT_SELECTED_WLED_IP_ADDRESS: WledIpAddress = environment.production
+  // ? NO_DEVICE_IP_SELECTED
+  // : DEFAULT_WLED_IP_ADDRESSES[0];
 
 /** State of the app before hydration. Everything is turned off. */
 export const DEFAULT_APP_STATE: AppStateProps = {
