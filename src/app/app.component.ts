@@ -87,12 +87,34 @@ export class AppComponent extends UnsubscribingComponent {
 
   private addMetaTags() {
     const tags: MetaDefinition[] = [
-      { viewport: 'width=device-width, initial-scale=1, minimum-scale=1' },
-      // TODO different theme color?
-      { 'theme-color': '#222222' },
-      { 'apple-mobile-web-app-capable': 'yes' },
+      {
+        name: 'viewport',
+        content: this.getViewportMetaContent(),
+      },
+      {
+        name: 'theme-color',
+        // TODO different theme color?
+        content: '#222222',
+      },
+      {
+        name: 'apple-mobile-web-app-capable',
+        content: 'yes',
+      },
     ];
     this.metaTagService.addTags(tags);
+  }
+
+  private getViewportMetaContent() {
+    const content = Object.entries({
+      width: 'device-width',
+      height: 'device-height',
+      'initial-scale': 1,
+      'minimum-scale': 1,
+      'user-scalable': 'no',
+    })
+      .map(([key, value]) => `${key}=${value}`)
+      .join(',');
+    return content;
   }
 
   /**
