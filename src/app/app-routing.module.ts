@@ -11,6 +11,9 @@ import { UpdateComponent } from './update/update.component';
 import { UserModPageComponent } from './user-mod-page/user-mod-page.component';
 import { WelcomeComponent } from './welcome/welcome.component';
 
+// TODO use built-in router title property
+// https://angular.io/guide/router#setting-the-page-title
+
 // TODO page titles should match existing web app (?)
 const routes: RouteWithPageTitle[] = [
   // auto-redirect to controls page

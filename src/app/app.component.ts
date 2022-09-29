@@ -88,6 +88,9 @@ export class AppComponent extends UnsubscribingComponent {
   private addMetaTags() {
     const tags: MetaDefinition[] = [
       {
+        charset: 'utf-8',
+      },
+      {
         name: 'viewport',
         content: this.getViewportMetaContent(),
       },
