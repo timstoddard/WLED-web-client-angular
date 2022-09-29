@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { FormService, FormValues } from '../../shared/form-utils';
+import { FormService, FormValues } from '../../shared/form-service';
 
 @Component({
   selector: 'app-user-mod-settings',

@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AppStateService } from '../../../shared/app-state/app-state.service';
-import { FormService } from '../../../shared/form-utils';
+import { FormService } from '../../../shared/form-service';
 import { UIConfigService } from '../../../shared/ui-config.service';
 import { UnsubscribingComponent } from '../../../shared/unsubscribing/unsubscribing.component';
 import { formatPlural, genericPostResponse } from '../../utils';

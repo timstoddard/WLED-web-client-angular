@@ -7,7 +7,7 @@ import { Preset } from '../controls-wrapper/presets/presets.service';
 import { APIPreset, APIPresets, SavePresetRequest, WledApiResponse, WledInfo, WledState } from './api-types';
 import { AppStateService, NO_DEVICE_IP_SELECTED } from './app-state/app-state.service';
 import { AppState, Segment } from './app-types';
-import { FormValues } from './form-utils';
+import { FormValues } from './form-service';
 import { LiveViewData } from './live-view/live-view.service';
 import { UnsubscribingService } from './unsubscribing/unsubscribing.service';
 

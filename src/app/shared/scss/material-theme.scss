@@ -1,6 +1,6 @@
 @use '@angular/material' as mat;
 
-@import '~@angular/material/theming';
+@import '@angular/material/theming';
 
 // TODO which theme to use
 $custom-theme-primary: mat.define-palette(mat.$deep-purple-palette, A200);

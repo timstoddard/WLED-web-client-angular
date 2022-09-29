@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
-import { FormService } from '../../../shared/form-utils';
+import { FormService } from '../../../shared/form-service';
 import { OnlineStatusService } from '../../../shared/online-status.service';
 import { Preset, PresetsService } from '../presets.service';
 

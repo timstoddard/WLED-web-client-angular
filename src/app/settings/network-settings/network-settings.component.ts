@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormGroup, Validators } from '@angular/forms';
 import { AppStateService, WledIpAddress } from '../../shared/app-state/app-state.service';
-import { FormService } from '../../shared/form-utils';
+import { FormService } from '../../shared/form-service';
 import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
 import { SelectItem } from '../shared/settings-types';
 import { NetworkSettingsService } from './network-settings.service';

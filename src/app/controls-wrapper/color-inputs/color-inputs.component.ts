@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { merge } from 'rxjs';
-import { FormService } from '../../shared/form-utils';
+import { FormService } from '../../shared/form-service';
 import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
 import { ColorService, CurrentColor } from '../color.service';
 

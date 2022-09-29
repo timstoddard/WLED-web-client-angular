@@ -3,7 +3,7 @@ import { FormArray, FormGroup, Validators } from '@angular/forms';
 import { Observer } from 'rxjs';
 import { ApiService } from '../../../shared/api.service';
 import { AppStateService, NO_DEVICE_IP_SELECTED, WledIpAddress } from '../../../shared/app-state/app-state.service';
-import { FormService } from '../../../shared/form-utils';
+import { FormService } from '../../../shared/form-service';
 import { UnsubscribingComponent } from '../../../shared/unsubscribing/unsubscribing.component';
 
 interface SelectableWledIpAddress extends WledIpAddress {

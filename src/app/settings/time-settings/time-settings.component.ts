@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
-import { FormService, FormValues } from '../../shared/form-utils';
+import { FormService, FormValues } from '../../shared/form-service';
 import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
 import { SelectItem } from '../shared/settings-types';
 

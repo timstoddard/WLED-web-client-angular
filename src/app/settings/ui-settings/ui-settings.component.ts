@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { FormService, FormValues } from '../../shared/form-utils';
+import { FormService, FormValues } from '../../shared/form-service';
 import { LocalStorageKey, LocalStorageService } from '../../shared/local-storage.service';
 import { AppUIConfig, UIConfigService } from '../../shared/ui-config.service';
 import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';

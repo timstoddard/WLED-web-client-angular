@@ -1,3 +1,4 @@
+// TODO import as non-commonjs module
 import { getModeForPath } from 'ace-builds/src-noconflict/ext-modelist';
 import { Editor } from './editor';
 

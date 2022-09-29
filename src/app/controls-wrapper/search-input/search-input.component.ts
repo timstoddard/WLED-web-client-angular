@@ -2,7 +2,7 @@ import { OriginConnectionPosition, OverlayConnectionPosition, ConnectionPosition
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { FormService } from '../../shared/form-utils';
+import { FormService } from '../../shared/form-service';
 import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
 
 @Component({
@@ -83,9 +83,9 @@ export class SearchInputComponent extends UnsubscribingComponent implements OnIn
   }
 
   private createFormControl() {
-    const control = this.formSerivce.formBuilder.control('');
+    const control = this.formSerivce.createFormControl<string>('');
 
-    this.handleUnsubscribe<string>(control.valueChanges)
+    this.handleUnsubscribe(control.valueChanges)
       .subscribe(() => this.onChange());
 
     return control;

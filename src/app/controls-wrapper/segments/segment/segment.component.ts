@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { AppStateService } from '../../../shared/app-state/app-state.service';
 import { Segment } from '../../../shared/app-types';
-import { FormService } from '../../../shared/form-utils';
+import { FormService } from '../../../shared/form-service';
 import { UIConfigService } from '../../../shared/ui-config.service';
 import { UnsubscribingComponent } from '../../../shared/unsubscribing/unsubscribing.component';
 import { formatPlural, genericPostResponse } from '../../utils';

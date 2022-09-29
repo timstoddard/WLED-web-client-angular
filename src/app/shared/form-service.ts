@@ -1,13 +1,28 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 
-export type FormValues = { [key: string]: unknown }
-
-// TODO rename file to form-service.ts
+/**
+ * Generalized interface for FormGroup keyvalue pairs.
+ * 
+ * Possible value types:
+ * - common types: string, number, boolean
+ * - a nested FormValues object
+ * - undefined, for an optional control
+ * - null, for controls that explicitly allow it
+ */
+export type FormValues = { [key: string]: string | number | boolean | FormValues | undefined | null }
 
 @Injectable({ providedIn: 'root' })
 export class FormService {
   constructor(private _formBuilder: FormBuilder) { }
+
+  createFormControl<T>(value: T) {
+    return this._formBuilder.control<T>(value, {
+      nonNullable: true,
+      // TODO how to handle different/nonexistent validators?
+      validators: [Validators.required],
+    });
+  }
 
   createFormGroup(
     values: FormValues,
@@ -18,13 +33,10 @@ export class FormService {
       // add controls for all the default values
       for (const key in values) {
         const value = values[key];
-        let control: AbstractControl;
-        if (typeof value === 'object' && value !== null) {
-          control = this.createFormGroup(value as FormValues);
-        } else {
-          // TODO how to handle different/nonexistent validators?
-          control = this._formBuilder.control(value, Validators.required);
-        }
+        const valueIsObject = typeof value === 'object' && value !== null;
+        const control = valueIsObject
+          ? this.createFormGroup(value as FormValues)
+          : this.createFormControl(value);
         formGroup.setControl(key, control);
       }
     }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { FormService } from '../shared/form-utils';
+import { FormService } from '../shared/form-service';
 import { UnsubscribingComponent } from '../shared/unsubscribing/unsubscribing.component';
 
 @Component({

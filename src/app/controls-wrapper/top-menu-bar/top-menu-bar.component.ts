@@ -10,7 +10,7 @@ import { WebSocketService } from '../../shared/web-socket.service';
 import { generateApiUrl } from '../json.service';
 import { genericPostResponse, MenuBarButton, setCssColor } from '../utils';
 import { TopMenuBarService } from './top-menu-bar.service';
-import { FormService } from '../../shared/form-utils';
+import { FormService } from '../../shared/form-service';
 
 const DEFAULT_BRIGHTNESS = 128;
 const DEFAULT_TRANSITION_DURATION_SECONDS = 0.7;

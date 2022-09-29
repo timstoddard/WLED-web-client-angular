@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ApiService } from '../../../shared/api.service';
 import { AppStateService, NO_DEVICE_IP_SELECTED, WledIpAddress } from '../../../shared/app-state/app-state.service';
-import { FormService } from '../../../shared/form-utils';
+import { FormService } from '../../../shared/form-service';
 import { UnsubscribingComponent } from '../../../shared/unsubscribing/unsubscribing.component';
 
 @Component({
@@ -42,7 +42,7 @@ export class DeviceSelectorComponent extends UnsubscribingComponent implements O
   }
 
   private createControl() {
-    return this.formService.formBuilder.control('');
+    return this.formService.createFormControl('');
   }
 
   private setSelectedDevice = (ipAddress: string) => {
