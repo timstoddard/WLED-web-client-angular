@@ -31,40 +31,35 @@
           <mat-icon>menu</mat-icon>
         </button>
         <a
-          routerLink="/settings"
+          routerLink="/controls/settings"
           class="settings__title">
           WLED Settings
         </a>
       </div>
-      <div class="settings__toolbar__right">
-        <a
-          routerLink="/controls"
-          class="settings__title">
-          Controls
-        </a>
-      </div>
     </mat-toolbar>
 
-    <nav
-      *ngIf="!routerOutlet.isActivated"
-      class="settings__nav">
-      <ul class="settings__links">
-        <li
-          *ngFor="let link of links"
-          class="settings__linkWrapper">
-          <a
-            [routerLink]="['./', link.path]"
-            routerLinkActive="settings__link--active"
-            class="settings__link">
-            {{ link.name }}
-          </a>
-        </li>
-      </ul>
-    </nav>
-
-    <router-outlet
-      #routerOutlet="outlet"
-      hidden>
-    </router-outlet>
+    <div class="settings__scrollableContent">
+      <nav
+        *ngIf="!routerOutlet.isActivated"
+        class="settings__nav">
+        <ul class="settings__links">
+          <li
+            *ngFor="let link of links"
+            class="settings__linkWrapper">
+            <a
+              [routerLink]="['./', link.path]"
+              routerLinkActive="settings__link--active"
+              class="settings__link">
+              {{ link.name }}
+            </a>
+          </li>
+        </ul>
+      </nav>
+  
+      <router-outlet
+        #routerOutlet="outlet"
+        hidden>
+      </router-outlet>
+    </div>
   </mat-drawer-content>
 </mat-drawer-container>

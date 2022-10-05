@@ -28,11 +28,7 @@ const routes: RouteWithPageTitle[] = [
   {
     path: 'controls', // TODO also keep /sliders? (thinking not)
     loadChildren: () => import('./controls-wrapper/controls.module').then(m => m.ControlsModule),
-  },
-  {
-    path: 'settings',
-    loadChildren: () => import('./settings/settings.module').then(m => m.SettingsModule),
-  },
+  },  
 
   // direct routes
   {

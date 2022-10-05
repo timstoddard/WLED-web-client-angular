@@ -14,22 +14,22 @@ export class BottomMenuBarComponent extends UnsubscribingComponent implements On
   buttons = [
     {
       name: 'Controls',
-      routerLink: ['../', 'controls'],
+      routerLink: ['/controls'],
       icon: '&#xe2b3;',
     },
     {
       name: 'Segments',
-      routerLink: ['./', 'segments'],
+      routerLink: ['/controls', 'segments'],
       icon: '&#xe34b;',
     },
     {
       name: 'Presets',
-      routerLink: ['./', 'presets'],
+      routerLink: ['/controls', 'presets'],
       icon: '&#xe04c;',
     },
     {
       name: 'Settings',
-      routerLink: ['../', 'settings'],
+      routerLink: ['/controls', 'settings'],
       icon: '&#xe0a2;',
     },
   ];

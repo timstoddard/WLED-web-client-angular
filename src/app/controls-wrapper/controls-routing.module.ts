@@ -35,8 +35,12 @@ const routes: RouteWithPageTitle[] = [
         component: PresetsComponent,
         data: { title: 'Presets' },
         resolve: {
-      presets: PresetsResolver,
-    },
+          presets: PresetsResolver,
+        },
+      },
+      {
+        path: 'settings',
+        loadChildren: () => import('../settings/settings.module').then(m => m.SettingsModule),
       },
     ]
   },
