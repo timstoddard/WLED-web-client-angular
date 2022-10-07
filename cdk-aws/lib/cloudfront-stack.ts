@@ -9,7 +9,9 @@ import { Construct } from 'constructs'
 // TODO add user flag/prop for this
 const IS_DEV_MODE = true
 
-interface CloudFrontStackProps extends cdk.StackProps {
+const urlToIdFormat = (url: string) => url.replace(/[^a-z0-9-]+/gi, '-')
+
+export interface CloudFrontStackProps extends cdk.StackProps {
   websiteUrl: string
   websiteDescription: string
   publicSSLCertificateArn: string
@@ -22,8 +24,8 @@ export class CloudFrontStack extends cdk.Stack {
       websiteDescription,
       publicSSLCertificateArn,
     } = props
-    const formattedUrl = websiteUrl.replace(/[^a-z0-9-]+/gi, '-')
-    super(scope, `${id}-${formattedUrl}`, props)
+    
+    super(scope, `${id}-${urlToIdFormat(websiteUrl)}`, props)
 
     const {
       bucketName,
