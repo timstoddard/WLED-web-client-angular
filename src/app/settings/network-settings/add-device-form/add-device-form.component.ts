@@ -4,7 +4,7 @@ import { Observer } from 'rxjs';
 import { ApiService } from '../../../shared/api.service';
 import { AppStateService, NO_DEVICE_IP_SELECTED, WledIpAddress } from '../../../shared/app-state/app-state.service';
 import { FormService } from '../../../shared/form-service';
-import { UnsubscribingComponent } from '../../../shared/unsubscribing/unsubscribing.component';
+import { UnsubscriberComponent } from '../../../shared/unsubscribing/unsubscriber.component';
 
 interface SelectableWledIpAddress extends WledIpAddress {
   selected: boolean;
@@ -19,7 +19,7 @@ interface IpAddressTestResults {
   templateUrl: './add-device-form.component.html',
   styleUrls: ['./add-device-form.component.scss']
 })
-export class AddDeviceFormComponent extends UnsubscribingComponent implements OnInit {
+export class AddDeviceFormComponent extends UnsubscriberComponent implements OnInit {
   wledIpAddresses!: FormArray;
   ipAddressTestResults!: IpAddressTestResults;
   private selectedWledIpAddress!: WledIpAddress;

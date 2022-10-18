@@ -10,7 +10,7 @@ import { AppStateProps, AppStateService, NO_DEVICE_IP_SELECTED } from './app-sta
 import { Segment } from './app-types';
 import { FormValues } from './form-service';
 import { LiveViewData } from './live-view/live-view.service';
-import { UnsubscribingService } from './unsubscribing/unsubscribing.service';
+import { UnsubscriberService } from './unsubscribing/unsubscriber.service';
 
 const ALL_JSON_PATH = 'json';
 const STATE_INFO_PATH = 'json/si';
@@ -26,7 +26,7 @@ const UI_SETTINGS_PATH = 'settings/ui';
 const WIFI_SETTINGS_PATH = 'settings/wifi';
 
 @Injectable({ providedIn: 'root' })
-export class ApiService extends UnsubscribingService {
+export class ApiService extends UnsubscriberService {
   private baseUrl = '';
 
   constructor(

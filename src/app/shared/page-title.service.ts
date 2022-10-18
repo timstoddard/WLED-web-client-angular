@@ -3,7 +3,7 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, LoadChildrenCallback, NavigationEnd, Route, Router } from '@angular/router';
 import { filter, takeUntil } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
-import { UnsubscribingService } from './unsubscribing/unsubscribing.service';
+import { UnsubscriberService } from './unsubscribing/unsubscriber.service';
 
 const DEFAULT_PAGE_TITLE = 'WLED';
 
@@ -24,7 +24,7 @@ interface PageTitle {
 }
 
 @Injectable({ providedIn: 'root' })
-export class PageTitleService extends UnsubscribingService {
+export class PageTitleService extends UnsubscriberService {
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,

@@ -19,11 +19,11 @@ import { WledSegment } from '../../shared/api-types';
 import { ApiService } from '../../shared/api.service';
 import { Segment } from '../../shared/app-types';
 import { LocalStorageService } from '../../shared/local-storage.service';
-import { UnsubscribingService } from '../../shared/unsubscribing/unsubscribing.service';
+import { UnsubscriberService } from '../../shared/unsubscribing/unsubscriber.service';
 import { ControlsServicesModule } from '../controls-services.module';
 
 @Injectable({ providedIn: ControlsServicesModule })
-export class SegmentsService extends UnsubscribingService {
+export class SegmentsService extends UnsubscriberService {
   private segmentsStore: Store;
   private segmentsLength: number = 0;
   private ledCount: number = 1429; // TODO get this from api data (info.leds.count)

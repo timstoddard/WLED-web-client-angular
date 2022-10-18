@@ -4,7 +4,7 @@ import { WledApiResponse } from '../shared/api-types';
 import { AppStateService } from '../shared/app-state/app-state.service';
 import { LocalStorageKey, LocalStorageService } from '../shared/local-storage.service';
 import { AppUIConfig, UIConfigService } from '../shared/ui-config.service';
-import { UnsubscribingComponent } from '../shared/unsubscribing/unsubscribing.component';
+import { UnsubscriberComponent } from '../shared/unsubscribing/unsubscriber.component';
 import { ControlsService } from './controls.service';
 import { generateApiUrl } from './json.service';
 import { SegmentsService } from './segments/segments.service';
@@ -14,7 +14,7 @@ import { SegmentsService } from './segments/segments.service';
   templateUrl: './controls-wrapper.component.html',
   styleUrls: ['./controls-wrapper.component.scss'],
 })
-export class ControlsWrapperComponent extends UnsubscribingComponent implements OnInit {
+export class ControlsWrapperComponent extends UnsubscriberComponent implements OnInit {
   private useCustomCss!: boolean;
   private enableHolidays!: boolean;
   private backgroundUrl!: string;

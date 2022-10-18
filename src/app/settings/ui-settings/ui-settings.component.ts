@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { FormService, FormValues } from '../../shared/form-service';
 import { LocalStorageKey, LocalStorageService } from '../../shared/local-storage.service';
 import { AppUIConfig, UIConfigService } from '../../shared/ui-config.service';
-import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
+import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
 import { UISettingsService } from './ui-settings.service';
 
 @Component({
@@ -12,7 +12,7 @@ import { UISettingsService } from './ui-settings.service';
   templateUrl: './ui-settings.component.html',
   styleUrls: ['./ui-settings.component.scss']
 })
-export class UISettingsComponent extends UnsubscribingComponent implements OnInit {
+export class UISettingsComponent extends UnsubscriberComponent implements OnInit {
   uiSettingsForm!: FormGroup;
 
   colorInputCheckboxes = [

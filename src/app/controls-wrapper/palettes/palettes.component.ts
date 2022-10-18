@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { FormService } from '../../shared/form-service';
-import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
+import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
 import { PostResponseHandler } from '../utils';
 import { PalettesService } from './palettes.service';
 
@@ -14,7 +14,7 @@ const DEFAULT_PALETTE_ID = -1; // TODO get from first selected segment
   // need to provide here (child of routed component) so the service can access the activated route
   providers: [PalettesService],
 })
-export class PalettesComponent extends UnsubscribingComponent implements OnInit {
+export class PalettesComponent extends UnsubscriberComponent implements OnInit {
   selectedPalette!: FormControl;
 
   constructor(

@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormService } from '../../../shared/form-service';
 import { UIConfigService } from '../../../shared/ui-config.service';
-import { UnsubscribingComponent } from '../../../shared/unsubscribing/unsubscribing.component';
+import { UnsubscriberComponent } from '../../../shared/unsubscribing/unsubscriber.component';
 import { formatPlural, PostResponseHandler } from '../../utils';
 import { SegmentsService } from '../segments.service';
 
@@ -11,7 +11,7 @@ import { SegmentsService } from '../segments.service';
   templateUrl: './new-segment.component.html',
   styleUrls: ['./new-segment.component.scss']
 })
-export class NewSegmentComponent extends UnsubscribingComponent implements OnInit {
+export class NewSegmentComponent extends UnsubscriberComponent implements OnInit {
   @Input() newSegmentId!: number;
   @Input() ledCount!: number;
   @Input() lastLed!: number;

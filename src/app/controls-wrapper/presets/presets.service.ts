@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../shared/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
-import { UnsubscribingService } from '../../shared/unsubscribing/unsubscribing.service';
+import { UnsubscriberService } from '../../shared/unsubscribing/unsubscriber.service';
 import { ControlsServicesModule } from '../controls-services.module';
 
 export interface Preset {
@@ -13,7 +13,7 @@ export interface Preset {
 }
 
 @Injectable({ providedIn: ControlsServicesModule })
-export class PresetsService extends UnsubscribingService {
+export class PresetsService extends UnsubscriberService {
   constructor(
     private apiService: ApiService,
     private route: ActivatedRoute,

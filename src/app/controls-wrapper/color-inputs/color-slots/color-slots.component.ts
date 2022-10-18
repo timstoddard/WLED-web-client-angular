@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UnsubscribingComponent } from '../../../shared/unsubscribing/unsubscribing.component';
+import { UnsubscriberComponent } from '../../../shared/unsubscribing/unsubscriber.component';
 import { ColorService, CurrentColor } from '../../color.service';
 import { ColorSlotsService } from './color-slots.service';
 
@@ -12,7 +12,7 @@ import { ColorSlotsService } from './color-slots.service';
   templateUrl: './color-slots.component.html',
   styleUrls: ['./color-slots.component.scss']
 })
-export class ColorSlotsComponent extends UnsubscribingComponent implements OnInit {
+export class ColorSlotsComponent extends UnsubscriberComponent implements OnInit {
   constructor(
     private colorService: ColorService,
     private colorSlotsService: ColorSlotsService,

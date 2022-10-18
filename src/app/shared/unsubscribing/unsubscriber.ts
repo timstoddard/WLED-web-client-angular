@@ -1,6 +1,6 @@
 import { Observable, Subject, takeUntil } from 'rxjs';
 
-export class UnsubscribingBaseClass {
+export class Unsubscriber {
   protected ngUnsubscribe = new Subject<void>();
 
   handleUnsubscribe<T>(observable: Observable<T>) {

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormService } from '../../shared/form-service';
 import { UIConfigService } from '../../shared/ui-config.service';
-import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
+import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
 import { PostResponseHandler } from '../utils';
 import { EffectsService } from './effects.service';
 
@@ -17,7 +17,7 @@ const DEFAULT_EFFECT_INTENSITY = 128;
   // need to provide here (child of routed component) so the service can access the activated route
   providers: [EffectsService],
 })
-export class EffectsComponent extends UnsubscribingComponent implements OnInit {
+export class EffectsComponent extends UnsubscriberComponent implements OnInit {
   effectsForm!: FormGroup;
   private showLabels!: boolean;
 

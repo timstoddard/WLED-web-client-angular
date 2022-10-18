@@ -3,14 +3,14 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild }
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { FormService } from '../../shared/form-service';
-import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
+import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
 
 @Component({
   selector: 'app-search-input',
   templateUrl: './search-input.component.html',
   styleUrls: ['./search-input.component.scss']
 })
-export class SearchInputComponent extends UnsubscribingComponent implements OnInit {
+export class SearchInputComponent extends UnsubscriberComponent implements OnInit {
   /** Header title. */
   @Input() headerText: string = '';
   /** Search icon hover label. */

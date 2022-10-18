@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Meta, MetaDefinition } from '@angular/platform-browser';
 import { LocalStorageKey, LocalStorageService } from './shared/local-storage.service';
 import { PageTitleService } from './shared/page-title.service';
-import { UnsubscribingComponent } from './shared/unsubscribing/unsubscribing.component';
+import { UnsubscriberComponent } from './shared/unsubscribing/unsubscriber.component';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +10,7 @@ import { UnsubscribingComponent } from './shared/unsubscribing/unsubscribing.com
   styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent extends UnsubscribingComponent {
+export class AppComponent extends UnsubscriberComponent {
   showDevNavBar!: boolean;
   links = [
     {

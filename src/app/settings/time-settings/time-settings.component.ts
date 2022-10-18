@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { FormService, FormValues } from '../../shared/form-service';
-import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
+import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
 import { SelectItem } from '../shared/settings-types';
 
 enum ScheduledPresetType {
@@ -15,7 +15,7 @@ enum ScheduledPresetType {
   templateUrl: './time-settings.component.html',
   styleUrls: ['./time-settings.component.scss']
 })
-export class TimeSettingsComponent extends UnsubscribingComponent implements OnInit {
+export class TimeSettingsComponent extends UnsubscriberComponent implements OnInit {
   timeSettingsForm!: FormGroup;
 
   // TODO move select option lists like this into shared

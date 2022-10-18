@@ -3,14 +3,14 @@ import { FormControl } from '@angular/forms';
 import { ApiService } from '../../../shared/api.service';
 import { AppStateService, NO_DEVICE_IP_SELECTED, WledIpAddress } from '../../../shared/app-state/app-state.service';
 import { FormService } from '../../../shared/form-service';
-import { UnsubscribingComponent } from '../../../shared/unsubscribing/unsubscribing.component';
+import { UnsubscriberComponent } from '../../../shared/unsubscribing/unsubscriber.component';
 
 @Component({
   selector: 'app-device-selector',
   templateUrl: './device-selector.component.html',
   styleUrls: ['./device-selector.component.scss']
 })
-export class DeviceSelectorComponent extends UnsubscribingComponent implements OnInit {
+export class DeviceSelectorComponent extends UnsubscriberComponent implements OnInit {
   wledIpAddresses!: WledIpAddress[];
   selectedWledIpAddress!: FormControl;
 

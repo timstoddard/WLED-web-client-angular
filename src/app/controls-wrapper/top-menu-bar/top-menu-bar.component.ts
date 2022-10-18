@@ -5,7 +5,7 @@ import { WledApiResponse } from '../../shared/api-types';
 import { UIConfigService } from '../../shared/ui-config.service';
 import { AppStateProps, AppStateService } from '../../shared/app-state/app-state.service';
 import { LocalStorageService } from '../../shared/local-storage.service';
-import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
+import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
 import { generateApiUrl } from '../json.service';
 import { MenuBarButton, setCssColor } from '../utils';
 import { TopMenuBarButtonName, TopMenuBarService } from './top-menu-bar.service';
@@ -22,7 +22,7 @@ const MIN_SHOW_PC_MODE_BUTTON_THRESHOLD_PX = 1200; // TODO might need to be bigg
   styleUrls: ['./top-menu-bar.component.scss'],
   host: { '(window:resize)': 'onResize($event)' },
 })
-export class TopMenuBarComponent extends UnsubscribingComponent implements OnInit {
+export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit {
   buttons: MenuBarButton[] = [];
   topMenuBarForm!: FormGroup;
   isSettingsOpen: boolean = false;

@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { merge } from 'rxjs';
 import { FormService } from '../../shared/form-service';
-import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
+import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
 import { ColorService, CurrentColor } from '../color.service';
 
 @Component({
@@ -10,7 +10,7 @@ import { ColorService, CurrentColor } from '../color.service';
   templateUrl: './color-inputs.component.html',
   styleUrls: ['./color-inputs.component.scss']
 })
-export class ColorInputsComponent extends UnsubscribingComponent implements OnInit, AfterViewInit {
+export class ColorInputsComponent extends UnsubscriberComponent implements OnInit, AfterViewInit {
   colorInputsForm!: FormGroup;
 
   constructor(

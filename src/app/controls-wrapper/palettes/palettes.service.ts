@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { ApiService } from '../../shared/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
-import { UnsubscribingService } from '../../shared/unsubscribing/unsubscribing.service';
+import { UnsubscriberService } from '../../shared/unsubscribing/unsubscriber.service';
 import { ColorSlotsService } from '../color-inputs/color-slots/color-slots.service';
 import { ControlsServicesModule } from '../controls-services.module';
 import { compareNames, findRouteData } from '../utils';
@@ -33,7 +33,7 @@ export interface PaletteWithBackground {
 const NONE_SELECTED = -1;
 
 @Injectable({ providedIn: ControlsServicesModule })
-export class PalettesService extends UnsubscribingService {
+export class PalettesService extends UnsubscriberService {
   private sortedPalettes!: PaletteWithBackground[];
   private filteredPalettes$: BehaviorSubject<PaletteWithBackground[]>;
   private selectedPaletteName$: BehaviorSubject<string>;

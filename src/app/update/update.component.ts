@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormService } from '../shared/form-service';
-import { UnsubscribingComponent } from '../shared/unsubscribing/unsubscribing.component';
+import { UnsubscriberComponent } from '../shared/unsubscribing/unsubscriber.component';
 
 @Component({
   selector: 'app-update',
   templateUrl: './update.component.html',
   styleUrls: ['./update.component.scss']
 })
-export class UpdateComponent extends UnsubscribingComponent implements OnInit {
+export class UpdateComponent extends UnsubscriberComponent implements OnInit {
   updateForm!: FormGroup;
   isUpdating!: boolean;
 

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormGroup, Validators } from '@angular/forms';
 import { AppStateService, WledIpAddress } from '../../shared/app-state/app-state.service';
 import { FormService } from '../../shared/form-service';
-import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
+import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
 import { SelectItem } from '../shared/settings-types';
 import { NetworkSettingsService } from './network-settings.service';
 
@@ -14,7 +14,7 @@ const DEFAULT_OPEN_AP_OPTION = 0;
   templateUrl: './network-settings.component.html',
   styleUrls: ['./network-settings.component.scss']
 })
-export class NetworkSettingsComponent extends UnsubscribingComponent implements OnInit {
+export class NetworkSettingsComponent extends UnsubscriberComponent implements OnInit {
   openAPOptions: SelectItem<number>[] = [
     {
       name: 'No connection after boot',

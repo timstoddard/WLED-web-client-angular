@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ApiService } from '../../shared/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
-import { UnsubscribingService } from '../../shared/unsubscribing/unsubscribing.service';
+import { UnsubscriberService } from '../../shared/unsubscribing/unsubscriber.service';
 import { ControlsServicesModule } from '../controls-services.module';
 import { compareNames } from '../utils';
 
@@ -14,7 +14,7 @@ export interface Effect {
 const NONE_SELECTED = -1;
 
 @Injectable({ providedIn: ControlsServicesModule })
-export class EffectsService extends UnsubscribingService {
+export class EffectsService extends UnsubscriberService {
   private sortedEffects!: Effect[];
   private filteredEffects$: BehaviorSubject<Effect[]>;
   private selectedEffectName$: BehaviorSubject<string>;

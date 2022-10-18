@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { FormService, FormValues } from '../../shared/form-service';
-import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
+import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
 import { SelectItem } from '../shared/settings-types';
 
 @Component({
@@ -9,7 +9,7 @@ import { SelectItem } from '../shared/settings-types';
   templateUrl: './led-settings.component.html',
   styleUrls: ['./led-settings.component.scss']
 })
-export class LedSettingsComponent extends UnsubscribingComponent implements OnInit {
+export class LedSettingsComponent extends UnsubscriberComponent implements OnInit {
   ledSettingsForm!: FormGroup;
   // TODO set this automatically
   hasHighCurrent = true;

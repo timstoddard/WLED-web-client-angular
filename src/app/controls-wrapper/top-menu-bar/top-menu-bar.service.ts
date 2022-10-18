@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { WledApiResponse } from '../../shared/api-types';
 import { ApiService } from '../../shared/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
-import { UnsubscribingService } from '../../shared/unsubscribing/unsubscribing.service';
+import { UnsubscriberService } from '../../shared/unsubscribing/unsubscriber.service';
 import { WebSocketService } from '../../shared/web-socket.service';
 import { ControlsServicesModule } from '../controls-services.module';
 import { PostResponseHandler } from '../utils';
@@ -17,7 +17,7 @@ export class TopMenuBarButtonName {
 }
 
 @Injectable({ providedIn: ControlsServicesModule })
-export class TopMenuBarService extends UnsubscribingService {
+export class TopMenuBarService extends UnsubscriberService {
   private processingStatus!: { [key: string]: boolean };
 
   constructor(

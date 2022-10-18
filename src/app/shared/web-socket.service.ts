@@ -5,14 +5,14 @@ import { WledApiResponse } from './api-types';
 import { AppStateService } from './app-state/app-state.service';
 import { LiveViewData } from './live-view/live-view.service';
 import { OnlineStatusService } from './online-status.service';
-import { UnsubscribingService } from './unsubscribing/unsubscribing.service';
+import { UnsubscriberService } from './unsubscribing/unsubscriber.service';
 
 // TODO how are these used by the web socket?
 const LIVE_VIEW_MESSAGE = 'LIVE_VIEW_MESSAGE';
 const STATE_AND_INFO_MESSAGE = 'STATE_AND_INFO_MESSAGE';
 
 @Injectable({ providedIn: 'root' })
-export class WebSocketService extends UnsubscribingService {
+export class WebSocketService extends UnsubscriberService {
   private socket$!: WebSocketSubject<any>;
   private stateAndInfoSocket$!: Observable<WledApiResponse>;
   private liveViewSocket$!: Observable<LiveViewData>;

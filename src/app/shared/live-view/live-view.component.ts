@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@an
 import { ApiService } from '../api.service';
 import { WebSocketService } from '../web-socket.service';
 import { AppStateService } from '../app-state/app-state.service';
-import { UnsubscribingComponent } from '../unsubscribing/unsubscribing.component';
+import { UnsubscriberComponent } from '../unsubscribing/unsubscriber.component';
 import { generateApiUrl } from '../../controls-wrapper/json.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { LiveViewService } from './live-view.service';
@@ -16,7 +16,7 @@ import { interval } from 'rxjs';
   styleUrls: ['./live-view.component.scss'],
   providers: [LiveViewService],
 })
-export class LiveViewComponent extends UnsubscribingComponent implements OnInit {
+export class LiveViewComponent extends UnsubscriberComponent implements OnInit {
   @ViewChild('liveView') liveViewCanvas!: ElementRef<HTMLCanvasElement>;
   isLive: boolean = true;
   private updateTimeout!: number;

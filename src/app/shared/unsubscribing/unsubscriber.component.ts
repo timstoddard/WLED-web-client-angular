@@ -1,9 +1,9 @@
 import { Component, OnDestroy } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
-import { UnsubscribingBaseClass } from './unsubscribing-base.component';
+import { Unsubscriber } from './unsubscriber';
 
 @Component({ template: '' })
-export class UnsubscribingComponent extends UnsubscribingBaseClass implements OnDestroy {
+export class UnsubscriberComponent extends Unsubscriber implements OnDestroy {
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
