@@ -6,24 +6,15 @@ import { UIConfigService } from '../../shared/ui-config.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { LocalStorageService } from '../../shared/local-storage.service';
 import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
-import { WebSocketService } from '../../shared/web-socket.service';
 import { generateApiUrl } from '../json.service';
-import { genericPostResponse, MenuBarButton, setCssColor } from '../utils';
-import { TopMenuBarService } from './top-menu-bar.service';
+import { MenuBarButton, setCssColor } from '../utils';
+import { TopMenuBarButtonName, TopMenuBarService } from './top-menu-bar.service';
 import { FormService } from '../../shared/form-service';
 
 const DEFAULT_BRIGHTNESS = 128;
 const DEFAULT_TRANSITION_DURATION_SECONDS = 0.7;
 const MIN_SHOW_BRIGHTNESS_SLIDER_THRESHOLD_PX = 800;
 const MIN_SHOW_PC_MODE_BUTTON_THRESHOLD_PX = 1200; // TODO might need to be bigger
-
-class TopMenuBarButtonName {
-  static readonly POWER = 'Power';
-  static readonly TIMER = 'Timer'; // TODO better name (this is really "night light" feature)
-  static readonly SYNC = 'Sync';
-  static readonly LIVE = 'Live';
-  static readonly PC_MODE = 'PC Mode';
-}
 
 @Component({
   selector: 'app-top-menu-bar',
@@ -40,13 +31,14 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
   isDarkMode!: boolean;
   showLabels!: boolean;
 
+  // TODO convert to object/array
   // button controls
   private isOn = false;
   private isNightLightActive = false;
   private nightLightDuration = 60;
   private nightLightTar = 0; // TODO better name
   private nightLightMode = false;
-  private shouldSync = false;
+  private isSyncActive = false;
   private shouldToggleReceiveWithSend = true;
   isLiveViewActive = false;
   private showInfo = false;
@@ -54,7 +46,6 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
 
   // other vars (some are for sliding ui)
   private appWidth: number = 0;
-  private processingStatus!: { [key: string]: boolean };
   private isPcMode = false;
   private pcModeA = false;
   private x0 = null;
@@ -69,7 +60,6 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     private topMenuBarService: TopMenuBarService,
     private appStateService: AppStateService,
     private changeDetectorRef: ChangeDetectorRef,
-    private webSocketService: WebSocketService,
     private uiConfigService: UIConfigService,
   ) {
     super();
@@ -77,28 +67,36 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
 
   ngOnInit() {
     this.buttons = this.getButtons();
-    this.processingStatus = {};
     this.topMenuBarForm = this.createForm();
     this.onResize();
 
     this.appStateService.getAppState(this.ngUnsubscribe)
       .subscribe(({ state, info, localSettings }) => {
-        // update UI data
+        // power
         this.isOn = state.on;
+        
+        // timer/nightlight
+        if (this.isNightLightActive !== state.nightLight.on) {
+          this.handleNightLightChange();
+        }
         this.isNightLightActive = state.nightLight.on;
-        this.shouldSync = state.udp.shouldSend;
-        // TODO add toggle for receive in UI?
+        
+        // sync
+        if (this.isSyncActive !== state.udp.shouldSend) {
+          this.handleSyncChange();
+        }
+        this.isSyncActive = state.udp.shouldSend;
+        // TODO add toggle button for receive in UI?
         this.shouldToggleReceiveWithSend = info.shouldToggleReceiveWithSend;
+        
+        // live view
         this.isLiveViewActive = localSettings.isLiveViewActive;
+        
+        // brightness
         this.topMenuBarForm.get('brightness')!.setValue(state.brightness, { emitEvent: false });
-        // TODO set transition value
-        // this.topMenuBarForm.get('transitionTime')!.setValue(transitionTime, { emitEvent: false });
-
-        // TODO some way to keep track of which requests were returned by which function calls? queue?
-        this.processingStatus = {};
-
-        // update backend with current setting (no json api setting for this)
-        this.webSocketService.sendMessage({ lv: this.isLiveViewActive });
+        
+        // transition time
+        this.topMenuBarForm.get('transitionTime')!.setValue(state.transition, { emitEvent: false });
 
         this.changeDetectorRef.markForCheck();
       });
@@ -108,11 +106,6 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
         this.isDarkMode = uiConfig.theme.base === 'dark';
         this.showLabels = uiConfig.showLabels;
       });
-
-    // TODO evaluate if needed
-    /* this.size();
-    updateTablinks(0);
-    window.addEventListener('resize', this.size, false); */
 
     // TODO slider stuff could be extracted into its own component/service
     // TODO re-implement sliding UI
@@ -128,6 +121,11 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     // this.sliderContainer.style.setProperty('--n', `${this.N}`);
   }
 
+  getProcessingStatus(name: string) {
+    return this.topMenuBarService.getProcessingStatus(name);
+  }
+
+  // TODO evaluate if needed
   onResize() {
     const appWidth = document.documentElement.clientWidth;
     this.showToggleSettingsButton = appWidth >= MIN_SHOW_BRIGHTNESS_SLIDER_THRESHOLD_PX;
@@ -167,10 +165,6 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     return [centeredPosition, rightSidePosition];
   }
 
-  getProcessingStatus(name: string) {
-    return !!this.processingStatus[name];
-  }
-
   /**
    * Toggles between light and dark mode.
    * @param config 
@@ -180,34 +174,30 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     this.uiConfigService.setThemeBase(newBase);
   }
 
-  private setProcessingStatus(name: string, status: boolean) {
-    this.processingStatus[name] = status;
-  }
-
   private getButtons() {
     const buttons: MenuBarButton[] = [
       {
         name: TopMenuBarButtonName.POWER,
         icon: '&#xe08f;',
-        onClick: () => this.togglePower(),
+        onClick: () => this.topMenuBarService.togglePower(!this.isOn),
         enabled: () => this.isOn,
       },
       {
         name: TopMenuBarButtonName.TIMER,
         icon: '&#xe2a2;',
-        onClick: () => this.toggleNightLight(),
+        onClick: () => this.topMenuBarService.toggleNightLight(!this.isNightLightActive),
         enabled: () => this.isNightLightActive,
       },
       {
         name: TopMenuBarButtonName.SYNC,
         icon: '&#xe116;',
-        onClick: () => this.toggleSync(),
-        enabled: () => this.shouldSync,
+        onClick: () => this.topMenuBarService.toggleSync(!this.isSyncActive, this.shouldToggleReceiveWithSend),
+        enabled: () => this.isSyncActive,
       },
       {
         name: TopMenuBarButtonName.LIVE,
         icon: '&#xe410;',
-        onClick: () => this.toggleLiveView(),
+        onClick: () => this.topMenuBarService.toggleLiveView(!this.isLiveViewActive),
         enabled: () => this.isLiveViewActive,
       },
       // TODO combine these & move to bottom menu
@@ -233,50 +223,22 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     return buttons;
   }
 
-  private togglePower() {
-    if (!this.getProcessingStatus(TopMenuBarButtonName.POWER)) {
-      this.setProcessingStatus(TopMenuBarButtonName.POWER, true);
-      this.handleUnsubscribe(
-        this.topMenuBarService.togglePower(!this.isOn))
-        .subscribe(genericPostResponse(this.appStateService));
-    }
+  private handleNightLightChange() {
+    const message = this.isNightLightActive
+      ? `Timer active. Your light will turn ${this.nightLightTar > 0 ? 'on' : 'off'} ${this.nightLightMode ? 'over' : 'after'} ${this.nightLightDuration} minutes.`
+      : 'Timer deactivated.';
+    // TODO show toast
+    const showToast = (s: string) => { };
+    showToast(message);
   }
 
-  private toggleNightLight() {
-    if (!this.getProcessingStatus(TopMenuBarButtonName.TIMER)) {
-      this.setProcessingStatus(TopMenuBarButtonName.TIMER, true);
-      this.handleUnsubscribe(
-        this.topMenuBarService.toggleNightLight(!this.isNightLightActive))
-        .subscribe((response: WledApiResponse) => {
-          genericPostResponse(this.appStateService)(response);
-          const message = this.isNightLightActive
-            ? `Timer active. Your light will turn ${this.nightLightTar > 0 ? 'on' : 'off'} ${this.nightLightMode ? 'over' : 'after'} ${this.nightLightDuration} minutes.`
-            : 'Timer deactivated.'
-          // showToast(message); // TODO show toast
-        });
-    }
-  }
-
-  private toggleSync() {
-    if (!this.getProcessingStatus(TopMenuBarButtonName.SYNC)) {
-      this.setProcessingStatus(TopMenuBarButtonName.SYNC, true);
-      this.handleUnsubscribe(
-        this.topMenuBarService.toggleSync(!this.shouldSync, this.shouldToggleReceiveWithSend))
-        .subscribe((response: WledApiResponse) => {
-          genericPostResponse(this.appStateService)(response);
-          const message = this.shouldSync
-            ? 'Other lights in the network will now sync to this one.'
-            : 'This light and other lights in the network will no longer sync.';
-          // showToast(message); // TODO show toast
-        });
-    }
-  }
-
-  private toggleLiveView() {
-    this.topMenuBarService.toggleIsLiveViewActive(!this.isLiveViewActive);
-    
-    // TODO call size() (maybe not needed?)
-    // this.size();
+  private handleSyncChange() {
+    const message = this.isSyncActive
+      ? 'Other lights in the network will now sync to this one.'
+      : 'This light and other lights in the network will no longer sync.';
+    // TODO show toast
+    const showToast = (s: string) => {};
+    showToast(message);
   }
 
   private toggleShowInfo() {
@@ -385,28 +347,18 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
   private createForm() {
     const form = this.formService.createFormGroup({
       brightness: DEFAULT_BRIGHTNESS,
-      transitionTime: DEFAULT_TRANSITION_DURATION_SECONDS,
+    }, {
+      transitionTime: this.formService.createFormControl(DEFAULT_TRANSITION_DURATION_SECONDS, 'blur'),
     });
 
     this.getValueChanges<number>(form, 'brightness')
-      .subscribe((brightness: number) => this.setBrightness(brightness));
+      .subscribe((brightness: number) => this.topMenuBarService.setBrightness(brightness));
     this.getValueChanges<number>(form, 'transitionTime')
-      .subscribe((seconds: number) => this.setTransitionDuration(seconds));
+      .subscribe((seconds: number) => this.topMenuBarService.setTransitionDuration(seconds));
 
     return form;
   }
 
-  private setBrightness(brightness: number) {
-    this.handleUnsubscribe(
-      this.topMenuBarService.setBrightness(brightness))
-      .subscribe(genericPostResponse(this.appStateService));
-  }
-
-  private setTransitionDuration(seconds: number) {
-    this.handleUnsubscribe(
-      this.topMenuBarService.setTransitionDuration(seconds))
-      .subscribe(genericPostResponse(this.appStateService));
-  }
 
 
 
@@ -416,32 +368,6 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
 
 
 
-
-
-
-
-
-
-  // TODO probably not needed soon?
-  /**
-   * Sets the app width and height based on the current client dimensions.
-   */
-  private size() {
-    this.appWidth = window.innerWidth;
-    const lastinfo = { ndc: 0 }; // TODO get info from config/reducer
-    document.getElementById('buttonNodes')!.style.display =
-      (lastinfo.ndc > 0 && this.appWidth > 770)
-        ? 'block'
-        : 'none';
-    let h = document.getElementById('top')!.clientHeight;
-    setCssColor('--th', h + 'px');
-    setCssColor('--bh', document.getElementById('bot')!.clientHeight + 'px');
-    setCssColor('--tp', h + 'px');
-    if (this.isLiveViewActive) {
-      h -= 4;
-    }
-    this.togglePcMode();
-  }
 
   /**
    * Slides and unlocks slider container on mouseup/touchend.

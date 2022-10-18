@@ -2,6 +2,7 @@
   "conventionalCommits.scopes": [
     "settings",
     "controls",
-    "infra"
+    "infra",
+    "top menu bar"
   ]
 }

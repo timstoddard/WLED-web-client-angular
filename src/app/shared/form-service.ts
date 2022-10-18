@@ -16,11 +16,15 @@ export type FormValues = { [key: string]: string | number | boolean | FormValues
 export class FormService {
   constructor(private _formBuilder: FormBuilder) { }
 
-  createFormControl<T>(value: T) {
+  createFormControl<T>(
+    value: T,
+    updateOn: 'change' | 'blur' | 'submit' = 'change',
+  ) {
     return this._formBuilder.control<T>(value, {
       nonNullable: true,
       // TODO how to handle different/nonexistent validators?
       validators: [Validators.required],
+      updateOn,
     });
   }
 

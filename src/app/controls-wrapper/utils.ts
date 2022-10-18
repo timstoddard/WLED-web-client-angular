@@ -65,16 +65,24 @@ export const updateTablinks = (tabIndex: number) => {
 }
 
 /** Basic error handling for a POST response. */
-export const genericPostResponse = (appStateService: AppStateService) => (response: WledApiResponse) => {
-  // TODO wire up so this appStateService used if ws connection fails
-  // appStateService.setAll(response);
-  console.log('POST response', response);
-
-  // TODO how to check for error
+// TODO put this in a class, have AppStateService as injected dep
+// TODO rename: `handleApiResponse`
+export const genericPostResponse = (
+  appStateService: AppStateService,
+  customLogic: () => void = () => {},
+) => (response: WledApiResponse) => {
+  // TODO check for error
   // if (!response.success) {
   //   // TODO show error toast
   //   alert('failed to update');
   // }
+
+  // TODO wire up so this appStateService used if ws connection fails
+  appStateService.setAll(response);
+  console.log('POST response', response);
+
+  // run any custom logic after updating the whole app state
+  customLogic();
 };
 
 /**

@@ -4,6 +4,7 @@ import { map, of, timeout } from 'rxjs';
 import { ALL_PALETTES_DATA, MOCK_API_PRESETS, MOCK_API_RESPONSE, MOCK_LIVE_DATA } from '../controls-wrapper/mock-api-data';
 import { PalettesApiData } from '../controls-wrapper/palettes/palettes.service';
 import { Preset } from '../controls-wrapper/presets/presets.service';
+import { genericPostResponse } from '../controls-wrapper/utils';
 import { APIPreset, APIPresets, SavePresetRequest, WledApiResponse, WledInfo, WledState } from './api-types';
 import { AppStateService, NO_DEVICE_IP_SELECTED } from './app-state/app-state.service';
 import { AppState, Segment } from './app-types';
@@ -38,7 +39,9 @@ export class ApiService extends UnsubscribingService {
   private init() {
     this.appStateService.getSelectedWledIpAddress(this.ngUnsubscribe)
       .subscribe(({ ipv4Address }) => {
-        this.baseUrl = ipv4Address;
+        this.setBaseUrl(ipv4Address);
+        this.refreshAppState();
+        console.log('API BASE URL:', this.createApiUrl(''));
       });
   }
 
@@ -46,12 +49,16 @@ export class ApiService extends UnsubscribingService {
     return this.baseUrl;
   }
 
+  private setBaseUrl(baseUrl: string) {
+    this.baseUrl = baseUrl;
+  }
+
   isBaseUrlUnset = () => {
-    return this.baseUrl === NO_DEVICE_IP_SELECTED.ipv4Address;
+    return this.getBaseUrl() === NO_DEVICE_IP_SELECTED.ipv4Address;
   }
 
   private createApiUrl = (path: string) => {
-    return `http://${this.baseUrl}/${path}`;
+    return `http://${this.getBaseUrl()}/${path}`;
   }
 
   private httpGet = <T>(
@@ -66,6 +73,7 @@ export class ApiService extends UnsubscribingService {
       // return fake data
       return of(offlineDefault);
     } else {
+      // TODO handle unsubscribe here (post too)
       return this.http.get<T>(url, options);
     }
   }
@@ -75,6 +83,8 @@ export class ApiService extends UnsubscribingService {
       console.log('MOCK POST:', url, body);
       return of(MOCK_API_RESPONSE);
     } else {
+      console.log('REAL POST:', url, body);
+      // TODO handle unsubscribe here (get too)
       return this.http.post<WledApiResponse>(url, body);
     }
   }
@@ -83,6 +93,11 @@ export class ApiService extends UnsubscribingService {
     const TIMEOUT_MS = 3000;
     const FAILED = 'FAILED';
     const url = `http://${ipAddress}/${ALL_JSON_PATH}`;
+    const isValidResponse = (result: WledApiResponse) =>
+      result.state
+      && result.info
+      && result.palettes
+      && result.effects
     return this.httpGet<WledApiResponse>(url, MOCK_API_RESPONSE)
       .pipe(
         timeout({
@@ -95,12 +110,7 @@ export class ApiService extends UnsubscribingService {
           if (result === FAILED) {
             // it didn't work
             success = false;
-          } else if (
-            result.state
-            && result.info
-            && result.palettes
-            && result.effects
-          ) {
+          } else if (isValidResponse(result)) {
             // it worked
             success = true;
           }
@@ -108,6 +118,12 @@ export class ApiService extends UnsubscribingService {
           return { success };
         })
       );
+  }
+
+  /** Reload all app data from the backend. */
+  private refreshAppState() {
+    this.handleUnsubscribe(this.getJson())
+      .subscribe(genericPostResponse(this.appStateService));
   }
 
   /** Returns an object containing the state, info, effects, and palettes. */

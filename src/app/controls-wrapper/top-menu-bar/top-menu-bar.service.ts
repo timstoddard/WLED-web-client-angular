@@ -1,35 +1,93 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { WledApiResponse } from '../../shared/api-types';
 import { ApiService } from '../../shared/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
+import { UnsubscribingService } from '../../shared/unsubscribing/unsubscribing.service';
+import { WebSocketService } from '../../shared/web-socket.service';
 import { ControlsServicesModule } from '../controls-services.module';
+import { genericPostResponse } from '../utils';
+
+export class TopMenuBarButtonName {
+  static readonly POWER = 'Power';
+  static readonly TIMER = 'Timer'; // TODO rename references to nightlight to timer
+  static readonly SYNC = 'Sync';
+  static readonly LIVE = 'Live';
+  static readonly PC_MODE = 'PC Mode';
+}
 
 @Injectable({ providedIn: ControlsServicesModule })
-export class TopMenuBarService {
+export class TopMenuBarService extends UnsubscribingService {
+  private processingStatus!: { [key: string]: boolean };
+
   constructor(
     private apiService: ApiService,
-    private appStateService: AppStateService) { }
+    private appStateService: AppStateService,
+    private webSocketService: WebSocketService,
+  ) {
+    super();
+    this.processingStatus = {};
+  }
+
+  getProcessingStatus(name: string) {
+    return !!this.processingStatus[name];
+  }
+
+  setProcessingStatus(name: string, status: boolean) {
+    this.processingStatus[name] = status;
+  }
 
   togglePower(isOn: boolean) {
-    return this.apiService.togglePower(isOn);
+    this.processToggle(
+      TopMenuBarButtonName.POWER,
+      this.apiService.togglePower(isOn),
+    );
   }
 
   toggleNightLight(isNightLightActive: boolean) {
-    return this.apiService.toggleNightLight(isNightLightActive);
+    this.processToggle(
+      TopMenuBarButtonName.TIMER,
+      this.apiService.toggleNightLight(isNightLightActive),
+    );
   }
 
   toggleSync(shouldSync: boolean, shouldToggleReceiveWithSend: boolean) {
-    return this.apiService.toggleSync(shouldSync, shouldToggleReceiveWithSend);
+    this.processToggle(
+      TopMenuBarButtonName.SYNC,
+      this.apiService.toggleSync(shouldSync, shouldToggleReceiveWithSend),
+    );
   }
 
-  toggleIsLiveViewActive(isLiveViewActive: boolean) {
-    this.appStateService.setIsLiveViewActive(isLiveViewActive)
+  toggleLiveView(isLiveViewActive: boolean) {
+    this.appStateService.setIsLiveViewActive(isLiveViewActive);
+
+    // TODO this was moved from the component's app state subscription, make sure it doesn't cause any bugs by being here
+    // update backend with current setting (no json api setting for this)
+    this.webSocketService.sendMessage({ lv: isLiveViewActive });
   }
 
   setBrightness(brightness: number) {
-    return this.apiService.setBrightness(brightness);
+    this.handleUnsubscribe(this.apiService.setBrightness(brightness))
+      .subscribe(genericPostResponse(this.appStateService));
   }
 
   setTransitionDuration(seconds: number) {
-    return this.apiService.setTransitionDuration(seconds);
+    this.handleUnsubscribe(this.apiService.setTransitionDuration(seconds))
+      .subscribe(genericPostResponse(this.appStateService));
+  }
+
+  private processToggle(
+    name: string,
+    apiToggle: Observable<WledApiResponse>,
+  ) {
+    if (!this.getProcessingStatus(name)) {
+      this.setProcessingStatus(name, true);
+      const subscriber = genericPostResponse(
+        this.appStateService,
+        () => this.setProcessingStatus(name, false),
+      );
+      this.handleUnsubscribe(apiToggle)
+        .subscribe(subscriber);
+    }
   }
 }

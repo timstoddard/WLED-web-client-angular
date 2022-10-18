@@ -203,7 +203,8 @@ export class AppStateService {
       state: {
         on: response.state.on,
         brightness: response.state.bri,
-        transition: response.state.transition,
+        // stored in backend as # of tenths of a second
+        transition: response.state.transition / 10,
         currentPresetId: response.state.ps,
         currentPlaylistId: response.state.pl,
         nightLight: {
