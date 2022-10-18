@@ -6,7 +6,7 @@ import { AppStateService } from '../../shared/app-state/app-state.service';
 import { UnsubscribingService } from '../../shared/unsubscribing/unsubscribing.service';
 import { WebSocketService } from '../../shared/web-socket.service';
 import { ControlsServicesModule } from '../controls-services.module';
-import { genericPostResponse } from '../utils';
+import { PostResponseHandler } from '../utils';
 
 export class TopMenuBarButtonName {
   static readonly POWER = 'Power';
@@ -24,6 +24,7 @@ export class TopMenuBarService extends UnsubscribingService {
     private apiService: ApiService,
     private appStateService: AppStateService,
     private webSocketService: WebSocketService,
+    private postResponseHandler: PostResponseHandler,
   ) {
     super();
     this.processingStatus = {};
@@ -68,12 +69,12 @@ export class TopMenuBarService extends UnsubscribingService {
 
   setBrightness(brightness: number) {
     this.handleUnsubscribe(this.apiService.setBrightness(brightness))
-      .subscribe(genericPostResponse(this.appStateService));
+      .subscribe(this.postResponseHandler.handleFullJsonResponse());
   }
 
   setTransitionDuration(seconds: number) {
     this.handleUnsubscribe(this.apiService.setTransitionDuration(seconds))
-      .subscribe(genericPostResponse(this.appStateService));
+      .subscribe(this.postResponseHandler.handleStateResponse());
   }
 
   private processToggle(
@@ -82,10 +83,8 @@ export class TopMenuBarService extends UnsubscribingService {
   ) {
     if (!this.getProcessingStatus(name)) {
       this.setProcessingStatus(name, true);
-      const subscriber = genericPostResponse(
-        this.appStateService,
-        () => this.setProcessingStatus(name, false),
-      );
+      const subscriber = this.postResponseHandler
+        .handleFullJsonResponse(() => this.setProcessingStatus(name, false));
       this.handleUnsubscribe(apiToggle)
         .subscribe(subscriber);
     }

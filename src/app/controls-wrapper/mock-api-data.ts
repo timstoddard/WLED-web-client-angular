@@ -6,7 +6,7 @@ export const MOCK_API_RESPONSE: WledApiResponse = {
   state: {
     on: true,
     bri: 31,
-    transition: 7,
+    transition: 3, // 7,
     ps: -1,
     pl: -1,
     nl: {

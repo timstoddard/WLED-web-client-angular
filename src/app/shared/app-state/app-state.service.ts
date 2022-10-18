@@ -4,7 +4,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { WledApiResponse } from '../api-types';
 
-interface AppStateProps {
+export interface AppStateProps {
   state: AppState;
   info: AppInfo;
   palettes: string[];
@@ -263,8 +263,8 @@ export class AppStateService {
         macAddress: response.info.mac,
         ipAddress: response.info.ip,
       },
-      palettes: response.palettes ? response.palettes : palettes,
-      effects: response.effects ? response.effects : effects,
+      palettes: response.palettes ?? palettes,
+      effects: response.effects ?? effects,
       localSettings,
     }));
   }
@@ -479,9 +479,16 @@ export class AppStateService {
     this.updateLocalSettings({ wledIpAddresses });
 
   private selectFromAppState = (selectFn: (state: AppStateProps) => any) =>
+    // TODO handle unsubscribing here
     this.appStateStore.pipe(select(selectFn));
 
-  private updateState = (newState: Partial<AppState>) => {
+  updateState = (newState: Partial<AppState>) => {
+    // convert transition to units of seconds
+    if (newState.transition !== undefined) {
+      newState.transition /= 10;
+    }
+
+    // overwrite existing state properties
     this.appStateStore.update((appState) => ({
       ...appState,
       state: {

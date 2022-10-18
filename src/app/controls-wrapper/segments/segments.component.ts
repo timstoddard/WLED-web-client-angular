@@ -3,8 +3,8 @@ import { UIConfigService } from '../../shared/ui-config.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { Segment } from '../../shared/app-types';
 import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
-import { genericPostResponse, getInput } from '../utils';
 import { SegmentsService } from './segments.service';
+import { PostResponseHandler } from '../utils';
 
 @Component({
   selector: 'app-segments',
@@ -28,6 +28,7 @@ export class SegmentsComponent extends UnsubscribingComponent implements OnInit 
     private segmentsService: SegmentsService,
     private appStateService: AppStateService,
     private uiConfigService: UIConfigService,
+    private postResponseHandler: PostResponseHandler,
   ) {
     super();
   }
@@ -75,7 +76,7 @@ export class SegmentsComponent extends UnsubscribingComponent implements OnInit 
   selectAllSegments() {
     this.handleUnsubscribe(
       this.segmentsService.selectAllSegments())
-      .subscribe(genericPostResponse(this.appStateService));
+      .subscribe(this.postResponseHandler.handleFullJsonResponse());
   }
 
   setShowNewSegmentForm(show: boolean) {
@@ -130,7 +131,7 @@ export class SegmentsComponent extends UnsubscribingComponent implements OnInit 
       this.confirmedResetSegments = false;
       this.handleUnsubscribe(
         this.segmentsService.resetSegments())
-        .subscribe(genericPostResponse(this.appStateService));
+        .subscribe(this.postResponseHandler.handleFullJsonResponse());
     }
   }
 }

@@ -1,7 +1,5 @@
 // Types based the WLED JSON API info page: https://kno.wled.ge/interfaces/json-api
 
-import { AppState } from './app-types';
-
 export interface WledApiResponse {
   /** WLED app state, all fields are settable. */
   state: WledState;
@@ -283,5 +281,6 @@ export interface SavePresetRequest1 extends SavePresetRequestBase {
   ib: boolean
   sb: boolean
 }
-export type SavePresetRequest2 = SavePresetRequestBase & AppState
+// TODO define the specific properties of the partial state
+export type SavePresetRequest2 = SavePresetRequestBase & Partial<WledState>
 export type SavePresetRequest = SavePresetRequest1 | SavePresetRequest2

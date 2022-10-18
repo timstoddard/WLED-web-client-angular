@@ -1,10 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { AppStateService } from '../../../shared/app-state/app-state.service';
 import { FormService } from '../../../shared/form-service';
 import { UIConfigService } from '../../../shared/ui-config.service';
 import { UnsubscribingComponent } from '../../../shared/unsubscribing/unsubscribing.component';
-import { formatPlural, genericPostResponse } from '../../utils';
+import { formatPlural, PostResponseHandler } from '../../utils';
 import { SegmentsService } from '../segments.service';
 
 @Component({
@@ -25,8 +24,8 @@ export class NewSegmentComponent extends UnsubscribingComponent implements OnIni
   constructor(
     private formService: FormService,
     private segmentsService: SegmentsService,
-    private appStateService: AppStateService,
     private uiConfigService: UIConfigService,
+    private postResponseHandler: PostResponseHandler,
   ) {
     super();
   }
@@ -56,11 +55,12 @@ export class NewSegmentComponent extends UnsubscribingComponent implements OnIni
       stop,
       useSegmentLength: this.useSegmentLength,
     };
+    // TODO revisit this logic (move some to service?)
     this.handleUnsubscribe(
       this.segmentsService.updateSegment(options))
       .subscribe((response) => {
         this.submit.emit();
-        genericPostResponse(this.appStateService)(response);
+        this.postResponseHandler.handleFullJsonResponse()(response);
       });
   }
 

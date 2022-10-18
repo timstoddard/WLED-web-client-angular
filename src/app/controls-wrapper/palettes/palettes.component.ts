@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { AppStateService } from '../../shared/app-state/app-state.service';
 import { FormService } from '../../shared/form-service';
 import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
-import { genericPostResponse } from '../utils';
+import { PostResponseHandler } from '../utils';
 import { PalettesService } from './palettes.service';
 
 const DEFAULT_PALETTE_ID = -1; // TODO get from first selected segment
@@ -21,7 +20,7 @@ export class PalettesComponent extends UnsubscribingComponent implements OnInit 
   constructor(
     private palettesService: PalettesService,
     private formSerivce: FormService,
-    private appStateService: AppStateService,
+    private postResponseHandler: PostResponseHandler,
   ) {
     super();
   }
@@ -47,7 +46,7 @@ export class PalettesComponent extends UnsubscribingComponent implements OnInit 
     const result = this.palettesService.setPalette(paletteId);
     if (result) {
       this.handleUnsubscribe(result)
-        .subscribe(genericPostResponse(this.appStateService));
+        .subscribe(this.postResponseHandler.handleFullJsonResponse());
     }
   }
 

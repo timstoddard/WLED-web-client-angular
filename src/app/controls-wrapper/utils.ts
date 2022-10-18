@@ -1,5 +1,6 @@
+import { Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { WledApiResponse } from '../shared/api-types';
+import { WledApiResponse, WledState } from '../shared/api-types';
 import { AppStateService } from '../shared/app-state/app-state.service';
 
 // used by top and bottom menu bars
@@ -64,26 +65,43 @@ export const updateTablinks = (tabIndex: number) => {
   // tabLinks[tabIndex].className += ' active';
 }
 
-/** Basic error handling for a POST response. */
-// TODO put this in a class, have AppStateService as injected dep
-// TODO rename: `handleApiResponse`
-export const genericPostResponse = (
-  appStateService: AppStateService,
-  customLogic: () => void = () => {},
-) => (response: WledApiResponse) => {
-  // TODO check for error
-  // if (!response.success) {
-  //   // TODO show error toast
-  //   alert('failed to update');
-  // }
+// TODO move to own file
+@Injectable({ providedIn: 'root' })
+export class PostResponseHandler {
+  constructor(private appStateService: AppStateService) {}
 
-  // TODO wire up so this appStateService used if ws connection fails
-  appStateService.setAll(response);
-  console.log('POST response', response);
+  /** Basic handling for a POST response. */
+  handleFullJsonResponse = (customLogic: () => void = () => { }) => (response: WledApiResponse) => {
+    // TODO check for error
+    // if (!response.success) {
+    //   // TODO show error toast
+    //   alert('failed to update');
+    // }
 
-  // run any custom logic after updating the whole app state
-  customLogic();
-};
+    // TODO wire up so this appStateService used if ws connection fails
+    this.appStateService.setAll(response);
+    console.log('POST response', response);
+
+    // run any custom logic after updating the whole app state
+    customLogic();
+  };
+
+  /** Basic handling for a POST response. */
+  handleStateResponse = (customLogic: () => void = () => { }) => (response: WledState) => {
+    // TODO check for error
+    // if (!response.success) {
+    //   // TODO show error toast
+    //   alert('failed to update');
+    // }
+
+    // TODO wire up so this appStateService used if ws connection fails
+    this.appStateService.updateState(response);
+    console.log('POST response', response);
+
+    // run any custom logic after updating the whole app state
+    customLogic();
+  };
+}
 
 /**
  * Searches up the current route tree to find route data for the given key.

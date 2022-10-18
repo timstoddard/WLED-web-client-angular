@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { AppStateService } from '../../shared/app-state/app-state.service';
 import { FormService } from '../../shared/form-service';
 import { UIConfigService } from '../../shared/ui-config.service';
 import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
-import { genericPostResponse } from '../utils';
+import { PostResponseHandler } from '../utils';
 import { EffectsService } from './effects.service';
 
 const DEFAULT_EFFECT_ID = -1; // TODO get from first selected segment
@@ -25,8 +24,8 @@ export class EffectsComponent extends UnsubscribingComponent implements OnInit {
   constructor(
     private effectsService: EffectsService,
     private formSerivce: FormService,
-    private appStateService: AppStateService,
     private uiConfigService: UIConfigService,
+    private postResponseHandler: PostResponseHandler,
   ) {
     super();
   }
@@ -61,20 +60,20 @@ export class EffectsComponent extends UnsubscribingComponent implements OnInit {
     const result = this.effectsService.setEffect(effectId);
     if (result) {
       this.handleUnsubscribe(result)
-        .subscribe(genericPostResponse(this.appStateService));
+        .subscribe(this.postResponseHandler.handleFullJsonResponse());
     }
   }
 
   private setSpeed(effectId: number) {
     this.handleUnsubscribe(
       this.effectsService.setSpeed(effectId))
-      .subscribe(genericPostResponse(this.appStateService));
+      .subscribe(this.postResponseHandler.handleStateResponse());
   }
 
   private setIntensity(effectId: number) {
     this.handleUnsubscribe(
       this.effectsService.setIntensity(effectId))
-      .subscribe(genericPostResponse(this.appStateService));
+      .subscribe(this.postResponseHandler.handleStateResponse());
   }
 
   private createForm() {

@@ -3,7 +3,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { WledApiResponse } from '../../shared/api-types';
 import { UIConfigService } from '../../shared/ui-config.service';
-import { AppStateService } from '../../shared/app-state/app-state.service';
+import { AppStateProps, AppStateService } from '../../shared/app-state/app-state.service';
 import { LocalStorageService } from '../../shared/local-storage.service';
 import { UnsubscribingComponent } from '../../shared/unsubscribing/unsubscribing.component';
 import { generateApiUrl } from '../json.service';
@@ -68,38 +68,10 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
   ngOnInit() {
     this.buttons = this.getButtons();
     this.topMenuBarForm = this.createForm();
-    this.onResize();
+    // this.onResize();
 
     this.appStateService.getAppState(this.ngUnsubscribe)
-      .subscribe(({ state, info, localSettings }) => {
-        // power
-        this.isOn = state.on;
-        
-        // timer/nightlight
-        if (this.isNightLightActive !== state.nightLight.on) {
-          this.handleNightLightChange();
-        }
-        this.isNightLightActive = state.nightLight.on;
-        
-        // sync
-        if (this.isSyncActive !== state.udp.shouldSend) {
-          this.handleSyncChange();
-        }
-        this.isSyncActive = state.udp.shouldSend;
-        // TODO add toggle button for receive in UI?
-        this.shouldToggleReceiveWithSend = info.shouldToggleReceiveWithSend;
-        
-        // live view
-        this.isLiveViewActive = localSettings.isLiveViewActive;
-        
-        // brightness
-        this.topMenuBarForm.get('brightness')!.setValue(state.brightness, { emitEvent: false });
-        
-        // transition time
-        this.topMenuBarForm.get('transitionTime')!.setValue(state.transition, { emitEvent: false });
-
-        this.changeDetectorRef.markForCheck();
-      });
+      .subscribe(this.handleAppStateUpdate);
 
     this.uiConfigService.getUIConfig(this.ngUnsubscribe)
       .subscribe((uiConfig) => {
@@ -223,12 +195,46 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
     return buttons;
   }
 
+  private handleAppStateUpdate = ({ state, info, localSettings }: AppStateProps) => {
+    // power
+    this.isOn = state.on;
+
+    // timer/nightlight
+    let oldIsNightLightActive = this.isNightLightActive;
+    this.isNightLightActive = state.nightLight.on;
+    if (this.isNightLightActive !== oldIsNightLightActive) {
+      this.handleNightLightChange();
+    }
+
+    // sync
+    let oldIsSyncActive = this.isSyncActive;
+    this.isSyncActive = state.udp.shouldSend;
+    if (this.isSyncActive !== oldIsSyncActive) {
+      this.handleSyncChange();
+    }
+    // TODO add toggle button for receive in UI?
+    this.shouldToggleReceiveWithSend = info.shouldToggleReceiveWithSend;
+
+    // live view
+    this.isLiveViewActive = localSettings.isLiveViewActive;
+
+    // brightness
+    this.topMenuBarForm.get('brightness')!
+      .setValue(state.brightness, { emitEvent: false });
+
+    // transition time
+    this.topMenuBarForm.get('transitionTime')!
+      .setValue(state.transition, { emitEvent: false });
+
+    this.changeDetectorRef.markForCheck();
+  }
+
   private handleNightLightChange() {
     const message = this.isNightLightActive
       ? `Timer active. Your light will turn ${this.nightLightTar > 0 ? 'on' : 'off'} ${this.nightLightMode ? 'over' : 'after'} ${this.nightLightDuration} minutes.`
       : 'Timer deactivated.';
     // TODO show toast
-    const showToast = (s: string) => { };
+    const showToast = (s: string) => alert(s);
     showToast(message);
   }
 
@@ -237,7 +243,7 @@ export class TopMenuBarComponent extends UnsubscribingComponent implements OnIni
       ? 'Other lights in the network will now sync to this one.'
       : 'This light and other lights in the network will no longer sync.';
     // TODO show toast
-    const showToast = (s: string) => {};
+    const showToast = (s: string) => alert(s);
     showToast(message);
   }
 

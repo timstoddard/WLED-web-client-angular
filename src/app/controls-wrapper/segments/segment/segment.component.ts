@@ -1,11 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { AppStateService } from '../../../shared/app-state/app-state.service';
 import { Segment } from '../../../shared/app-types';
 import { FormService } from '../../../shared/form-service';
 import { UIConfigService } from '../../../shared/ui-config.service';
 import { UnsubscribingComponent } from '../../../shared/unsubscribing/unsubscribing.component';
-import { formatPlural, genericPostResponse } from '../../utils';
+import { formatPlural, PostResponseHandler } from '../../utils';
 import { SegmentsService } from '../segments.service';
 
 @Component({
@@ -51,8 +50,8 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
   constructor(
     private segmentsService: SegmentsService,
     private formService: FormService,
-    private appStateService: AppStateService,
     private uiConfigService: UIConfigService,
+    private postResponseHandler: PostResponseHandler,
   ) {
     super();
   }
@@ -70,7 +69,7 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
   selectOnlySegment() {
     this.handleUnsubscribe(
       this.segmentsService.selectOnlySegment(this.segment.id))
-      .subscribe(genericPostResponse(this.appStateService));
+      .subscribe(this.postResponseHandler.handleFullJsonResponse());
   }
 
   toggleEditName() {
@@ -105,14 +104,14 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
     };
     this.handleUnsubscribe(
       this.segmentsService.updateSegment(options))
-      .subscribe(genericPostResponse(this.appStateService));
+      .subscribe(this.postResponseHandler.handleFullJsonResponse());
   }
 
   deleteSegment() {
     try {
       this.handleUnsubscribe(
         this.segmentsService.deleteSegment(this.segment.id)!)
-        .subscribe(genericPostResponse(this.appStateService));
+        .subscribe(this.postResponseHandler.handleStateResponse());
     } catch (e) { // delete failed, segments length is < 2
       // TODO show form error instead of toast (?)
       // showToast('You need to have multiple segments to delete one!');
@@ -154,31 +153,31 @@ export class SegmentComponent extends UnsubscribingComponent implements OnInit {
   private toggleOn(isOn: boolean) {
     this.handleUnsubscribe(
       this.segmentsService.setSegmentOn(this.segment.id, isOn))
-      .subscribe(genericPostResponse(this.appStateService));
+      .subscribe(this.postResponseHandler.handleFullJsonResponse());
   }
 
   private toggleSelected(isSelected: boolean) {
     this.handleUnsubscribe(
       this.segmentsService.selectSegment(this.segment.id, isSelected))
-      .subscribe(genericPostResponse(this.appStateService));
+      .subscribe(this.postResponseHandler.handleStateResponse());
   }
 
   private setBrightness(brightness: number) {
     this.handleUnsubscribe(
       this.segmentsService.setSegmentBrightness(this.segment.id, brightness))
-      .subscribe(genericPostResponse(this.appStateService));
+      .subscribe(this.postResponseHandler.handleFullJsonResponse());
   }
 
   private toggleReverse(isReverse: boolean) {
     this.handleUnsubscribe(
       this.segmentsService.setSegmentReverse(this.segment.id, isReverse))
-      .subscribe(genericPostResponse(this.appStateService));
+      .subscribe(this.postResponseHandler.handleStateResponse());
   }
 
   private toggleMirror(isMirror: boolean) {
     this.handleUnsubscribe(
       this.segmentsService.setSegmentMirror(this.segment.id, isMirror))
-      .subscribe(genericPostResponse(this.appStateService));
+      .subscribe(this.postResponseHandler.handleStateResponse());
   }
 
   /** Validator: `stop` must be greater than `start`.  */
