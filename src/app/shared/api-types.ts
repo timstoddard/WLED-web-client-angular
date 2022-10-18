@@ -23,9 +23,9 @@ export interface WledState {
   /** ID of currently set playlist. For now, this sets the preset cycle feature, `-1` is off and `0` is on. */
   pl: number;
   /** Nightlight settings. */
-  nl: WledNightLightSettings;
+  nl: WledNightLightState;
   /** UDP settings. */
-  udpn: WledUdpSettings;
+  udpn: WledUdpState;
   /** Live data override. 0 is off, 1 is override until live data ends, 2 is override until ESP reboot. */
   lor: number;
   /** ID of main segment. */
@@ -49,7 +49,7 @@ export interface WledState {
   playlist?: WledPlaylistSettings;
 }
 
-export interface WledNightLightSettings {
+export interface WledNightLightState {
   /** `true` if nightlight currently active. */
   on: boolean;
   /** Duration of nightlight in minutes [1-255]. */
@@ -62,7 +62,7 @@ export interface WledNightLightSettings {
   readonly rem: number;
 }
 
-export interface WledUdpSettings {
+export interface WledUdpState {
   /** Send WLED broadcast (UDP sync) packet on state change. */
   send: boolean;
   /** Receive broadcast packets. */
@@ -154,7 +154,7 @@ export interface WledInfo {
   /** Build ID (YYMMDDB, B = daily build index). */
   readonly vid: number;
   /** Info about the LED setup. */
-  readonly leds: WledLedOverview;
+  readonly leds: WledLedInfo;
   /** If `true`, a UI with only a single button for toggling sync should toggle receive & send, otherwise send only. */
   readonly str: boolean;
   /** Friendly name of the light. Intended for display in lists and titles. */
@@ -174,9 +174,9 @@ export interface WledInfo {
   /** Number of palettes configured. */
   readonly palcount: number;
   /** Info about the wifi signal strength. */
-  readonly wifi: WledWifiStats;
+  readonly wifi: WledWifiInfo;
   /** Info about the embedded LittleFS filesystem. */
-  readonly fs: WledFileSystemStats;
+  readonly fs: WledFileSystemInfo;
   /** Number of other WLED devices discovered on the network [-1 to 255]. -1 if Node discovery disabled. */
   readonly ndc: number;
   /** Name of the platform. */
@@ -199,7 +199,7 @@ export interface WledInfo {
   readonly ip: string;
 }
 
-export interface WledLedOverview {
+export interface WledLedInfo {
   /** Total LED count [1-1200]. */
   readonly count: number;
   /** Current frames per second [0-255]. */
@@ -216,7 +216,7 @@ export interface WledLedOverview {
   readonly maxseg: number;
 }
 
-export interface WledWifiStats {
+export interface WledWifiInfo {
   /** The BSSID of the currently connected network. */
   readonly bssid: string;
   /** Relative signal quality of the current connection [0-100]. */
@@ -225,7 +225,7 @@ export interface WledWifiStats {
   readonly channel: number;
 }
 
-export interface WledFileSystemStats {
+export interface WledFileSystemInfo {
   /** Estimate of used filesystem space in kilobytes. */
   readonly u: number;
   /** Total filesystem size in kilobytes. */

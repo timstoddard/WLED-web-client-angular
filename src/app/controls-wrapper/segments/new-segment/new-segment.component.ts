@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormService } from '../../../shared/form-service';
+import { PostResponseHandler } from '../../../shared/post-response-handler';
 import { UIConfigService } from '../../../shared/ui-config.service';
 import { UnsubscriberComponent } from '../../../shared/unsubscribing/unsubscriber.component';
-import { formatPlural, PostResponseHandler } from '../../utils';
+import { formatPlural } from '../../utils';
 import { SegmentsService } from '../segments.service';
 
 @Component({

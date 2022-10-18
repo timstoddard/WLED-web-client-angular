@@ -32,6 +32,7 @@ export class WebSocketService extends UnsubscriberService {
           this.fakeConnect();
         } else {
           this.connect(ipv4Address);
+          // TODO after connecting, send ws message about live view (to force enable/disable)
         }
       });
   }

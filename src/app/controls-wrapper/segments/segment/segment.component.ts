@@ -2,9 +2,10 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { Segment } from '../../../shared/app-types';
 import { FormService } from '../../../shared/form-service';
+import { PostResponseHandler } from '../../../shared/post-response-handler';
 import { UIConfigService } from '../../../shared/ui-config.service';
 import { UnsubscriberComponent } from '../../../shared/unsubscribing/unsubscriber.component';
-import { formatPlural, PostResponseHandler } from '../../utils';
+import { formatPlural } from '../../utils';
 import { SegmentsService } from '../segments.service';
 
 @Component({

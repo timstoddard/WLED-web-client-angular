@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormService } from '../../shared/form-service';
+import { PostResponseHandler } from '../../shared/post-response-handler';
 import { UIConfigService } from '../../shared/ui-config.service';
 import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
-import { PostResponseHandler } from '../utils';
 import { EffectsService } from './effects.service';
 
 const DEFAULT_EFFECT_ID = -1; // TODO get from first selected segment

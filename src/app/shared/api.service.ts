@@ -4,12 +4,13 @@ import { map, of, timeout } from 'rxjs';
 import { ALL_PALETTES_DATA, MOCK_API_PRESETS, MOCK_API_RESPONSE, MOCK_LIVE_DATA } from '../controls-wrapper/mock-api-data';
 import { PalettesApiData } from '../controls-wrapper/palettes/palettes.service';
 import { Preset } from '../controls-wrapper/presets/presets.service';
-import { PostResponseHandler } from '../controls-wrapper/utils';
 import { APIPreset, APIPresets, SavePresetRequest, WledApiResponse, WledInfo, WledState } from './api-types';
-import { AppStateProps, AppStateService, NO_DEVICE_IP_SELECTED } from './app-state/app-state.service';
-import { Segment } from './app-types';
+import { NO_DEVICE_IP_SELECTED } from './app-state/app-state-defaults';
+import { AppStateService } from './app-state/app-state.service';
+import { AppState, Segment } from './app-types';
 import { FormValues } from './form-service';
 import { LiveViewData } from './live-view/live-view.service';
+import { PostResponseHandler } from './post-response-handler';
 import { UnsubscriberService } from './unsubscribing/unsubscriber.service';
 
 const ALL_JSON_PATH = 'json';
@@ -440,7 +441,7 @@ export class ApiService extends UnsubscriberService {
     useCurrentState: boolean,
     includeBrightness: boolean,
     saveSegmentBounds: boolean,
-    { state }: AppStateProps,
+    state: AppState,
   ) {
     let request: SavePresetRequest;
     const name = preset.name || `Preset ${preset.id}`;

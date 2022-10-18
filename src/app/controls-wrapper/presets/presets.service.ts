@@ -38,7 +38,7 @@ export class PresetsService extends UnsubscriberService {
     saveSegmentBounds: boolean,
   ) {
     this.appStateService.getAppState(this.ngUnsubscribe)
-      .subscribe(state => {
+      .subscribe(({ state }) => {
         this.apiService.savePreset(
           preset,
           useCurrentState,

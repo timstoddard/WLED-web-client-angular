@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormGroup, Validators } from '@angular/forms';
-import { AppStateService, WledIpAddress } from '../../shared/app-state/app-state.service';
+import { FormGroup, Validators } from '@angular/forms';
 import { FormService } from '../../shared/form-service';
 import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
 import { SelectItem } from '../shared/settings-types';

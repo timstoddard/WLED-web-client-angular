@@ -4,7 +4,7 @@ import { AppStateService } from '../../shared/app-state/app-state.service';
 import { Segment } from '../../shared/app-types';
 import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
 import { SegmentsService } from './segments.service';
-import { PostResponseHandler } from '../utils';
+import { PostResponseHandler } from '../../shared/post-response-handler';
 
 @Component({
   selector: 'app-segments',

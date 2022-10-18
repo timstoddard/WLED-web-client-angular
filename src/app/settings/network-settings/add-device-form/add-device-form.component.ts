@@ -2,7 +2,9 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormArray, FormGroup, Validators } from '@angular/forms';
 import { Observer } from 'rxjs';
 import { ApiService } from '../../../shared/api.service';
-import { AppStateService, NO_DEVICE_IP_SELECTED, WledIpAddress } from '../../../shared/app-state/app-state.service';
+import { NO_DEVICE_IP_SELECTED } from '../../../shared/app-state/app-state-defaults';
+import { AppStateService } from '../../../shared/app-state/app-state.service';
+import { WledIpAddress } from '../../../shared/app-types';
 import { FormService } from '../../../shared/form-service';
 import { UnsubscriberComponent } from '../../../shared/unsubscribing/unsubscriber.component';
 

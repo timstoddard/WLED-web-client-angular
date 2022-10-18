@@ -1,8 +1,6 @@
-import { Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { WledApiResponse, WledState } from '../shared/api-types';
-import { AppStateService } from '../shared/app-state/app-state.service';
 
+// TODO move elsewhere
 // used by top and bottom menu bars
 export interface MenuBarButton {
   name: string;
@@ -63,44 +61,6 @@ export const updateTablinks = (tabIndex: number) => {
   //   return;
   // }
   // tabLinks[tabIndex].className += ' active';
-}
-
-// TODO move to own file
-@Injectable({ providedIn: 'root' })
-export class PostResponseHandler {
-  constructor(private appStateService: AppStateService) {}
-
-  /** Basic handling for a POST response. */
-  handleFullJsonResponse = (customLogic: () => void = () => { }) => (response: WledApiResponse) => {
-    // TODO check for error
-    // if (!response.success) {
-    //   // TODO show error toast
-    //   alert('failed to update');
-    // }
-
-    // TODO wire up so this appStateService used if ws connection fails
-    this.appStateService.setAll(response);
-    console.log('POST response', response);
-
-    // run any custom logic after updating the whole app state
-    customLogic();
-  };
-
-  /** Basic handling for a POST response. */
-  handleStateResponse = (customLogic: () => void = () => { }) => (response: WledState) => {
-    // TODO check for error
-    // if (!response.success) {
-    //   // TODO show error toast
-    //   alert('failed to update');
-    // }
-
-    // TODO wire up so this appStateService used if ws connection fails
-    this.appStateService.updateState(response);
-    console.log('POST response', response);
-
-    // run any custom logic after updating the whole app state
-    customLogic();
-  };
 }
 
 /**

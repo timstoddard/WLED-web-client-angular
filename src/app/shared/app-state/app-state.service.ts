@@ -1,196 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Store, createState, withProps, select } from '@ngneat/elf';
 import { Subject, takeUntil } from 'rxjs';
-import { environment } from 'src/environments/environment';
+import { ApiTypeMapper } from '../api-type-mapper';
 import { WledApiResponse } from '../api-types';
-
-export interface AppStateProps {
-  state: AppState;
-  info: AppInfo;
-  palettes: string[];
-  effects: string[];
-  localSettings: AppLocalSettings;
-}
-
-export interface AppState {
-  on: boolean;
-  brightness: number;
-  transition: number;
-  currentPresetId: number;
-  currentPlaylistId: number;
-  nightLight: {
-    on: boolean;
-    durationMinutes: number;
-    mode: 0 | 1 | 2 | 3;
-    targetBrightness: number;
-    remainingSeconds: number;
-  };
-  udp: {
-    shouldSend: boolean;
-    shouldReceive: boolean;
-  };
-  liveViewOverride: number;
-  mainSegmentId: number;
-}
-
-interface AppInfo {
-  versionName: string;
-  versionId: number;
-  ledInfo: {
-    totalLeds: number;
-    fps: number;
-    hasWhiteChannel: boolean;
-    showWhiteChannelSlider: boolean;
-    amps: number;
-    maxAmps: number;
-    maxSegments: number;
-  };
-  shouldToggleReceiveWithSend: boolean;
-  name: string;
-  udpPort: number;
-  isLive: boolean; // TODO rename, only for UDP
-  lm: string; // TODO is this needed?
-  sourceIpAddress: string;
-  webSocketCount: number;
-  effectCount: number;
-  paletteCount: number;
-  wifi: {
-    bssid: string;
-    signalStrength: number;
-    channel: number;
-  };
-  fileSystem: {
-    usedSpaceKb: number;
-    totalSpaceKb: number;
-    lastPresetsJsonEditTimestamp: number;
-  };
-  wledDevicesOnNetwork: number;
-  platform: string;
-  arduinoVersion: string;
-  freeHeapBytes: number; // TODO is this bytes or other unit?
-  uptimeSeconds: number;
-  opt: number; // TODO is this needed?
-  brand: string;
-  productName: string;
-  macAddress: string;
-  ipAddress: string;
-}
-
-export interface AppLocalSettings {
-  isLiveViewActive: boolean;
-  // TODO can this be a string? (pros/cons)
-  selectedWledIpAddress: WledIpAddress;
-  wledIpAddresses: WledIpAddress[];
-}
-
-export interface WledIpAddress {
-  name: string,
-  ipv4Address: string,
-}
-
-export const NO_DEVICE_IP_SELECTED: WledIpAddress = {
-  name: 'None',
-  ipv4Address: '',
-};
-
-// TODO better defaults
-const DEFAULT_WLED_IP_ADDRESSES: WledIpAddress[] = [
-  {
-    name: 'Living Room',
-    ipv4Address: '192.168.100.171',
-  },
-  {
-    name: 'Bedroom',
-    ipv4Address: '192.168.100.21',
-  },
-  {
-    name: 'Office',
-    ipv4Address: '192.168.100.5',
-  },
-];
-const DEFAULT_SELECTED_WLED_IP_ADDRESS = NO_DEVICE_IP_SELECTED;
-// const DEFAULT_SELECTED_WLED_IP_ADDRESS: WledIpAddress = environment.production
-  // ? NO_DEVICE_IP_SELECTED
-  // : DEFAULT_WLED_IP_ADDRESSES[0];
-
-/** State of the app before hydration. Everything is turned off. */
-export const DEFAULT_APP_STATE: AppStateProps = {
-  state: {
-    on: false,
-    brightness: 0,
-    transition: 0,
-    currentPresetId: 0,
-    currentPlaylistId: 0,
-    nightLight: {
-      on: false,
-      durationMinutes: 0,
-      mode: 0,
-      targetBrightness: 0,
-      remainingSeconds: 0,
-    },
-    udp: {
-      shouldSend: false,
-      shouldReceive: false,
-    },
-    liveViewOverride: 0,
-    mainSegmentId: 0,
-  },
-  info: {
-    versionName: '',
-    versionId: 0,
-    ledInfo: {
-      totalLeds: 0,
-      fps: 0,
-      hasWhiteChannel: false,
-      showWhiteChannelSlider: false,
-      amps: 0,
-      maxAmps: 0,
-      maxSegments: 0,
-    },
-    shouldToggleReceiveWithSend: false,
-    name: '',
-    udpPort: 0,
-    isLive: false,
-    lm: '',
-    sourceIpAddress: '',
-    webSocketCount: 0,
-    effectCount: 0,
-    paletteCount: 0,
-    wifi: {
-      bssid: '',
-      signalStrength: 0,
-      channel: 0,
-    },
-    fileSystem: {
-      usedSpaceKb: 0,
-      totalSpaceKb: 0,
-      lastPresetsJsonEditTimestamp: 0,
-    },
-    wledDevicesOnNetwork: 0,
-    platform: '',
-    arduinoVersion: '',
-    freeHeapBytes: 0,
-    uptimeSeconds: 0,
-    opt: 0,
-    brand: '',
-    productName: '',
-    macAddress: '',
-    ipAddress: '',
-  },
-  palettes: [],
-  effects: [],
-  localSettings: {
-    isLiveViewActive: false,
-    selectedWledIpAddress: DEFAULT_SELECTED_WLED_IP_ADDRESS,
-    wledIpAddresses: DEFAULT_WLED_IP_ADDRESSES,
-  }
-};
+import { AppInfo, AppLocalSettings, AppState, AppStateProps } from '../app-types';
+import { DEFAULT_APP_STATE } from './app-state-defaults';
 
 @Injectable({ providedIn: 'root' })
 export class AppStateService {
   private appStateStore: Store;
 
-  constructor() {
+  constructor(private apiTypeMapper: ApiTypeMapper) {
     this.appStateStore = new Store({
       name: 'WLED App State',
       ...createState(withProps<AppStateProps>(DEFAULT_APP_STATE)),
@@ -199,74 +19,12 @@ export class AppStateService {
 
   /** Set all app state fields using the api response data. */
   setAll = (response: WledApiResponse) => {
-    this.appStateStore.update(({ localSettings, palettes, effects }) => ({
-      state: {
-        on: response.state.on,
-        brightness: response.state.bri,
-        // stored in backend as # of tenths of a second
-        transition: response.state.transition / 10,
-        currentPresetId: response.state.ps,
-        currentPlaylistId: response.state.pl,
-        nightLight: {
-          on: response.state.nl.on,
-          durationMinutes: response.state.nl.dur,
-          mode: response.state.nl.mode,
-          targetBrightness: response.state.nl.tbri,
-          remainingSeconds: response.state.nl.rem,
-        },
-        udp: {
-          shouldSend: response.state.udpn.send,
-          shouldReceive: response.state.udpn.recv,
-        },
-        liveViewOverride: response.state.lor,
-        mainSegmentId: response.state.mainseg,
-      },
-      info: {
-        versionName: response.info.ver,
-        versionId: response.info.vid,
-        ledInfo: {
-          totalLeds: response.info.leds.count,
-          fps: response.info.leds.fps,
-          hasWhiteChannel: response.info.leds.rgbw,
-          showWhiteChannelSlider: response.info.leds.wv,
-          amps: response.info.leds.pwr,
-          maxAmps: response.info.leds.maxpwr,
-          maxSegments: response.info.leds.maxseg,
-        },
-        shouldToggleReceiveWithSend: response.info.str,
-        name: response.info.name,
-        udpPort: response.info.udpport,
-        isLive: response.info.live,
-        lm: response.info.lm,
-        sourceIpAddress: response.info.lip,
-        webSocketCount: response.info.ws,
-        effectCount: response.info.fxcount,
-        paletteCount: response.info.palcount,
-        wifi: {
-          bssid: response.info.wifi.bssid,
-          signalStrength: response.info.wifi.signal,
-          channel: response.info.wifi.channel,
-        },
-        fileSystem: {
-          usedSpaceKb: response.info.fs.u,
-          totalSpaceKb: response.info.fs.t,
-          lastPresetsJsonEditTimestamp: response.info.fs.pmt,
-        },
-        wledDevicesOnNetwork: response.info.ndc,
-        platform: response.info.arch,
-        arduinoVersion: response.info.core,
-        freeHeapBytes: response.info.freeheap,
-        uptimeSeconds: response.info.uptime,
-        opt: response.info.opt,
-        brand: response.info.brand,
-        productName: response.info.product,
-        macAddress: response.info.mac,
-        ipAddress: response.info.ip,
-      },
-      palettes: response.palettes ?? palettes,
-      effects: response.effects ?? effects,
+    this.appStateStore.update(({
       localSettings,
-    }));
+      palettes,
+      effects,
+    }) =>
+      this.apiTypeMapper.mapWledApiResponseToAppStateProps(response, localSettings, palettes, effects));
   }
 
   // getters
@@ -483,12 +241,6 @@ export class AppStateService {
     this.appStateStore.pipe(select(selectFn));
 
   updateState = (newState: Partial<AppState>) => {
-    // convert transition to units of seconds
-    if (newState.transition !== undefined) {
-      newState.transition /= 10;
-    }
-
-    // overwrite existing state properties
     this.appStateStore.update((appState) => ({
       ...appState,
       state: {
