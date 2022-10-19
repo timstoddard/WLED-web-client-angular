@@ -1,3 +1,22 @@
 .deviceSelector {
-  margin: 5px;
+  background: var(--backgroundColorAccent);
+  border-radius: 6px;
+  border: 2px solid var(--borderColorAccent);
+  color: var(--textColorPrimary);
+  cursor: pointer;
+  font-size: 18px;
+  margin: 3px;
+  min-height: 30px;
+  min-width: 150px;
+  outline: 0;
+  text-align: center;
+
+  &--connected {
+    background: rgb(0,255,0);
+    color: black;
+  }
+
+  &--disconnected {
+    background: rgb(255,0,0);
+  }
 }

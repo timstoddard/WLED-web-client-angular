@@ -2,6 +2,8 @@
 
 @import 'src/app/shared/scss/mixins';
 
+$defaultSpacing: 5px;
+
 /** Spinning effect used for "button processing" status border. */
 @keyframes spin {
   100% {
@@ -10,33 +12,53 @@
 }
 
 :host {
-  @include overrideMatTextInputStyles(--backgroundColorAccent);
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  grid-template-rows: auto auto auto;
 }
 
 .topMenuBar {
-  &__row {
-    &--showingSettings {
-      display: flex;
-      justify-content: space-between;
-      padding: 0 8px;
-      width: 100%;
-
-      & .topMenuBar__buttons {
-        // override default styles
-        margin-left: 0;
-        margin-right: 0;
-      }
-    }
+  &__buttonsWrapper {
+    display: flex;
+    grid-area: 1 / 1 / 3 / 2;
+    justify-content: flex-start;
+    padding: #{$defaultSpacing * 2};
+    padding-bottom: $defaultSpacing;
+    width: 100%;
   }
 
-  &__buttons {
+  &__moreButton {
+    display: none !important;
+  }
+
+  &__deviceSelectorWrapper {
     align-items: center;
     display: flex;
-    justify-content: space-between;
-    margin: 10px auto 5px;
+    grid-area: 1 / 2 / 3 / 3;
+    justify-content: center;
+  }
+
+  &__settingsWrapper {
+    align-items: center;
+    background: var(--backgroundColorPrimary);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: row-reverse;
+    grid-area: 1 / 3 / 3 / 4;
+    padding: $defaultSpacing;
+    padding-right: #{$defaultSpacing * 2};
+  }
+
+  &__liveViewWrapper {
+    grid-area: 3 / 1 / 4 / 4;
+  }
+
+  &__settingsOverlay {
+    @include overlayContainer();
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
   &__buttonWrapper {
@@ -97,44 +119,62 @@
     }
   }
 
-  &__settings {
-    align-items: center;
-    background: var(--backgroundColorPrimary);
-    border-radius: 6px;
-    display: flex;
-    flex-direction: row-reverse;
-    padding: 4px 0 0;
-
-    &--inOverlay {
-      @include overlayContainer();
-      flex-direction: column;
-
-      & .topMenuBar__slider {
-        margin: 0;
-        margin-bottom: 8px;
-      }
-    }
-  }
-
   &__slider {
-    flex-direction: row;
-    margin: 8px 0 8px 6px;
-
     @at-root ::ng-deep &__label {
-      margin: 0 !important; // override default styling
+      font-size: 14px;
     }
 
     @at-root ::ng-deep &__input {
-      margin: -6px 0;
+      margin: -15px 0;
     }
   }
 
+  &__transitionInputWrapper {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    margin-right: $defaultSpacing;
+  }
+
   &__transitionInput {
-    // needed for overlay view (?)
-    // TODO why is nonfocused text color override not working
-    @include overrideMatTextInputStyles(--backgroundColorAccent);
-    margin-bottom: -20px;
-    max-width: 120px;
-    min-width: 120px;
+    @include forceWidth(50px);
+    font-size: 16px;
+  }
+
+  &__settingLabel {
+    font-size: 14px;
+    margin-bottom: 3px;
+    white-space: nowrap;
+  }
+
+
+  // mobile layout
+  @media screen and (max-width: 740px) {
+    &__buttonsWrapper {
+      grid-area: 2 / 1 / 3 / 4;
+      justify-content: center;
+      padding: $defaultSpacing;
+    }
+
+    &__moreButton {
+      display: flex !important;
+    }
+    
+    &__deviceSelectorWrapper {
+      grid-area: 1 / 1 / 2 / 4;
+    }
+
+    &__settingsWrapper {
+      display: none;
+    }
+
+    &__liveViewWrapper {
+      grid-area: 3 / 1 / 4 / 4;
+    }
+
+    &__transitionInputWrapper {
+      margin: 0;
+      margin-top: 5px;
+    }
   }
 }

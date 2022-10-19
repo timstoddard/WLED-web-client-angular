@@ -68,7 +68,7 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
   ngOnInit() {
     this.buttons = this.getButtons();
     this.topMenuBarForm = this.createForm();
-    // this.onResize();
+    this.onResize();
 
     this.appStateService.getAppState(this.ngUnsubscribe)
       .subscribe(this.handleAppStateUpdate);

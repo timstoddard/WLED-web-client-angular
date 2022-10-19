@@ -15,6 +15,7 @@ import { UnsubscriberComponent } from '../../../shared/unsubscribing/unsubscribe
 export class DeviceSelectorComponent extends UnsubscriberComponent implements OnInit {
   wledIpAddresses!: WledIpAddress[];
   selectedWledIpAddress!: FormControl;
+  connectionStatus!: 'connected' | 'disconnected' | null;
 
   constructor(
     private appStateService: AppStateService,
@@ -27,6 +28,7 @@ export class DeviceSelectorComponent extends UnsubscriberComponent implements On
   ngOnInit() {
     this.wledIpAddresses = [];
     this.selectedWledIpAddress = this.createControl();
+    this.connectionStatus = null;
     this.handleUnsubscribe(this.selectedWledIpAddress.valueChanges)
       .subscribe(this.setSelectedDevice);
 
@@ -52,6 +54,7 @@ export class DeviceSelectorComponent extends UnsubscriberComponent implements On
       .find(({ ipv4Address }) => ipAddress === ipv4Address)!
       .name;
     console.log('wledIpAddress', { name, ipAddress });
+    this.connectionStatus = null;
     if (ipAddress === NO_DEVICE_IP_SELECTED.ipv4Address) {
       // 'None' selected
       this.appStateService.setSelectedWledIpAddress(NO_DEVICE_IP_SELECTED);
@@ -68,8 +71,10 @@ export class DeviceSelectorComponent extends UnsubscriberComponent implements On
               name,
               ipv4Address: ipAddress,
             });
+            this.connectionStatus = 'connected';
             showResult('succeeded');
           } else {
+            this.connectionStatus = 'disconnected';
             showResult('failed');
           }
         });
