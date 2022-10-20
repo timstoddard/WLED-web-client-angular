@@ -22,8 +22,8 @@ $defaultSpacing: 5px;
     display: flex;
     grid-area: 1 / 1 / 3 / 2;
     justify-content: flex-start;
-    padding: #{$defaultSpacing * 2};
-    padding-bottom: $defaultSpacing;
+    padding: #{$defaultSpacing * 1.5};
+    padding-bottom: 0;
     width: 100%;
   }
 
@@ -51,6 +51,10 @@ $defaultSpacing: 5px;
 
   &__liveViewWrapper {
     grid-area: 3 / 1 / 4 / 4;
+  }
+
+  &__liveView {
+    margin-top: 4px;
   }
 
   &__settingsOverlay {
@@ -153,7 +157,7 @@ $defaultSpacing: 5px;
     &__buttonsWrapper {
       grid-area: 2 / 1 / 3 / 4;
       justify-content: center;
-      padding: $defaultSpacing;
+      padding: #{$defaultSpacing + 2px} $defaultSpacing 0;
     }
 
     &__moreButton {
@@ -162,6 +166,17 @@ $defaultSpacing: 5px;
     
     &__deviceSelectorWrapper {
       grid-area: 1 / 1 / 2 / 4;
+    }
+
+    &__deviceSelector {
+      width: 100%;
+
+      @at-root ::ng-deep &__select {
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+        width: 100%;
+      }
     }
 
     &__settingsWrapper {

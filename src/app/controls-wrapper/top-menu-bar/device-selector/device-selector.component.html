@@ -1,10 +1,6 @@
-<!-- TODO add connecting animation -->
 <select
   [formControl]="selectedWledIpAddress"
-  [ngClass]="{
-    'deviceSelector--connected': connectionStatus === 'connected',
-    'deviceSelector--disconnected': connectionStatus === 'disconnected'
-  }"
+  [ngClass]="[selectClass, getModifierClass()]"
   class="deviceSelector">
   <option
     *ngFor="let option of wledIpAddresses"

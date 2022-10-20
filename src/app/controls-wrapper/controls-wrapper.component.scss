@@ -8,7 +8,7 @@
 .controlsWrapper {
   &__topMenu {
     grid-area: 1 / 1 / 2 / 2;
-    margin-bottom: 4px;
+    padding-bottom: 4px;
   }
 
   &__routerOutlet + ::ng-deep * {

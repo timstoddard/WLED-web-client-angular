@@ -1,7 +1,14 @@
+@import 'src/app/shared/scss/mixins';
+
+:host {
+  z-index: 1;
+}
+
 .deviceSelector {
   background: var(--backgroundColorAccent);
   border-radius: 6px;
-  border: 2px solid var(--borderColorAccent);
+  border: 0;
+  box-shadow: 2px 2px 25px 0 rgba(var(--backgroundColorAccentRgb), 0.8);
   color: var(--textColorPrimary);
   cursor: pointer;
   font-size: 18px;
@@ -10,6 +17,11 @@
   min-width: 150px;
   outline: 0;
   text-align: center;
+  transition: background 0.25s ease;
+
+  &:hover {
+    background: rgba(var(--backgroundColorAccentRgb), 0.8);
+  }
 
   &--connected {
     background: rgb(0,255,0);
@@ -18,5 +30,9 @@
 
   &--disconnected {
     background: rgb(255,0,0);
+  }
+
+  &--loading {
+    @include marchingAntsBorder(1.2s);
   }
 }

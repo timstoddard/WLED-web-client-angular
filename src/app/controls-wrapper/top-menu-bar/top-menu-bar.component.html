@@ -54,7 +54,10 @@
 </div>
 
 <div class="topMenuBar__deviceSelectorWrapper">
-  <app-device-selector class="topMenuBar__deviceSelector"></app-device-selector>
+  <app-device-selector
+    selectClass="topMenuBar__deviceSelector__select"
+    class="topMenuBar__deviceSelector">
+  </app-device-selector>
 </div>
 
 <div class="topMenuBar__settingsWrapper">
@@ -62,7 +65,10 @@
 </div>
 
 <div class="topMenuBar__liveViewWrapper">
-  <app-live-view *ngIf="isLiveViewActive"></app-live-view>
+  <app-live-view
+    *ngIf="isLiveViewActive"
+    class="topMenuBar__liveView">
+</app-live-view>
 </div>
 
 <ng-template
