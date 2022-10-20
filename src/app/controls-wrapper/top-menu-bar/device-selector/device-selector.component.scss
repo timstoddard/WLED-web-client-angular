@@ -19,10 +19,6 @@
   text-align: center;
   transition: background 0.25s ease;
 
-  &:hover {
-    background: rgba(var(--backgroundColorAccentRgb), 0.8);
-  }
-
   &--connected {
     background: rgb(0,255,0);
     color: black;

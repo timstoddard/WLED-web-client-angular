@@ -121,7 +121,7 @@ export class ApiService extends UnsubscriberService {
       && result.info
       && result.palettes
       && result.effects
-    return this.httpGet<WledApiResponse>(url, MOCK_API_RESPONSE)
+    return this.http.get<WledApiResponse>(url)
       .pipe(
         timeout({
           first: TIMEOUT_MS,

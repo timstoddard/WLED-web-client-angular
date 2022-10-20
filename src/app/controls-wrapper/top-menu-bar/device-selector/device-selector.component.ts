@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ApiService } from '../../../shared/api.service';
 import { NO_DEVICE_IP_SELECTED } from '../../../shared/app-state/app-state-defaults';
@@ -24,6 +24,7 @@ export class DeviceSelectorComponent extends UnsubscriberComponent implements On
     private appStateService: AppStateService,
     private formService: FormService,
     private apiService: ApiService,
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
     super();
   }
@@ -78,21 +79,22 @@ export class DeviceSelectorComponent extends UnsubscriberComponent implements On
       this.connectionStatus = 'loading';
       // test ip address as base url before setting
       this.handleUnsubscribe(this.apiService.testIpAddressAsBaseUrl(ipAddress))
-        .subscribe(result => {
-          // TODO show connection success/fail in the UI
-          // TODO show a loading animation while waiting
-          const showResult = (success: 'succeeded' | 'failed') =>
-            alert(`Connection ${success}: ${ipAddress} (${name})`);
-          if (result.success) {
-            this.appStateService.setSelectedWledIpAddress({
-              name,
-              ipv4Address: ipAddress,
-            });
-            this.connectionStatus = 'connected';
-            showResult('succeeded');
-          } else {
+        .subscribe({
+          next: (result) => {
+            if (result.success) {
+              this.connectionStatus = 'connected';
+              this.appStateService.setSelectedWledIpAddress({
+                name,
+                ipv4Address: ipAddress,
+              });
+            } else {
+              this.connectionStatus = 'disconnected';
+              this.changeDetectorRef.markForCheck();
+            }
+          },
+          error: () => {
             this.connectionStatus = 'disconnected';
-            showResult('failed');
+            this.changeDetectorRef.markForCheck();
           }
         });
     }
