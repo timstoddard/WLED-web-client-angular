@@ -1,10 +1,35 @@
-<select
-  [formControl]="selectedWledIpAddress"
+<div
+  cdkOverlayOrigin
+  #trigger="cdkOverlayOrigin"
+  (click)="showList = !showList"
   [ngClass]="[selectClass, getModifierClass()]"
-  class="deviceSelector">
-  <option
-    *ngFor="let option of wledIpAddresses"
-    [value]="option.ipv4Address">
-    {{ option.name }}
-  </option>
-</select>
+  class="deviceSelector__main">
+  <div class="deviceSelector__selectedName">
+    {{ selectedWledIpAddress.name }}
+  </div>
+  <div class="deviceSelector__openIcon">
+    >
+  </div>
+</div>
+
+<!-- TODO add open/close animation -->
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="trigger"
+  [cdkConnectedOverlayOpen]="showList"
+  [cdkConnectedOverlayPositions]="getOverlayPositions()"
+  [cdkConnectedOverlayFlexibleDimensions]="true">
+  <div class="deviceSelector__list">
+    <div
+      *ngFor="let wledIpAddress of wledIpAddresses"
+      (click)="setSelectedDevice(wledIpAddress)"
+      class="deviceSelector__listItem">
+      <div class="deviceSelector__listItem__name">
+        {{ wledIpAddress.name }}
+      </div>
+      <div class="deviceSelector__listItem__ipv4Address">
+        {{ wledIpAddress.ipv4Address }}
+      </div>
+    </div>
+  </div>
+</ng-template>

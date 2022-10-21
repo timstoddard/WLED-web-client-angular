@@ -1,10 +1,10 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { OriginConnectionPosition, OverlayConnectionPosition, ConnectionPositionPair } from '@angular/cdk/overlay';
+import { Component, Input, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { ApiService } from '../../../shared/api.service';
 import { NO_DEVICE_IP_SELECTED } from '../../../shared/app-state/app-state-defaults';
 import { AppStateService } from '../../../shared/app-state/app-state.service';
 import { WledIpAddress } from '../../../shared/app-types';
-import { FormService } from '../../../shared/form-service';
 import { UnsubscriberComponent } from '../../../shared/unsubscribing/unsubscriber.component';
 
 type ConnectionStatus = 'connected' | 'disconnected' | 'loading';
@@ -17,24 +17,23 @@ type ConnectionStatus = 'connected' | 'disconnected' | 'loading';
 export class DeviceSelectorComponent extends UnsubscriberComponent implements OnInit {
   @Input() selectClass: string = '';
   wledIpAddresses!: WledIpAddress[];
-  selectedWledIpAddress!: FormControl;
+  selectedWledIpAddress!: WledIpAddress;
   connectionStatus!: ConnectionStatus | null;
+  testIpAddressSubscription: Subscription | null = null;
+  showList!: boolean;
 
   constructor(
     private appStateService: AppStateService,
-    private formService: FormService,
     private apiService: ApiService,
-    private changeDetectorRef: ChangeDetectorRef,
   ) {
     super();
   }
 
   ngOnInit() {
     this.wledIpAddresses = [];
-    this.selectedWledIpAddress = this.createControl();
+    this.selectedWledIpAddress = NO_DEVICE_IP_SELECTED;
     this.connectionStatus = null;
-    this.handleUnsubscribe(this.selectedWledIpAddress.valueChanges)
-      .subscribe(this.setSelectedDevice);
+    this.showList = false;
 
     this.appStateService.getLocalSettings(this.ngUnsubscribe)
       .subscribe(({
@@ -45,58 +44,75 @@ export class DeviceSelectorComponent extends UnsubscriberComponent implements On
           NO_DEVICE_IP_SELECTED,
           ...wledIpAddresses,
         ];
-        this.selectedWledIpAddress.patchValue(selectedWledIpAddress.ipv4Address, { emitEvent: false });
+        this.selectedWledIpAddress = selectedWledIpAddress;
       });
   }
 
-  getModifierClass() {
-    switch (this.connectionStatus) {
-      case 'connected':
-        return 'deviceSelector--connected';
-      case 'disconnected':
-        return 'deviceSelector--disconnected';
-      case 'loading':
-        return 'deviceSelector--loading';
-      default:
-        return '';
+  setSelectedDevice = (wledIpAddress: WledIpAddress) => {
+    console.log('selecting wledIpAddress:', wledIpAddress);
+
+    // cancel any existing http call
+    if (this.testIpAddressSubscription) {
+      this.testIpAddressSubscription.unsubscribe();
+      this.testIpAddressSubscription = null;
     }
-  }
 
-  private createControl() {
-    return this.formService.createFormControl('');
-  }
-
-  private setSelectedDevice = (ipAddress: string) => {
-    const name = this.wledIpAddresses
-      .find(({ ipv4Address }) => ipv4Address === ipAddress)!
-      .name;
-    console.log('wledIpAddress', { name, ipAddress });
-    if (ipAddress === NO_DEVICE_IP_SELECTED.ipv4Address) {
-      // 'None' selected
-      this.connectionStatus = null;
-      this.appStateService.setSelectedWledIpAddress(NO_DEVICE_IP_SELECTED);
+    if (wledIpAddress.ipv4Address === NO_DEVICE_IP_SELECTED.ipv4Address) {
+      this.handleTestIpAddressResponse(NO_DEVICE_IP_SELECTED, null, true);
     } else {
       this.connectionStatus = 'loading';
-      // test ip address as base url before setting
-      this.handleUnsubscribe(this.apiService.testIpAddressAsBaseUrl(ipAddress))
+      const testIpAddress = this.apiService.testIpAddressAsBaseUrl(wledIpAddress.ipv4Address);
+      this.testIpAddressSubscription = this.handleUnsubscribe(testIpAddress)
         .subscribe({
           next: (result) => {
-            if (result.success) {
-              this.connectionStatus = 'connected';
-              this.appStateService.setSelectedWledIpAddress({
-                name,
-                ipv4Address: ipAddress,
-              });
-            } else {
-              this.connectionStatus = 'disconnected';
-              this.changeDetectorRef.markForCheck();
-            }
+            this.handleTestIpAddressResponse(
+              wledIpAddress,
+              result.success ? 'connected' : 'disconnected',
+              result.success);
           },
           error: () => {
-            this.connectionStatus = 'disconnected';
-            this.changeDetectorRef.markForCheck();
+            this.handleTestIpAddressResponse(wledIpAddress, 'disconnected');
           }
         });
     }
+  }
+
+  private handleTestIpAddressResponse(
+    wledIpAddress: WledIpAddress,
+    connectionStatus: ConnectionStatus | null,
+    forceCloseList = false,
+  ) {
+    this.testIpAddressSubscription = null;
+    if (forceCloseList) {
+      this.showList = false;
+    }
+    this.connectionStatus = connectionStatus;
+    this.appStateService.setSelectedWledIpAddress(wledIpAddress);
+  }
+
+  getModifierClass() {
+    const statusToClassMap = {
+      'connected': 'deviceSelector__main--connected',
+      'disconnected': 'deviceSelector__main--disconnected',
+      'loading': 'deviceSelector__main--loading',
+    };
+    return this.connectionStatus !== null
+      ? statusToClassMap[this.connectionStatus]
+      : '';
+  }
+
+  getOverlayPositions() {
+    const OFFSET_X_PX = 0;
+    const OFFSET_Y_PX = 3;
+    const originCenterBottom: OriginConnectionPosition = {
+      originX: 'center',
+      originY: 'bottom',
+    };
+    const overlayCenterTop: OverlayConnectionPosition = {
+      overlayX: 'center',
+      overlayY: 'top',
+    };
+    const centerPosition = new ConnectionPositionPair(originCenterBottom, overlayCenterTop, OFFSET_X_PX, OFFSET_Y_PX);
+    return [centerPosition];
   }
 }

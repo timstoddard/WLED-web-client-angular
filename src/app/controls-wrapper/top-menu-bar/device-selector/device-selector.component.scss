@@ -1,34 +1,92 @@
 @import 'src/app/shared/scss/mixins';
 
 :host {
-  z-index: 1;
+  user-select: none;
+  z-index: 1; // TODO still needed?
 }
 
 .deviceSelector {
-  background: var(--backgroundColorAccent);
-  border-radius: 6px;
-  border: 0;
-  box-shadow: 2px 2px 25px 0 rgba(var(--backgroundColorAccentRgb), 0.8);
-  color: var(--textColorPrimary);
-  cursor: pointer;
-  font-size: 18px;
-  margin: 3px;
-  min-height: 30px;
-  min-width: 150px;
-  outline: 0;
-  text-align: center;
-  transition: background 0.25s ease;
+  &__main {
+    align-items: center;
+    background: var(--backgroundColorAccent);
+    border-radius: 4px;
+    box-shadow: 2px 2px 25px 0 rgba(var(--backgroundColorAccentRgb), 0.8);
+    color: var(--textColorPrimary);
+    cursor: pointer;
+    display: flex;
+    font-size: 18px;
+    justify-content: center;
+    margin: 3px;
+    // max-width: 200px; // TODO tune this threshold and add text ellipsis
+    padding: 4px 10px;
+    transition: background 0.25s ease;
 
-  &--connected {
-    background: rgb(0,255,0);
-    color: black;
+    &--connected {
+      background: var(--themeColorPrimary);
+      color: black;
+    }
+
+    &--disconnected {
+      background: rgb(197,0,0);
+    }
+
+    &--loading {
+      @include marchingAntsBorder(1.2s);
+    }
   }
 
-  &--disconnected {
-    background: rgb(255,0,0);
+  &__selectedName {
+    font-weight: bold;
   }
 
-  &--loading {
-    @include marchingAntsBorder(1.2s);
+  &__openIcon {
+    margin-left: 6px;
+  }
+
+  &__list {
+    &Item {
+      $borderRadius: 6px;
+
+      align-items: center;
+      background: var(--backgroundColorAccent);
+      border: 1px solid var(--borderColorPrimary);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 3px 10px;
+      text-align: center;
+
+      &:hover {
+        background: var(--backgroundColorPrimary);
+
+        & .deviceSelector__listItem__name {
+          text-decoration: underline;
+        }
+      }
+
+      &:first-child {
+        border-top-left-radius: $borderRadius;
+        border-top-right-radius: $borderRadius;
+      }
+
+      &:last-child {
+        border-bottom-left-radius: $borderRadius;
+        border-bottom-right-radius: $borderRadius;
+      }
+
+      &:not(:last-child) {
+        border-bottom: 0;
+      }
+
+      &__name {
+        // text-decoration: underline;
+      }
+
+      &__ipv4Address {
+        color: var(--textColorAccent);
+        font-style: italic;
+      }
+    }
   }
 }
