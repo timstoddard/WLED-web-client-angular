@@ -8,10 +8,9 @@
         'topMenuBar__button--enabled': button.enabled(),
         'topMenuBar__button--processing': getProcessingStatus(button.name) }"
       class="topMenuBar__button">
-      <i
-        [innerHTML]="button.icon"
-        class="topMenuBar__button__icon icons">
-      </i>
+      <span class="topMenuBar__button__icon material-symbols-outlined">
+        {{ button.icon }}
+      </span>
     </button>
     <div
       *ngIf="showLabels"
@@ -20,6 +19,7 @@
     </div>
   </div>
 
+  <!-- TODO force close settings if window is resized and more button disappears -->
   <div
     class="
       topMenuBar__buttonWrapper
@@ -30,11 +30,9 @@
       (click)="toggleSettingsOpen()"
       [ngClass]="{ 'topMenuBar__button--enabled': isSettingsOpen }"
       class="topMenuBar__button">
-      <!-- TODO change to ellipsis icon -->
-      <i
-        [innerHTML]="'&#xe2a6;'"
-        class="topMenuBar__button__icon icons">
-      </i>
+      <span class="topMenuBar__button__icon material-symbols-outlined">
+        more_vert
+      </span>
     </button>
     <div
       *ngIf="showLabels"
@@ -54,9 +52,7 @@
 </div>
 
 <div class="topMenuBar__deviceSelectorWrapper">
-  <app-device-selector
-    selectClass="topMenuBar__deviceSelector__select"
-    class="topMenuBar__deviceSelector">
+  <app-device-selector class="topMenuBar__deviceSelector">
   </app-device-selector>
 </div>
 
@@ -82,12 +78,12 @@
     labelClass="topMenuBar__slider__label"
     sliderClass="topMenuBar__slider__input"
     class="topMenuBar__slider">
-    <!-- TODO should brightness slider icon toggle light/dark mode? -->
-    <i
-      class="icons slider-icon"
-      (click)="toggleTheme()">
-      &#xe2a6;
-    </i>
+    <!-- TODO another button should toggle light/dark mode? -->
+    <span
+      (click)="toggleTheme()"
+      class="material-symbols-outlined">
+      brightness_5
+    </span>
   </app-color-slider>
 
   <div class="topMenuBar__transitionInputWrapper">

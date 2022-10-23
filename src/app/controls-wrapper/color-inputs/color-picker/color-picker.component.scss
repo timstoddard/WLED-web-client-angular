@@ -1,5 +1,8 @@
+@import 'src/app/shared/scss/mixins';
+
 .colorPicker {
   &__wheel {
-    margin-right: 6px;
+    @include flex-center;
+    padding: 5px;
   }
 }

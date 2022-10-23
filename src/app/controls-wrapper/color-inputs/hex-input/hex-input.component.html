@@ -16,10 +16,10 @@
   <div class="hexInput__buttonWrapper">
     <button
       (click)="setHex()"
-      class="">
-      <i class="icons">
-        &#xe390;
-      </i>
+      class="hexInput__button">
+      <span class="material-symbols-outlined">
+        done
+      </span>
     </button>
   </div>
 </div>
@@ -27,9 +27,9 @@
 <!-- TODO is this needed? -->
 <div
   (click)="toggleShowHex()"
-  class="hexInput__showHide labels">
-  <i class="icons">
-    &#xe2b3;
-  </i>
+  class="hexInput__showHide">
+  <span class="material-symbols-outlined">
+    close
+  </span>
   {{ showHexInput ? 'Hide' : 'Show' }} hex input
 </div>

@@ -1,9 +1,9 @@
- <i
-  [innerHTML]="'&#xe0a1;'"
-  [title]="label"
+<span
   (click)="toggleSearchInput()"
-  class="searchInput__icon icons">
-</i>
+  [title]="label"
+  class="searchInput__icon material-symbols-outlined">
+  search
+</span>
 
 <div class="searchInput__header">
   <!-- TODO display to left of title/subtitle for desktop -->
@@ -22,7 +22,7 @@
         *ngIf="searchText.value?.length > 0"
         [innerHTML]="'&#xe38f;'"
         (click)="cancelSearch()"
-        class="searchInput__icon icons">
+        class="searchInput__icon">
       </i>
     </mat-icon> -->
 
@@ -45,13 +45,13 @@
   </ng-template>
 </div>
 
-<i
+<span
   cdkOverlayOrigin
   #trigger="cdkOverlayOrigin"
-  [innerHTML]="'&#xe2a6;'"
   (click)="toggleContextMenu()"
-  class="searchInput__icon icons">
-</i>
+  class="searchInput__icon material-symbols-outlined">
+  more_vert
+</span>
 <ng-template
   cdkConnectedOverlay
   [cdkConnectedOverlayOrigin]="trigger"

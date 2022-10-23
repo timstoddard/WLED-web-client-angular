@@ -1,6 +1,6 @@
 @use 'sass:math';
 
-@mixin radioButtonList() {
+@mixin radioButtonList {
   $spacer: 10px;
   display: grid;
   grid-gap: $spacer;
@@ -13,7 +13,7 @@
   }
 }
 
-@mixin radioButtonListItem() {
+@mixin radioButtonListItem {
   // select animation
   @keyframes onSelect {
     0% { transform: scale(1); }
@@ -58,9 +58,8 @@
   }
 }
 
-// TODO is this really needed? since we can
-// add as a normal style instead of a hover style
-@mixin cursorPointerOnHover() {
+// TODO remove this
+@mixin cursorPointerOnHover {
   &:hover {
     cursor: pointer;
   }
@@ -79,7 +78,7 @@
   }
 
   &:not([disabled]) {
-    @include cursorPointerOnHover();
+    cursor: pointer;
   }
 
   &--enabled {
@@ -92,7 +91,7 @@
   }
 }
 
-@mixin overlayContainer() {
+@mixin overlayContainer {
   background: var(--backgroundColorPrimary);
   border-radius: 6px;
   // TODO revisit how big this box shadow is
@@ -168,12 +167,12 @@
 * 
 * https://allthingssmitty.com/2020/05/11/css-fix-for-100vh-in-mobile-webkit
 */
-@mixin mobileSafariViewportHeightFix() {
+@mixin mobileSafariViewportHeightFix {
   min-height: 100vh;
   min-height: stretch; // fill-available;
 }
 
-@mixin settingsPageContainer() {
+@mixin settingsPageContainer {
   align-items: center;
   display: flex;
   flex-direction: column;
@@ -227,4 +226,23 @@ $antWidth: 2px;
     $antLength $antWidth,
     $antWidth $antLength,
     $antWidth $antLength;
+}
+
+@mixin mobile-layout {
+  @media (max-width: 740px) {
+    @content;
+  }
+}
+
+@mixin textOverflowEllipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// TODO use this everywhere
+@mixin flex-center {
+  align-items: center;
+  display: flex;
+  justify-content: center;
 }

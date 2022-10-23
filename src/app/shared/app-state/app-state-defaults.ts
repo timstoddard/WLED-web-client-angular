@@ -6,21 +6,44 @@ export const NO_DEVICE_IP_SELECTED: WledIpAddress = {
   ipv4Address: '',
 };
 
-// TODO better defaults
-const DEFAULT_WLED_IP_ADDRESSES: WledIpAddress[] = [
-  {
-    name: 'Living Room',
-    ipv4Address: '192.168.100.171',
-  },
-  {
-    name: 'Bedroom',
-    ipv4Address: '192.168.100.21',
-  },
-  {
-    name: 'Office',
-    ipv4Address: '192.168.100.5',
-  },
-];
+const getMockWledIpAddresses = (options: {
+  testMaxHeight: boolean,
+  testMaxWidth: boolean,
+}) => {
+  const wledIpAddresses: WledIpAddress[] = [
+    {
+      name: 'Living Room',
+      ipv4Address: '192.168.100.171',
+    },
+    {
+      name: 'Bedroom',
+      ipv4Address: '192.168.100.21',
+    },
+    {
+      name: 'Office',
+      ipv4Address: '192.168.100.5',
+    },
+  ];
+  if (options.testMaxHeight) {
+    for (let i = 0; i < 10; i++) {
+      wledIpAddresses.push({
+        name: `SAMPLE DEVICE ${i + 1}`,
+        ipv4Address: `192.168.${i + 1}.${i * 2 + 1}`,
+      });
+    }
+  }
+  if (options.testMaxWidth) {
+    wledIpAddresses.push({
+      name: 'really really really really really really really long name for testing',
+      ipv4Address: '192.168.420.69',
+    });
+  }
+  return wledIpAddresses;
+}
+const DEFAULT_WLED_IP_ADDRESSES: WledIpAddress[] = getMockWledIpAddresses({
+  testMaxHeight: true,
+  testMaxWidth: false,
+});
 
 const DEFAULT_SELECTED_WLED_IP_ADDRESS = NO_DEVICE_IP_SELECTED;
 

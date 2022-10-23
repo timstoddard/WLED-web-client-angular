@@ -9,6 +9,9 @@
   --textColorAccentRgb: 150,150,150;
   --themeColorPrimaryRgb: 80,255,0;
   --themeColorAccentRgb: 50,180,0;
+  --errorColorPrimaryRgb: 197,0,0;
+  --errorColorAccentRgb: 157,0,0;
+
   --backgroundColorPrimary: rgb(var(--backgroundColorPrimaryRgb));
   --backgroundColorAccent: rgb(var(--backgroundColorAccentRgb));
   --backgroundColorAccent2: rgb(var(--backgroundColorAccent2Rgb));
@@ -18,6 +21,8 @@
   --textColorAccent: rgb(var(--textColorAccentRgb));
   --themeColorPrimary: rgb(var(--themeColorPrimaryRgb));
   --themeColorAccent: rgb(var(--themeColorAccentRgb));
+  --errorColorPrimary: rgb(var(--errorColorPrimaryRgb));
+  --errorColorAccent: rgb(var(--errorColorAccentRgb));
 
   // TODO add light mode palette
 }

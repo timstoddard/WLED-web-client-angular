@@ -17,11 +17,11 @@
         class="segment__name__text">
         {{ segment.name }}
       </span>
-      <i
+      <span
         (click)="toggleEditName()"
-        class="icons segment__name__icon">
-        &#xe2c6;
-      </i>
+        class="segment__name__icon material-symbols-outlined">
+        edit
+      </span>
     </div>
     <ng-template #nameEditor>
       <div class="segment__name">
@@ -38,20 +38,20 @@
             autocomplete="off"
             class="">
         </mat-form-field>
-        <i
+        <span
           (click)="toggleEditName()"
-          class="icons segment__name__icon">
-          &#xe390;
-        </i>
+          class="segment__name__icon material-symbols-outlined">
+          done
+        </span>
       </div>
     </ng-template>
 
-    <i
+    <span
       (click)="toggleExpanded()"
       [ngClass]="{ 'segment__expandIcon--expanded': segment.isExpanded }"
-      class="segment__expandIcon icons">
-      &#xe395;
-    </i>
+      class="segment__expandIcon material-symbols-outlined">
+      expand_more
+    </span>
   </div>
 
   <div
@@ -65,9 +65,9 @@
           formControlName="isOn"
           type="checkbox"
           class="segment__powerButton__input" />
-        <i class="segment__button__icon icons">
-          &#xe08f;
-        </i>
+        <span class="segment__button__icon material-symbols-outlined">
+          power_settings_new
+        </span>
       </label>
 
       <div class="segment__checkboxes">
@@ -89,9 +89,9 @@
         (click)="deleteSegment()"
         [disabled]="getSegmentsLength() <= 1"
         class="segment__button segment__deleteButton">
-        <i class="segment__button__icon icons">
-          &#xe037;
-        </i>
+        <span class="segment__button__icon material-symbols-outlined">
+          delete
+        </span>
       </button>
     </div>
 
@@ -213,7 +213,7 @@
     </td>
     <td class="segtd">
       <i
-        class="icons e-icon cnf cnf-s"
+        class="e-icon cnf cnf-s"
         onclick="setSeg(segment.id)">
         &#xe390;
       </i>

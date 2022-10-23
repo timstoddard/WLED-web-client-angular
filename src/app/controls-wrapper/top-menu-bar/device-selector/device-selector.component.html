@@ -2,13 +2,15 @@
   cdkOverlayOrigin
   #trigger="cdkOverlayOrigin"
   (click)="showList = !showList"
-  [ngClass]="[selectClass, getModifierClass()]"
+  [ngClass]="getModifierClass()"
   class="deviceSelector__main">
   <div class="deviceSelector__selectedName">
-    {{ selectedWledIpAddress.name }}
+    {{ getSelectedDeviceName() }}
   </div>
   <div class="deviceSelector__openIcon">
-    >
+    <span class="material-symbols-outlined">
+      expand_more
+    </span>
   </div>
 </div>
 

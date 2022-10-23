@@ -15,22 +15,22 @@ export class BottomMenuBarComponent extends UnsubscriberComponent implements OnI
     {
       name: 'Controls',
       routerLink: ['/controls'],
-      icon: '&#xe2b3;',
+      icon: 'tune',
     },
     {
       name: 'Segments',
       routerLink: ['/controls', 'segments'],
-      icon: '&#xe34b;',
+      icon: 'category',
     },
     {
       name: 'Presets',
       routerLink: ['/controls', 'presets'],
-      icon: '&#xe04c;',
+      icon: 'favorite',
     },
     {
       name: 'Settings',
       routerLink: ['/controls', 'settings'],
-      icon: '&#xe0a2;',
+      icon: 'settings',
     },
   ];
 

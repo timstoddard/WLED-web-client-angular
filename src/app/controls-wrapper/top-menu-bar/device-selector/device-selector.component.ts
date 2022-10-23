@@ -1,5 +1,5 @@
 import { OriginConnectionPosition, OverlayConnectionPosition, ConnectionPositionPair } from '@angular/cdk/overlay';
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ApiService } from '../../../shared/api.service';
 import { NO_DEVICE_IP_SELECTED } from '../../../shared/app-state/app-state-defaults';
@@ -25,6 +25,7 @@ export class DeviceSelectorComponent extends UnsubscriberComponent implements On
   constructor(
     private appStateService: AppStateService,
     private apiService: ApiService,
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
     super();
   }
@@ -48,8 +49,15 @@ export class DeviceSelectorComponent extends UnsubscriberComponent implements On
       });
   }
 
+  getSelectedDeviceName() {
+    return this.selectedWledIpAddress.name === NO_DEVICE_IP_SELECTED.name
+      ? 'Select Device'
+      : this.selectedWledIpAddress.name;
+  }
+
   setSelectedDevice = (wledIpAddress: WledIpAddress) => {
     console.log('selecting wledIpAddress:', wledIpAddress);
+    this.appStateService.setSelectedWledIpAddress(wledIpAddress);
 
     // cancel any existing http call
     if (this.testIpAddressSubscription) {
@@ -58,7 +66,7 @@ export class DeviceSelectorComponent extends UnsubscriberComponent implements On
     }
 
     if (wledIpAddress.ipv4Address === NO_DEVICE_IP_SELECTED.ipv4Address) {
-      this.handleTestIpAddressResponse(NO_DEVICE_IP_SELECTED, null, true);
+      this.handleTestIpAddressResponse(null, true);
     } else {
       this.connectionStatus = 'loading';
       const testIpAddress = this.apiService.testIpAddressAsBaseUrl(wledIpAddress.ipv4Address);
@@ -66,19 +74,17 @@ export class DeviceSelectorComponent extends UnsubscriberComponent implements On
         .subscribe({
           next: (result) => {
             this.handleTestIpAddressResponse(
-              wledIpAddress,
               result.success ? 'connected' : 'disconnected',
               result.success);
           },
           error: () => {
-            this.handleTestIpAddressResponse(wledIpAddress, 'disconnected');
+            this.handleTestIpAddressResponse('disconnected');
           }
         });
     }
   }
 
   private handleTestIpAddressResponse(
-    wledIpAddress: WledIpAddress,
     connectionStatus: ConnectionStatus | null,
     forceCloseList = false,
   ) {
@@ -87,7 +93,7 @@ export class DeviceSelectorComponent extends UnsubscriberComponent implements On
       this.showList = false;
     }
     this.connectionStatus = connectionStatus;
-    this.appStateService.setSelectedWledIpAddress(wledIpAddress);
+    this.changeDetectorRef.markForCheck();
   }
 
   getModifierClass() {

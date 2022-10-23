@@ -1,60 +1,86 @@
 @import 'src/app/shared/scss/mixins';
 
 :host {
+  max-width: 100%;
   user-select: none;
-  z-index: 1; // TODO still needed?
 }
 
 .deviceSelector {
   &__main {
     align-items: center;
     background: var(--backgroundColorAccent);
-    border-radius: 4px;
-    box-shadow: 2px 2px 25px 0 rgba(var(--backgroundColorAccentRgb), 0.8);
+    border: 1px solid var(--borderColorPrimary);
+    border-radius: 3px;
     color: var(--textColorPrimary);
     cursor: pointer;
     display: flex;
     font-size: 18px;
     justify-content: center;
-    margin: 3px;
-    // max-width: 200px; // TODO tune this threshold and add text ellipsis
-    padding: 4px 10px;
-    transition: background 0.25s ease;
+    margin: 2px 5px;
+    max-width: 100%;
+    padding: 4px 4px 4px 10px;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: var(--backgroundColorPrimary);
+    }
 
     &--connected {
       background: var(--themeColorPrimary);
       color: black;
+
+      &:hover {
+        background: var(--themeColorAccent);
+      }
     }
 
     &--disconnected {
-      background: rgb(197,0,0);
+      background: var(--errorColorPrimary);
+
+      &:hover {
+        background: var(--errorColorAccent);
+      }
     }
 
     &--loading {
       @include marchingAntsBorder(1.2s);
+      border-color: var(--backgroundColorPrimary);
+
+      &:hover {
+        @include marchingAntsBorder(1.2s);
+      }
     }
   }
 
   &__selectedName {
+    @include textOverflowEllipsis;
     font-weight: bold;
   }
 
   &__openIcon {
-    margin-left: 6px;
+    @include flex-center;
+    margin-left: 2px;
   }
 
   &__list {
-    &Item {
-      $borderRadius: 6px;
+    $borderRadius: 6px;
+    $listMaxHeight: 80vh;
+    $listMaxWidth: 50vw;
 
+    background: var(--backgroundColorAccent);
+    border: 1px solid var(--borderColorPrimary);
+    border-radius: $borderRadius;
+    max-height: $listMaxHeight;
+    overflow: auto;
+
+    &Item {
       align-items: center;
       background: var(--backgroundColorAccent);
-      border: 1px solid var(--borderColorPrimary);
       cursor: pointer;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 3px 10px;
+      padding: 4px 14px;
       text-align: center;
 
       &:hover {
@@ -65,28 +91,33 @@
         }
       }
 
-      &:first-child {
-        border-top-left-radius: $borderRadius;
-        border-top-right-radius: $borderRadius;
-      }
-
-      &:last-child {
-        border-bottom-left-radius: $borderRadius;
-        border-bottom-right-radius: $borderRadius;
-      }
-
       &:not(:last-child) {
-        border-bottom: 0;
+        border-bottom: 1px solid var(--borderColorPrimary);
       }
 
       &__name {
-        // text-decoration: underline;
+        @include textOverflowEllipsis;
+        max-width: $listMaxWidth;
       }
 
       &__ipv4Address {
         color: var(--textColorAccent);
         font-style: italic;
       }
+    }
+  }
+
+  // mobile layout
+  @include mobile-layout {
+    &__main {
+      border-radius: 0;
+      box-shadow: none;
+      margin: 0;
+      width: 100%;
+    }
+
+    &__listItem__name {
+      max-width: 75vw;
     }
   }
 }

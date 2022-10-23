@@ -26,19 +26,24 @@
     }
 
     &__icon {
-      @include cursorPointerOnHover();
       color: var(--textColorAccent);
+      cursor: pointer;
       margin-left: 4px;
+
+      &:hover {
+        color: var(--textColorPrimary);
+      }
     }
   }
 
   &__expandIcon {
-    @include cursorPointerOnHover();
-    font-size: 24px;
-    transition: transform 0.25s ease;
+    cursor: pointer;
+    font-size: 30px;
+    transform: rotate(0deg);
+    transition: transform 2.5s ease;
 
     &--expanded {
-      // TODO animation doesn't work
+      // TODO use angular animations
       transform: rotate(180deg);
     }
   }
@@ -58,12 +63,10 @@
 
   &__button {
     @include iconButton(36px);
-    align-items: center;
-    display: flex;
-    justify-content: center;
+    @include flex-center;
 
     &__icon {
-      font-size: 25px;
+      font-size: 22px;
     }
   }
 

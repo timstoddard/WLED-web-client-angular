@@ -150,44 +150,44 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
     const buttons: MenuBarButton[] = [
       {
         name: TopMenuBarButtonName.POWER,
-        icon: '&#xe08f;',
+        icon: 'power_settings_new',
         onClick: () => this.topMenuBarService.togglePower(!this.isOn),
         enabled: () => this.isOn,
       },
       {
         name: TopMenuBarButtonName.TIMER,
-        icon: '&#xe2a2;',
+        icon: 'timer',
         onClick: () => this.topMenuBarService.toggleNightLight(!this.isNightLightActive),
         enabled: () => this.isNightLightActive,
       },
       {
         name: TopMenuBarButtonName.SYNC,
-        icon: '&#xe116;',
+        icon: 'sync',
         onClick: () => this.topMenuBarService.toggleSync(!this.isSyncActive, this.shouldToggleReceiveWithSend),
         enabled: () => this.isSyncActive,
       },
       {
         name: TopMenuBarButtonName.LIVE,
-        icon: '&#xe410;',
+        icon: 'visibility',
         onClick: () => this.topMenuBarService.toggleLiveView(!this.isLiveViewActive),
         enabled: () => this.isLiveViewActive,
       },
       // TODO combine these & move to bottom menu
       /*{
         name: 'Info',
-        icon: '&#xe066;',
+        icon: 'info',
         onClick: () => this.toggleShowInfo(),
       },
       {
         name: 'Nodes',
-        icon: '&#xe22d;',
+        icon: 'lan',
         onClick: () => this.toggleShowNodes(),
       },*/
     ];
     if (this.showPcModeButton) {
       buttons.push({
         name: 'PC Mode',
-        icon: '&#xe23d;',
+        icon: 'computer',
         onClick: () => this.togglePcMode(true),
         enabled: () => this.isPcMode,
       });

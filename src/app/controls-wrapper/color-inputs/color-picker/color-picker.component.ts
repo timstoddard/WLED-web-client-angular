@@ -4,7 +4,7 @@ import iro from '@jaames/iro';
 import { UnsubscriberComponent } from '../../../shared/unsubscribing/unsubscriber.component';
 import { ColorService } from '../../color.service';
 
-const COLOR_PICKER_HEIGHT_SCALAR = 0.9; // TODO tune this value
+const COLOR_PICKER_HEIGHT_SCALAR = 0.8;
 
 @Component({
   selector: 'app-color-picker',

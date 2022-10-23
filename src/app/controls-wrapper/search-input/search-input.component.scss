@@ -43,13 +43,11 @@
 
   &__selectedName {
     // TODO convert to em/rem
+    @include textOverflowEllipsis;
     font-size: 15px;
     font-weight: bold;
     margin: 2px 0;
     max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 
     &--hasValue {
       color: var(--themeColorPrimary);
@@ -57,18 +55,18 @@
   }
 
   &__icon {
-    @include cursorPointerOnHover();
-    color: var(--textColorPrimary);
-    font-size: 25px;
-    margin: 0 4px;
-    user-select: none;
+    // border: 1px solid var(--borderColorAccent);
+    border-radius: 3px;
+    cursor: pointer;
+    padding: 3px;
 
-    @media screen and (max-width: 400px) {
-      font-size: 22px;
+    &:hover {
+      background: var(--backgroundColorAccent);
     }
   }
 
   &__contextMenu {
     @include overlayContainer();
+    max-width: 40vw;
   }
 }

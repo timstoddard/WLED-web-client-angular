@@ -4,10 +4,9 @@
   routerLinkActive="bottomMenuBar__button--selected"
   [routerLinkActiveOptions]="{ exact: true }"
   class="bottomMenuBar__button">
-  <i
-    [innerHTML]="button.icon"
-    class="bottomMenuBar__button__icon icons">
-  </i>
+  <span class="material-symbols-outlined">
+    {{ button.icon }}
+  </span>
   <div
     *ngIf="showLabels"
     class="bottomMenuBar__button__text">

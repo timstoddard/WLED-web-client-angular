@@ -17,13 +17,18 @@
   }
 
   &__buttonWrapper {
-    align-items: center;
-    display: flex;
-    justify-content: center;
+    @include flex-center;
     padding: 4px;
   }
 
+  &__button {
+    @include flex-center;
+    margin: 0;
+    padding: 0;
+  }
+
   &__showHide {
+    @include flex-center;
     margin-top: 8px;
     white-space: nowrap;
   }

@@ -8,11 +8,13 @@
   flex-direction: column;
   justify-content: space-evenly;
   margin: 2px;
-  padding: 6px 8px;
+  padding: 6px 2px;
   text-align: center;
 }
 
 :host-context(.colorSlider__vertical) {
+  padding: 2px 6px;
+
   .colorSlider {
   }
 }
@@ -27,8 +29,9 @@
     &__text {
     }
 
-    & ::ng-deep .icons {
-      margin-right: 2px;
+    & ::ng-deep .material-symbols-outlined {
+      margin-right: 3px;
+      font-size: 16px;
     }
   }
 
