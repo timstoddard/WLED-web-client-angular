@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UIConfigService } from '../../shared/ui-config.service';
 import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
-import { updateTablinks } from '../utils';
 
 @Component({
   selector: 'app-bottom-menu-bar',
@@ -13,11 +12,6 @@ export class BottomMenuBarComponent extends UnsubscriberComponent implements OnI
   showLabels!: boolean;
   buttons = [
     {
-      name: 'Controls',
-      routerLink: ['/controls'],
-      icon: 'tune',
-    },
-    {
       name: 'Segments',
       routerLink: ['/controls', 'segments'],
       icon: 'category',
@@ -26,6 +20,16 @@ export class BottomMenuBarComponent extends UnsubscriberComponent implements OnI
       name: 'Presets',
       routerLink: ['/controls', 'presets'],
       icon: 'favorite',
+    },
+    {
+      name: 'Controls',
+      routerLink: ['/controls'],
+      icon: 'tune',
+    },
+    {
+      name: 'Info',
+      routerLink: ['/controls', 'info'],
+      icon: 'info',
     },
     {
       name: 'Settings',
@@ -41,21 +45,8 @@ export class BottomMenuBarComponent extends UnsubscriberComponent implements OnI
   ngOnInit() {
     this.handleUnsubscribe(
       this.uiConfigService.getUIConfig(this.ngUnsubscribe))
-      .subscribe((uiConfig) => {
-        this.showLabels = uiConfig.showLabels;
+      .subscribe(({ showLabels }) => {
+        this.showLabels = showLabels;
       })
-  }
-
-  // TODO no longer used
-  private openTab(tabIndex: number, force = false) {
-    if (this.pcMode && !force) {
-      return;
-    }
-    updateTablinks(tabIndex);
-
-    // TODO update sliding UI
-    // this.iSlide = tabIndex;
-    // this.sliderContainer.classList.toggle('smooth', false);
-    // this.sliderContainer.style.setProperty('--i', this.iSlide);
   }
 }

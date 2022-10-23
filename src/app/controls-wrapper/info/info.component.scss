@@ -1,0 +1,107 @@
+@import 'src/app/shared/scss/mixins';
+@import 'src/app/shared/scss/variables';
+
+@mixin infoSection {
+  background: var(--backgroundColorAccent);
+  border: 1px solid var(--borderColorPrimary);
+  border-radius: 6px;
+}
+
+:host {
+  align-items: center;
+  border: 1px solid var(--borderColorPrimary);
+  border-radius: 6px;
+  box-shadow: inset 0px 0px 8px 0 rgba(var(--borderColorPrimaryRgb), 0.8);
+  margin: 3px 8px;
+  overflow-x: hidden;
+  padding: 10px 6px;
+  text-align: center;
+
+  & > * {
+    margin: 0 auto;
+    max-width: 500px;
+    width: 100%;
+  }
+
+  & > *:not(:first-child) {
+    margin-top: 14px;
+  }
+}
+
+.info {
+  &__title {
+    margin: 8px auto;
+  }
+
+  &__content {
+    @include infoSection;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+  }
+
+  &__version {}
+
+  &__statsList {
+    $statsBorder: 1px solid var(--borderColorAccent);
+
+    border: $statsBorder;
+    display: grid;
+    grid-template: auto / auto 1fr;
+    margin: 8px 0;
+    overflow: auto;
+
+    & > * {
+      margin: 0;
+      padding: 2px 6px;
+    }
+
+    &__name,
+    &__value {
+      &:not(:last-of-type) {
+        border-bottom: $statsBorder;
+      }
+    }
+
+    &__name {
+      @include flex-center;
+      border-right: $statsBorder;
+      max-width: 200px;
+    }
+
+    &__value {
+      @include flex-center;
+      max-width: 300px;
+    }
+  }
+
+  &__buttons {
+    @include flex-center;
+    flex-wrap: wrap;
+
+    & > * {
+      margin: 4px;
+    }
+  }
+
+  &__button {
+    &__contentWrapper {
+      @include flex-center;
+    }
+
+    & ::ng-deep .material-symbols-outlined {
+      font-size: 20px;
+      margin-right: 3px;
+    }
+  }
+
+  &__developerInfo {
+    @include infoSection;
+    padding: 8px;
+
+    & a {
+      color: var(--textColorPrimary);
+    }
+  }
+}

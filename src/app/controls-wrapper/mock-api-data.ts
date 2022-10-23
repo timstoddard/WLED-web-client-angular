@@ -157,7 +157,7 @@ export const MOCK_API_RESPONSE: WledApiResponse = {
     palcount: 71,
     wifi: {
       bssid: '74:83:C2:7E:D4:30',
-      // rssi: -56,
+      rssi: -56,
       signal: 88,
       channel: 1,
     },

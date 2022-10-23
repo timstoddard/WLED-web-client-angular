@@ -88,6 +88,7 @@ export class ApiTypeMapper {
 
   mapWledWifiInfoToAppWifiInfo = (wifiInfo: WledWifiInfo): AppWifiInfo => ({
     bssid: wifiInfo.bssid,
+    rssi: wifiInfo.rssi,
     signalStrength: wifiInfo.signal,
     channel: wifiInfo.channel,
   });

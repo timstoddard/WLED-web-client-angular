@@ -163,6 +163,7 @@ export class UIConfigService {
   private selectFromUIConfig = (selectFn: (state: AppUIConfig) => any) =>
     this.uiConfigStore.pipe(select(selectFn));
 
+  // TODO save app config in local storage
   private updateUIConfig = (newUIConfig: Partial<AppUIConfig>) => {
     this.uiConfigStore.update((uiConfig) => ({
       ...uiConfig,

@@ -1,135 +1,204 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { inforow } from '../utils';
+import { KeyValue } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { AppStateService } from '../../shared/app-state/app-state.service';
+import { AppFileSystemInfo, AppInfo, AppLedInfo } from '../../shared/app-types';
+import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
+import { formatPlural } from '../utils';
+import { InfoService } from './info.service';
+
+interface InfoButton {
+  name: string;
+  icon: string;
+  onClick: () => void;
+}
 
 @Component({
   selector: 'app-info',
   templateUrl: './info.component.html',
   styleUrls: ['./info.component.scss']
 })
-export class InfoComponent implements OnInit {
-  @Input() info: any; // TODO type
+export class InfoComponent extends UnsubscriberComponent implements OnInit {
   versionName!: string;
-  heap!: string;
-  inforow = inforow; // for use in template
-  estimatedCurrent!: string;
-  totalRuntimeString = '';
-  private confirmedReboot = false;
-  private hc = 0;
+  versionId!: number;
+  infoRows: KeyValue<string, unknown>[] = [];
+  buttons = this.getButtons();
+  private confirmedRestart = false;
 
-  constructor() { }
+  constructor(
+    private infoService: InfoService,
+    private appStateService: AppStateService,
+    private router: Router,
+  ) {
+    super();
+  }
 
   ngOnInit() {
-    this.heap = (this.info.freeheap / 1000).toFixed(1);
+    this.appStateService.getAppState(this.ngUnsubscribe)
+      .subscribe(({ info }) => {
+        this.versionName = info.versionName;
+        this.versionId = info.versionId;
+        this.infoRows = [];
 
-    if (this.info.cn) {
-      this.versionName = this.info.cn;
-    } else {
-      this.versionName = 'Kuuhaku';
-      if (this.info.ver.startsWith('0.13.')) {
-        this.versionName = 'Toki';
-      }
-    }
-
-    let current = this.info.leds.pwr;
-    this.estimatedCurrent = 'Not calculated';
-    if (current > 1000) {
-      current /= 1000;
-      current = current.toFixed(current > 10 ? 0 : 1);
-      this.estimatedCurrent = `${current} A`;
-    } else if (current > 0) {
-      current = 50 * Math.round(current / 50);
-      this.estimatedCurrent = `${current} mA`;
-    }
-
-    // TODO figure this part out (user mod related?)
-    let urows = ''
-    if (this.info.u) {
-      for (const [k, val] of Object.entries(this.info.u)) {
-        // TODO fix type issue
-        const valTypeFix = val as any;
-        if (valTypeFix[1]) {
-          urows += inforow(k, valTypeFix[0], valTypeFix[1]);
-        } else {
-          urows += inforow(k, valTypeFix);
+        // TODO need to test this somehow
+        // adds user mod related info
+        const userModInfo = (info as any).u;
+        if (userModInfo) {
+          for (const [key, val] of Object.entries(userModInfo)) {
+            this.infoRows.push({
+              key,
+              value: Array.isArray(val) ? val.join(' ') : val,
+            });
+          }
         }
-      }
-    }
 
-    this.totalRuntimeString = this.getRuntimeString(this.info.uptime);
+        this.infoRows = [
+          {
+            key: 'Build',
+            value: info.versionId,
+          },
+          {
+            key: 'Signal Strength',
+            value: `${info.wifi.signalStrength}% (${info.wifi.rssi} dBm)`,
+          },
+          {
+            key: 'Uptime',
+            value: this.getRuntimeString(info.uptimeSeconds),
+          },
+          {
+            key: 'Heap Free Space',
+            value: this.getHeapFreeKb(info),
+          },
+          {
+            key: 'Current (estimated)',
+            value: this.getEstimatedCurrent(info.ledInfo),
+          },
+          {
+            key: 'FPS',
+            value: info.ledInfo.fps,
+          },
+          {
+            key: 'MAC Address',
+            value: info.macAddress,
+          },
+          {
+            key: 'File System',
+            value: this.getFileSystemStats(info.fileSystem),
+          },
+          {
+            key: 'Environment',
+            value: `${info.platform} ${info.arduinoVersion}`,
+          },
+        ]
+      });
+  }
+
+  getVersionNickname() {
+    // TODO is there an absolute list of these nicknames?
+    const isV13 = this.versionId.toString().startsWith('0.13.');
+    return isV13
+      ? 'Toki'
+      : 'Kuuhaku';
   }
 
   refresh() {
-    // TODO: was `requestJson(null)`
-  }
-
-  close() {
-    // TODO: was `toggleInfo()`
+    this.infoService.refreshAppState();
   }
 
   showNodes() {
     // TODO: was `toggleNodes()`
   }
 
-  doReboot() {
-    if (!this.confirmedReboot) {
-      this.confirmedReboot = true;
-      // TODO reboot button changes style & says 'Confirm Reboot'
+  doRestart() {
+    if (!this.confirmedRestart) {
+      this.confirmedRestart = true;
+      // TODO button changes style & says 'Confirm Restart'
       // const bt = document.getElementById('resetbtn')!;
       // bt.style.color = '#f00';
-      // bt.innerHTML = 'Confirm Reboot';
-      // return;
+      // bt.innerHTML = 'Confirm Restart';
     } else {
-      window.location.href = '/reboot';
+      this.router.navigateByUrl('/restart');
     }
   }
 
-  // TODO cache this value
-  private getRuntimeString = (runtimeSeconds: string /* TODO shouldnt this be a number? */) => {
-    const time = parseInt(runtimeSeconds, 10);
-    const days = Math.floor(time / 86400);
-    const hours = Math.floor((time - days * 86400) / 3600);
-    const minutes = Math.floor((time - days * 86400 - hours * 3600) / 60);
-    let timeString = days ? (days + ' ' + (days === 1 ? 'day' : 'days') + ', ') : '';
-    timeString += (hours || days) ? (hours + ' ' + (hours === 1 ? 'hour' : 'hours')) : '';
-    if (!days) {
-      if (hours) {
-        timeString += ', ';
-      }
-      if (time > 59) {
-        timeString += minutes + ' min';
-      }
+  // TODO move to a service, add unit tests!
+  private getRuntimeString = (runtimeSeconds: number) => {
+    const SECONDS_IN_DAY = 60 * 60 * 24;
+    const SECONDS_IN_HOUR = 60 * 60;
+    const SECONDS_IN_MINUTE = 60;
+    const days = Math.floor(runtimeSeconds / SECONDS_IN_DAY);
+    const hours = Math.floor((runtimeSeconds - (days * SECONDS_IN_DAY)) / SECONDS_IN_HOUR);
+    const minutes = Math.floor((runtimeSeconds - (days * SECONDS_IN_DAY) - (hours * SECONDS_IN_HOUR)) / SECONDS_IN_MINUTE);
+    const seconds = runtimeSeconds - minutes * 60;
+
+    const timeStringParts: string[] = [];
+    if (days > 0) {
+      timeStringParts.push(formatPlural('day', days));
     }
-    if (time < 3600) {
-      if (time > 59) {
-        timeString += ', ';
-      }
-      timeString += (time - minutes * 60) + ' sec';
+    if (days > 0 || hours > 0) {
+      timeStringParts.push(formatPlural('hour', hours));
     }
-    return timeString;
+    if (days === 0 && runtimeSeconds >= SECONDS_IN_MINUTE) {
+      timeStringParts.push(formatPlural('min', minutes));
+    }
+    if (runtimeSeconds < SECONDS_IN_HOUR) {
+      timeStringParts.push(formatPlural('sec', seconds));
+    }
+    return timeStringParts.join(', ');
   }
 
-  private cycleHeartIconColor() {
-    // TODO make a function for this
-    // TODO use rxjs interval
-    setInterval(() => {
-      // TODO clear this interval when info not shown
-      // if (!this.isInfo) {
-      //   return;
-      // }
-      this.hc += 18;
-      if (this.hc > 300) {
-        this.hc = 0;
-      }
-      if (this.hc > 200) {
-        this.hc = 306;
-      }
-      if (this.hc === 144) {
-        this.hc += 36;
-      }
-      if (this.hc === 108) {
-        this.hc += 18;
-      }
-      document.getElementById('heart')!.style.color = `hsl(${this.hc}, 100%, 50%)`;
-    }, 910);
+  getCurrentYear() {
+    const currentYear = new Date().getFullYear();
+    return currentYear;
+  }
+
+  private getButtons(): InfoButton[] {
+    return [
+      {
+        name: 'Refresh',
+        icon: 'refresh',
+        onClick: () => this.refresh(),
+      },
+      {
+        name: 'Restart Device',
+        icon: 'power_settings_new',
+        onClick: () => this.doRestart(),
+      },
+      // TODO make a toggle switch for showing this
+      // OR just make it part of info screen
+      {
+        name: 'All Devices',
+        icon: 'list',
+        onClick: () => this.showNodes(),
+      },
+    ];
+  }
+
+  private getHeapFreeKb({ freeHeapBytes  }: AppInfo) {
+    const heapFreeKbFormatted = (freeHeapBytes / 1000).toFixed(1);
+    return `${heapFreeKbFormatted} kB`;
+  }
+
+  private getEstimatedCurrent({ amps }: AppLedInfo) {
+    let estimatedCurrent = 'Not calculated';
+    if (amps > 1000) {
+      amps /= 1000;
+      const ampsFormatted = amps.toFixed(amps >= 10 ? 0 : 1);
+      estimatedCurrent = `${ampsFormatted} A`;
+    } else if (amps > 0) {
+      // TODO is this rounding really necessary?
+      // rounds to the nearest 50
+      amps = 50 * Math.round(amps / 50);
+      estimatedCurrent = `${amps} mA`;
+    }
+    return estimatedCurrent;
+  }
+
+  private getFileSystemStats({
+    usedSpaceKb,
+    totalSpaceKb,
+  }: AppFileSystemInfo) {
+    const usedPercent = usedSpaceKb / totalSpaceKb * 100;
+    return `${usedSpaceKb} / ${totalSpaceKb} kB (${Math.round(usedPercent)}%)`;
   }
 }

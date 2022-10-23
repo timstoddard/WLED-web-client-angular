@@ -1,55 +1,55 @@
-<div
-  id="info"
-  class="modal">
-  <div id="imgw">
-    <img
-      class="wi"
-      src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB0AAAAFCAYAAAC5Fuf5AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABbSURBVChTlY9bDoAwDMNW7n9nwCipytQN4Z8tbrTHmDmF4oPzyldwRqp1SSdnV/NuZuzqerAByxXznBw3igkeFEfXyUuhK/yFM0CxJfyqXZEOc6/Sr9/bf7uIC5Nwd7orMvAPAAAAAElFTkSuQmCC"
-      alt="" />
+<h1 class="info__title">
+  WLED Info
+</h1>
+<div class="info__content">
+  <div class="info__version">
+    <span>
+      v{{ versionName }}
+    </span>
+    <span style="font-style: italic">
+      "{{ getVersionNickname() }}"
+    </span>
   </div>
-  <br>
-  <div id="kv">
-    v{{ info.ver }} {{ versionName }}
-    <br>
-    <br>
-    <table class="infot">
-      {{ urows }}
-      {{ inforow("Build", info.vid) }}
-      {{ inforow("Signal strength", info.wifi.signal + "% (" + info.wifi.rssi, " dBm)") }}
-      {{ inforow("Uptime", totalRuntimeString) }}
-      {{ inforow("Free heap", heap, " kB") }}
-      {{ inforow("Estimated current", pwru) }}
-      {{ inforow("Frames / second", info.leds.fps) }}
-      {{ inforow("MAC address", info.mac) }}
-      {{ inforow("Filesystem", info.fs.u + "/" + info.fs.t + " kB (" + Math.round(info.fs.u * 100 /
-      info.fs.t) + "%)") }}
-      {{ inforow("Environment", info.arch + " " + info.core + " (" + info.lwip + ")") }}
-    </table>
-  </div>
-  <br>
+  <dl class="info__statsList">
+    <ng-template ngFor let-infoRow [ngForOf]="infoRows">
+      <dt class="info__statsList__name">
+        {{ infoRow.key }}
+      </dt>
+      <dd class="info__statsList__value">
+        {{ infoRow.value }}
+      </dd>
+    </ng-template>
+  </dl>
+</div>
+<div class="info__buttons">
   <button
-    class="btn infobtn"
-    (click)="refresh()">
-    Refresh
+    *ngFor="let button of buttons"
+    mat-raised-button
+    color="primary"
+    class="info__button"
+    (click)="button.onClick()">
+    <div class="info__button__contentWrapper">
+      <span class="material-symbols-outlined">
+        {{ button.icon }}
+      </span>
+      <span>
+        {{ button.name }}
+      </span>
+    </div>
   </button>
-  <button
-    class="btn infobtn"
-    (click)="close()">
-    Close Info
-  </button>
-  <br>
-  <button
-    class="btn infobtn"
-    (click)="showNodes()">
-    Instance List
-  </button>
-  <button
-    id="resetbtn"
-    class="btn infobtn"
-    (click)="doReboot()">
-    Reboot WLED
-  </button><br>
-  <span class="h">
-    Made with <span id="heart">&#10084;&#xFE0E;</span> by Aircoookie and the WLED community!
-  </span>
+</div>
+<div class="info__developerInfo">
+  <p>
+    Created by Tim Stoddard (C) {{ getCurrentYear() }}
+  </p>
+  <p>
+    Inpsired by the <a
+      href="https://github.com/Aircoookie/WLED/tree/main/wled00/data"
+      target="_blank">
+      WLED client</a>
+      created by <a
+      href="https://github.com/Aircoookie" 
+      target="_blank">
+      Aircookie</a>!
+  </p>
 </div>

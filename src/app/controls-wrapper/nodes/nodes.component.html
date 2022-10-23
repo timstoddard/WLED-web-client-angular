@@ -15,14 +15,14 @@
       </ng-container>
 
       <div *ngIf="info.ndc < 0">
-        Instance List is disabled.
+        Device List is disabled.
       </div>
       <!-- TODO technically supposed to be an `else if` -->
       <div *ngIf="nodes.length === 0">
-        No other instances found.
+        No other devices found.
       </div>
 
-      {{ inforow('Current instance:', info.name) }}
+      {{ inforow('Current device:', info.name) }}
     </table>
   </div>
   <br>

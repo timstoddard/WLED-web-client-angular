@@ -40,3 +40,7 @@ export class NodesComponent implements OnInit {
     }
   }
 }
+
+const inforow = (key: string, value: string, unit = '') =>
+  `<tr><td class="keytd">${key}</td><td class="valtd">${value}${unit}</td></tr>`;
+  

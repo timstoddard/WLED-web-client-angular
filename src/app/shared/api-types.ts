@@ -1,3 +1,5 @@
+// TODO!! update to API spec 0.8.4: https://kno.wled.ge/interfaces/json-api/
+
 // Types based the WLED JSON API info page: https://kno.wled.ge/interfaces/json-api
 
 export interface WledApiResponse {
@@ -195,7 +197,7 @@ export interface WledInfo {
   readonly product: string;
   /** The hexadecimal hardware MAC address of the light, lowercase and without colons. */
   readonly mac: string;
-  /** The IP address of this instance. Empty string if not connected. */
+  /** The IP address of this device. Empty string if not connected. */
   readonly ip: string;
 }
 
@@ -217,8 +219,10 @@ export interface WledLedInfo {
 }
 
 export interface WledWifiInfo {
-  /** The BSSID of the currently connected network. */
+  /** The BSSID (hardware address) of the currently connected network. */
   readonly bssid: string;
+  /** Measurement of how well your device can hear a signal from an access point or router. (Useful for determining if you have enough signal to get a good wireless connection.) */
+  readonly rssi: number;
   /** Relative signal quality of the current connection [0-100]. */
   readonly signal: number;
   /** The current WiFi channel [1-14]. */

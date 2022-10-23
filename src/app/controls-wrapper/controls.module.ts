@@ -2,6 +2,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -19,7 +20,7 @@ import { ControlsServicesModule } from './controls-services.module';
 import { DeviceSelectorComponent } from './top-menu-bar/device-selector/device-selector.component';
 import { EffectsComponent } from './effects/effects.component';
 import { HexInputComponent } from './color-inputs/hex-input/hex-input.component';
-// import { InfoComponent } from './info/info.component';
+import { InfoComponent } from './info/info.component';
 import { LiveViewModule } from '../shared/live-view/live-view.module';
 import { NewSegmentComponent } from './segments/new-segment/new-segment.component';
 // import { NodesComponent } from './nodes/nodes.component';
@@ -57,7 +58,7 @@ const COMPONENTS = [
   ControlsWrapperComponent,
   DeviceSelectorComponent,
   EffectsComponent,
-  // InfoComponent,
+  InfoComponent,
   NewSegmentComponent,
   // NodesComponent,
   PalettesComponent,
@@ -83,6 +84,7 @@ const COMPONENTS = [
     ControlsRoutingModule,
     ControlsServicesModule,
     LiveViewModule,
+    MatButtonModule,
     MatCheckboxModule,
     MatFormFieldModule,
     MatInputModule,

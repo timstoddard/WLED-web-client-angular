@@ -144,7 +144,7 @@ export class ApiService extends UnsubscriberService {
   }
 
   /** Reload all app data from the backend. */
-  private refreshAppState() {
+  refreshAppState() {
     this.handleUnsubscribe(this.getJson())
       .subscribe(this.postResponseHandler.handleFullJsonResponse());
   }

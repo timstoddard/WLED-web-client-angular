@@ -3,7 +3,6 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { UIConfigService } from '../../shared/ui-config.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
-import { LocalStorageService } from '../../shared/local-storage.service';
 import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
 import { generateApiUrl } from '../json.service';
 import { MenuBarButton, setCssColor } from '../utils';
@@ -56,7 +55,6 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
 
   constructor(
     private formService: FormService,
-    private localStorageService: LocalStorageService,
     private topMenuBarService: TopMenuBarService,
     private appStateService: AppStateService,
     private changeDetectorRef: ChangeDetectorRef,
@@ -307,9 +305,6 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
     if (fromB) {
       this.pcModeA = !this.pcModeA;
       this.isPcMode = this.pcModeA;
-
-      // TODO save app config in local storage
-      // this.localStorageService.set('pcm', this.pcModeA);
     }
 
     // TODO if app width is small & pc mode is off, don't toggle

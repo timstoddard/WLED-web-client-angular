@@ -97,6 +97,7 @@ export const DEFAULT_APP_STATE: AppStateProps = {
     paletteCount: 0,
     wifi: {
       bssid: '',
+      rssi: 0,
       signalStrength: 0,
       channel: 0,
     },

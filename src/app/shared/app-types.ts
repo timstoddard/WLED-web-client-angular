@@ -74,6 +74,7 @@ export interface AppLedInfo {
 
 export interface AppWifiInfo {
   readonly bssid: string;
+  readonly rssi: number;
   readonly signalStrength: number;
   readonly channel: number;
 }
