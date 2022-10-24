@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Store, createState, withProps, select } from '@ngneat/elf';
 import { Subject, takeUntil } from 'rxjs';
 import { ApiTypeMapper } from '../api-type-mapper';
-import { WledApiResponse } from '../api-types';
+import { WledApiResponse, WledNodesResponse } from '../api-types';
 import { AppInfo, AppLocalSettings, AppState, AppStateProps } from '../app-types';
 import { DEFAULT_APP_STATE } from './app-state-defaults';
 
@@ -19,13 +19,17 @@ export class AppStateService {
 
   /** Set all app state fields using the api response data. */
   setAll = (response: WledApiResponse) => {
-    this.appStateStore.update(({
-      localSettings,
-      palettes,
-      effects,
-    }) =>
-      this.apiTypeMapper.mapWledApiResponseToAppStateProps(response, localSettings, palettes, effects));
+    this.appStateStore.update((state) =>
+      this.apiTypeMapper.mapWledApiResponseToAppStateProps(response, state));
   }
+
+  /** Updates nodes data. */
+  setNodes = (response: WledNodesResponse) => {
+    this.appStateStore.update((state) => ({
+      ...state,
+      nodes: this.apiTypeMapper.mapWledNodesToAppNodes(response),
+    }));
+  };
 
   // getters
   getAppState = (ngUnsubscribe: Subject<void>) =>

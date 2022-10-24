@@ -1,33 +1,14 @@
 <h1 class="info__title">
   WLED Info
 </h1>
-<div class="info__content">
-  <div class="info__version">
-    <span>
-      v{{ versionName }}
-    </span>
-    <span style="font-style: italic">
-      "{{ getVersionNickname() }}"
-    </span>
-  </div>
-  <dl class="info__statsList">
-    <ng-template ngFor let-infoRow [ngForOf]="infoRows">
-      <dt class="info__statsList__name">
-        {{ infoRow.key }}
-      </dt>
-      <dd class="info__statsList__value">
-        {{ infoRow.value }}
-      </dd>
-    </ng-template>
-  </dl>
-</div>
+
 <div class="info__buttons">
   <button
     *ngFor="let button of buttons"
     mat-raised-button
     color="primary"
-    class="info__button"
-    (click)="button.onClick()">
+    (click)="button.onClick()"
+    class="info__button">
     <div class="info__button__contentWrapper">
       <span class="material-symbols-outlined">
         {{ button.icon }}
@@ -38,6 +19,70 @@
     </div>
   </button>
 </div>
+
+<div class="info__content">
+  <h3 class="info__version">
+    <span>
+      v{{ info.versionName }}
+    </span>
+    <span class="info__version__nickname">
+      "{{ getVersionNickname() }}"
+    </span>
+  </h3>
+  <dl class="info__statsList">
+    <ng-container *ngFor="let infoRow of infoRows">
+      <dt class="info__statsList__name">
+        {{ infoRow.key }}
+      </dt>
+      <dd class="info__statsList__value">
+        {{ infoRow.value }}
+      </dd>
+    </ng-container>
+  </dl>
+</div>
+
+<div class="info__devices">
+  <ng-container *ngIf="info.wledDevicesOnNetwork !== -1; else deviceListDisabled">
+    <h3 class="info__devices__title">
+      All Devices
+    </h3>
+    <div>
+      Current Device: {{ info.name }}
+    </div>
+    <ul class="info__devices__list">
+      <li
+        *ngFor="let node of nodes"
+        class="info__devices__listItem">
+        <div class="info__devices__listItem__button">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="selectDevice(node.ipAddress)"
+            class="">
+            {{ getDeviceName(node) }}
+          </button>
+        </div>
+        <div class="info__devices__listItem__name">
+          {{ getDeviceTypeName(node.type) }}
+        </div>
+        <div
+          class="info__devices__listItem__version">
+          {{ node.versionId === '0' ? "N/A" : node.versionId }}
+        </div>
+      </li>
+    </ul>
+    <div *ngIf="nodes.length === 0">
+      No other devices found.
+    </div>
+  </ng-container>
+
+  <ng-template #deviceListDisabled>
+    <div>
+      Device List is disabled.
+    </div>
+  </ng-template>
+</div>
+
 <div class="info__developerInfo">
   <p>
     Created by Tim Stoddard (C) {{ getCurrentYear() }}

@@ -5,6 +5,7 @@
   background: var(--backgroundColorAccent);
   border: 1px solid var(--borderColorPrimary);
   border-radius: 6px;
+  padding: 8px;
 }
 
 :host {
@@ -33,15 +34,40 @@
     margin: 8px auto;
   }
 
+  &__buttons {
+    @include flex-center;
+    flex-wrap: wrap;
+
+    & > * {
+      margin: 4px;
+    }
+  }
+
+  &__button {
+    &__contentWrapper {
+      @include flex-center;
+    }
+
+    & ::ng-deep .material-symbols-outlined {
+      font-size: 20px;
+      margin-right: 3px;
+    }
+  }
+
   &__content {
     @include infoSection;
     align-items: center;
     display: flex;
     flex-direction: column;
-    padding: 8px;
   }
 
-  &__version {}
+  &__version {
+    margin: 6px 0;
+
+    &__nickname {
+      font-style: italic;
+    }
+  }
 
   &__statsList {
     $statsBorder: 1px solid var(--borderColorAccent);
@@ -76,29 +102,53 @@
     }
   }
 
-  &__buttons {
-    @include flex-center;
-    flex-wrap: wrap;
+  &__devices {
+    @include infoSection;
 
-    & > * {
-      margin: 4px;
-    }
-  }
-
-  &__button {
-    &__contentWrapper {
-      @include flex-center;
+    &__title {
+      margin: 6px 0;
     }
 
-    & ::ng-deep .material-symbols-outlined {
-      font-size: 20px;
-      margin-right: 3px;
+    &__list {
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+
+      &Item {
+        border: 1px solid var(--borderColorPrimary);
+        border-radius: 6px;
+        display: grid;
+        grid-template: auto / 1fr auto 1fr;
+        margin: 2px;
+        max-width: 420px;
+        width: 80vw;
+
+        & > * {
+          margin: 3px 6px;
+        }
+
+        &__button {
+          display: flex;
+        }
+
+        &__name {
+          align-items: center;
+          display: flex;
+        }
+
+        &__version {
+          align-items: center;
+          display: flex;
+          font-style: italic;
+          justify-content: flex-end;
+        }
+      }
     }
   }
 
   &__developerInfo {
     @include infoSection;
-    padding: 8px;
 
     & a {
       color: var(--textColorPrimary);

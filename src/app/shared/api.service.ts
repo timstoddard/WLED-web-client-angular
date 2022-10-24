@@ -1,10 +1,10 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, of, timeout } from 'rxjs';
-import { ALL_PALETTES_DATA, MOCK_API_PRESETS, MOCK_API_RESPONSE, MOCK_LIVE_DATA } from '../controls-wrapper/mock-api-data';
+import { ALL_PALETTES_DATA, MOCK_API_PRESETS, MOCK_API_RESPONSE, MOCK_LIVE_DATA, MOCK_NODES_RESPONSE } from '../controls-wrapper/mock-api-data';
 import { PalettesApiData } from '../controls-wrapper/palettes/palettes.service';
 import { Preset } from '../controls-wrapper/presets/presets.service';
-import { APIPreset, APIPresets, SavePresetRequest, WledApiResponse, WledInfo, WledState } from './api-types';
+import { APIPreset, APIPresets, SavePresetRequest, WledApiResponse, WledInfo, WledNodesResponse, WledState } from './api-types';
 import { NO_DEVICE_IP_SELECTED } from './app-state/app-state-defaults';
 import { AppStateService } from './app-state/app-state.service';
 import { AppState, Segment } from './app-types';
@@ -21,6 +21,7 @@ const EFFECTS_PATH = 'json/eff';
 const PALETTES_PATH = 'json/pal';
 const PALETTES_DATA_PATH = 'json/palx';
 const LIVE_PATH = 'json/live';
+const NODES_PATH = 'json/nodes';
 
 const LED_SETTINGS_PATH = 'settings/leds';
 const UI_SETTINGS_PATH = 'settings/ui';
@@ -191,6 +192,11 @@ export class ApiService extends UnsubscriberService {
   getLiveData() {
     return this.httpGet<LiveViewData>(
       this.createApiUrl(LIVE_PATH), MOCK_LIVE_DATA);
+  }
+
+  getNodes() {
+    return this.httpGet<WledNodesResponse>(
+      this.createApiUrl(NODES_PATH), MOCK_NODES_RESPONSE);
   }
 
   /** Sets current palette by id. */
@@ -579,10 +585,6 @@ export class ApiService extends UnsubscriberService {
   //   this.httpPost('/json/si', body);
   //   // this.requestJson(body);
   // }
-
-  getNodes() {
-    return this.httpGet<any /* TODO type */>('/json/nodes', {});
-  }
 
   // TODO better name
   setJsonObj(obj: any) {

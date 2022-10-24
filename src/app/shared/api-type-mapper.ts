@@ -1,21 +1,19 @@
 import { Injectable } from '@angular/core';
-import { WledApiResponse, WledFileSystemInfo, WledInfo, WledLedInfo, WledNightLightState, WledState, WledUdpState, WledWifiInfo } from './api-types';
-import { AppFileSystemInfo, AppInfo, AppLedInfo, AppLocalSettings, AppNightLightState, AppState, AppStateProps, AppUdpState, AppWifiInfo } from './app-types';
+import { WledApiResponse, WledFileSystemInfo, WledInfo, WledLedInfo, WledNightLightState, WledNodesResponse, WledState, WledUdpState, WledWifiInfo } from './api-types';
+import { AppFileSystemInfo, AppInfo, AppLedInfo, AppLocalSettings, AppNightLightState, AppState, AppStateProps, AppUdpState, AppWifiInfo, AppNode } from './app-types';
 
 @Injectable({ providedIn: 'root' })
 export class ApiTypeMapper {
   /** Maps an entire WLED API response into the format expected by this app. */
   mapWledApiResponseToAppStateProps = (
     { state, info, palettes, effects }: WledApiResponse,
-    localSettings: AppLocalSettings,
-    existingPalettes: string[],
-    existingEffects: string[],
+    existingState: AppStateProps,
   ): AppStateProps => ({
+    ...existingState,
     state: this.mapWledStateToAppState(state),
     info: this.mapWledInfoToAppInfo(info),
-    palettes: palettes ?? existingPalettes,
-    effects: effects ?? existingEffects,
-    localSettings,
+    palettes: palettes ?? existingState.palettes,
+    effects: effects ?? existingState.effects,
   });
 
   /** Maps the `state` object in the WLED API resonse into the format expected by this app. */
@@ -98,4 +96,12 @@ export class ApiTypeMapper {
     totalSpaceKb: fileSystemInfo.t,
     lastPresetsJsonEditTimestamp: fileSystemInfo.pmt,
   });
+
+  mapWledNodesToAppNodes = ({ nodes }: WledNodesResponse): AppNode[] =>
+    nodes.map(node => ({
+      name: node.name,
+      ipAddress: node.ip,
+      type: node.type,
+      versionId: node.vid,
+    }));
 }

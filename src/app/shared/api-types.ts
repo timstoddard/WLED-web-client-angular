@@ -288,3 +288,15 @@ export interface SavePresetRequest1 extends SavePresetRequestBase {
 // TODO define the specific properties of the partial state
 export type SavePresetRequest2 = SavePresetRequestBase & Partial<WledState>
 export type SavePresetRequest = SavePresetRequest1 | SavePresetRequest2
+
+export interface WledNodesResponse {
+  nodes: WledNode[];
+}
+
+// TODO verify these field types
+export interface WledNode {
+  name: string;
+  ip: string;
+  type: number;
+  vid: string;
+}

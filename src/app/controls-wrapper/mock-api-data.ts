@@ -1,4 +1,4 @@
-import { APIPreset, WledApiResponse } from '../shared/api-types';
+import { APIPreset, WledApiResponse, WledNodesResponse } from '../shared/api-types';
 import { LiveViewData } from '../shared/live-view/live-view.service';
 import { PalettesApiData } from './palettes/palettes.service';
 
@@ -180,6 +180,29 @@ export const MOCK_API_RESPONSE: WledApiResponse = {
   },
   effects: ['Solid', 'Blink', 'Breathe', 'Wipe', 'Wipe Random', 'Random Colors', 'Sweep', 'Dynamic', 'Colorloop', 'Rainbow', 'Scan', 'Scan Dual', 'Fade', 'Theater', 'Theater Rainbow', 'Running', 'Saw', 'Twinkle', 'Dissolve', 'Dissolve Rnd', 'Sparkle', 'Sparkle Dark', 'Sparkle+', 'Strobe', 'Strobe Rainbow', 'Strobe Mega', 'Blink Rainbow', 'Android', 'Chase', 'Chase Random', 'Chase Rainbow', 'Chase Flash', 'Chase Flash Rnd', 'Rainbow Runner', 'Colorful', 'Traffic Light', 'Sweep Random', 'Chase 2', 'Aurora', 'Stream', 'Scanner', 'Lighthouse', 'Fireworks', 'Rain', 'Tetrix', 'Fire Flicker', 'Gradient', 'Loading', 'Police', 'Fairy', 'Two Dots', 'Fairytwinkle', 'Running Dual', 'Halloween', 'Chase 3', 'Tri Wipe', 'Tri Fade', 'Lightning', 'ICU', 'Multi Comet', 'Scanner Dual', 'Stream 2', 'Oscillate', 'Pride 2015', 'Juggle', 'Palette', 'Fire 2012', 'Colorwaves', 'Bpm', 'Fill Noise', 'Noise 1', 'Noise 2', 'Noise 3', 'Noise 4', 'Colortwinkles', 'Lake', 'Meteor', 'Meteor Smooth', 'Railway', 'Ripple', 'Twinklefox', 'Twinklecat', 'Halloween Eyes', 'Solid Pattern', 'Solid Pattern Tri', 'Spots', 'Spots Fade', 'Glitter', 'Candle', 'Fireworks Starburst', 'Fireworks 1D', 'Bouncing Balls', 'Sinelon', 'Sinelon Dual', 'Sinelon Rainbow', 'Popcorn', 'Drip', 'Plasma', 'Percent', 'Ripple Rainbow', 'Heartbeat', 'Pacifica', 'Candle Multi', 'Solid Glitter', 'Sunrise', 'Phased', 'Twinkleup', 'Noise Pal', 'Sine', 'Phased Noise', 'Flow', 'Chunchun', 'Dancing Shadows', 'Washing Machine', 'Candy Cane', 'Blends', 'TV Simulator', 'Dynamic Smooth'],
   palettes: ['Default', '* Random Cycle', '* Color 1', '* Colors 1&2', '* Color Gradient', '* Colors Only', 'Party', 'Cloud', 'Lava', 'Ocean', 'Forest', 'Rainbow', 'Rainbow Bands', 'Sunset', 'Rivendell', 'Breeze', 'Red & Blue', 'Yellowout', 'Analogous', 'Splash', 'Pastel', 'Sunset 2', 'Beech', 'Vintage', 'Departure', 'Landscape', 'Beach', 'Sherbet', 'Hult', 'Hult 64', 'Drywet', 'Jul', 'Grintage', 'Rewhi', 'Tertiary', 'Fire', 'Icefire', 'Cyane', 'Light Pink', 'Autumn', 'Magenta', 'Magred', 'Yelmag', 'Yelblu', 'Orange & Teal', 'Tiamat', 'April Night', 'Orangery', 'C9', 'Sakura', 'Aurora', 'Atlantica', 'C9 2', 'C9 New', 'Temperature', 'Aurora 2', 'Retro Clown', 'Candy', 'Toxy Reaf', 'Fairy Reaf', 'Semi Blue', 'Pink Candy', 'Red Reaf', 'Aqua Flash', 'Yelblu Hot', 'Lite Light', 'Red Flash', 'Blink Red', 'Red Shift', 'Red Tide', 'Candy2'],
+};
+
+export const MOCK_NODES_RESPONSE: WledNodesResponse = {
+  nodes: [
+    {
+      name: 'test 1',
+      ip: '1.1.1.1',
+      type: 32,
+      vid: '0.13.6',
+    },
+    {
+      name: 'test 2',
+      ip: '2.2.2.2',
+      type: 33,
+      vid: '0.13.6',
+    },
+    {
+      name: 'WLED',
+      ip: '3.3.3.3',
+      type: 82,
+      vid: '0',
+    },
+  ],
 };
 
 export const MOCK_PALETTES_DATA: PalettesApiData[] = [{

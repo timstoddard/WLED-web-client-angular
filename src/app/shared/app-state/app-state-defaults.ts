@@ -123,5 +123,6 @@ export const DEFAULT_APP_STATE: AppStateProps = {
     isLiveViewActive: false,
     selectedWledIpAddress: DEFAULT_SELECTED_WLED_IP_ADDRESS,
     wledIpAddresses: DEFAULT_WLED_IP_ADDRESSES,
-  }
+  },
+  nodes: [],
 };

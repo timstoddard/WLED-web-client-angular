@@ -40,8 +40,6 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
   private isSyncActive = false;
   private shouldToggleReceiveWithSend = true;
   isLiveViewActive = false;
-  private showInfo = false;
-  private showNodes = false;
 
   // other vars (some are for sliding ui)
   private appWidth: number = 0;
@@ -170,17 +168,6 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
         onClick: () => this.topMenuBarService.toggleLiveView(!this.isLiveViewActive),
         enabled: () => this.isLiveViewActive,
       },
-      // TODO combine these & move to bottom menu
-      /*{
-        name: 'Info',
-        icon: 'info',
-        onClick: () => this.toggleShowInfo(),
-      },
-      {
-        name: 'Nodes',
-        icon: 'lan',
-        onClick: () => this.toggleShowNodes(),
-      },*/
     ];
     if (this.showPcModeButton) {
       buttons.push({
@@ -243,62 +230,6 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
     // TODO show toast
     const showToast = (s: string) => alert(s);
     showToast(message);
-  }
-
-  private toggleShowInfo() {
-    // TODO better way to close nodes if open
-    if (this.showNodes) {
-      this.toggleShowNodes();
-    }
-
-    this.showInfo = !this.showInfo;
-    if (this.showInfo) {
-      // TODO render info
-      // this.populateInfo(this.lastinfo);
-    }
-    document.getElementById('info')!.style.transform = this.showInfo ? 'translateY(0px)' : 'translateY(100%)';
-    document.getElementById('buttonI')!.className = this.showInfo ? 'active' : '';
-  }
-
-  private toggleShowNodes() {
-    // TODO better way to close info if open
-    if (this.showInfo) {
-      this.toggleShowInfo();
-    }
-
-    this.showNodes = !this.showNodes;
-    document.getElementById('nodes')!.style.transform =
-      this.showNodes
-        ? 'translateY(0px)'
-        : 'translateY(100%)';
-    document.getElementById('buttonNodes')!.className =
-      this.showNodes
-        ? 'active'
-        : '';
-    if (this.showNodes) {
-      this.loadNodes();
-    }
-  }
-
-  private loadNodes() {
-    const url = generateApiUrl('json/nodes');
-
-    fetch(url, { method: 'get' })
-      .then(res => {
-        if (!res.ok) {
-          // showToast('Could not load Node list!', true);
-        }
-        return res.json();
-      })
-      .then(json => {
-        // TODO render nodes
-        // this.populateNodes(this.lastinfo, json);
-      })
-      .catch((error) => {
-        // TODO show toast
-        // showToast(error, true);
-        console.log(error);
-      });
   }
 
   private togglePcMode(fromB = false) { // TODO "from b" seems to be "called from button"

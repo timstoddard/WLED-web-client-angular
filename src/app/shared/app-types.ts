@@ -8,6 +8,7 @@ export interface AppStateProps { // TODO better interface name
   palettes: string[];
   effects: string[];
   localSettings: AppLocalSettings;
+  nodes: AppNode[];
 }
 
 export interface AppState {
@@ -104,4 +105,12 @@ export interface Segment extends WledSegment {
   name: string;
   /** Whether or not the segment is expanded. */
   isExpanded: boolean;
+}
+
+/** Corresponds to `WledNode` type. */
+export interface AppNode {
+  name: string;
+  ipAddress: string;
+  type: number;
+  versionId: string;
 }
