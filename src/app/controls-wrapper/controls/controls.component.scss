@@ -1,17 +1,15 @@
-$spacing: 8px;
+@import 'src/app/shared/scss/mixins';
+@import 'src/app/shared/scss/variables';
 
 :host {
   display: grid;
-  grid-gap: $spacing;
+  grid-gap: var(--edgeSpacing);
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto 1fr;
-  padding: 3px $spacing;
+  padding: $mainViewEdgeSpacing;
 
   > * {
-    border: 1px solid var(--borderColorPrimary);
-    border-radius: 6px;
-    // TODO keep box shadow?
-    box-shadow: inset 0px 0px 8px 0 rgba(var(--borderColorPrimaryRgb),0.8);
+    @include view-container-base;
   }
 }
 

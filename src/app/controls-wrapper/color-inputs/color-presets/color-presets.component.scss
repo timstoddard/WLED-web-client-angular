@@ -18,7 +18,7 @@ $buttonsPerRow: 4;
   &__button {
     @include cursorPointerOnHover();
     border: 1px solid var(--borderColorPrimary);
-    border-radius: 6px;
+    border-radius: 10px;
     margin: $buttonMargin;
     max-height: $buttonDimension;
     max-width: $buttonDimension;
@@ -27,6 +27,7 @@ $buttonsPerRow: 4;
     outline: 0;
 
     &--random {
+      @include flex-center;
       background: var(--backgroundColorPrimary);
       color: var(--textColorPrimary);
       font-size: 20px;

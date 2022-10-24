@@ -2,41 +2,55 @@ import { Injectable } from '@angular/core';
 import { IroColorValue, RgbColor } from '@irojs/iro-core';
 import iro from '@jaames/iro';
 import { BehaviorSubject } from 'rxjs';
-import { ApiService } from '../shared/api.service';
 import { ControlsServicesModule } from './controls-services.module';
 
 export interface CurrentColor {
   rgb: RgbColor;
   whiteValue: number;
   hex: string; // 6 or 8 characters long
-  hsvValue: number;
+  hsv: number;
   kelvin: number;
 }
 
+const rgbToHex = ({ r, g, b }: {
+  r: number,
+  g: number,
+  b: number,
+}) => {
+  const toHex = (n: number) => n.toString(16);
+  const hex = `${toHex(r)}${toHex(g)}${toHex(b)}`;
+  return hex;
+}
+
 const DEFAULT_WHITE_CHANNEL_VALUE = 128;
-const DEFAULT_WHITE_BALANCE = 128; // TODO use this
-const DEFAULT_R = 128;
-const DEFAULT_G = 128;
-const DEFAULT_B = 128;
+const DEFAULT_WHITE_BALANCE_VALUE = 128; // TODO use this
+const DEFAULT_R_VALUE = 128;
+const DEFAULT_G_VALUE = 128;
+const DEFAULT_B_VALUE = 128;
 const DEFAULT_HSV_VALUE = 128;
-const DEFAULT_KELVIN = 6550;
+const DEFAULT_KELVIN_VALUE = 6550;
 const DEFAULT_WHITE_VALUE = 128;
+const DEFAULT_HEX_VALUE = rgbToHex({
+  r: DEFAULT_R_VALUE,
+  g: DEFAULT_G_VALUE,
+  b: DEFAULT_B_VALUE,
+});
 
 @Injectable({ providedIn: ControlsServicesModule })
 export class ColorService {
-  private colorPicker!: iro.ColorPicker;
+  private _colorPicker!: iro.ColorPicker;
   // white value, if rbgw enabled
   private whiteValue = DEFAULT_WHITE_VALUE;
   private currentColorData = new BehaviorSubject<CurrentColor>(this.getDefaults());
 
-  constructor(private apiService: ApiService) {}
+  constructor() {}
 
   getCurrentColorData() {
     return this.currentColorData;
   }
 
-  getColorPicker() {
-    return this.colorPicker;
+  get colorPicker() {
+    return this._colorPicker;
   }
 
   setColorPicker(colorPicker: iro.ColorPicker) {
@@ -49,38 +63,38 @@ export class ColorService {
       this.emitNewColor();
     });
 
-    this.colorPicker = colorPicker;
+    this._colorPicker = colorPicker;
   }
 
   setColorPickerColor(color: IroColorValue) {
     const newColor = new iro.Color(color);
     if (newColor.value > 0) {
-      this.colorPicker.color.set(newColor);
+      this._colorPicker.color.set(newColor);
     } else {
-      this.colorPicker.color.setChannel('hsv', 'v', 0);
+      this._colorPicker.color.setChannel('hsv', 'v', 0);
     }
     // TODO update form (?)
   }
 
-  setHsvValue(hsvValue: number) {
+  setHsv = (hsv: number) => {
     // TODO when this is 0, kelvin
-    this.colorPicker.color.setChannel('hsv', 'v', hsvValue);
+    this._colorPicker.color.setChannel('hsv', 'v', hsv);
   }
 
-  setKelvin(kelvin: number) {
-    this.colorPicker.color.set({ kelvin });
+  setKelvin = (kelvin: number) => {
+    this._colorPicker.color.set({ kelvin });
   }
 
-  setRgb(r: number, g: number, b: number) {
+  setRgb = (r: number, g: number, b: number) => {
     const rgb = `rgb(${r},${g},${b})`;
     this.setColorPickerColor(rgb);
   }
 
-  setWhiteValue(whiteValue: number, emit = true) {
+  setWhiteValue = (whiteValue: number, emit = true) => {
     const oldWhiteValue = this.whiteValue;
     this.whiteValue = whiteValue;
     if (emit && this.whiteValue !== oldWhiteValue) {
-      this.colorPicker.emit('color:change');
+      this._colorPicker.emit('color:change');
     }
   }
 
@@ -107,11 +121,11 @@ export class ColorService {
    * Updates various color input sliders.
    */
   emitNewColor() {
-    const rgb = this.colorPicker.color.rgb;
-    const kelvin = this.colorPicker.color.kelvin;
-    const hsvValue = this.colorPicker.color.value;
+    const rgb = this._colorPicker.color.rgb;
+    const kelvin = this._colorPicker.color.kelvin;
+    const hsvValue = this._colorPicker.color.value;
     const whiteValue = this.whiteValue;
-    let hexString = this.colorPicker.color.hexString.substring(1);
+    let hexString = this._colorPicker.color.hexString.substring(1);
     const hex = whiteValue > 0
       ? hexString + whiteValue.toString(16) // TODO pad with zeroes?
       : hexString;
@@ -119,7 +133,7 @@ export class ColorService {
       rgb,
       whiteValue,
       hex,
-      hsvValue,
+      hsv: hsvValue,
       kelvin,
     };
     this.currentColorData.next(newColor);
@@ -130,8 +144,8 @@ export class ColorService {
     // TODO update background for hsv value slider
     // background color as if color had full value (slider background)
     const hsv = {
-      h: this.colorPicker.color.hue,
-      s: this.colorPicker.color.saturation,
+      h: this._colorPicker.color.hue,
+      s: this._colorPicker.color.saturation,
       v: 100,
     };
     const _rgb = iro.Color.hsvToRgb(hsv);
@@ -177,14 +191,14 @@ export class ColorService {
   private getDefaults() {
     return {
       rgb: {
-        r: DEFAULT_R,
-        g: DEFAULT_G,
-        b: DEFAULT_B,
+        r: DEFAULT_R_VALUE,
+        g: DEFAULT_G_VALUE,
+        b: DEFAULT_B_VALUE,
       },
       whiteValue: DEFAULT_WHITE_CHANNEL_VALUE,
-      hex: '', // TODO default hex value?
-      hsvValue: DEFAULT_HSV_VALUE,
-      kelvin: DEFAULT_KELVIN,
+      hex: DEFAULT_HEX_VALUE,
+      hsv: DEFAULT_HSV_VALUE,
+      kelvin: DEFAULT_KELVIN_VALUE,
     };
   }
 }

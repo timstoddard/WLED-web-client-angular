@@ -3,6 +3,11 @@
 // TODO get from material theme
 $materialThemeColor: #7c4dff;
 
+:host {
+  @include emphasized-view-container;
+  padding: 0;
+}
+
 .settings {
   max-height: 100%;
   max-width: 100%;

@@ -1,5 +1,7 @@
 @use 'sass:math';
 
+@import 'src/app/shared/scss/variables';
+
 @mixin radioButtonList {
   $spacer: 10px;
   display: grid;
@@ -245,4 +247,18 @@ $antWidth: 2px;
   align-items: center;
   display: flex;
   justify-content: center;
+}
+
+@mixin view-container-base {
+  border: 1px solid var(--borderColorPrimary);
+  border-radius: 6px;
+  box-shadow: inset 0px 0px 8px 0 rgba(var(--borderColorPrimaryRgb), 0.8);
+}
+
+@mixin emphasized-view-container {
+  @include view-container-base;
+  margin: $mainViewEdgeSpacing;
+  overflow-x: hidden;
+  padding: 10px 6px;
+  text-align: center;
 }

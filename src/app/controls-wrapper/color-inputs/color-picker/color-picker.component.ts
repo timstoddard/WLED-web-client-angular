@@ -1,5 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl } from '@angular/forms';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import iro from '@jaames/iro';
 import { UnsubscriberComponent } from '../../../shared/unsubscribing/unsubscriber.component';
 import { ColorService } from '../../color.service';
@@ -13,7 +12,6 @@ const COLOR_PICKER_HEIGHT_SCALAR = 0.8;
   host: { '(window:resize)': 'onResize($event)' },
 })
 export class ColorPickerComponent extends UnsubscriberComponent implements OnInit, AfterViewInit {
-  @Input() colorValues!: AbstractControl;
   @ViewChild('colorPicker', { read: ElementRef }) colorPickerElement!: ElementRef;
   private colorPicker!: iro.ColorPicker;
 

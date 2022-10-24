@@ -20,81 +20,83 @@
   </button>
 </div>
 
-<div class="info__content">
-  <h3 class="info__version">
-    <span>
-      v{{ info.versionName }}
-    </span>
-    <span class="info__version__nickname">
-      "{{ getVersionNickname() }}"
-    </span>
-  </h3>
-  <dl class="info__statsList">
-    <ng-container *ngFor="let infoRow of infoRows">
-      <dt class="info__statsList__name">
-        {{ infoRow.key }}
-      </dt>
-      <dd class="info__statsList__value">
-        {{ infoRow.value }}
-      </dd>
-    </ng-container>
-  </dl>
-</div>
-
-<div class="info__devices">
-  <ng-container *ngIf="info.wledDevicesOnNetwork !== -1; else deviceListDisabled">
-    <h3 class="info__devices__title">
-      All Devices
+<div class="info__flexContainer">
+  <div class="info__content">
+    <h3 class="info__version">
+      <span>
+        v{{ info.versionName }}
+      </span>
+      <span class="info__version__nickname">
+        "{{ getVersionNickname() }}"
+      </span>
     </h3>
-    <div>
-      Current Device: {{ info.name }}
-    </div>
-    <ul class="info__devices__list">
-      <li
-        *ngFor="let node of nodes"
-        class="info__devices__listItem">
-        <div class="info__devices__listItem__button">
-          <button
-            mat-raised-button
-            color="primary"
-            (click)="selectDevice(node.ipAddress)"
-            class="">
-            {{ getDeviceName(node) }}
-          </button>
-        </div>
-        <div class="info__devices__listItem__name">
-          {{ getDeviceTypeName(node.type) }}
-        </div>
-        <div
-          class="info__devices__listItem__version">
-          {{ node.versionId === '0' ? "N/A" : node.versionId }}
-        </div>
-      </li>
-    </ul>
-    <div *ngIf="nodes.length === 0">
-      No other devices found.
-    </div>
-  </ng-container>
+    <dl class="info__statsList">
+      <ng-container *ngFor="let infoRow of infoRows">
+        <dt class="info__statsList__name">
+          {{ infoRow.key }}
+        </dt>
+        <dd class="info__statsList__value">
+          {{ infoRow.value }}
+        </dd>
+      </ng-container>
+    </dl>
+  </div>
 
-  <ng-template #deviceListDisabled>
-    <div>
-      Device List is disabled.
-    </div>
-  </ng-template>
-</div>
+  <div class="info__nodes">
+    <ng-container *ngIf="info.wledDevicesOnNetwork !== -1; else deviceListDisabled">
+      <h3 class="info__nodes__title">
+        All Devices
+      </h3>
+      <div>
+        Current Device: {{ info.name }}
+      </div>
+      <ul class="info__nodes__list">
+        <li
+          *ngFor="let node of nodes"
+          class="info__nodes__listItem">
+          <div class="info__nodes__listItem__button">
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="selectDevice(node.ipAddress)"
+              class="">
+              {{ getDeviceName(node) }}
+            </button>
+          </div>
+          <div class="info__nodes__listItem__name">
+            {{ getDeviceTypeName(node.type) }}
+          </div>
+          <div
+            class="info__nodes__listItem__version">
+            {{ node.versionId === '0' ? "N/A" : node.versionId }}
+          </div>
+        </li>
+      </ul>
+      <div *ngIf="nodes.length === 0">
+        No other devices found.
+      </div>
+    </ng-container>
 
-<div class="info__developerInfo">
-  <p>
-    Created by Tim Stoddard (C) {{ getCurrentYear() }}
-  </p>
-  <p>
-    Inpsired by the <a
-      href="https://github.com/Aircoookie/WLED/tree/main/wled00/data"
-      target="_blank">
-      WLED client</a>
-      created by <a
-      href="https://github.com/Aircoookie" 
-      target="_blank">
-      Aircookie</a>!
-  </p>
+    <ng-template #deviceListDisabled>
+      <div>
+        Device List is disabled.
+      </div>
+    </ng-template>
+  </div>
+
+  <div class="info__developerInfo">
+    <p>
+      Created by Tim Stoddard &copy; {{ getCurrentYear() }}
+    </p>
+    <p>
+      Inpsired by the <a
+        href="https://github.com/Aircoookie/WLED/tree/main/wled00/data"
+        target="_blank">
+        WLED client</a>
+        created by <a
+        href="https://github.com/Aircoookie" 
+        target="_blank">
+        Aircookie</a>!
+    </p>
+  </div>
 </div>

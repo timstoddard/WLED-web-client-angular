@@ -42,20 +42,18 @@ export class ColorInputsComponent extends UnsubscriberComponent implements OnIni
     rgb,
     whiteValue,
     hex,
-    hsvValue,
+    hsv,
     kelvin,
   }: CurrentColor) {
     this.colorInputsForm.patchValue({
-      colorPicker: {
-        hsvValue,
-        kelvin,
-      },
       rgb: {
         r: rgb.r,
         g: rgb.g,
         b: rgb.b,
       },
-      whiteness: {
+      colorAndWhiteness: {
+        hsv,
+        kelvin,
         whiteChannel: whiteValue,
         // whiteBalance,
       },
@@ -64,12 +62,7 @@ export class ColorInputsComponent extends UnsubscriberComponent implements OnIni
   }
 
   private subscribeToValueChanges() {
-    this.getValueChanges<number>(this.colorInputsForm, ['colorPicker', 'hsvValue'])
-      .subscribe((hsvValue: number) => this.colorService.setHsvValue(hsvValue));
-
-    this.getValueChanges<number>(this.colorInputsForm, ['colorPicker', 'kelvin'])
-      .subscribe((kelvin: number) => this.colorService.setKelvin(kelvin));
-
+    // TODO need to unsubscribe merge()?
     const rgb = merge(
       this.getValueChanges<number>(this.colorInputsForm, ['rgb', 'r']),
       this.getValueChanges<number>(this.colorInputsForm, ['rgb', 'g']),
@@ -82,11 +75,15 @@ export class ColorInputsComponent extends UnsubscriberComponent implements OnIni
       this.colorService.setRgb(r, g, b);
     });
 
-    this.getValueChanges<number>(this.colorInputsForm, ['whiteness', 'whiteChannel'])
-      .subscribe((whiteValue: number) => this.colorService.setWhiteValue(whiteValue));
+    this.getValueChanges<number>(this.colorInputsForm, ['colorAndWhiteness', 'hsv'])
+      .subscribe(this.colorService.setHsv);
+    this.getValueChanges<number>(this.colorInputsForm, ['colorAndWhiteness', 'kelvin'])
+      .subscribe(this.colorService.setKelvin);
+    this.getValueChanges<number>(this.colorInputsForm, ['colorAndWhiteness', 'whiteChannel'])
+      .subscribe(this.colorService.setWhiteValue);
 
-    this.getValueChanges<number>(this.colorInputsForm, ['whiteness', 'whiteBalance'])
-      .subscribe((whiteBalance: number) => this.colorService.setWhiteBalance(whiteBalance));
+    this.getValueChanges<number>(this.colorInputsForm, ['colorAndWhiteness', 'whiteBalance'])
+      .subscribe(this.colorService.setWhiteBalance);
   }
 
   /**
@@ -95,16 +92,14 @@ export class ColorInputsComponent extends UnsubscriberComponent implements OnIni
    */
   private createForm() {
     return this.formSerivce.createFormGroup({
-      colorPicker: {
-        hsvValue: 0,
-        kelvin: 0,
-      },
       rgb: {
         r: 0,
         g: 0,
         b: 0,
       },
-      whiteness: {
+      colorAndWhiteness: {
+        hsv: 0,
+        kelvin: 0,
         whiteChannel: 0,
         whiteBalance: 0,
       },

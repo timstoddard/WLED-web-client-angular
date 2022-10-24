@@ -8,6 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
 import { BottomMenuBarComponent } from './bottom-menu-bar/bottom-menu-bar.component';
+import { ColorAndWhitenessSlidersComponent } from './color-inputs/color-and-whiteness-sliders/color-and-whiteness-sliders.component';
 import { ColorInputsComponent } from './color-inputs/color-inputs.component';
 import { ColorPickerComponent } from './color-inputs/color-picker/color-picker.component';
 import { ColorPresetsComponent } from './color-inputs/color-presets/color-presets.component';
@@ -35,16 +36,15 @@ import { SearchInputComponent } from './search-input/search-input.component';
 import { SegmentComponent } from './segments/segment/segment.component';
 import { SegmentsComponent } from './segments/segments.component';
 import { TopMenuBarComponent } from './top-menu-bar/top-menu-bar.component';
-import { WhitenessSlidersComponent } from './color-inputs/whiteness-sliders/whiteness-sliders.component';
 
 const COLOR_INPUTS = [
+  ColorAndWhitenessSlidersComponent,
   ColorInputsComponent,
   ColorPickerComponent,
   ColorPresetsComponent,
   ColorSlotsComponent,
   HexInputComponent,
   RgbSlidersComponent,
-  WhitenessSlidersComponent,
 ];
 
 const SHARED_COMPONENTS = [

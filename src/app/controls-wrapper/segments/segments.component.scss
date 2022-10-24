@@ -1,4 +1,7 @@
+@import 'src/app/shared/scss/mixins';
+
 :host {
+  @include emphasized-view-container;
   align-items: flex-start;
   display: flex;
   flex-flow: row wrap;

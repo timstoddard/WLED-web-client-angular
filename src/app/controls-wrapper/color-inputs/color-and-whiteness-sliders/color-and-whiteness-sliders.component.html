@@ -1,0 +1,8 @@
+<app-color-slider
+  *ngFor="let props of colorSliderProps"
+  [control]="colorAndWhitenessSettings.get(props.controlName)!"
+  [min]="props.min"
+  [max]="props.max"
+  [label]="props.label"
+  [vertical]="true">
+</app-color-slider>

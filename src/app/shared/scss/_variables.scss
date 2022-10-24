@@ -25,4 +25,9 @@
   --errorColorAccent: rgb(var(--errorColorAccentRgb));
 
   // TODO add light mode palette
+
+  // key layout constants
+  --edgeSpacing: 8px;
 }
+
+$mainViewEdgeSpacing: 3px var(--edgeSpacing);

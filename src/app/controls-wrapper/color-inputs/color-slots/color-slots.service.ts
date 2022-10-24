@@ -45,7 +45,7 @@ export class ColorSlotsService {
 
     // TODO is this needed?
     // force slider update on initial load (picker "color:change" not fired if black)
-    // if (this.colorService.getColorPicker().color.value === 0) {
+    // if (this.colorService.colorPicker.color.value === 0) {
     //   this.colorService.emitNewColor();
     // }
   }

@@ -2,21 +2,3 @@
   #colorPicker
   class="colorPicker__wheel">
 </div>
-
-<app-color-slider
-  [control]="colorValues.get('hsvValue')!"
-  [min]="0"
-  [max]="255"
-  label="HSV value"
-  [vertical]="true"
-  class="colorPicker__slider">
-</app-color-slider>
-
-<app-color-slider
-  [control]="colorValues.get('kelvin')!"
-  [min]="1900"
-  [max]="10091"
-  label="Kelvin"
-  [vertical]="true"
-  class="colorPicker__slider">
-</app-color-slider>
