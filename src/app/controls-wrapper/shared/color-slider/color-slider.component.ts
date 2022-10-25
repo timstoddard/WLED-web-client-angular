@@ -1,12 +1,16 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, HostBinding, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostBinding, Input, ViewChild } from '@angular/core';
 import { AbstractControl, FormControl } from '@angular/forms';
+import { MatSliderChange } from '@angular/material/slider';
+
+// TODO make this a setting
+const THROTTLE_THRESHOLD_MS = 10;
 
 @Component({
   selector: 'app-color-slider',
   templateUrl: './color-slider.component.html',
   styleUrls: ['./color-slider.component.scss']
 })
-export class ColorSliderComponent implements OnInit, AfterViewInit {
+export class ColorSliderComponent implements AfterViewInit {
   @HostBinding('class.colorSlider__vertical') verticalClass!: boolean;
   @Input() control!: AbstractControl;
   @Input() min!: number;
@@ -18,13 +22,10 @@ export class ColorSliderComponent implements OnInit, AfterViewInit {
     this.isVertical = isVertical;
     this.verticalClass = this.isVertical;
   }
-  @Output() slideChange = new EventEmitter<number>();
-  @Output() slideInput = new EventEmitter<number>();
+  @ViewChild('slider', { read: ElementRef }) slider!: ElementRef;
   @ViewChild('sliderDisplay', { read: ElementRef }) sliderDisplay!: ElementRef;
   isVertical: boolean = false;
-
-  ngOnInit() {
-  }
+  private previousThrottleMs = Number.NEGATIVE_INFINITY;
 
   ngAfterViewInit() {
     this.checkMinMaxInputs();
@@ -34,15 +35,13 @@ export class ColorSliderComponent implements OnInit, AfterViewInit {
     return this.control as FormControl;
   }
 
-  // TODO seems like we only really need onChange and not onInput
-  onChange(event: Event) {
-    // this.slideChange.emit(this.control.value); // TODO or emit e?
-    this.updateSliderTrail(event);
-  }
-
-  onInput(event: Event) {
-    // this.slideInput.emit(this.control.value);
-    this.updateSliderTrail(event);
+  updateFormControl({ value }: MatSliderChange) {
+    const now = Date.now();
+    // custom throttle implementation
+    if (now - this.previousThrottleMs > THROTTLE_THRESHOLD_MS) {
+      this.control.patchValue(value);
+      this.previousThrottleMs = now;
+    }
   }
 
   /**
@@ -70,13 +69,13 @@ export class ColorSliderComponent implements OnInit, AfterViewInit {
   private checkMinMaxInputs() {
     if (typeof this.min !== 'number') {
       console.error(
-        `Min missing from slider. See element:`,
-        this.sliderDisplay);
+        `Required 'min' input missing from slider. See element:`,
+        this.slider.nativeElement);
     }
     if (typeof this.max !== 'number') {
       console.error(
-        `Max missing from slider. See element:`,
-        this.sliderDisplay);
+        `Required 'max' input missing from slider. See element:`,
+        this.slider.nativeElement);
     }
   }
 }

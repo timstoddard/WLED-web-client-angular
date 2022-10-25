@@ -22,6 +22,7 @@ export class ColorInputsComponent extends UnsubscriberComponent implements OnIni
 
   ngOnInit() {
     this.colorInputsForm = this.createForm();
+    this.subscribeToValueChanges();
   }
 
   ngAfterViewInit() {
@@ -33,9 +34,6 @@ export class ColorInputsComponent extends UnsubscriberComponent implements OnIni
         this.colorService.getCurrentColorData())
         .subscribe((colorData: CurrentColor) => this.populateForm(colorData));
     });
-    // subscribe to valueChanges observables after setting initial value,
-    // otherwise an infinite loop is created
-    this.subscribeToValueChanges();
   }
 
   private populateForm({
@@ -58,6 +56,9 @@ export class ColorInputsComponent extends UnsubscriberComponent implements OnIni
         // whiteBalance,
       },
       hex,
+    },
+    {
+      emitEvent: false,
     });
   }
 

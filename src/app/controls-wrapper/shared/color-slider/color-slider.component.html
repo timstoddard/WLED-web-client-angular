@@ -10,6 +10,8 @@
 </div>
 
 <mat-slider
+  #slider
+  (input)="updateFormControl($event)"
   [formControl]="getFormControl()"
   [min]="min"
   [max]="max"

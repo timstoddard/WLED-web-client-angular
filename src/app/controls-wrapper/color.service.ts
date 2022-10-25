@@ -54,16 +54,14 @@ export class ColorService {
   }
 
   setColorPicker(colorPicker: iro.ColorPicker) {
-    // TODO uncommenting this causes callback to fire multiple times
-    // colorPicker.on('input:end', () => {
-    //   this.emitNewColor();
-    // });
-    colorPicker.on('color:change', () => {
-      console.log('color change event')
-      this.emitNewColor();
-    });
+    // clean up old picker, if any
+    if (this._colorPicker) {
+      this._colorPicker.off('color:change', this.emitNewColor);
+    }
 
+    // set up new picker
     this._colorPicker = colorPicker;
+    this._colorPicker.on('color:change', this.emitNewColor);
   }
 
   setColorPickerColor(color: IroColorValue) {
@@ -73,7 +71,6 @@ export class ColorService {
     } else {
       this._colorPicker.color.setChannel('hsv', 'v', 0);
     }
-    // TODO update form (?)
   }
 
   setHsv = (hsv: number) => {
@@ -120,7 +117,7 @@ export class ColorService {
   /**
    * Updates various color input sliders.
    */
-  emitNewColor() {
+  emitNewColor = () => {
     const rgb = this._colorPicker.color.rgb;
     const kelvin = this._colorPicker.color.kelvin;
     const hsvValue = this._colorPicker.color.value;
@@ -138,9 +135,6 @@ export class ColorService {
     };
     this.currentColorData.next(newColor);
 
-    // TODO update background of selected slot
-    // selectedSlot.style.backgroundColor = this.colorPicker.color.rgbString;
-
     // TODO update background for hsv value slider
     // background color as if color had full value (slider background)
     const hsv = {
@@ -150,13 +144,6 @@ export class ColorService {
     };
     const _rgb = iro.Color.hsvToRgb(hsv);
     const sliderBackground = `rgb(${_rgb.r},${_rgb.g},${_rgb.b})`;
-
-    // TODO update hex enter button style on click and after color update
-    // document.getElementById('hexcnf')!.style.backgroundColor = 'var(--c-3)';
-
-    // TODO render palettes (need to subscribe)
-    // this.redrawPalPrev();
-
 
 
     // TODO make this work
