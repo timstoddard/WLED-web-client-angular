@@ -2,7 +2,7 @@
 @import 'src/app/shared/scss/variables';
 
 :host {
-  @include emphasized-view-container;
+  @include main-view-container;
 
   & > *:not(:first-child) {
     margin-top: 14px;

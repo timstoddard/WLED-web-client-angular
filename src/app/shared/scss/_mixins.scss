@@ -60,13 +60,6 @@
   }
 }
 
-// TODO remove this
-@mixin cursorPointerOnHover {
-  &:hover {
-    cursor: pointer;
-  }
-}
-
 @mixin iconButton($buttonDimension) {
   background: var(--backgroundColorPrimary);
   border: 1px solid var(--borderColorPrimary);
@@ -91,14 +84,6 @@
       background: var(--themeColorAccent);
     }
   }
-}
-
-@mixin overlayContainer {
-  background: var(--backgroundColorPrimary);
-  border-radius: 6px;
-  // TODO revisit how big this box shadow is
-  box-shadow: 0 0 8px 4px rgba(var(--borderColorPrimaryRgb), 0.8);
-  padding: 10px;
 }
 
 @mixin forceWidth($width) {
@@ -249,16 +234,32 @@ $antWidth: 2px;
   justify-content: center;
 }
 
-@mixin view-container-base {
-  border: 1px solid var(--borderColorPrimary);
-  border-radius: 6px;
-  box-shadow: inset 0px 0px 8px 0 rgba(var(--borderColorPrimaryRgb), 0.8);
+@mixin shared-box-shadow($inset: false) {
+  @if $inset {
+    box-shadow: inset 0 0 8px 0 rgba(var(--borderColorPrimaryRgb), 0.8);
+  } @else {
+    box-shadow: 1px 1px 25px 3px rgba(var(--borderColorPrimaryRgb), 0.9);
+  }
 }
 
-@mixin emphasized-view-container {
+@mixin view-container-base {
+  @include shared-box-shadow(true);
+  border: 1px solid var(--borderColorPrimary);
+  border-radius: 6px;
+}
+
+@mixin main-view-container {
   @include view-container-base;
   margin: $mainViewEdgeSpacing;
   overflow-x: hidden;
   padding: 10px 6px;
   text-align: center;
+}
+
+@mixin overlay-container {
+  @include shared-box-shadow(false);
+  background: var(--backgroundColorPrimary);
+  border: 1px solid var(--borderColorPrimary);
+  border-radius: 6px;
+  padding: 10px;
 }

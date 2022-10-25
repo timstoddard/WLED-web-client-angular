@@ -5,5 +5,5 @@
 }
 
 .uiSettingsForm {
-  @include settingsPageContainer();
+  @include settingsPageContainer;
 }

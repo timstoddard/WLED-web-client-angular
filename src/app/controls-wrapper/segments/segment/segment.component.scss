@@ -92,7 +92,7 @@
   }
 
   &__numberButton {
-    @include cursorPointerOnHover();
+    cursor: pointer;
   }
 
   &__checkboxes {

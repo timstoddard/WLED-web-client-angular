@@ -4,7 +4,7 @@
 $materialThemeColor: #7c4dff;
 
 :host {
-  @include emphasized-view-container;
+  @include main-view-container;
   padding: 0;
 }
 
@@ -43,10 +43,10 @@ $materialThemeColor: #7c4dff;
   }
 
   &__menuButton {
-    @include cursorPointerOnHover();
     align-items: center;
     border: 1px solid var(--borderColorPrimary);
     border-radius: 6px;
+    cursor: pointer;
     display: flex;
     justify-content: center;
     outline: 0;

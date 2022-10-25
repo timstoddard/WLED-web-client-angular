@@ -5,5 +5,5 @@
 }
 
 .userModSettingsForm {
-  @include settingsPageContainer();
+  @include settingsPageContainer;
 }

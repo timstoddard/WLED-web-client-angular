@@ -22,7 +22,7 @@
   padding: 3px;
 
   &__link {
-    @include linkStyles();
+    @include linkStyles;
   
     &--active {
       color: var(--textColorPrimary);
@@ -32,7 +32,7 @@
   }
 
   &__closeButton {
-    @include linkStyles();
+    @include linkStyles;
     cursor: pointer;
     margin-left: 10px;    
   }

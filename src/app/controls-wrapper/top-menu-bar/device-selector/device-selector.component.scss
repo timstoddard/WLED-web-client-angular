@@ -16,7 +16,7 @@
     display: flex;
     font-size: 18px;
     justify-content: center;
-    margin: 2px 5px;
+    margin: 0 5px;
     max-width: 100%;
     padding: 4px 4px 4px 10px;
     transition: background 0.2s ease;
@@ -64,18 +64,17 @@
 
   &__list {
     $borderRadius: 6px;
-    $listMaxHeight: 80vh;
-    $listMaxWidth: 50vw;
+    $listMaxHeight: 70vh;
+    $listMaxWidth: 420px;
 
-    background: var(--backgroundColorAccent);
-    border: 1px solid var(--borderColorPrimary);
-    border-radius: $borderRadius;
+    @include overlay-container;
     max-height: $listMaxHeight;
     overflow: auto;
+    padding: 0;
 
     &Item {
       align-items: center;
-      background: var(--backgroundColorAccent);
+      background: var(--backgroundColorPrimary);
       cursor: pointer;
       display: flex;
       flex-direction: column;
@@ -84,7 +83,7 @@
       text-align: center;
 
       &:hover {
-        background: var(--backgroundColorPrimary);
+        background: var(--backgroundColorAccent);
 
         & .deviceSelector__listItem__name {
           text-decoration: underline;
@@ -98,6 +97,7 @@
       &__name {
         @include textOverflowEllipsis;
         max-width: $listMaxWidth;
+        width: 75vw;
       }
 
       &__ipv4Address {
@@ -114,10 +114,6 @@
       box-shadow: none;
       margin: 0;
       width: 100%;
-    }
-
-    &__listItem__name {
-      max-width: 75vw;
     }
   }
 }

@@ -5,5 +5,5 @@
 }
 
 .ledSettingsForm {
-  @include settingsPageContainer();
+  @include settingsPageContainer;
 }

@@ -23,12 +23,12 @@
   }
 
   &__list {
-    @include radioButtonList();
+    @include radioButtonList;
     grid-area: 4 / 1 / 5 / 2;
   }
 
   &__radioButton {
-    @include radioButtonListItem();
+    @include radioButtonListItem;
 
     // background colors
     $normalBackgroundColor: var(--backgroundColorPrimary);

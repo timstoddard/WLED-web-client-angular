@@ -16,9 +16,9 @@ $buttonsPerRow: 4;
 
 .colorPresets {
   &__button {
-    @include cursorPointerOnHover();
     border: 1px solid var(--borderColorPrimary);
     border-radius: 10px;
+    cursor: pointer;
     margin: $buttonMargin;
     max-height: $buttonDimension;
     max-width: $buttonDimension;

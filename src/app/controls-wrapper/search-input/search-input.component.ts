@@ -1,8 +1,8 @@
-import { OriginConnectionPosition, OverlayConnectionPosition, ConnectionPositionPair } from '@angular/cdk/overlay';
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { FormService } from '../../shared/form-service';
+import { OverlayPositionService } from '../../shared/overlay-position.service';
 import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
 
 @Component({
@@ -22,7 +22,10 @@ export class SearchInputComponent extends UnsubscriberComponent implements OnIni
   showInput!: boolean;
   isContextMenuOpen!: boolean;
 
-  constructor(private formSerivce: FormService) {
+  constructor(
+    private formSerivce: FormService,
+    private overlayPositionService: OverlayPositionService,
+  ) {
     super();
   }
 
@@ -68,18 +71,8 @@ export class SearchInputComponent extends UnsubscriberComponent implements OnIni
   }
 
   getOverlayPositions() {
-    const OFFSET_X_PX = 0;
-    const OFFSET_Y_PX = 12;
-    const originRightSide: OriginConnectionPosition = {
-      originX: 'end',
-      originY: 'bottom',
-    };
-    const overlayRightSide: OverlayConnectionPosition = {
-      overlayX: 'end',
-      overlayY: 'top',
-    };
-    const rightSidePosition = new ConnectionPositionPair(originRightSide, overlayRightSide, OFFSET_X_PX, OFFSET_Y_PX);
-    return [rightSidePosition];
+    const rightPosition = this.overlayPositionService.rightBottomPosition(0, 8);
+    return [rightPosition];
   }
 
   private createFormControl() {

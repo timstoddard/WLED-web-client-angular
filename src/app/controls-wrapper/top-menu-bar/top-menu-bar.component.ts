@@ -1,14 +1,13 @@
-import { OriginConnectionPosition, OverlayConnectionPosition, ConnectionPositionPair } from '@angular/cdk/overlay';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { UIConfigService } from '../../shared/ui-config.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
-import { generateApiUrl } from '../json.service';
 import { MenuBarButton, setCssColor } from '../utils';
 import { TopMenuBarButtonName, TopMenuBarService } from './top-menu-bar.service';
 import { FormService } from '../../shared/form-service';
 import { AppStateProps } from '../../shared/app-types';
+import { OverlayPositionService } from '../../shared/overlay-position.service';
 
 const DEFAULT_BRIGHTNESS = 128;
 const DEFAULT_TRANSITION_DURATION_SECONDS = 0.7;
@@ -57,6 +56,7 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
     private appStateService: AppStateService,
     private changeDetectorRef: ChangeDetectorRef,
     private uiConfigService: UIConfigService,
+    private overlayPositionService: OverlayPositionService,
   ) {
     super();
   }
@@ -110,27 +110,11 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
   }
 
   getOverlayPositions() {
-    const OFFSET_X_PX = 0;
-    const OFFSET_Y_PX = 12;
-    const originCentered: OriginConnectionPosition = {
-      originX: 'center',
-      originY: 'bottom',
-    };
-    const overlayCentered: OverlayConnectionPosition = {
-      overlayX: 'center',
-      overlayY: 'top',
-    };
-    const originRightSide: OriginConnectionPosition = {
-      originX: 'end',
-      originY: 'bottom',
-    };
-    const overlayRightSide: OverlayConnectionPosition = {
-      overlayX: 'end',
-      overlayY: 'top',
-    };
-    const centeredPosition = new ConnectionPositionPair(originCentered, overlayCentered, OFFSET_X_PX, OFFSET_Y_PX);
-    const rightSidePosition = new ConnectionPositionPair(originRightSide, overlayRightSide, OFFSET_X_PX, OFFSET_Y_PX);
-    return [centeredPosition, rightSidePosition];
+    const offsetXPx = 0;
+    const offsetYPx = 12;
+    const centerPosition = this.overlayPositionService.centerBottomPosition(offsetXPx, offsetYPx);
+    const rightPosition = this.overlayPositionService.rightBottomPosition(offsetXPx, offsetYPx);
+    return [centerPosition, rightPosition];
   }
 
   /**

@@ -58,7 +58,7 @@ $defaultSpacing: 5px;
 
   &__settingsOverlay {
     @include flex-center;
-    @include overlayContainer;
+    @include overlay-container;
     flex-direction: column;
   }
 

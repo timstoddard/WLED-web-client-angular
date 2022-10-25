@@ -5,7 +5,7 @@
 }
 
 .timeSettingsForm {
-  @include settingsPageContainer();
+  @include settingsPageContainer;
 
   &__scheduledHour,
   &__scheduledMinute,

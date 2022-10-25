@@ -5,5 +5,5 @@
 }
 
 .securitySettingsForm {
-  @include settingsPageContainer();
+  @include settingsPageContainer;
 }

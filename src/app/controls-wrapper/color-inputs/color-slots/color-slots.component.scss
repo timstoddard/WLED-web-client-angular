@@ -1,20 +1,20 @@
 @import 'src/app/shared/scss/mixins';
 
 .colorSlots {
-  align-items: center;
+  @include flex-center;
   border: 2px solid var(--borderColorPrimary);
   border-radius: 6px;
-  display: flex;
   flex-wrap: wrap;
-  justify-content: center;
   margin: 4px 0;
   padding: 8px;
 
   &__slot {
-    @include cursorPointerOnHover();
     $buttonDimension: 32px;
+
+    @include flex-center;
     border: 1px solid var(--borderColorAccent);
     border-radius: 6px;
+    cursor: pointer;
     font-size: 16px;
     margin: 3px 6px;
     max-height: $buttonDimension;

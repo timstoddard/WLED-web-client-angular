@@ -1,10 +1,10 @@
-import { OriginConnectionPosition, OverlayConnectionPosition, ConnectionPositionPair } from '@angular/cdk/overlay';
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ApiService } from '../../../shared/api.service';
 import { NO_DEVICE_IP_SELECTED } from '../../../shared/app-state/app-state-defaults';
 import { AppStateService } from '../../../shared/app-state/app-state.service';
 import { WledIpAddress } from '../../../shared/app-types';
+import { OverlayPositionService } from '../../../shared/overlay-position.service';
 import { UnsubscriberComponent } from '../../../shared/unsubscribing/unsubscriber.component';
 
 type ConnectionStatus = 'connected' | 'disconnected' | 'loading';
@@ -26,6 +26,7 @@ export class DeviceSelectorComponent extends UnsubscriberComponent implements On
     private appStateService: AppStateService,
     private apiService: ApiService,
     private changeDetectorRef: ChangeDetectorRef,
+    private overlayPositionService: OverlayPositionService,
   ) {
     super();
   }
@@ -84,18 +85,6 @@ export class DeviceSelectorComponent extends UnsubscriberComponent implements On
     }
   }
 
-  private handleTestIpAddressResponse(
-    connectionStatus: ConnectionStatus | null,
-    forceCloseList = false,
-  ) {
-    this.testIpAddressSubscription = null;
-    if (forceCloseList) {
-      this.showList = false;
-    }
-    this.connectionStatus = connectionStatus;
-    this.changeDetectorRef.markForCheck();
-  }
-
   getModifierClass() {
     const statusToClassMap = {
       'connected': 'deviceSelector__main--connected',
@@ -108,17 +97,19 @@ export class DeviceSelectorComponent extends UnsubscriberComponent implements On
   }
 
   getOverlayPositions() {
-    const OFFSET_X_PX = 0;
-    const OFFSET_Y_PX = 3;
-    const originCenterBottom: OriginConnectionPosition = {
-      originX: 'center',
-      originY: 'bottom',
-    };
-    const overlayCenterTop: OverlayConnectionPosition = {
-      overlayX: 'center',
-      overlayY: 'top',
-    };
-    const centerPosition = new ConnectionPositionPair(originCenterBottom, overlayCenterTop, OFFSET_X_PX, OFFSET_Y_PX);
+    const centerPosition = this.overlayPositionService.centerBottomPosition(0, 4);
     return [centerPosition];
+  }
+
+  private handleTestIpAddressResponse(
+    connectionStatus: ConnectionStatus | null,
+    forceCloseList = false,
+  ) {
+    this.testIpAddressSubscription = null;
+    this.connectionStatus = connectionStatus;
+    if (forceCloseList) {
+      this.showList = false;
+    }
+    this.changeDetectorRef.markForCheck();
   }
 }

@@ -5,5 +5,5 @@
 }
 
 .dmxSettingsForm {
-  @include settingsPageContainer();
+  @include settingsPageContainer;
 }

@@ -5,5 +5,5 @@
 }
 
 .syncSettingsForm {
-  @include settingsPageContainer();
+  @include settingsPageContainer;
 }

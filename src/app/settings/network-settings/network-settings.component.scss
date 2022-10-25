@@ -5,5 +5,5 @@
 }
 
 .networkSettingsForm {
-  @include settingsPageContainer();
+  @include settingsPageContainer;
 }
