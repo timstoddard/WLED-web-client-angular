@@ -41,6 +41,14 @@ export class EffectsComponent extends UnsubscriberComponent implements OnInit {
           .patchValue(id, { emitEvent: false });
       });
 
+    this.handleUnsubscribe(this.effectsService.getSelectedEffectMetadata$())
+      .subscribe(({ speed, intensity }) => {
+        this.effectsForm.get('speed')!
+          .patchValue(speed, { emitEvent: false });
+        this.effectsForm.get('intensity')!
+          .patchValue(intensity, { emitEvent: false });
+      });
+
     this.uiConfigService.getUIConfig(this.ngUnsubscribe)
       .subscribe((uiConfig) => {
         this.showLabels = uiConfig.showLabels;

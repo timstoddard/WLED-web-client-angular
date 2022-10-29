@@ -12,6 +12,11 @@ export interface Effect {
   name: string;
 }
 
+export interface EffectMetadata {
+  speed: number;
+  intensity: number;
+}
+
 const NONE_SELECTED = -1;
 
 @Injectable({ providedIn: ControlsServicesModule })
@@ -19,6 +24,7 @@ export class EffectsService extends UnsubscriberService {
   private sortedEffects!: Effect[];
   private filteredEffects$: BehaviorSubject<Effect[]>;
   private selectedEffect$: BehaviorSubject<Effect>;
+  private selectedEffectMetadata$: BehaviorSubject<EffectMetadata>;
   private filterTextLowercase!: string;
 
   constructor(
@@ -32,6 +38,10 @@ export class EffectsService extends UnsubscriberService {
       id: NONE_SELECTED,
       name: this.getEffectName(NONE_SELECTED),
     });
+    this.selectedEffectMetadata$ = new BehaviorSubject({
+      speed: 0,
+      intensity: 0,
+    });
 
     this.appStateService.getEffects(this.ngUnsubscribe)
       .subscribe(effects => {
@@ -44,6 +54,10 @@ export class EffectsService extends UnsubscriberService {
         const selectedSegment = segments[mainSegmentId];
         const currentEffect = selectedSegment.fx;
         this.setEffect(currentEffect as number);
+        this.selectedEffectMetadata$.next({
+          speed: selectedSegment.sx,
+          intensity: selectedSegment.ix,
+        });
       });
   }
 
@@ -68,6 +82,10 @@ export class EffectsService extends UnsubscriberService {
 
   getSelectedEffect$() {
     return this.selectedEffect$;
+  }
+
+  getSelectedEffectMetadata$() {
+    return this.selectedEffectMetadata$;
   }
 
   getFilteredEffects$() {
