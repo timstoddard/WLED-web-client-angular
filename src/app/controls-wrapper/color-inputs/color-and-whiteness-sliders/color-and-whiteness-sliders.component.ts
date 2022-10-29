@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 
 interface ColorSliderProps {
@@ -20,7 +20,7 @@ export class ColorAndWhitenessSlidersComponent {
   private getColorSliders(): ColorSliderProps[] {
     return [
       {
-        controlName: 'hsv',
+        controlName: 'hsvValue',
         min: 0,
         max: 255,
         label: 'HSV value',

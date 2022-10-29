@@ -3,15 +3,13 @@
 $buttonDimension: 42px;
 $buttonMargin: 4px;
 $buttonsPerRow: 4;
+// add 20 for padding, add 2 as a division error buffer (1px per side)
+$buttonWidth: #{($buttonDimension + $buttonMargin * 2) * $buttonsPerRow + 20 + 2};
 
 :host {
-  // add 20 for padding, add 2 as a division error buffer (1px per side)
-  $width: #{($buttonDimension + $buttonMargin * 2) * $buttonsPerRow + 20 + 2};
-  align-items: center;
   flex-wrap: wrap;
-  justify-content: center;
-  max-width: $width;
-  min-width: $width;
+  max-width: $buttonWidth;
+  min-width: $buttonWidth;
 }
 
 .colorPresets {

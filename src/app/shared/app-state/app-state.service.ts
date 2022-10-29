@@ -69,6 +69,9 @@ export class AppStateService {
   getMainSegmentId = (ngUnsubscribe: Subject<void>) =>
     this.selectFromAppState((n) => n.state.mainSegmentId)
       .pipe<AppState['mainSegmentId']>(takeUntil(ngUnsubscribe));
+  getSegments = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.state.mainSegmentId)
+      .pipe<AppState['segments']>(takeUntil(ngUnsubscribe));
   getVersionName = (ngUnsubscribe: Subject<void>) =>
     this.selectFromAppState((n) => n.info.versionName)
       .pipe<AppInfo['versionName']>(takeUntil(ngUnsubscribe));

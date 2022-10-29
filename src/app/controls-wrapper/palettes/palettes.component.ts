@@ -5,7 +5,7 @@ import { PostResponseHandler } from '../../shared/post-response-handler';
 import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
 import { PalettesService } from './palettes.service';
 
-const DEFAULT_PALETTE_ID = -1; // TODO get from first selected segment
+const NO_PALETTE_SELECTED = -1;
 
 @Component({
   selector: 'app-palettes',
@@ -26,16 +26,21 @@ export class PalettesComponent extends UnsubscriberComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.setPalette(DEFAULT_PALETTE_ID);
+    this.setPalette(NO_PALETTE_SELECTED);
     this.selectedPalette = this.createFormControl();
+
+    this.handleUnsubscribe(this.palettesService.getSelectedPalette$())
+      .subscribe(({ id }) => {
+        this.selectedPalette.patchValue(id, { emitEvent: false });
+      });
   }
 
-  getSelectedPaletteName() {
-    return this.palettesService.getSelectedPaletteName();
+  getSelectedPalette() {
+    return this.palettesService.getSelectedPalette$();
   }
 
   getFilteredPalettes() {
-    return this.palettesService.getFilteredPalettes();
+    return this.palettesService.getFilteredPalettes$();
   }
 
   filterList(filterText: string) {
@@ -51,7 +56,7 @@ export class PalettesComponent extends UnsubscriberComponent implements OnInit {
   }
 
   private createFormControl() {
-    const control = this.formSerivce.createFormControl<number>(DEFAULT_PALETTE_ID);
+    const control = this.formSerivce.createFormControl<number>(NO_PALETTE_SELECTED);
 
     this.handleUnsubscribe(control.valueChanges)
       .subscribe((paletteId: number) => this.setPalette(paletteId));

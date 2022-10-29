@@ -5,6 +5,12 @@ import { FormService } from '../../shared/form-service';
 import { OverlayPositionService } from '../../shared/overlay-position.service';
 import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
 
+// TODO use in palettes & effects services
+interface SearchableItem {
+  id: number;
+  name: string;
+}
+
 @Component({
   selector: 'app-search-input',
   templateUrl: './search-input.component.html',
@@ -15,7 +21,7 @@ export class SearchInputComponent extends UnsubscriberComponent implements OnIni
   @Input() headerText: string = '';
   /** Search icon hover label. */
   @Input() label: string = '';
-  @Input() selectedName$!: Observable<string>;
+  @Input() selectedItem$!: Observable<SearchableItem>;
   @Output() searchValueChanges = new EventEmitter<string>();
   @ViewChild('searchInput', { read: ElementRef }) searchInputElement!: ElementRef<HTMLInputElement>;
   searchText!: FormControl;

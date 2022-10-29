@@ -1,3 +1,5 @@
+@import 'src/app/shared/scss/mixins';
+
 :host {
   display: flex;
   overflow-x: auto;
@@ -11,8 +13,8 @@
     margin: 0 auto;
 
     > * {
+      @include flex-center;
       flex-basis: min-content;
-      display: flex;
       padding: 10px;
     }
   

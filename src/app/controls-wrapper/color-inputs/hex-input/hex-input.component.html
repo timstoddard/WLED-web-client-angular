@@ -1,35 +1,23 @@
-<div
-  *ngIf="showHexInput"
-  class="hexInput">
-  <mat-form-field
-    appearance="fill"
-    class="hexInput__inputWrapper">
-    <mat-label>Hex color</mat-label>
-    <input
-      matInput
-      [formControl]="getFormControl()"
-      (keydown)="hexEnter($event)"
-      placeholder="ffffff"
-      maxlength="8"
-      autocomplete="off">
-  </mat-form-field>
-  <div class="hexInput__buttonWrapper">
-    <button
-      (click)="setHex()"
-      class="hexInput__button">
-      <span class="material-symbols-outlined">
-        done
-      </span>
-    </button>
-  </div>
-</div>
-
-<!-- TODO is this needed? -->
-<div
-  (click)="toggleShowHex()"
-  class="hexInput__showHide">
-  <span class="material-symbols-outlined">
-    close
-  </span>
-  {{ showHexInput ? 'Hide' : 'Show' }} hex input
+<mat-form-field
+  appearance="fill"
+  class="hexInput__inputWrapper">
+  <mat-label>Hex color</mat-label>
+  <input
+    matInput
+    [formControl]="getFormControl()"
+    (keydown)="hexEnter($event)"
+    placeholder="ffffff"
+    maxlength="8"
+    autocomplete="off">
+</mat-form-field>
+<div class="hexInput__buttonWrapper">
+  <button
+    (click)="setHex()"
+    mat-raised-button
+    color="primary"
+    class="hexInput__button">
+    <span class="material-symbols-outlined">
+      done
+    </span>
+  </button>
 </div>

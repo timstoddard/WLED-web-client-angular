@@ -38,9 +38,9 @@ export class ColorInputsComponent extends UnsubscriberComponent implements OnIni
 
   private populateForm({
     rgb,
-    whiteValue,
+    whiteChannel,
     hex,
-    hsv,
+    hsvValue,
     kelvin,
   }: CurrentColor) {
     this.colorInputsForm.patchValue({
@@ -50,9 +50,9 @@ export class ColorInputsComponent extends UnsubscriberComponent implements OnIni
         b: rgb.b,
       },
       colorAndWhiteness: {
-        hsv,
+        hsvValue,
         kelvin,
-        whiteChannel: whiteValue,
+        whiteChannel,
         // whiteBalance,
       },
       hex,
@@ -76,12 +76,12 @@ export class ColorInputsComponent extends UnsubscriberComponent implements OnIni
       this.colorService.setRgb(r, g, b);
     });
 
-    this.getValueChanges<number>(this.colorInputsForm, ['colorAndWhiteness', 'hsv'])
-      .subscribe(this.colorService.setHsv);
+    this.getValueChanges<number>(this.colorInputsForm, ['colorAndWhiteness', 'hsvValue'])
+      .subscribe(this.colorService.setHsvValue);
     this.getValueChanges<number>(this.colorInputsForm, ['colorAndWhiteness', 'kelvin'])
       .subscribe(this.colorService.setKelvin);
     this.getValueChanges<number>(this.colorInputsForm, ['colorAndWhiteness', 'whiteChannel'])
-      .subscribe(this.colorService.setWhiteValue);
+      .subscribe(this.colorService.setWhiteChannel);
 
     this.getValueChanges<number>(this.colorInputsForm, ['colorAndWhiteness', 'whiteBalance'])
       .subscribe(this.colorService.setWhiteBalance);
@@ -99,7 +99,7 @@ export class ColorInputsComponent extends UnsubscriberComponent implements OnIni
         b: 0,
       },
       colorAndWhiteness: {
-        hsv: 0,
+        hsvValue: 0,
         kelvin: 0,
         whiteChannel: 0,
         whiteBalance: 0,

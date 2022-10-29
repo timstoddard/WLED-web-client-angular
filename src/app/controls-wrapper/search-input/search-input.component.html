@@ -1,8 +1,9 @@
 <span
   (click)="toggleSearchInput()"
   [title]="label"
+  [ngClass]="{ 'searchInput__icon--selected': showInput }"
   class="searchInput__icon material-symbols-outlined">
-  search
+  {{ showInput ? 'search_off' : 'search' }}
 </span>
 
 <div class="searchInput__header">
@@ -33,10 +34,10 @@
   </ng-template>
 
   <div
-    *ngIf="selectedName$ | async as selectedName; else noneSelected"
-    [ngClass]="{'searchInput__selectedName--hasValue': !!selectedName}"
+    *ngIf="selectedItem$ | async as selectedItem; else noneSelected"
+    [ngClass]="{'searchInput__selectedName--hasValue': !!selectedItem}"
     class="searchInput__selectedName">
-    {{ selectedName }}
+    {{ selectedItem.name }}
   </div>
   <ng-template #noneSelected>
     <div class="searchInput__selectedName">
@@ -49,6 +50,7 @@
   cdkOverlayOrigin
   #trigger="cdkOverlayOrigin"
   (click)="toggleContextMenu()"
+  [ngClass]="{ 'searchInput__icon--selected': isContextMenuOpen }"
   class="searchInput__icon material-symbols-outlined">
   more_vert
 </span>

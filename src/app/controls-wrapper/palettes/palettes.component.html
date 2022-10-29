@@ -1,7 +1,7 @@
 <!-- TODO make this "Palettes" header and show search input on search icon click -->
 <app-search-input
   (searchValueChanges)="filterList($event)"
-  [selectedName$]="getSelectedPaletteName()"
+  [selectedItem$]="getSelectedPalette()"
   headerText="Palettes"
   label="Search palettes"
   class="palettes__searchInput">
@@ -10,6 +10,7 @@
 
 <div class="palettes__list__container">
   <div class="palettes__list">
+    <!-- TODO (fix): onSelect animation plays when color is changed via sliders -->
     <label
       *ngFor="let palette of getFilteredPalettes() | async"
       [ngClass]="{ 'palettes__radioButton--selected': palette.id === selectedPalette.value }"

@@ -1,32 +1,40 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { AppStateService } from '../../../shared/app-state/app-state.service';
+import { AppState } from '../../../shared/app-types';
+import { UnsubscriberService } from '../../../shared/unsubscribing/unsubscriber.service';
 import { ColorService } from '../../color.service';
 import { ControlsServicesModule } from '../../controls-services.module';
 
 const DEFAULT_SLOT_COUNT = 3;
 const DEFAULT_SLOT = 0;
-const DEFAULT_SLOT_COLORS = [
+const DEFAULT_COLORS = [
   'ffffff',
   'ffffff',
   'ffffff',
 ];
-const DEFAULT_WHITE_VALUES = [0, 0, 0];
+const DEFAULT_WHITE_CHANNELS = [0, 0, 0];
 
 @Injectable({ providedIn: ControlsServicesModule })
-export class ColorSlotsService {
+export class ColorSlotsService extends UnsubscriberService {
   private selectedColor$: BehaviorSubject<string>;
   private slots: number[] = [];
   private selectedSlot = DEFAULT_SLOT;
-  private slotColors = DEFAULT_SLOT_COLORS;
-  private whiteValues = DEFAULT_WHITE_VALUES;
+  private colors = DEFAULT_COLORS;
+  private whiteChannels = DEFAULT_WHITE_CHANNELS;
 
-  constructor(private colorService: ColorService) {
+  constructor(
+    private colorService: ColorService,
+    private appStateService: AppStateService,
+  ) {
+    super();
+
     this.selectedColor$ = new BehaviorSubject<string>('');
 
     // TODO initialize colors with WledSegment.col from api response
     const slots = [];
     for (let i = 0; i < DEFAULT_SLOT_COUNT; i++) {
-      slots[i] = i;
+      slots.push(i);
     }
     this.slots = slots;
   }
@@ -38,10 +46,11 @@ export class ColorSlotsService {
   selectSlot(slot: number) {
     this.selectedSlot = slot;
 
-    const hex = this.slotColors[this.selectedSlot];
-    const whiteValue = this.whiteValues[this.selectedSlot];
-    // console.log('loading slot', slot + 1, hex, whiteValue)
-    this.colorService.setHex(hex, whiteValue);
+    const hex = this.colors[this.selectedSlot];
+    const whiteChannel = this.whiteChannels[this.selectedSlot];
+    // console.log('loading slot', slot + 1, hex, whiteChannel)
+    this.colorService.setHex(hex, whiteChannel);
+    this.colorService.setSlot(slot);
 
     // TODO is this needed?
     // force slider update on initial load (picker "color:change" not fired if black)
@@ -50,32 +59,41 @@ export class ColorSlotsService {
     // }
   }
 
-  updateSelectedSlot(hex: string, whiteValue: number) {
-    this.slotColors[this.selectedSlot] = hex;
-    this.whiteValues[this.selectedSlot] = whiteValue;
+  updateSelectedSlot(hex: string, whiteChannel: number) {
+    this.colors[this.selectedSlot] = hex;
+    this.whiteChannels[this.selectedSlot] = whiteChannel;
+    this.colorService.setWhiteChannel(whiteChannel);
     this.selectedColor$.next(hex);
   }
 
-  isSlotSelected(slot: number) {
-    return slot === this.selectedSlot;
+  getSelectedSlot() {
+    return this.selectedSlot;
+  }
+
+  getSelectedColorHex() {
+    return this.colors[this.selectedSlot];
+  }
+
+  getSelectedWhiteChannel() {
+    return this.whiteChannels[this.selectedSlot];
   }
 
   getSlots() {
     return this.slots;
   }
 
-  getWhiteValue(slot: number) {
-    return this.whiteValues[slot];
+  getColorHex(slot: number) {
+    return this.colors[slot];
   }
 
-  getColorHex(slot: number) {
-    return this.slotColors[slot];
+  getWhiteChannel(slot: number) {
+    return this.whiteChannels[slot];
   }
 
   // TODO create util function for hex->rgb & vice versa? or use an existing lib?
   getColorRgb(slot: number) {
     // TODO assumes hex is length 6, is this always the case?
-    const hex = this.slotColors[slot];
+    const hex = this.colors[slot];
     const rgb = {
       r: parseInt(hex.substring(0, 2), 16),
       g: parseInt(hex.substring(2, 4), 16),
@@ -84,7 +102,11 @@ export class ColorSlotsService {
     return rgb;
   }
 
-  getSelectedColor() {
+  getSelectedColor$() {
     return this.selectedColor$;
+  }
+
+  isSlotSelected(slot: number) {
+    return slot === this.selectedSlot;
   }
 }

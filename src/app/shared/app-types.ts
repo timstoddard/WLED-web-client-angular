@@ -11,6 +11,7 @@ export interface AppStateProps { // TODO better interface name
   nodes: AppNode[];
 }
 
+// TODO rename to AppWledState?
 export interface AppState {
   on: boolean;
   brightness: number;
@@ -21,6 +22,8 @@ export interface AppState {
   udp: AppUdpState;
   liveViewOverride: number;
   mainSegmentId: number;
+  // TODO for type, create AppSegment, or use Segment (below)
+  segments: WledSegment[];
 }
 
 export interface AppNightLightState {

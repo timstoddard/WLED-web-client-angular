@@ -55,13 +55,17 @@
   }
 
   &__icon {
-    // border: 1px solid var(--borderColorAccent);
+    border: 1px solid var(--backgroundColorPrimary);
     border-radius: 3px;
     cursor: pointer;
     padding: 3px;
 
     &:hover {
       background: var(--backgroundColorAccent);
+    }
+
+    &--selected {
+      border: 1px solid var(--borderColorPrimary);
     }
   }
 

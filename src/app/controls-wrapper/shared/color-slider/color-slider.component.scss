@@ -1,3 +1,5 @@
+@import 'src/app/shared/scss/mixins';
+
 :host {
   align-items: center;
   background: var(--backgroundColorAccent);
@@ -21,10 +23,8 @@
 
 .colorSlider {
   &__label {
-    align-items: center;
-    display: flex;
+    @include flex-center;
     flex-grow: 1;
-    justify-content: center;
 
     &__text {
     }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { ApiService } from './api.service';
 
 @Injectable({ providedIn: 'root' })
@@ -8,7 +8,7 @@ export class OnlineStatusService {
   private onlineStatus$: Subject<boolean>;
 
   constructor(private apiService: ApiService) {
-    this.onlineStatus$ = new Subject();
+    this.onlineStatus$ = new BehaviorSubject(this.getIsOffline());
     window.addEventListener('online', this.handleOnline);
     window.addEventListener('offline', this.handleOffline);
   }

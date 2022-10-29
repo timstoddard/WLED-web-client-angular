@@ -22,11 +22,11 @@ export class ColorSlotsComponent extends UnsubscriberComponent implements OnInit
 
   ngOnInit() {
     this.handleUnsubscribe(this.colorService.getCurrentColorData())
-      .subscribe(({ hex, whiteValue }: CurrentColor) => {
+      .subscribe(({ hex, whiteChannel }: CurrentColor) => {
         // TODO why does rgb(0,0,0) mess things up
         const hexFormatted = hex.substring(0, 6);
-        // console.log(hexFormatted, whiteValue);
-        this.colorSlotsService.updateSelectedSlot(hexFormatted, whiteValue);
+        // console.log(hexFormatted, whiteChannel);
+        this.colorSlotsService.updateSelectedSlot(hexFormatted, whiteChannel);
       });
 
     // TODO select slot after getting api data (might be different than default?)
@@ -50,7 +50,7 @@ export class ColorSlotsComponent extends UnsubscriberComponent implements OnInit
 
   getButtonStyle(slot: number) {
     // TODO keep white value here or just show color?
-    const whiteValueScaled = Math.floor(this.colorSlotsService.getWhiteValue(slot) / 2) + 128;
+    const whiteValueScaled = Math.floor(this.colorSlotsService.getWhiteChannel(slot) / 2) + 128;
     const backgroundHex = `#${this.colorSlotsService.getColorHex(slot)}${whiteValueScaled.toString(16)}`;
     return {
       background: backgroundHex,

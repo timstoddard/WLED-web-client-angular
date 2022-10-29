@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { ApiService } from '../../shared/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
+import { AppState } from '../../shared/app-types';
 import { UnsubscriberService } from '../../shared/unsubscribing/unsubscriber.service';
 import { ColorSlotsService } from '../color-inputs/color-slots/color-slots.service';
 import { ControlsServicesModule } from '../controls-services.module';
@@ -30,16 +31,20 @@ export interface PaletteWithBackground {
   background: string;
 }
 
+export interface PaletteWithoutBackground {
+  id: number;
+  name: string;
+}
+
 const NONE_SELECTED = -1;
 
 @Injectable({ providedIn: ControlsServicesModule })
 export class PalettesService extends UnsubscriberService {
   private sortedPalettes!: PaletteWithBackground[];
   private filteredPalettes$: BehaviorSubject<PaletteWithBackground[]>;
-  private selectedPaletteName$: BehaviorSubject<string>;
-  private paletteNames: string[] = [];
-  private filterTextLowercase!: string;
+  private selectedPalette$: BehaviorSubject<PaletteWithoutBackground>;
   private backgrounds: PaletteBackgrounds = {};
+  private filterTextLowercase!: string;
 
   constructor(
     private apiService: ApiService,
@@ -52,36 +57,47 @@ export class PalettesService extends UnsubscriberService {
     this.backgrounds = this.generatePaletteBackgrounds();
 
     this.filteredPalettes$ = new BehaviorSubject<PaletteWithBackground[]>([]);
-    this.selectedPaletteName$ = new BehaviorSubject<string>(this.getPaletteName(NONE_SELECTED));
+    this.selectedPalette$ = new BehaviorSubject({
+      id: NONE_SELECTED,
+      name: this.getPaletteName(NONE_SELECTED),
+    });
 
     this.appStateService.getPalettes(this.ngUnsubscribe)
       .subscribe(palettes => {
-        this.paletteNames = palettes;
-        this.sortedPalettes = this.sortPalettes();
-        this.filterPalettes(this.filterTextLowercase);
+        this.sortedPalettes = this.sortPalettes(palettes);
+        this.triggerUIRefresh();
+      });
+
+    this.appStateService.getState(this.ngUnsubscribe)
+      .subscribe(({ mainSegmentId, segments }: AppState) => {
+        const selectedSegment = segments[mainSegmentId];
+        const currentPalette = selectedSegment.pal;
+        this.setPalette(currentPalette as number);
       });
 
     // update palettes that use color slots
-    this.handleUnsubscribe(
-      this.colorSlotsService.getSelectedColor())
+    this.handleUnsubscribe(this.colorSlotsService.getSelectedColor$())
       .subscribe(() => {
-        this.filterPalettes(this.filterTextLowercase);
+        this.triggerUIRefresh();
       });
   }
 
   setPalette(paletteId: number) {
     const selectedPaletteName = this.getPaletteName(paletteId);
-    this.selectedPaletteName$.next(selectedPaletteName);
+    this.selectedPalette$.next({
+      id: paletteId,
+      name: selectedPaletteName,
+    });
     return paletteId !== NONE_SELECTED
       ? this.apiService.setPalette(paletteId)
       : null;
   }
 
-  getSelectedPaletteName() {
-    return this.selectedPaletteName$;
+  getSelectedPalette$() {
+    return this.selectedPalette$;
   }
 
-  getFilteredPalettes() {
+  getFilteredPalettes$() {
     return this.filteredPalettes$;
   }
 
@@ -109,13 +125,13 @@ export class PalettesService extends UnsubscriberService {
   }
 
   /** Sorts the palettes based on their names and joins with background data. */
-  private sortPalettes() {
+  private sortPalettes(paletteNames: string[]) {
     const createPalette = (id: number, name: string): PaletteWithBackground => ({
       id,
       name,
       background: '',
     });
-    const sortedPalettes = this.paletteNames.slice(1) // remove 'Default' before sorting
+    const sortedPalettes = paletteNames.slice(1) // remove 'Default' before sorting
       .map((name, i) => createPalette(i + 1, name));
     sortedPalettes.sort(compareNames);
     sortedPalettes.unshift(createPalette(0, 'Default'));
@@ -175,15 +191,15 @@ export class PalettesService extends UnsubscriberService {
     }
 
     const gradient = [];
-    for (let j = 0; j < paletteColor.length; j++) {
-      const colorData = paletteColor[j];
+    for (let i = 0; i < paletteColor.length; i++) {
+      const colorData = paletteColor[i];
       let r;
       let g;
       let b;
       const colorDataIsArray = Array.isArray(colorData);
       const percent = colorDataIsArray
         ? colorData[0] / 255 * 100
-        : j / paletteColor.length * 100;
+        : i / paletteColor.length * 100;
       if (colorDataIsArray) {
         r = colorData[1];
         g = colorData[2];
@@ -194,7 +210,7 @@ export class PalettesService extends UnsubscriberService {
         b = Math.random() * 255;
       } else if (colorData[0] === 'c') {
         // TODO make # of color slots variable
-        // element = 'c1' or 'c2' or 'c3'
+        // colorData = 'c1' or 'c2' or 'c3'
         let slot = parseInt(colorData[1], 10) - 1;
         const rgb = this.colorSlotsService.getColorRgb(slot);
         r = rgb.r;
@@ -206,5 +222,10 @@ export class PalettesService extends UnsubscriberService {
     }
 
     return `linear-gradient(to right,${gradient.join()})`;
+  }
+
+  /** Triggers a UI refresh. */
+  private triggerUIRefresh() {
+    this.filterPalettes(this.filterTextLowercase);
   }
 }

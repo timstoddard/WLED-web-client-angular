@@ -73,6 +73,7 @@ export const DEFAULT_APP_STATE: AppStateProps = {
     },
     liveViewOverride: 0,
     mainSegmentId: 0,
+    segments: [],
   },
   info: {
     versionName: '',

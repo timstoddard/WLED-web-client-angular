@@ -237,6 +237,33 @@ export class ApiService extends UnsubscriberService {
     return this.httpPostState(body);
   }
 
+  /**
+   * Updates the current color with the rgbw values.
+   * @param r Red channel
+   * @param g Green channel
+   * @param b Blue channel
+   * @param w White channel
+   * @param slot Slot to update
+   */
+  setColor(r: number, g: number, b: number, w: number, slot: number) {
+    // TODO allow for variable # of slots?
+    const colors: number[][] = [[], [], []];
+    colors[slot] = [r, g, b, w];
+    const body = this.createBody({
+      seg: { col: colors },
+    });
+    return this.httpPostStateAndInfo(body);
+  }
+
+  // TODO potentially not needed?
+  /** Sets white balance. */
+  setWhiteBalance(whiteBalance: number) {
+    const body = this.createBody({
+      seg: { cct: whiteBalance },
+    });
+    return this.httpPostStateAndInfo(body);
+  }
+
   /** Toggles the LED strip(s) on/off. */
   togglePower(isOn: boolean) {
     const body = this.createBody({ on: isOn });
@@ -562,14 +589,6 @@ export class ApiService extends UnsubscriberService {
 
   setLor(lor: number) {
     const body = { lor };
-    this.httpPostStateAndInfo(body);
-    // this.requestJson(body);
-  }
-
-  setBalance(balance: number) {
-    const body = {
-      seg: { cct: balance },
-    };
     this.httpPostStateAndInfo(body);
     // this.requestJson(body);
   }

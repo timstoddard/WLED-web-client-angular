@@ -6,7 +6,8 @@ import { UIConfigService } from '../../shared/ui-config.service';
 import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
 import { EffectsService } from './effects.service';
 
-const DEFAULT_EFFECT_ID = -1; // TODO get from first selected segment
+const NO_EFFECT_SELECTED = -1;
+// TODO get these from api response
 const DEFAULT_EFFECT_SPEED = 128;
 const DEFAULT_EFFECT_INTENSITY = 128;
 
@@ -31,8 +32,14 @@ export class EffectsComponent extends UnsubscriberComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.setEffect(DEFAULT_EFFECT_ID);
+    this.setEffect(NO_EFFECT_SELECTED);
     this.effectsForm = this.createForm();
+
+    this.handleUnsubscribe(this.effectsService.getSelectedEffect$())
+      .subscribe(({ id }) => {
+        this.effectsForm.get('selectedEffect')!
+          .patchValue(id, { emitEvent: false });
+      });
 
     this.uiConfigService.getUIConfig(this.ngUnsubscribe)
       .subscribe((uiConfig) => {
@@ -40,12 +47,12 @@ export class EffectsComponent extends UnsubscriberComponent implements OnInit {
       });
   }
 
-  getSelectedEffectName() {
-    return this.effectsService.getSelectedEffectName();
+  getSelectedEffect() {
+    return this.effectsService.getSelectedEffect$();
   }
 
   getFilteredEffects() {
-    return this.effectsService.getFilteredEffects();
+    return this.effectsService.getFilteredEffects$();
   }
 
   filterList(filterText: string) {
@@ -78,7 +85,7 @@ export class EffectsComponent extends UnsubscriberComponent implements OnInit {
 
   private createForm() {
     const form = this.formSerivce.createFormGroup({
-      selectedEffect: DEFAULT_EFFECT_ID,
+      selectedEffect: NO_EFFECT_SELECTED,
       speed: DEFAULT_EFFECT_SPEED,
       intensity: DEFAULT_EFFECT_INTENSITY,
     });

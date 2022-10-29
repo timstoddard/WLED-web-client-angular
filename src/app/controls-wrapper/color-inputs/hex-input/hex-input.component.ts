@@ -1,23 +1,16 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { AbstractControl, FormControl } from '@angular/forms';
 import { ColorService } from '../../color.service';
-
-const DEFAULT_COLOR = '#ffaa00';
 
 @Component({
   selector: 'app-hex-input',
   templateUrl: './hex-input.component.html',
   styleUrls: ['./hex-input.component.scss']
 })
-export class HexInputComponent implements OnInit {
+export class HexInputComponent {
   @Input() hexInput!: AbstractControl;
-  showHexInput: boolean = true;
 
   constructor(private colorService: ColorService) { }
-
-  ngOnInit() {
-  }
-
   getFormControl() {
     return this.hexInput as FormControl;
   }
@@ -36,10 +29,5 @@ export class HexInputComponent implements OnInit {
     const hex = rawValue.substring(0, 6); // TODO also handle length 3? like css
     const whiteValue = parseInt(rawValue.substring(6), 16) || 0;
     this.colorService.setHex(hex, whiteValue);
-  }
-
-  toggleShowHex() {
-    // TODO update app config, this should set a new state and get the value from there
-    this.showHexInput = !this.showHexInput;
   }
 }

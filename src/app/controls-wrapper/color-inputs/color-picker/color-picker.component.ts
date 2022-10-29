@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import iro from '@jaames/iro';
 import { UnsubscriberComponent } from '../../../shared/unsubscribing/unsubscriber.component';
 import { ColorService } from '../../color.service';
@@ -9,17 +9,14 @@ const COLOR_PICKER_HEIGHT_SCALAR = 0.8;
   selector: 'app-color-picker',
   templateUrl: './color-picker.component.html',
   styleUrls: ['./color-picker.component.scss'],
-  host: { '(window:resize)': 'onResize($event)' },
+  host: { '(window:resize)': 'onResize()' },
 })
-export class ColorPickerComponent extends UnsubscriberComponent implements OnInit, AfterViewInit {
+export class ColorPickerComponent extends UnsubscriberComponent implements AfterViewInit {
   @ViewChild('colorPicker', { read: ElementRef }) colorPickerElement!: ElementRef;
   private colorPicker!: iro.ColorPicker;
 
   constructor(private colorService: ColorService) {
     super();
-  }
-
-  ngOnInit() {
   }
 
   ngAfterViewInit() {
@@ -29,23 +26,14 @@ export class ColorPickerComponent extends UnsubscriberComponent implements OnIni
     });
   }
 
-  private getColorPickerWidth() {
-    const colorPickerNativeElement = this.colorPickerElement.nativeElement as HTMLElement;
-    const containerHeight = colorPickerNativeElement.parentElement!.clientHeight;
-    return containerHeight * COLOR_PICKER_HEIGHT_SCALAR;
-  }
-
   onResize() {
-    const colorPickerWidth = this.getColorPickerWidth();
-    this.colorPicker?.resize(colorPickerWidth);
+    this.colorPicker?.resize(this.getColorPickerWidth());
   }
 
   private createColorPicker() {
-    const colorPickerWidth = this.getColorPickerWidth();
-
     // TODO why can't color be r:0/g:0/b:0?
     const colorPicker = iro.ColorPicker(this.colorPickerElement.nativeElement, {
-      width: colorPickerWidth,
+      width: this.getColorPickerWidth(),
       layout: [
         {
           component: iro.ui.Wheel,
@@ -59,5 +47,11 @@ export class ColorPickerComponent extends UnsubscriberComponent implements OnIni
     });
 
     return colorPicker;
+  }
+
+  private getColorPickerWidth() {
+    const colorPickerNativeElement = this.colorPickerElement.nativeElement as HTMLElement;
+    const containerHeight = colorPickerNativeElement.parentElement!.clientHeight;
+    return containerHeight * COLOR_PICKER_HEIGHT_SCALAR;
   }
 }

@@ -29,8 +29,8 @@ export class ApiTypeMapper {
     udp: this.mapWledUdpToAppUdp(state.udpn),
     liveViewOverride: state.lor,
     mainSegmentId: state.mainseg,
-    // TODO missing field from app state?
-    // segment: state.seg,
+    // TODO need mapper for this object array
+    segments: state.seg,
   });
 
   mapWledNightLightToAppNightLight = (nightLight: WledNightLightState): AppNightLightState => ({

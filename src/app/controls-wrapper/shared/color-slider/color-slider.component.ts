@@ -1,16 +1,18 @@
-import { AfterViewInit, Component, ElementRef, HostBinding, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostBinding, Input, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormControl } from '@angular/forms';
 import { MatSliderChange } from '@angular/material/slider';
+import { Subject, throttleTime } from 'rxjs';
+import { UnsubscriberComponent } from '../../../shared/unsubscribing/unsubscriber.component';
 
 // TODO make this a setting
-const THROTTLE_THRESHOLD_MS = 10;
+const THROTTLE_MAX_FPS = 60;
 
 @Component({
   selector: 'app-color-slider',
   templateUrl: './color-slider.component.html',
   styleUrls: ['./color-slider.component.scss']
 })
-export class ColorSliderComponent implements AfterViewInit {
+export class ColorSliderComponent extends UnsubscriberComponent implements OnInit, AfterViewInit {
   @HostBinding('class.colorSlider__vertical') verticalClass!: boolean;
   @Input() control!: AbstractControl;
   @Input() min!: number;
@@ -25,45 +27,24 @@ export class ColorSliderComponent implements AfterViewInit {
   @ViewChild('slider', { read: ElementRef }) slider!: ElementRef;
   @ViewChild('sliderDisplay', { read: ElementRef }) sliderDisplay!: ElementRef;
   isVertical: boolean = false;
-  private previousThrottleMs = Number.NEGATIVE_INFINITY;
+  private sliderInput$!: Subject<MatSliderChange>;
+
+  ngOnInit() {
+    this.sliderInput$ = new Subject();
+  }
 
   ngAfterViewInit() {
     this.checkMinMaxInputs();
+
+    this.handleUnsubscribe(this.sliderInput$)
+      .pipe(throttleTime(1000 / THROTTLE_MAX_FPS))
+      .subscribe(({ value }) => {
+        this.control.patchValue(value);
+      });
   }
 
   getFormControl() {
     return this.control as FormControl;
-  }
-
-  updateFormControl({ value }: MatSliderChange) {
-    const now = Date.now();
-    // custom throttle implementation
-    if (now - this.previousThrottleMs > THROTTLE_THRESHOLD_MS) {
-      this.control.patchValue(value);
-      this.previousThrottleMs = now;
-    }
-  }
-
-  /**
-   * Updates the colored in background to the left of the slider button.
-   * Updates the 'sliderdisplay' background div of a slider for a visual indication of slider position.
-   * @param event 
-   * @returns 
-   */
-  updateSliderTrail = (event: Event) => {
-    // if (!event) {
-    //   return;
-    // }
-
-    let percent = this.control.value / this.max * 100;
-
-    // TODO keep?
-    // if (percent < 50) {
-    //   percent += 2;
-    // }
-
-    const val = `linear-gradient(90deg, var(--bg) ${percent}%, var(--c-4) ${percent}%)`;
-    this.sliderDisplay.nativeElement.style.background = val;
   }
 
   private checkMinMaxInputs() {
@@ -77,5 +58,28 @@ export class ColorSliderComponent implements AfterViewInit {
         `Required 'max' input missing from slider. See element:`,
         this.slider.nativeElement);
     }
+  }
+
+  updateFormControl(changeEvent: MatSliderChange) {
+    this.sliderInput$.next(changeEvent);
+  }
+
+  // TODO find slider library that can handle gradient slider trails
+  /**
+   * Updates the colored in background to the left of the slider button.
+   * Updates the 'sliderdisplay' background div of a slider for a visual indication of slider position.
+   * @param event 
+   * @returns 
+   */
+  private updateSliderTrail = () => {
+    let percent = this.control.value / this.max * 100;
+
+    const backgroundGradient = `
+      linear-gradient(
+        90deg,
+        var(--bg) ${percent}%,
+        var(--c-4) ${percent}%
+      )`;
+    this.sliderDisplay.nativeElement.style.background = backgroundGradient;
   }
 }
