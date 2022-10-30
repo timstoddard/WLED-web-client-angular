@@ -1,23 +1,23 @@
 import { Injectable } from '@angular/core';
-import { WledApiResponse, WledFileSystemInfo, WledInfo, WledLedInfo, WledNightLightState, WledNodesResponse, WledState, WledUdpState, WledWifiInfo } from './api-types';
-import { AppFileSystemInfo, AppInfo, AppLedInfo, AppLocalSettings, AppNightLightState, AppState, AppStateProps, AppUdpState, AppWifiInfo, AppNode } from './app-types';
+import { WledApiResponse, WledFileSystemInfo, WledInfo, WledLedInfo, WledNightLightState, WledNodesResponse, WledSegment, WledState, WledUdpState, WledWifiInfo } from './api-types';
+import { AppFileSystemInfo, AppInfo, AppLedInfo, AppNightLightState, AppWledState, AppState, AppUdpState, AppWifiInfo, AppNode, AppSegment } from './app-types';
 
 @Injectable({ providedIn: 'root' })
 export class ApiTypeMapper {
   /** Maps an entire WLED API response into the format expected by this app. */
   mapWledApiResponseToAppStateProps = (
     { state, info, palettes, effects }: WledApiResponse,
-    existingState: AppStateProps,
-  ): AppStateProps => ({
+    existingState: AppState,
+  ): AppState => ({
     ...existingState,
-    state: this.mapWledStateToAppState(state),
+    state: this.mapWledStateToAppWledState(state),
     info: this.mapWledInfoToAppInfo(info),
     palettes: palettes ?? existingState.palettes,
     effects: effects ?? existingState.effects,
   });
 
   /** Maps the `state` object in the WLED API resonse into the format expected by this app. */
-  mapWledStateToAppState = (state: WledState): AppState => ({
+  mapWledStateToAppWledState = (state: WledState): AppWledState => ({
     on: state.on,
     brightness: state.bri,
     // stored in backend as # of tenths of a second, so we
@@ -29,8 +29,7 @@ export class ApiTypeMapper {
     udp: this.mapWledUdpToAppUdp(state.udpn),
     liveViewOverride: state.lor,
     mainSegmentId: state.mainseg,
-    // TODO need mapper for this object array
-    segments: state.seg,
+    segments: this.mapWledSegmentsToAppSegments(state.seg),
   });
 
   mapWledNightLightToAppNightLight = (nightLight: WledNightLightState): AppNightLightState => ({
@@ -45,6 +44,32 @@ export class ApiTypeMapper {
     shouldSend: udp.send,
     shouldReceive: udp.recv,
   });
+
+  mapWledSegmentsToAppSegments = (segments: WledSegment[]): AppSegment[] =>
+    segments.map(segment => ({
+      id: segment.id || 0, // TODO get lowest unused id
+      isExpanded: false,
+      start: segment.start,
+      stop: segment.stop,
+      length: segment.len,
+      group: segment.grp,
+      space: segment.spc,
+      startOffset: segment.of,
+      colors: segment.col,
+      effectId: segment.fx,
+      effectSpeed: segment.sx,
+      effectIntensity: segment.ix,
+      paletteId: segment.pal,
+      isSelected: segment.sel,
+      isReversed: segment.rev,
+      isOn: segment.on,
+      brightness: segment.bri,
+      name: segment.n,
+      colorTemp: segment.cct,
+      isMirrored: segment.mi,
+      loxonePrimaryRgb: segment.lx ?? 0,
+      loxoneSecondaryRgb: segment.ly ?? 0,
+    }));
 
   /** Maps the `info` object in the WLED API resonse into the format expected by this app. */
   mapWledInfoToAppInfo = (info: WledInfo): AppInfo => ({

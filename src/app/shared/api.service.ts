@@ -4,10 +4,10 @@ import { map, of, timeout } from 'rxjs';
 import { ALL_PALETTES_DATA, MOCK_API_PRESETS, MOCK_API_RESPONSE, MOCK_LIVE_DATA, MOCK_NODES_RESPONSE } from '../controls-wrapper/mock-api-data';
 import { PalettesApiData } from '../controls-wrapper/palettes/palettes.service';
 import { Preset } from '../controls-wrapper/presets/presets.service';
-import { APIPreset, APIPresets, SavePresetRequest, WledApiResponse, WledInfo, WledNodesResponse, WledState } from './api-types';
+import { APIPreset, APIPresets, SavePresetRequest, WledApiResponse, WledInfo, WledNodesResponse, WledSegment, WledSegmentPostRequest, WledState } from './api-types';
 import { NO_DEVICE_IP_SELECTED } from './app-state/app-state-defaults';
 import { AppStateService } from './app-state/app-state.service';
-import { AppState, Segment } from './app-types';
+import { AppWledState, AppSegment } from './app-types';
 import { FormValues } from './form-service';
 import { LiveViewData } from './live-view/live-view.service';
 import { PostResponseHandler } from './post-response-handler';
@@ -365,7 +365,7 @@ export class ApiService extends UnsubscriberService {
 
   /** Resets all segments, creating a single segment that covers the entire length of the LED strip. */
   resetSegments(ledCount: number, segmentsLength: number) {
-    const segments: Partial<Segment>[] = [];
+    const segments: Partial<WledSegmentPostRequest>[] = [];
     segments.push({
       start: 0,
       stop: ledCount,
@@ -474,7 +474,7 @@ export class ApiService extends UnsubscriberService {
     useCurrentState: boolean,
     includeBrightness: boolean,
     saveSegmentBounds: boolean,
-    state: AppState,
+    state: AppWledState,
   ) {
     let request: SavePresetRequest;
     const name = preset.name || `Preset ${preset.id}`;
@@ -492,6 +492,7 @@ export class ApiService extends UnsubscriberService {
     } else {
       // TODO create util function to map app state to wled state (and vice versa?)
       const apiState: Partial<WledState> = {
+        // TODO create app to api mapper for this?
         on: state.on,
         bri: state.brightness,
         transition: state.transition,

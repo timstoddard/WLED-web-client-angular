@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { AppStateService } from '../../../shared/app-state/app-state.service';
-import { AppState } from '../../../shared/app-types';
+import { AppWledState } from '../../../shared/app-types';
 import { UnsubscriberService } from '../../../shared/unsubscribing/unsubscriber.service';
 import { ColorService } from '../../color.service';
 import { ControlsServicesModule } from '../../controls-services.module';

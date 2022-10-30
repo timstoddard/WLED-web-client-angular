@@ -6,7 +6,7 @@ export const MOCK_API_RESPONSE: WledApiResponse = {
   state: {
     on: true,
     bri: 31,
-    transition: 3, // 7,
+    transition: 3,
     ps: -1,
     pl: -1,
     nl: {
@@ -47,8 +47,6 @@ export const MOCK_API_RESPONSE: WledApiResponse = {
         sel: true,
         rev: false,
         mi: false,
-        lx: 0, // TODO should be optional (?)
-        ly: 0, // TODO should be optional (?)
       },
       {
         id: 1,
@@ -74,8 +72,6 @@ export const MOCK_API_RESPONSE: WledApiResponse = {
         sel: false,
         rev: false,
         mi: false,
-        lx: 0, // TODO should be optional (?)
-        ly: 0, // TODO should be optional (?)
       },
       {
         id: 2,
@@ -101,8 +97,6 @@ export const MOCK_API_RESPONSE: WledApiResponse = {
         sel: false,
         rev: false,
         mi: false,
-        lx: 0, // TODO should be optional (?)
-        ly: 0, // TODO should be optional (?)
       },
       {
         id: 3,
@@ -128,8 +122,6 @@ export const MOCK_API_RESPONSE: WledApiResponse = {
         sel: false,
         rev: false,
         mi: false,
-        lx: 0, // TODO should be optional (?)
-        ly: 0, // TODO should be optional (?)
       },
     ],
   },

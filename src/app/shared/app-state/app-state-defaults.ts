@@ -1,4 +1,4 @@
-import { AppStateProps, WledIpAddress } from '../app-types';
+import { AppState, WledIpAddress } from '../app-types';
 import { environment } from 'src/environments/environment';
 
 export const NO_DEVICE_IP_SELECTED: WledIpAddress = {
@@ -53,7 +53,7 @@ const DEFAULT_SELECTED_WLED_IP_ADDRESS = NO_DEVICE_IP_SELECTED;
 // : DEFAULT_WLED_IP_ADDRESSES[0];
 
 /** State of the app before hydration. Everything is turned off. */
-export const DEFAULT_APP_STATE: AppStateProps = {
+export const DEFAULT_APP_STATE: AppState = {
   state: {
     on: false,
     brightness: 0,

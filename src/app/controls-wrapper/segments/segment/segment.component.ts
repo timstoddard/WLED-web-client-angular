@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { Segment } from '../../../shared/app-types';
+import { AppSegment } from '../../../shared/app-types';
 import { FormService } from '../../../shared/form-service';
 import { PostResponseHandler } from '../../../shared/post-response-handler';
 import { UIConfigService } from '../../../shared/ui-config.service';
@@ -14,7 +14,7 @@ import { SegmentsService } from '../segments.service';
   styleUrls: ['./segment.component.scss'],
 })
 export class SegmentComponent extends UnsubscriberComponent implements OnInit {
-  @Input() segment!: Segment;
+  @Input() segment!: AppSegment;
   @Input() showDeleteButton: boolean = false;
   segmentForm!: FormGroup;
   isEditingName: boolean = false;
@@ -130,12 +130,12 @@ export class SegmentComponent extends UnsubscriberComponent implements OnInit {
     }
   }
 
-  private updateLedCountLabel(segment: Segment) {
+  private updateLedCountLabel(segment: AppSegment) {
     const { start, stop } = segment;
     const length = stop - (this.useSegmentLength ? 0 : start);
-    const spacing = segment.spc;
-    const grouping = segment.grp >= 0
-      ? segment.grp
+    const spacing = segment.space;
+    const grouping = segment.group >= 0
+      ? segment.group
       : 1;
 
     let label: string;
@@ -203,17 +203,17 @@ export class SegmentComponent extends UnsubscriberComponent implements OnInit {
 
   private createForm() {
     const form = this.formService.createFormGroup({
-      isSelected: this.segment.sel,
+      isSelected: this.segment.isSelected,
       name: this.segment.name,
-      isOn: this.segment.on,
-      brightness: this.segment.bri,
+      isOn: this.segment.isOn,
+      brightness: this.segment.brightness,
       start: this.segment.start,
       stop: this.segment.stop,
-      offset: this.segment.of,
-      grouping: this.segment.grp,
-      spacing: this.segment.spc,
-      isReverse: this.segment.rev,
-      isMirror: this.segment.mi,
+      offset: this.segment.startOffset,
+      grouping: this.segment.group,
+      spacing: this.segment.space,
+      isReverse: this.segment.isReversed,
+      isMirror: this.segment.isMirrored,
     });
 
     // add validators

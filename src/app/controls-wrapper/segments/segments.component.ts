@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UIConfigService } from '../../shared/ui-config.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
-import { Segment } from '../../shared/app-types';
+import { AppSegment } from '../../shared/app-types';
 import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
 import { SegmentsService } from './segments.service';
 import { PostResponseHandler } from '../../shared/post-response-handler';
@@ -12,7 +12,7 @@ import { PostResponseHandler } from '../../shared/post-response-handler';
   styleUrls: ['./segments.component.scss'],
 })
 export class SegmentsComponent extends UnsubscriberComponent implements OnInit {
-  segments: Segment[] = [];
+  segments: AppSegment[] = [];
   noNewSegments: boolean = false;
   showDeleteButtons: boolean = false;
   showNewSegmentForm: boolean = false;

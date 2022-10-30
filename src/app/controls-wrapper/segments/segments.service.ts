@@ -15,9 +15,10 @@ import {
   withEntities,
   withUIEntities,
 } from '@ngneat/elf-entities';
+import { ApiTypeMapper } from '../../shared/api-type-mapper';
 import { WledSegment } from '../../shared/api-types';
 import { ApiService } from '../../shared/api.service';
-import { Segment } from '../../shared/app-types';
+import { AppSegment } from '../../shared/app-types';
 import { LocalStorageService } from '../../shared/local-storage.service';
 import { UnsubscriberService } from '../../shared/unsubscribing/unsubscriber.service';
 import { ControlsServicesModule } from '../controls-services.module';
@@ -31,11 +32,14 @@ export class SegmentsService extends UnsubscriberService {
   constructor (
     private apiService: ApiService,
     private localStorageService: LocalStorageService,
+    private apiTypeMapper: ApiTypeMapper,
   ) {
     super();
+    // TODO don't need store for this (right?)
     this.segmentsStore = new Store({
       name: 'segments',
-      ...createState(withEntities<WledSegment>(), withUIEntities<Segment>()),
+      // TODO withEntities() should be with WledSegment
+      ...createState(withEntities<AppSegment>(), withUIEntities<AppSegment>()),
     });
 
     this.segmentsStore
@@ -57,10 +61,11 @@ export class SegmentsService extends UnsubscriberService {
   }
 
   getLastSegment() {
-    return this.segmentsStore.query(getEntity(this.segmentsLength - 1, { ref: UIEntitiesRef })) as Segment;
+    return this.segmentsStore.query(getEntity(this.segmentsLength - 1, { ref: UIEntitiesRef })) as AppSegment;
   }
 
-  loadApiSegments(segments: WledSegment[]) {
+  loadApiSegments(wledSegments: WledSegment[]) {
+    const segments = this.apiTypeMapper.mapWledSegmentsToAppSegments(wledSegments);
     for (const segment of segments) {
       let name: string;
       let isExpanded;
@@ -75,7 +80,7 @@ export class SegmentsService extends UnsubscriberService {
         name = this.loadSegmentName(segment.id);
         isExpanded = false;
       }
-      const uiSegment: Segment = {
+      const uiSegment: AppSegment = {
         ...segment,
         name,
         isExpanded,

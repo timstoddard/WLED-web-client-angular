@@ -36,7 +36,7 @@ export class PostResponseHandler {
 
     // TODO wire up so this appStateService used if ws connection fails
     this.appStateService.updateState(
-      this.apiTypeMapper.mapWledStateToAppState(response));
+      this.apiTypeMapper.mapWledStateToAppWledState(response));
     console.log('POST response [state only]', response);
 
     // run any custom logic after updating the whole app state

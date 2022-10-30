@@ -77,28 +77,31 @@ export interface WledUdpState {
 }
 
 export interface WledSegment {
+  // TODO is ID included in api response?
+  /** Zero-indexed ID of the segment. May be omitted, in that case the ID will be inferred from the order of the segment objects in the seg array. */
+  id: number; // TODO `id` should have a ? for typescript
   /** LED the segment starts at. */
   start: number;
   /** LED the segment stops at (excluded by range). If `stop` is set to a lower or equal value than `start` (setting to `0` is recommended), the segment is invalidated and deleted. */
   stop: number;
-  /** Length of the segment (`stop` - `start`). `stop` has preference, so if it is included, `len` is ignored. */
+  /** Length of the segment (`stop` - `start`). `stop` has precedence, so if it is included, `len` is ignored. */
   len: number;
   /** Grouping (how many consecutive LEDs of the same segment will be grouped to the same color) [0-255]. */
   grp: number;
   /** Spacing (how many LEDs are turned off and skipped between each group) [0-255]. */
   spc: number;
-  /** Offset (how many LEDs to rotate the virtual start of the segments). */
+  /** Offset (how many LEDs to shift the virtual start of the segments). */
   of: number;
   /** Array that has up to 3 color arrays as elements, the primary, secondary (background) and tertiary colors of the segment. Each color is an array of 3 or 4 bytes, which represent an RGB(W) color. */
   col: number[][];
-  /** ID of the effect or `'~'` to increment, `'~-'` to decrement, or `'r'` for random. */
-  fx: number | '~' | '~-' | 'r';
-  /** Relative effect speed [0-255]. */
+  /** ID of the effect */
+  fx: number;
+  /** Effect speed [0-255]. */
   sx: number;
   /** Effect intensity [0-255]. */
   ix: number;
-  /** ID of the color palette or `'~'` to increment, `'~-'` to decrement, or `'r'` for random. */
-  pal: number | '~' | '~-' | 'r';
+  /** ID of the color palette */
+  pal: number;
   /** `true` if the segment is selected. Selected segments will have their state (color/FX) updated by APIs that don't support segments (currently any API except the JSON API). If no segment is selected, the first segment (id=0) will behave as if selected. If multiple segments are selected, WLED will report the state of the numerically first (lowest id) segment that is selected to APIs (UDP sync, HTTP, MQTT, Blynk...). */
   sel: boolean;
   /** Reverses direction of the segment. Makes animations to go in the opposite direction. */
@@ -109,20 +112,23 @@ export interface WledSegment {
   bri: number;
   /** Segment name. */
   n: string; // TODO included in response but not in api doc https://kno.wled.ge/interfaces/json-api
-  /** Color temperature. */ // TODO better description
+  /** Color temperature. */
   cct: number; // TODO included in response but not in api doc https://kno.wled.ge/interfaces/json-api
   // TODO how is this different from reverse??
   /** Mirrors the segment. */
   mi: boolean;
   /** Loxone RGB value for primary color. Each color (RRR,GGG,BBB) is specified in the range from 0 to 100% [0-100100100]. */
-  lx: number;
+  lx?: number; // TODO is this an optional/deprecated field?
   /** Loxone RGB value for secondary color. Each color (RRR,GGG,BBB) is specified in the range from 0 to 100% [0-100100100]. */
-  ly: number;
+  ly?: number; // TODO is this an optional/deprecated field?
+}
 
-  // Below are fields that can only be set for a POST request, they are never included in an API response.
-
-  /** Zero-indexed ID of the segment. May be omitted, in that case the ID will be inferred from the order of the segment objects in the seg array. */
-  id: number; // TODO `id` should have a ? for typescript
+export interface WledSegmentPostRequest extends WledSegment {
+  // TODO how to override these properties
+  /** ID of the color palette or `'~'` to increment, `'~-'` to decrement, or `'r'` for random. */
+  // pal: number | '~' | '~-' | 'r';
+  /** ID of the effect or `'~'` to increment, `'~-'` to decrement, or `'r'` for random. */
+  // fx: number | '~' | '~-' | 'r';
   /**
    * Using the `i` property of the segment object, you can set the LED colors in the segment using the JSON API. Keep in mind that this is non-persistent, if the light is turned off the segment will return to effect mode. The segment is blanked out when using individual control, the set effect will not run. To disable, change any property of the segment or turn off the light.
    *

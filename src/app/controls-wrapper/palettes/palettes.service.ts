@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { ApiService } from '../../shared/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
-import { AppState } from '../../shared/app-types';
+import { AppWledState } from '../../shared/app-types';
 import { UnsubscriberService } from '../../shared/unsubscribing/unsubscriber.service';
 import { ColorSlotsService } from '../color-inputs/color-slots/color-slots.service';
 import { ControlsServicesModule } from '../controls-services.module';
@@ -68,11 +68,12 @@ export class PalettesService extends UnsubscriberService {
         this.triggerUIRefresh();
       });
 
-    this.appStateService.getState(this.ngUnsubscribe)
-      .subscribe(({ mainSegmentId, segments }: AppState) => {
+    this.appStateService.getWledState(this.ngUnsubscribe)
+      .subscribe(({ mainSegmentId, segments }: AppWledState) => {
         const selectedSegment = segments[mainSegmentId];
-        const currentPalette = selectedSegment.pal;
-        this.setPalette(currentPalette as number);
+        if (selectedSegment) {
+          this.setPalette(selectedSegment.paletteId);
+        }
       });
 
     // update palettes that use color slots

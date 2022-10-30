@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ApiService } from '../../shared/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
-import { AppState } from '../../shared/app-types';
+import { AppWledState } from '../../shared/app-types';
 import { UnsubscriberService } from '../../shared/unsubscribing/unsubscriber.service';
 import { ControlsServicesModule } from '../controls-services.module';
 import { compareNames } from '../utils';
@@ -49,15 +49,16 @@ export class EffectsService extends UnsubscriberService {
         this.triggerUIRefresh();
       });
 
-    this.appStateService.getState(this.ngUnsubscribe)
-      .subscribe(({ mainSegmentId, segments }: AppState) => {
+    this.appStateService.getWledState(this.ngUnsubscribe)
+      .subscribe(({ mainSegmentId, segments }: AppWledState) => {
         const selectedSegment = segments[mainSegmentId];
-        const currentEffect = selectedSegment.fx;
-        this.setEffect(currentEffect as number);
-        this.selectedEffectMetadata$.next({
-          speed: selectedSegment.sx,
-          intensity: selectedSegment.ix,
-        });
+        if (selectedSegment) {
+          this.setEffect(selectedSegment.effectId);
+          this.selectedEffectMetadata$.next({
+            speed: selectedSegment.effectSpeed,
+            intensity: selectedSegment.effectIntensity,
+          });
+        }
       });
   }
 
