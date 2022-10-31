@@ -1,9 +1,11 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { merge } from 'rxjs';
+import { AppStateService } from '../../shared/app-state/app-state.service';
 import { FormService } from '../../shared/form-service';
 import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
 import { ColorService, CurrentColor } from '../color.service';
+import { ColorSlotsService } from './color-slots/color-slots.service';
 
 @Component({
   selector: 'app-color-inputs',
@@ -12,10 +14,13 @@ import { ColorService, CurrentColor } from '../color.service';
 })
 export class ColorInputsComponent extends UnsubscriberComponent implements OnInit, AfterViewInit {
   colorInputsForm!: FormGroup;
+  private initialColor: number[] = [];
 
   constructor(
     private colorService: ColorService,
     private formSerivce: FormService,
+    private appStateService: AppStateService,
+    private colorSlotsService: ColorSlotsService
   ) {
     super();
   }
@@ -23,6 +28,14 @@ export class ColorInputsComponent extends UnsubscriberComponent implements OnIni
   ngOnInit() {
     this.colorInputsForm = this.createForm();
     this.subscribeToValueChanges();
+
+    // TODO this seems like it really belongs in the color service
+    this.appStateService.getSelectedSegment(this.ngUnsubscribe)
+      .subscribe(segment => {
+        const colors = segment.colors;
+        const selectedSlot = this.colorSlotsService.getSelectedSlot();
+        this.initialColor = colors[selectedSlot];
+      });
   }
 
   ngAfterViewInit() {
@@ -33,6 +46,15 @@ export class ColorInputsComponent extends UnsubscriberComponent implements OnIni
       this.handleUnsubscribe(
         this.colorService.getCurrentColorData())
         .subscribe((colorData: CurrentColor) => this.populateForm(colorData));
+
+      // set initial color
+      console.log('INITIAL COLOR', this.initialColor)
+      this.colorService.setRgbw(
+        this.initialColor[0],
+        this.initialColor[1],
+        this.initialColor[2],
+        this.initialColor[3],
+      );
     });
   }
 
@@ -63,18 +85,18 @@ export class ColorInputsComponent extends UnsubscriberComponent implements OnIni
   }
 
   private subscribeToValueChanges() {
-    // TODO need to unsubscribe merge()?
     const rgb = merge(
       this.getValueChanges<number>(this.colorInputsForm, ['rgb', 'r']),
       this.getValueChanges<number>(this.colorInputsForm, ['rgb', 'g']),
-      this.getValueChanges<number>(this.colorInputsForm, ['rgb', 'b'])
+      this.getValueChanges<number>(this.colorInputsForm, ['rgb', 'b']),
     );
-    rgb.subscribe(() => {
-      const r = this.colorInputsForm.get('rgb')!.get('r')!.value;
-      const g = this.colorInputsForm.get('rgb')!.get('g')!.value;
-      const b = this.colorInputsForm.get('rgb')!.get('b')!.value;
-      this.colorService.setRgb(r, g, b);
-    });
+    this.handleUnsubscribe(rgb)
+      .subscribe(() => {
+        const r = this.colorInputsForm.get('rgb')!.get('r')!.value;
+        const g = this.colorInputsForm.get('rgb')!.get('g')!.value;
+        const b = this.colorInputsForm.get('rgb')!.get('b')!.value;
+        this.colorService.setRgb(r, g, b);
+      });
 
     this.getValueChanges<number>(this.colorInputsForm, ['colorAndWhiteness', 'hsvValue'])
       .subscribe(this.colorService.setHsvValue);

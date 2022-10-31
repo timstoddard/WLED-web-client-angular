@@ -7,7 +7,7 @@ import { Preset } from '../controls-wrapper/presets/presets.service';
 import { APIPreset, APIPresets, SavePresetRequest, WledApiResponse, WledInfo, WledNodesResponse, WledSegment, WledSegmentPostRequest, WledState } from './api-types';
 import { NO_DEVICE_IP_SELECTED } from './app-state/app-state-defaults';
 import { AppStateService } from './app-state/app-state.service';
-import { AppWledState, AppSegment } from './app-types';
+import { AppWledState } from './app-types';
 import { FormValues } from './form-service';
 import { LiveViewData } from './live-view/live-view.service';
 import { PostResponseHandler } from './post-response-handler';
@@ -45,7 +45,12 @@ export class ApiService extends UnsubscriberService {
       .subscribe(({ ipv4Address }) => {
         this.setBaseUrl(ipv4Address);
         this.refreshAppState();
-        console.log('API BASE URL:', this.createApiUrl(''));
+        console.log(
+          'API BASE URL:',
+          this.getBaseUrl()
+            ? this.createApiUrl('')
+            : 'n/a',
+        );
       });
   }
 

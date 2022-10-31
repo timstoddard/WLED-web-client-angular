@@ -36,7 +36,7 @@ export const MOCK_API_RESPONSE: WledApiResponse = {
         cct: 127,
         n: 'stove',
         col: [
-          [255, 160, 0],
+          [255, 10, 100, 128],
           [0, 0, 0],
           [0, 0, 0]
         ],
@@ -61,7 +61,7 @@ export const MOCK_API_RESPONSE: WledApiResponse = {
         cct: 127,
         n: 'sink',
         col: [
-          [102, 153, 0],
+          [102, 153, 0, 128],
           [0, 0, 0],
           [0, 0, 0]
         ],
@@ -86,7 +86,7 @@ export const MOCK_API_RESPONSE: WledApiResponse = {
         cct: 127,
         n: 'window',
         col: [
-          [0, 204, 51],
+          [0, 204, 51, 128],
           [0, 0, 0],
           [0, 0, 0]
         ],
@@ -111,7 +111,7 @@ export const MOCK_API_RESPONSE: WledApiResponse = {
         cct: 127,
         n: 'couch',
         col: [
-          [0, 51, 204],
+          [0, 51, 204, 128],
           [0, 0, 0],
           [0, 0, 0]
         ],

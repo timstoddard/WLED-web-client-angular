@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import iro from '@jaames/iro';
-import { UnsubscriberComponent } from '../../../shared/unsubscribing/unsubscriber.component';
 import { ColorService } from '../../color.service';
 
 const COLOR_PICKER_HEIGHT_SCALAR = 0.8;
@@ -11,13 +10,11 @@ const COLOR_PICKER_HEIGHT_SCALAR = 0.8;
   styleUrls: ['./color-picker.component.scss'],
   host: { '(window:resize)': 'onResize()' },
 })
-export class ColorPickerComponent extends UnsubscriberComponent implements AfterViewInit {
+export class ColorPickerComponent implements AfterViewInit {
   @ViewChild('colorPicker', { read: ElementRef }) colorPickerElement!: ElementRef;
   private colorPicker!: iro.ColorPicker;
 
-  constructor(private colorService: ColorService) {
-    super();
-  }
+  constructor(private colorService: ColorService) {}
 
   ngAfterViewInit() {
     setTimeout(() => {

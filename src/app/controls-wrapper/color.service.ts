@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { IroColorValue, RgbColor } from '@irojs/iro-core';
 import iro from '@jaames/iro';
-import { BehaviorSubject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { ApiService } from '../shared/api.service';
 import { AppStateService } from '../shared/app-state/app-state.service';
 import { AppLedInfo } from '../shared/app-types';
@@ -17,17 +17,10 @@ export interface CurrentColor {
   kelvin: number;
 }
 
-const DEFAULT_RGB = {
-  r: 255,
-  g: 255,
-  b: 255,
-};
-const DEFAULT_WHITE_CHANNEL = 255;
-
 @Injectable({ providedIn: ControlsServicesModule })
 export class ColorService extends UnsubscriberService {
   private _colorPicker!: iro.ColorPicker;
-  private currentColorData$: BehaviorSubject<CurrentColor>;
+  private currentColorData$: Subject<CurrentColor>;
   private hasWhiteChannel!: boolean; // TODO use this somehow?
   // white channel value, if rbgw enabled
   private whiteChannel!: number;
@@ -43,13 +36,18 @@ export class ColorService extends UnsubscriberService {
     // TODO better way/place to set this?
     this.selectedSlot = 0;
 
-    this.currentColorData$ = new BehaviorSubject<CurrentColor>(this.getDefaults());
+    this.currentColorData$ = new Subject();
+    this.whiteChannel = 0;
 
     this.appStateService.getLedInfo(this.ngUnsubscribe)
       .subscribe(({ hasWhiteChannel }: AppLedInfo) => {
         this.hasWhiteChannel = hasWhiteChannel;
-        this.whiteChannel = DEFAULT_WHITE_CHANNEL;
       });
+  }
+
+  override ngOnDestroy() {
+    super.ngOnDestroy();
+    this._colorPicker?.off('color:change', this.emitNewColor);
   }
 
   getCurrentColorData() {
@@ -61,15 +59,12 @@ export class ColorService extends UnsubscriberService {
   }
 
   setColorPicker(colorPicker: iro.ColorPicker) {
-    if (this._colorPicker) {
-      // clean up old picker, if it exists
-      this._colorPicker.off('color:change', this.emitNewColor);
-    }
+    // clean up old picker, if it exists
+    this._colorPicker?.off('color:change', this.emitNewColor);
 
     // set up new picker
     this._colorPicker = colorPicker;
     this._colorPicker.on('color:change', this.emitNewColor);
-    this.setColorPickerColor(DEFAULT_RGB);
   }
 
   setColorPickerColor(color: IroColorValue) {
@@ -87,18 +82,24 @@ export class ColorService extends UnsubscriberService {
   }
 
   setKelvin = (kelvin: number) => {
-    this._colorPicker.color.set({ kelvin });
+    this.setColorPickerColor({ kelvin });
   }
 
   setRgb = (r: number, g: number, b: number) => {
-    const rgb = `rgb(${r},${g},${b})`;
-    this.setColorPickerColor(rgb);
+    this.setColorPickerColor({ r, g, b });
   }
 
-  setWhiteChannel = (whiteChannel: number) => {
+  setRgbw = (r: number, g: number, b: number, w: number) => {
+    this.setWhiteChannel(w, false);
+    this.setColorPickerColor({ r, g, b });
+  }
+
+  setWhiteChannel = (whiteChannel: number, shouldCallApi = true) => {
     if (whiteChannel !== this.whiteChannel) {
       this.whiteChannel = whiteChannel;
-      this._colorPicker?.emit('color:change');
+      if (shouldCallApi) {
+        this._colorPicker.emit('color:change');
+      }
     }
   }
 
@@ -147,34 +148,20 @@ export class ColorService extends UnsubscriberService {
     // TODO default hsv value for empty slot should be 100
     // this.colorPicker.color.setChannel('hsv', 'v', 100);
 
-    const result = this.apiService.setColor(
-      rgb.r,
-      rgb.g,
-      rgb.b,
-      this.whiteChannel,
-      this.selectedSlot);
-
-    if (result) {
-      this.handleUnsubscribe(result)
-        .subscribe(this.postResponseHandler.handleFullJsonResponse());
-    }
+    this.handleUnsubscribe(
+      this.apiService.setColor(
+        rgb.r,
+        rgb.g,
+        rgb.b,
+        this.whiteChannel,
+        this.selectedSlot)
+    )
+      .subscribe(this.postResponseHandler.handleFullJsonResponse());
   }
 
+  // TODO evaluate combinbing ColorService & ColorSlotsService
+  // (because ColorService needs to know the slot, seems useful to just have that logic combined here)
   setSlot(slot: number) {
     this.selectedSlot = slot;
-  }
-
-  private getDefaults(): CurrentColor {
-    return {
-      rgb: {
-        r: 0,
-        g: 0,
-        b: 0,
-      },
-      whiteChannel: 0,
-      hex: '',
-      hsvValue: 0,
-      kelvin: 0,
-    };
   }
 }

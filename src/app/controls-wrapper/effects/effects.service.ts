@@ -49,26 +49,25 @@ export class EffectsService extends UnsubscriberService {
         this.triggerUIRefresh();
       });
 
-    this.appStateService.getWledState(this.ngUnsubscribe)
-      .subscribe(({ mainSegmentId, segments }: AppWledState) => {
-        const selectedSegment = segments[mainSegmentId];
-        if (selectedSegment) {
-          this.setEffect(selectedSegment.effectId);
+    this.appStateService.getSelectedSegment(this.ngUnsubscribe)
+      .subscribe(segment => {
+        if (segment) {
+          this.setEffect(segment.effectId, false);
           this.selectedEffectMetadata$.next({
-            speed: selectedSegment.effectSpeed,
-            intensity: selectedSegment.effectIntensity,
+            speed: segment.effectSpeed,
+            intensity: segment.effectIntensity,
           });
         }
       });
   }
 
-  setEffect(effectId: number) {
-    const selectedEffectName = this.getEffectName(effectId);
+  setEffect(effectId: number, shouldCallApi = true) {
     this.selectedEffect$.next({
       id: effectId,
-      name: selectedEffectName,
+      name: this.getEffectName(effectId),
     });
-    return effectId !== NONE_SELECTED
+
+    return (shouldCallApi && effectId !== NONE_SELECTED)
       ? this.apiService.setEffect(effectId)
       : null;
   }

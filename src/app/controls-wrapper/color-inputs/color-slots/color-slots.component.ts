@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { UnsubscriberComponent } from '../../../shared/unsubscribing/unsubscriber.component';
-import { ColorService, CurrentColor } from '../../color.service';
 import { ColorSlotsService } from './color-slots.service';
 
 // TODO variable number of slots
@@ -12,23 +10,11 @@ import { ColorSlotsService } from './color-slots.service';
   templateUrl: './color-slots.component.html',
   styleUrls: ['./color-slots.component.scss']
 })
-export class ColorSlotsComponent extends UnsubscriberComponent implements OnInit {
-  constructor(
-    private colorService: ColorService,
-    private colorSlotsService: ColorSlotsService,
-  ) {
-    super();
+export class ColorSlotsComponent implements OnInit {
+  constructor(private colorSlotsService: ColorSlotsService) {
   }
 
   ngOnInit() {
-    this.handleUnsubscribe(this.colorService.getCurrentColorData())
-      .subscribe(({ hex, whiteChannel }: CurrentColor) => {
-        // TODO why does rgb(0,0,0) mess things up
-        const hexFormatted = hex.substring(0, 6);
-        // console.log(hexFormatted, whiteChannel);
-        this.colorSlotsService.updateSelectedSlot(hexFormatted, whiteChannel);
-      });
-
     // TODO select slot after getting api data (might be different than default?)
     // this.selectSlot(this.selectedSlot); // after getting api data
   }

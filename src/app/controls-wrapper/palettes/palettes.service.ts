@@ -68,11 +68,10 @@ export class PalettesService extends UnsubscriberService {
         this.triggerUIRefresh();
       });
 
-    this.appStateService.getWledState(this.ngUnsubscribe)
-      .subscribe(({ mainSegmentId, segments }: AppWledState) => {
-        const selectedSegment = segments[mainSegmentId];
-        if (selectedSegment) {
-          this.setPalette(selectedSegment.paletteId);
+    this.appStateService.getSelectedSegment(this.ngUnsubscribe)
+      .subscribe(segment => {
+        if (segment) {
+          this.setPalette(segment.paletteId, false);
         }
       });
 
@@ -83,13 +82,13 @@ export class PalettesService extends UnsubscriberService {
       });
   }
 
-  setPalette(paletteId: number) {
-    const selectedPaletteName = this.getPaletteName(paletteId);
+  setPalette(paletteId: number, shouldCallApi = true) {
     this.selectedPalette$.next({
       id: paletteId,
-      name: selectedPaletteName,
+      name: this.getPaletteName(paletteId),
     });
-    return paletteId !== NONE_SELECTED
+
+    return (shouldCallApi && paletteId !== NONE_SELECTED)
       ? this.apiService.setPalette(paletteId)
       : null;
   }

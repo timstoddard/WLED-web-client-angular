@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Store, createState, withProps, select } from '@ngneat/elf';
-import { Subject, takeUntil } from 'rxjs';
+import { map, Subject, takeUntil } from 'rxjs';
 import { ApiTypeMapper } from '../api-type-mapper';
 import { WledApiResponse, WledNodesResponse } from '../api-types';
-import { AppInfo, AppLocalSettings, AppWledState, AppState } from '../app-types';
+import { AppInfo, AppLocalSettings, AppWledState, AppState, AppSegment } from '../app-types';
 import { DEFAULT_APP_STATE } from './app-state-defaults';
 
 @Injectable({ providedIn: 'root' })
@@ -72,6 +72,18 @@ export class AppStateService {
   getSegments = (ngUnsubscribe: Subject<void>) =>
     this.selectFromAppState((n) => n.state.mainSegmentId)
       .pipe<AppWledState['segments']>(takeUntil(ngUnsubscribe));
+  getSelectedSegment = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.state)
+      .pipe<AppSegment, AppSegment>(
+        map(({ segments, mainSegmentId }: AppWledState) => {
+          // TODO account for segment.id property
+          // (if segments are not sorted by id)
+          const segmentId = mainSegmentId ?? 0;
+          const selectedSegment = segments[segmentId];
+          return selectedSegment || null;
+        }),
+        takeUntil(ngUnsubscribe),
+      );
   getVersionName = (ngUnsubscribe: Subject<void>) =>
     this.selectFromAppState((n) => n.info.versionName)
       .pipe<AppInfo['versionName']>(takeUntil(ngUnsubscribe));

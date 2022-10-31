@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { AppStateService } from '../../../shared/app-state/app-state.service';
-import { AppWledState } from '../../../shared/app-types';
 import { UnsubscriberService } from '../../../shared/unsubscribing/unsubscriber.service';
-import { ColorService } from '../../color.service';
+import { ColorService, CurrentColor } from '../../color.service';
 import { ControlsServicesModule } from '../../controls-services.module';
 
 const DEFAULT_SLOT_COUNT = 3;
@@ -31,12 +30,22 @@ export class ColorSlotsService extends UnsubscriberService {
 
     this.selectedColor$ = new BehaviorSubject<string>('');
 
-    // TODO initialize colors with WledSegment.col from api response
-    const slots = [];
-    for (let i = 0; i < DEFAULT_SLOT_COUNT; i++) {
-      slots.push(i);
-    }
-    this.slots = slots;
+    this.appStateService.getSelectedSegment(this.ngUnsubscribe)
+      .subscribe((segment) => {
+        // TODO initialize colors with WledSegment.col from api response
+        const slots = [];
+        for (let i = 0; i < DEFAULT_SLOT_COUNT; i++) {
+          slots.push(i);
+        }
+        this.slots = slots;
+      });
+
+    this.handleUnsubscribe(this.colorService.getCurrentColorData())
+      .subscribe(({ hex, whiteChannel }: CurrentColor) => {
+        // TODO why does rgb(0,0,0) mess things up
+        const hexFormatted = hex.substring(0, 6);
+        this.updateSelectedSlot(hexFormatted, whiteChannel);
+      });
   }
 
   /**
@@ -62,7 +71,6 @@ export class ColorSlotsService extends UnsubscriberService {
   updateSelectedSlot(hex: string, whiteChannel: number) {
     this.colors[this.selectedSlot] = hex;
     this.whiteChannels[this.selectedSlot] = whiteChannel;
-    this.colorService.setWhiteChannel(whiteChannel);
     this.selectedColor$.next(hex);
   }
 
