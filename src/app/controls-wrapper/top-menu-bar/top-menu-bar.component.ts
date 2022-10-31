@@ -6,11 +6,9 @@ import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.c
 import { MenuBarButton, setCssColor } from '../utils';
 import { TopMenuBarButtonName, TopMenuBarService } from './top-menu-bar.service';
 import { FormService } from '../../shared/form-service';
-import { AppStateProps } from '../../shared/app-types';
+import { AppState } from '../../shared/app-types';
 import { OverlayPositionService } from '../../shared/overlay-position.service';
 
-const DEFAULT_BRIGHTNESS = 128;
-const DEFAULT_TRANSITION_DURATION_SECONDS = 0.7;
 const MIN_SHOW_BRIGHTNESS_SLIDER_THRESHOLD_PX = 800;
 const MIN_SHOW_PC_MODE_BUTTON_THRESHOLD_PX = 1200; // TODO might need to be bigger
 
@@ -164,7 +162,7 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
     return buttons;
   }
 
-  private handleAppStateUpdate = ({ state, info, localSettings }: AppStateProps) => {
+  private handleAppStateUpdate = ({ state, info, localSettings }: AppState) => {
     // power
     this.isOn = state.on;
 
@@ -262,9 +260,10 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
 
   private createForm() {
     const form = this.formService.createFormGroup({
-      brightness: DEFAULT_BRIGHTNESS,
+      brightness: 0,
     }, {
-      transitionTime: this.formService.createFormControl(DEFAULT_TRANSITION_DURATION_SECONDS, 'blur'),
+      // TODO on blur, animate the form input to indicate a successful (or unsuccessful) backend update
+      transitionTime: this.formService.createFormControl(0, 'blur'),
     });
 
     this.getValueChanges<number>(form, 'brightness')

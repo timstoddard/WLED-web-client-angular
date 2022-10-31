@@ -5,7 +5,7 @@ import { PalettesApiData } from './palettes/palettes.service';
 export const MOCK_API_RESPONSE: WledApiResponse = {
   state: {
     on: true,
-    bri: 31,
+    bri: 100,
     transition: 3,
     ps: -1,
     pl: -1,
