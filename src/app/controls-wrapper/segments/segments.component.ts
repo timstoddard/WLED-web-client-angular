@@ -19,7 +19,6 @@ export class SegmentsComponent extends UnsubscriberComponent implements OnInit {
   ledCount = 0; // TODO do these belong here?
   lastLed = 0; // TODO do these belong here?
   useSegmentLength!: boolean;
-  private lowestUnusedId!: number;
   private maxSegmentId!: number;
   private maxSegments!: number;
   private confirmedResetSegments = false;
@@ -51,14 +50,12 @@ export class SegmentsComponent extends UnsubscriberComponent implements OnInit {
         this.segments = segments.ids
           .map((id: number) => segments.UIEntities[id]);
         this.maxSegmentId = this.segments.length;
-        this.lowestUnusedId = this.maxSegmentId + 1;
         this.showDeleteButtons = this.segments.length >= 2;
 
-        if (this.lowestUnusedId >= this.maxSegments) {
+        if (this.segments.length >= this.maxSegments) {
           this.noNewSegments = true;
         } else if (this.noNewSegments) {
           // TODO show add button
-          // this.resetUtil();
           this.showNewSegmentForm = false;
           this.noNewSegments = false;
         }
@@ -80,22 +77,6 @@ export class SegmentsComponent extends UnsubscriberComponent implements OnInit {
   }
 
   setShowNewSegmentForm(show: boolean) {
-    if (show) {
-      let lastLed = 0;
-      if (this.lowestUnusedId > 0) {
-        // TODO this logic should be moved to new seg component
-        const lastSegment = this.segmentsService.getLastSegment();
-        const a = lastSegment.stop;
-        const b = this.useSegmentLength
-          ? lastSegment.start
-          : 0;
-        const ledCount = a + b;
-        if (ledCount < this.ledCount) {
-          lastLed = ledCount;
-        }
-      }
-      this.lastLed = lastLed;
-    }
     this.showNewSegmentForm = show;
   }
 

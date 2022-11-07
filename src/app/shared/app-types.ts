@@ -141,9 +141,9 @@ export interface AppSegment {
   /** Mirrors the segment. */
   isMirrored: boolean;
   /** Loxone RGB value for primary color. Each color (RRR,GGG,BBB) is specified in the range from 0 to 100% [0-100100100]. */
-  loxonePrimaryRgb: number;
+  loxonePrimaryRgb?: number;
   /** Loxone RGB value for secondary color. Each color (RRR,GGG,BBB) is specified in the range from 0 to 100% [0-100100100]. */
-  loxoneSecondaryRgb: number;
+  loxoneSecondaryRgb?: number;
 }
 
 /** Corresponds to `WledNode` type. */

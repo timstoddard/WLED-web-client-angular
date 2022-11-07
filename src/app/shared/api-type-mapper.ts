@@ -5,7 +5,7 @@ import { AppFileSystemInfo, AppInfo, AppLedInfo, AppNightLightState, AppWledStat
 @Injectable({ providedIn: 'root' })
 export class ApiTypeMapper {
   /** Maps an entire WLED API response into the format expected by this app. */
-  mapWledApiResponseToAppStateProps = (
+  mapWledApiResponseToAppState = (
     { state, info, palettes, effects }: WledApiResponse,
     existingState: AppState,
   ): AppState => ({
@@ -45,9 +45,13 @@ export class ApiTypeMapper {
     shouldReceive: udp.recv,
   });
 
-  mapWledSegmentsToAppSegments = (segments: WledSegment[]): AppSegment[] =>
-    segments.map(segment => ({
-      id: segment.id || 0, // TODO get lowest unused id
+  mapWledSegmentsToAppSegments = (segments: WledSegment[]): AppSegment[] => {
+    const {
+      ids: segmentIds,
+    } = this.normalizeIds(segments);
+
+    return segments.map((segment, i) => ({
+      id: segmentIds[i],
       isExpanded: false,
       start: segment.start,
       stop: segment.stop,
@@ -67,9 +71,11 @@ export class ApiTypeMapper {
       name: segment.n,
       colorTemp: segment.cct,
       isMirrored: segment.mi,
-      loxonePrimaryRgb: segment.lx ?? 0,
-      loxoneSecondaryRgb: segment.ly ?? 0,
+      // TODO revisit these fields (see api types)
+      // loxonePrimaryRgb: segment.lx,
+      // loxoneSecondaryRgb: segment.ly,
     }));
+  }
 
   /** Maps the `info` object in the WLED API resonse into the format expected by this app. */
   mapWledInfoToAppInfo = (info: WledInfo): AppInfo => ({
@@ -129,4 +135,43 @@ export class ApiTypeMapper {
       type: node.type,
       versionId: node.vid,
     }));
+
+  normalizeIds(items: Array<{ id?: number }>) {
+    // TODO api segment id will never be 0 right?
+    let lowestUnusedId = 1;
+    let existingIdsIndex = 0;
+    const ids: number[] = [];
+
+    const existingIds = items
+      .map(({ id }) => id)
+      .filter(id => id !== undefined);
+    // sort by ascending
+    existingIds.sort((a, b) => a! - b!);
+    for (const segment of items) {
+      let id: number;
+      if (typeof segment.id === 'number') {
+        id = segment.id;
+      } else {
+        // find next available ID
+        while (lowestUnusedId === existingIds[existingIdsIndex]) {
+          lowestUnusedId++;
+          existingIdsIndex++;
+        }
+        id = lowestUnusedId;
+        lowestUnusedId++;
+      }
+      ids.push(id);
+    }
+
+    // find next available ID
+    while (lowestUnusedId === existingIds[existingIdsIndex]) {
+      lowestUnusedId++;
+      existingIdsIndex++;
+    }
+
+    return {
+      ids,
+      nextId: lowestUnusedId,
+    };
+  }
 }

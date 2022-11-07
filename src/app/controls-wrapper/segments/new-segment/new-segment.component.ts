@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { AppStateService } from '../../../shared/app-state/app-state.service';
 import { FormService } from '../../../shared/form-service';
 import { PostResponseHandler } from '../../../shared/post-response-handler';
 import { UIConfigService } from '../../../shared/ui-config.service';
@@ -21,12 +22,14 @@ export class NewSegmentComponent extends UnsubscriberComponent implements OnInit
   numberInputs: any[] = []; // TODO type
   ledCountLabel!: string;
   useSegmentLength!: boolean;
+  private lowestUnusedId!: number;
 
   constructor(
     private formService: FormService,
     private segmentsService: SegmentsService,
     private uiConfigService: UIConfigService,
     private postResponseHandler: PostResponseHandler,
+    private appStateService: AppStateService,
   ) {
     super();
   }
@@ -40,6 +43,27 @@ export class NewSegmentComponent extends UnsubscriberComponent implements OnInit
     this.newSegmentForm = this.createForm();
     this.numberInputs = this.getNumberInputs();
     this.ledCountLabel = this.getLedCountLabel();
+
+    // TODO get next id from segments service
+    let lastLed = 0;
+    if (this.lowestUnusedId > 0) {
+      const lastSegment = this.segmentsService.getLastSegment();
+      const a = lastSegment.stop;
+      const b = this.useSegmentLength
+        ? lastSegment.start
+        : 0;
+      const ledCount = a + b;
+      if (ledCount < this.ledCount) {
+        lastLed = ledCount;
+      }
+    }
+    this.lastLed = lastLed;
+
+    // TODO get next available ID
+    this.appStateService.getSegments(this.ngUnsubscribe)
+      .subscribe(segments => {
+        const maxSegmentId = segments.length;
+      });
   }
 
   submitForm() {

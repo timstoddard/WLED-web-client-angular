@@ -20,7 +20,7 @@ export class AppStateService {
   /** Set all app state fields using the api response data. */
   setAll = (response: WledApiResponse) => {
     this.appStateStore.update((state) =>
-      this.apiTypeMapper.mapWledApiResponseToAppStateProps(response, state));
+      this.apiTypeMapper.mapWledApiResponseToAppState(response, state));
   }
 
   /** Updates nodes data. */
