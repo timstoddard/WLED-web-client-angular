@@ -4,7 +4,7 @@
   align-items: center;
   background: var(--backgroundColorAccent);
   border: 1px solid var(--borderColorPrimary);
-  border-radius: 4px;
+  border-radius: 6px;
   display: flex;
   flex-basis: min-content;
   flex-direction: column;
@@ -25,6 +25,7 @@
   &__label {
     @include flex-center;
     flex-grow: 1;
+    user-select: none;
 
     &__text {
     }

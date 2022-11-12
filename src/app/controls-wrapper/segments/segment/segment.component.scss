@@ -2,10 +2,12 @@
 
 :host {
   @include overrideMatTextInputStyles(--backgroundColorPrimary);
+  max-width: 420px;
+  width: 90%;
 }
 
 .segment {
-  @include segmentBaseStyles(330px);
+  @include segmentBaseStyles();
 
   &__header {
     align-items: center;
@@ -26,11 +28,16 @@
     }
 
     &__icon {
+      border: 1px solid var(--textColorAccent);
+      border-radius: 6px;
       color: var(--textColorAccent);
       cursor: pointer;
-      margin-left: 4px;
+      font-size: 20px;
+      margin-left: 10px;
+      padding: 2px;
 
       &:hover {
+        border-color: var(--textColorPrimary);
         color: var(--textColorPrimary);
       }
     }
@@ -59,6 +66,14 @@
     flex-wrap: wrap;
     justify-content: space-evenly;
     padding: 10px;
+
+    & > * {
+      margin: 4px;
+    }
+
+    & ::ng-deep .mat-button-wrapper {
+      @include flex-center;
+    }
   }
 
   &__button {
@@ -76,13 +91,10 @@
     }
   }
 
-  &__deleteButton {
-  }
-
-  &__numberForm {
-    display: grid;
-    grid-template-columns: auto auto auto;
-    grid-template-rows: auto auto;
+  &__brightness {
+    ::ng-deep &__input {
+      margin: -12px 6px;
+    }
   }
 
   &__numberButtonWrapper {
@@ -91,19 +103,9 @@
     justify-content: center;
   }
 
-  &__numberButton {
-    cursor: pointer;
+  &__deleteButton {
   }
 
-  &__checkboxes {
-    align-items: flex-start;
-    display: inline-flex;
-    flex-direction: column;
-  }
-
-  &__brightness {
-    ::ng-deep &__input {
-      margin: -12px 6px;
-    }
+  &__applyButton {
   }
 }

@@ -12,7 +12,7 @@ import { PostResponseHandler } from '../../shared/post-response-handler';
   styleUrls: ['./segments.component.scss'],
 })
 export class SegmentsComponent extends UnsubscriberComponent implements OnInit {
-  segments: AppSegment[] = [];
+  // segments: AppSegment[] = [];
   noNewSegments: boolean = false;
   showDeleteButtons: boolean = false;
   showNewSegmentForm: boolean = false;
@@ -44,30 +44,57 @@ export class SegmentsComponent extends UnsubscriberComponent implements OnInit {
         this.useSegmentLength = uiConfig.useSegmentLength;
       });
 
-    this.handleUnsubscribe<any /* TODO type */>(
-      this.segmentsService.getSegmentsStore())
-      .subscribe((segments) => {
-        this.segments = segments.ids
-          .map((id: number) => segments.UIEntities[id]);
-        this.maxSegmentId = this.segments.length;
-        this.showDeleteButtons = this.segments.length >= 2;
+    // TODO replace this logic
 
-        if (this.segments.length >= this.maxSegments) {
-          this.noNewSegments = true;
-        } else if (this.noNewSegments) {
-          // TODO show add button
-          this.showNewSegmentForm = false;
-          this.noNewSegments = false;
-        }
+    // this.handleUnsubscribe<any /* TODO type */>(
+    //   this.segmentsService.getSegmentsStore())
+    //   .subscribe((segments) => {
+    //     this.segments = segments.ids
+    //       .map((id: number) => segments.UIEntities[id]);
+    //     this.maxSegmentId = this.segments.length;
+    //     this.showDeleteButtons = this.segments.length >= 2;
+
+    //     if (this.segments.length >= this.maxSegments) {
+    //       this.noNewSegments = true;
+    //     } else if (this.noNewSegments) {
+    //       // TODO show add button
+    //       this.showNewSegmentForm = false;
+    //       this.noNewSegments = false;
+    //     }
+    //   });
+  }
+
+  getSegments() {
+    return this.segmentsService.getSegments();
+  }
+
+  createSegment(
+    name: string,
+    start: number,
+    stop: number,
+    useSegmentLength: boolean,
+  ) {
+    const result = this.segmentsService.createSegment({
+      name: '',
+      start: 1,
+      stop: 1,
+      useSegmentLength: true,
+    });
+    this.handleUnsubscribe(result)
+      .subscribe(() => {
+        //
       });
   }
 
-  addSegment() {
-    // TODO
-  }
-
   deleteSegment(segmentId: number) {
-    this.segmentsService.deleteSegment(segmentId);
+    const result = this.segmentsService.deleteSegment(segmentId);
+    if (result) {
+      this.handleUnsubscribe(result)
+        .subscribe(() => {
+          // TODO
+          console.log('segement', segmentId, 'deleted');
+        });
+    }
   }
 
   selectAllSegments() {

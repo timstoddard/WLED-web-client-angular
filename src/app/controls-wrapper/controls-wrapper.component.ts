@@ -79,7 +79,8 @@ export class ControlsWrapperComponent extends UnsubscriberComponent implements O
   }
 
   private loadStoredUIConfig() {
-    const config = this.localStorageService.get<AppUIConfig>(LocalStorageKey.UI_CONFIG);
+    const defaultConfig: any = {}; // TODO better default
+    const config = this.localStorageService.get<AppUIConfig>(LocalStorageKey.UI_CONFIG, defaultConfig);
     if (config) {
       this.uiConfigService.setAll(config);
     }

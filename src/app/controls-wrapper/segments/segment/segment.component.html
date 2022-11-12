@@ -70,63 +70,69 @@
         </span>
       </label>
 
-      <div class="segment__checkboxes">
-        <mat-checkbox
-          formControlName="isReverse"
-          class="">
-          Reverse direction
-        </mat-checkbox>
-    
-        <mat-checkbox
-          formControlName="isMirror"
-          class="">
-          Mirror effect
-        </mat-checkbox>
-      </div>
-
-      <button
-        *ngIf="showDeleteButton"
-        (click)="deleteSegment()"
-        [disabled]="getSegmentsLength() <= 1"
-        class="segment__button segment__deleteButton">
-        <span class="segment__button__icon material-symbols-outlined">
-          delete
-        </span>
-      </button>
-    </div>
-
-    <div class="segment__row">
       <app-color-slider
         [control]="segmentForm.get('brightness')!"
         [min]="1"
         [max]="255"
+        label="Brightness"
         sliderClass="segment__brightness__input"
         class="">
       </app-color-slider>
     </div>
 
     <div class="segment__row">
-      <div class="segment__numberForm">
-        <mat-form-field
-          *ngFor="let numberInput of numberInputs"
-          appearance="fill"
-          class="segment__numberFormField">
-          <mat-label>{{ numberInput.label }}</mat-label>
-          <input
-            matInput
-            type="number"
-            [formControlName]="numberInput.formControlName"
-            [placeholder]="numberInput.placeholder"
-            class="segment__numberInput__input">
-        </mat-form-field>
-        <div class="segment__numberButtonWrapper">
-          <button
-            (click)="updateSegment()"
-            class="segment__numberButton">
-            Apply
-          </button>
-        </div>
-      </div>
+      <mat-checkbox
+        formControlName="isReverse"
+        class="">
+        Reverse direction
+      </mat-checkbox>
+  
+      <mat-checkbox
+        formControlName="isMirror"
+        class="">
+        Mirror effect
+      </mat-checkbox>
+    </div>
+
+    <div class="segment__row">
+      <mat-form-field
+        *ngFor="let numberInput of numberInputs"
+        appearance="fill"
+        class="segment__numberFormField">
+        <mat-label>{{ numberInput.label }}</mat-label>
+        <input
+          matInput
+          type="number"
+          [formControlName]="numberInput.formControlName"
+          [placeholder]="numberInput.placeholder"
+          class="segment__numberInput__input">
+      </mat-form-field>
+    </div>
+
+    <div class="segment__row">
+      <button
+        *ngIf="showDeleteButton"
+        mat-raised-button
+        color="warn"
+        (click)="deleteSegment()"
+        [disabled]="getSegmentsLength() <= 1"
+        class="segment__deleteButton">
+        <span class="material-symbols-outlined">
+          delete
+        </span>
+        Delete
+      </button>
+
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="updateSegment()"
+        class="segment__applyButton">
+        <span class="material-symbols-outlined">
+          done
+        </span>
+        Apply
+      </button>
     </div>
   </div>
 </div>

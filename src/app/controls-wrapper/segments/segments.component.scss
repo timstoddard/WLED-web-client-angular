@@ -2,25 +2,25 @@
 
 :host {
   @include main-view-container;
-  align-items: flex-start;
   display: flex;
-  flex-flow: row wrap;
-  justify-content: space-around;
+  flex-direction: column;
   padding: 10px 20px;
 }
 
 .segments {
   &__topMenuBar {
-    align-items: center;
-    display: flex;
-    justify-content: space-evenly;
-    padding-bottom: 3px;
+    @include flex-center;
+    flex-wrap: wrap;
     width: 100%;
+
+    & > * {
+      margin: 5px;
+    }
   }
 
   &__list {
+    align-items: center;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
+    flex-direction: column;
   }
 }

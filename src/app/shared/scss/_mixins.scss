@@ -115,7 +115,7 @@
   }
 }
 
-@mixin segmentBaseStyles($width) {
+@mixin segmentBaseStyles() {
   background: var(--backgroundColorAccent);
   border: 1px solid var(--borderColorPrimary);
   border-radius: 6px;
@@ -123,9 +123,7 @@
   flex-direction: column;
   justify-content: center;
   margin: 10px;
-  max-width: $width;
-  min-width: $width;
-  padding: 6px 12px;
+  padding: 4px 20px;
 
   &__nameFormField {
     margin-top: 2px;

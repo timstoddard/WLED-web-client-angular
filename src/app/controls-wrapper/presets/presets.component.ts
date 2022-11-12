@@ -227,7 +227,7 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
   private showPresetError(isEmpty: boolean) {
     let backupString = '';
     try {
-      backupString = JSON.stringify(this.localStorageService.get(LocalStorageKey.SAVED_PRESETS));
+      backupString = JSON.stringify(this.localStorageService.get(LocalStorageKey.SAVED_PRESETS, []));
     } catch (e) {
       // TODO display message in UI
     }

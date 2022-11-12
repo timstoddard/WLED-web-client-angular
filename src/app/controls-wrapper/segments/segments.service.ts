@@ -1,23 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Store, createState } from '@ngneat/elf';
-import {
-  UIEntitiesRef,
-  deleteAllEntities,
-  deleteEntities,
-  getEntity,
-  hasEntity,
-  selectAll,
-  selectEntities,
-  selectEntitiesCount,
-  unionEntities,
-  updateEntities,
-  upsertEntities,
-  withEntities,
-  withUIEntities,
-} from '@ngneat/elf-entities';
 import { ApiTypeMapper } from '../../shared/api-type-mapper';
 import { WledSegment } from '../../shared/api-types';
 import { ApiService } from '../../shared/api.service';
+import { AppStateService } from '../../shared/app-state/app-state.service';
 import { AppSegment } from '../../shared/app-types';
 import { LocalStorageService } from '../../shared/local-storage.service';
 import { UnsubscriberService } from '../../shared/unsubscribing/unsubscriber.service';
@@ -25,85 +10,42 @@ import { ControlsServicesModule } from '../controls-services.module';
 
 @Injectable({ providedIn: ControlsServicesModule })
 export class SegmentsService extends UnsubscriberService {
-  private segmentsStore: Store;
-  private segmentsLength: number = 0;
+  private segments: AppSegment[];
   private ledCount: number = 1429; // TODO get this from api data (info.leds.count)
 
   constructor (
     private apiService: ApiService,
     private localStorageService: LocalStorageService,
     private apiTypeMapper: ApiTypeMapper,
+    private appStateService: AppStateService,
   ) {
     super();
-    // TODO don't need store for this (right?)
-    this.segmentsStore = new Store({
-      name: 'segments',
-      // TODO withEntities() should be with WledSegment
-      ...createState(withEntities<AppSegment>(), withUIEntities<AppSegment>()),
-    });
 
-    this.segmentsStore
-      .combine({
-        entities: this.segmentsStore.pipe(selectAll()),
-        UIEntities: this.segmentsStore.pipe(selectEntities({ ref: UIEntitiesRef })),
-      })
-      .pipe(unionEntities());
+    this.segments = [];
 
-    this.segmentsStore
-      .pipe(selectEntitiesCount())
-      .subscribe((count) => {
-        this.segmentsLength = count;
+    this.appStateService.getSegments(this.ngUnsubscribe)
+      .subscribe((segments) => {
+        console.log(segments);
+        this.segments = segments || [];
       });
   }
 
-  getSegmentsStore() {
-    return this.segmentsStore;
+  getSegments() {
+    return this.segments;
   }
 
-  getLastSegment() {
-    return this.segmentsStore.query(getEntity(this.segmentsLength - 1, { ref: UIEntitiesRef })) as AppSegment;
-  }
-
+  // TODO audit usages (2)
   loadApiSegments(wledSegments: WledSegment[]) {
     const segments = this.apiTypeMapper.mapWledSegmentsToAppSegments(wledSegments);
-    for (const segment of segments) {
-      let name: string;
-      let isExpanded;
-      if (this.segmentsStore.query(hasEntity(segment.id, { ref: UIEntitiesRef }))) {
-        const {
-          name: existingName,
-          isExpanded: existingIsExpanded,
-        } = this.segmentsStore.query(getEntity(segment.id, { ref: UIEntitiesRef }));
-        name = existingName;
-        isExpanded = existingIsExpanded;
-      } else {
-        name = this.loadSegmentName(segment.id);
-        isExpanded = false;
-      }
-      const uiSegment: AppSegment = {
-        ...segment,
-        name,
-        isExpanded,
-      };
-      this.segmentsStore.update(
-        upsertEntities(segment),
-        upsertEntities(uiSegment, { ref: UIEntitiesRef }));
-    }
+    return segments;
   }
 
   setSegmentName(segmentId: number, name: string) {
-    if (!this.segmentsStore.query(hasEntity(segmentId))) {
-      console.warn(`Segment with id ${segmentId}, it does not exist.`);
-      return;
-    }
-    if (!name) {
-      name = this.getDefaultName(segmentId);
-    }
-    this.segmentsStore.update(
-      updateEntities(segmentId, segment => segment),
-      updateEntities(segmentId, { name }, { ref: UIEntitiesRef }));
-    const key = `segment-${segmentId}-name`;
-    this.localStorageService.set(key, name);
+    const segment = this.findSegment(segmentId);
+
+    const newName = name || this.getDefaultName(segmentId);
+
+    // TODO call app state service
   }
 
   selectSegment(segmentId: number, isSelected: boolean) {
@@ -111,24 +53,36 @@ export class SegmentsService extends UnsubscriberService {
   }
 
   selectOnlySegment(segmentId: number) {
-    return this.apiService.selectOnlySegment(segmentId, this.segmentsLength);
+    return this.apiService.selectOnlySegment(segmentId, this.segments.length);
   }
 
   selectAllSegments() {
-    return this.apiService.selectAllSegments(this.segmentsLength);
+    return this.apiService.selectAllSegments(this.segments.length);
   }
 
   toggleSegmentExpanded(segmentId: number) {
-    if (!this.segmentsStore.query(hasEntity(segmentId))) {
-      console.warn(`Segment with id ${segmentId}, it does not exist.`);
-      return;
+    const segment = this.findSegment(segmentId);
+    if (segment) {
+      const updatedSegments = this.segments.map(segment => {
+        return segment.id === segmentId
+          ? {
+            ...segment,
+            isExpanded: !segment.isExpanded,
+          }
+          : segment;
+      });
+      this.appStateService.setSegments(updatedSegments);
     }
-    this.segmentsStore.update(
-      updateEntities(segmentId, segment => segment),
-      updateEntities(segmentId, segment => ({
-        ...segment,
-        isExpanded: !segment.isExpanded,
-      }), { ref: UIEntitiesRef }));
+  }
+
+  createSegment(options: {
+    name: string,
+    start: number,
+    stop: number,
+    useSegmentLength: boolean,
+    // TODO add other fields?
+  }) {
+    return this.apiService.createSegment(options);
   }
 
   updateSegment(options: {
@@ -145,18 +99,16 @@ export class SegmentsService extends UnsubscriberService {
   }
 
   deleteSegment(segmentId: number) {
-    this.segmentsStore.update(deleteEntities(segmentId));
-    if (this.segmentsLength < 2) {
-      return null;
-    } else {
-      this.segmentsStore.update(deleteEntities(segmentId));
+    if (this.segments.length > 1) {
       return this.apiService.deleteSegment(segmentId);
     }
+    return null;
+    // TODO update client only fields
   }
 
   resetSegments() {
-    this.segmentsStore.update(deleteAllEntities());
-    return this.apiService.resetSegments(this.ledCount, this.segmentsLength);
+    return this.apiService.resetSegments(this.ledCount, this.segments.length);
+    // TODO update client only fields
   }
 
   setSegmentOn(segmentId: number, isOn: boolean) {
@@ -176,14 +128,20 @@ export class SegmentsService extends UnsubscriberService {
   }
 
   getSegmentsLength() {
-    return this.segmentsLength;
+    return this.segments.length;
+  }
+
+  private findSegment(segmentId: number) {
+    const segment = this.segments
+      .find(({ id }) => id === segmentId);
+    return segment;
   }
 
   private loadSegmentName(segmentId: number) {
     let segmentName = this.getDefaultName(segmentId);
     try {
       const key = `SEGMENT_NAME_${segmentId}`;
-      const storedSegmentName = this.localStorageService.get(key) as string;
+      const storedSegmentName = this.localStorageService.get(key, '') as string;
       if (storedSegmentName) {
         segmentName = storedSegmentName;
       }

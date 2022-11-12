@@ -6,6 +6,8 @@
 <div class="segments__topMenuBar">
   <button
     *ngIf="!showNewSegmentForm"
+    mat-raised-button
+    color="primary"
     (click)="setShowNewSegmentForm(true)"
     class="segments__addButton">
     <!-- TODO or just a '+' sign? -->
@@ -13,13 +15,17 @@
   </button>
 
   <button
+    mat-raised-button
+    color="primary"
     (click)="selectAllSegments()"
     class="segments__addButton">
     Select All
   </button>
 
   <button
-    *ngIf="segments.length > 1"
+    *ngIf="getSegments().length > 1"
+    mat-raised-button
+    color="primary"
     (click)="resetSegments()"
     ngClass="{ 'segments__resetButton--confirm': '!confirmedResetSegments' }"
     class="segments__resetButton">
@@ -32,13 +38,13 @@
   <app-new-segment
     *ngIf="showNewSegmentForm"
     (submit)="setShowNewSegmentForm(false)"
-    [newSegmentId]="segments.length"
+    [newSegmentId]="getSegments().length"
     [ledCount]="ledCount"
     [lastLed]="lastLed">
   </app-new-segment>
 
   <app-segment
-    *ngFor="let segment of segments"
+    *ngFor="let segment of getSegments()"
     [segment]="segment"
     [showDeleteButton]="showDeleteButtons">
   </app-segment>

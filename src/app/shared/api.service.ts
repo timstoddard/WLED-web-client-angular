@@ -325,7 +325,19 @@ export class ApiService extends UnsubscriberService {
     return this.httpPostStateAndInfo(body);
   }
 
-  /** Updates the core parameters of the specified segment. */
+  /** Creates a new segment. */
+  createSegment(options: {
+    name: string,
+    start: number,
+    stop: number,
+    useSegmentLength: boolean,
+  }) {
+    // TODO real body field to create segment
+    const body = this.createBody({});
+    return this.httpPostStateAndInfo(body);
+  }
+
+  /** Updates the settings of the specified segment. */
   updateSegment(options: {
     segmentId: number,
     name: string,

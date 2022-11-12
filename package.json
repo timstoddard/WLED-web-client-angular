@@ -22,8 +22,6 @@
     "@angular/platform-browser-dynamic": "^14.2.4",
     "@angular/router": "^14.2.4",
     "@jaames/iro": "^5.5.2",
-    "@ngneat/elf": "^1.0.2",
-    "@ngneat/elf-entities": "^3.1.1",
     "ace-builds": "^1.4.13",
     "rxjs": "~7.4.0",
     "tslib": "^2.3.0",

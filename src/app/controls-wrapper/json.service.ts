@@ -31,7 +31,7 @@ export class JsonService {
   private getLocIp() {
     if (window.location.protocol === 'file:') {
       this.loc = true;
-      const locip = this.localStorageService.get<string>('locIp');
+      const locip = this.localStorageService.get<string>('locIp', '');
       if (locip) {
         this.locip = locip;
       } else {

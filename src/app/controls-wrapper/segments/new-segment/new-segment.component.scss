@@ -2,10 +2,12 @@
 
 :host {
   @include overrideMatTextInputStyles(--backgroundColorPrimary);
+  max-width: 450px;
+  width: 90%;
 }
 
 .newSegment {
-  @include segmentBaseStyles(270px);
+  @include segmentBaseStyles();
 
   > * {
     align-items: center;

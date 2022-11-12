@@ -118,6 +118,7 @@ $defaultSpacing: 5px;
 
     &__text {
       font-size: 14px;
+      user-select: none;
     }
   }
 

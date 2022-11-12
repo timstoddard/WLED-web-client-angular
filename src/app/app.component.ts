@@ -73,7 +73,7 @@ export class AppComponent extends UnsubscriberComponent {
     this.showDevNavBar = false;
 
     this.pageTitleService.updateOnRouteChange(this.ngUnsubscribe);
-    this.showDevNavBar = this.localStorageService.get(LocalStorageKey.SHOW_DEV_NAV_BAR)!;
+    this.showDevNavBar = this.localStorageService.get(LocalStorageKey.SHOW_DEV_NAV_BAR, false);
 
     // TODO fix safari viewport height bug
     // window.addEventListener('resize', this.appHeight);

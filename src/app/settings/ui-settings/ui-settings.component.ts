@@ -128,7 +128,8 @@ export class UISettingsComponent extends UnsubscriberComponent implements OnInit
   private createForm() {
     const form = this.formService.createFormGroup(this.getDefaultFormValues());
 
-    const config = this.localStorageService.get<AppUIConfig>(LocalStorageKey.UI_CONFIG);
+    const defaultConfig: any = {}; // TODO better defaults
+    const config = this.localStorageService.get<AppUIConfig>(LocalStorageKey.UI_CONFIG, defaultConfig);
     if (config) {
       const formValue = {
         showColorInputs: {

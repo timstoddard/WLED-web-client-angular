@@ -1,9 +1,13 @@
 import { Injectable } from '@angular/core';
 import { WledApiResponse, WledFileSystemInfo, WledInfo, WledLedInfo, WledNightLightState, WledNodesResponse, WledSegment, WledState, WledUdpState, WledWifiInfo } from './api-types';
 import { AppFileSystemInfo, AppInfo, AppLedInfo, AppNightLightState, AppWledState, AppState, AppUdpState, AppWifiInfo, AppNode, AppSegment } from './app-types';
+import { ClientOnlyFieldsService, createDefaultSegmentFields } from './client-only-fields.service';
 
 @Injectable({ providedIn: 'root' })
 export class ApiTypeMapper {
+  constructor(private clientOnlyFieldsService: ClientOnlyFieldsService) {
+  }
+
   /** Maps an entire WLED API response into the format expected by this app. */
   mapWledApiResponseToAppState = (
     { state, info, palettes, effects }: WledApiResponse,
@@ -50,31 +54,45 @@ export class ApiTypeMapper {
       ids: segmentIds,
     } = this.normalizeIds(segments);
 
-    return segments.map((segment, i) => ({
-      id: segmentIds[i],
-      isExpanded: false,
-      start: segment.start,
-      stop: segment.stop,
-      length: segment.len,
-      group: segment.grp,
-      space: segment.spc,
-      startOffset: segment.of,
-      colors: segment.col,
-      effectId: segment.fx,
-      effectSpeed: segment.sx,
-      effectIntensity: segment.ix,
-      paletteId: segment.pal,
-      isSelected: segment.sel,
-      isReversed: segment.rev,
-      isOn: segment.on,
-      brightness: segment.bri,
-      name: segment.n,
-      colorTemp: segment.cct,
-      isMirrored: segment.mi,
-      // TODO revisit these fields (see api types)
-      // loxonePrimaryRgb: segment.lx,
-      // loxoneSecondaryRgb: segment.ly,
-    }));
+    // read client only fields to join with API data
+    const segmentFieldsMap = this.clientOnlyFieldsService.getSegmentFieldsMap();
+
+    return segments.map((segment, i) => {
+      const id = segmentIds[i];
+
+      if (!segmentFieldsMap[id]) {
+        segmentFieldsMap[id] = createDefaultSegmentFields();
+      }
+
+      const clientOnlyFields = segmentFieldsMap[id];
+      const isExpanded = clientOnlyFields?.isExpanded || false;
+
+      return {
+        id,
+        isExpanded,
+        start: segment.start,
+        stop: segment.stop,
+        length: segment.len,
+        group: segment.grp,
+        space: segment.spc,
+        startOffset: segment.of,
+        colors: segment.col,
+        effectId: segment.fx,
+        effectSpeed: segment.sx,
+        effectIntensity: segment.ix,
+        paletteId: segment.pal,
+        isSelected: segment.sel,
+        isReversed: segment.rev,
+        isOn: segment.on,
+        brightness: segment.bri,
+        name: segment.n,
+        colorTemp: segment.cct,
+        isMirrored: segment.mi,
+        // TODO revisit these fields (see api types)
+        // loxonePrimaryRgb: segment.lx,
+        // loxoneSecondaryRgb: segment.ly,
+      }
+    });
   }
 
   /** Maps the `info` object in the WLED API resonse into the format expected by this app. */

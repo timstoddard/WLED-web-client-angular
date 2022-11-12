@@ -4,13 +4,17 @@ import { map, Subject, takeUntil } from 'rxjs';
 import { ApiTypeMapper } from '../api-type-mapper';
 import { WledApiResponse, WledNodesResponse } from '../api-types';
 import { AppInfo, AppLocalSettings, AppWledState, AppState, AppSegment } from '../app-types';
+import { ClientOnlyFieldsService, ClientOnlySegmentFieldsMap } from '../client-only-fields.service';
 import { DEFAULT_APP_STATE } from './app-state-defaults';
 
 @Injectable({ providedIn: 'root' })
 export class AppStateService {
   private appStateStore: Store;
 
-  constructor(private apiTypeMapper: ApiTypeMapper) {
+  constructor(
+    private apiTypeMapper: ApiTypeMapper,
+    private clientOnlyFieldsService: ClientOnlyFieldsService,
+  ) {
     this.appStateStore = new Store({
       name: 'WLED App State',
       ...createState(withProps<AppState>(DEFAULT_APP_STATE)),
@@ -70,7 +74,7 @@ export class AppStateService {
     this.selectFromAppState((n) => n.state.mainSegmentId)
       .pipe<AppWledState['mainSegmentId']>(takeUntil(ngUnsubscribe));
   getSegments = (ngUnsubscribe: Subject<void>) =>
-    this.selectFromAppState((n) => n.state.mainSegmentId)
+    this.selectFromAppState((n) => n.state.segments)
       .pipe<AppWledState['segments']>(takeUntil(ngUnsubscribe));
   getSelectedSegment = (ngUnsubscribe: Subject<void>) =>
     this.selectFromAppState((n) => n.state)
@@ -194,6 +198,17 @@ export class AppStateService {
     this.updateState({ liveViewOverride });
   setMainSegmentId = (mainSegmentId: AppWledState['mainSegmentId']) =>
     this.updateState({ mainSegmentId });
+  setSegments = (segments: AppWledState['segments']) => {
+    this.updateState({ segments });
+    // update client only fields store
+    const clientOnlyFieldsMap: ClientOnlySegmentFieldsMap = {};
+    for (const segment of segments) {
+      clientOnlyFieldsMap[segment.id] = {
+        isExpanded: segment.isExpanded,
+      };
+    }
+    this.clientOnlyFieldsService.updateSegmentIds(clientOnlyFieldsMap);
+  }
   setVersionName = (versionName: AppInfo['versionName']) =>
     this.updateInfo({ versionName });
   setVersionId = (versionId: AppInfo['versionId']) =>
