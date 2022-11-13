@@ -37,10 +37,19 @@
     </mat-form-field>
   </div>
 
-  <div class="newSegment__submitButtonWrapper">
+  <div class="newSegment__bottomButtons">
     <button
+      mat-raised-button
+      color="primary"
+      (click)="cancel()"
+      class="">
+      Cancel
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
       (click)="submitForm()"
-      class="newSegment__submitButton">
+      class="">
       Submit
     </button>
   </div>

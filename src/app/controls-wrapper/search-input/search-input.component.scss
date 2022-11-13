@@ -70,7 +70,7 @@
   }
 
   &__contextMenu {
-    @include overlay-container();
+    @include overlay-container;
     max-width: 40vw;
   }
 }

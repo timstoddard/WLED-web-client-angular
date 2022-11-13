@@ -115,6 +115,11 @@
   }
 }
 
+@mixin segmentHostBaseStyles() {
+  max-width: 600px;
+  width: 90%;
+}
+
 @mixin segmentBaseStyles() {
   background: var(--backgroundColorAccent);
   border: 1px solid var(--borderColorPrimary);
@@ -125,6 +130,7 @@
   margin: 10px;
   padding: 4px 20px;
 
+  // TODO audit usage
   &__nameFormField {
     margin-top: 2px;
     margin-bottom: -18px;
@@ -135,15 +141,17 @@
     }
   }
 
-  &__numberFormField {
-    margin: 0px 4px -12px;
-    max-width: 95px;
-    min-width: 95px;
+  // TODO remove?
+  // &__numberFormField {
+  //   font-size: 18px;
+  //   margin: 0px 4px -12px;
+  //   max-width: 70px;
+  //   min-width: 70px;
 
-    & ::ng-deep .mat-form-field-flex {
-      padding-top: 6px;
-    }
-  }
+  //   & ::ng-deep .mat-form-field-flex {
+  //     padding-top: 6px;
+  //   }
+  // }
 }
 
 // TODO this doesn't work

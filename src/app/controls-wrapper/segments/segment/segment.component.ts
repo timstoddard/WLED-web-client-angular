@@ -8,6 +8,16 @@ import { UnsubscriberComponent } from '../../../shared/unsubscribing/unsubscribe
 import { formatPlural } from '../../utils';
 import { SegmentsService } from '../segments.service';
 
+interface NumberInput {
+  name: string;
+  // TODO add description to UI via optional toggle
+  description: string;
+  inputs: Array<{
+    formControlName: string;
+    placeholder: string;
+  }>;
+}
+
 @Component({
   selector: 'app-segment',
   templateUrl: './segment.component.html',
@@ -15,36 +25,54 @@ import { SegmentsService } from '../segments.service';
 })
 export class SegmentComponent extends UnsubscriberComponent implements OnInit {
   @Input() segment!: AppSegment;
-  @Input() showDeleteButton: boolean = false;
   segmentForm!: FormGroup;
   isEditingName: boolean = false;
   ledCountLabel!: string;
   useSegmentLength!: boolean;
-  numberInputs = [
+  newNumberInputs: NumberInput[] = [
     {
-      formControlName: 'start',
-      label: 'Start LED',
-      placeholder: '0',
+      name: 'Start/Stop LED',
+      description: 'The first and last LEDs to be included in this segment.',
+      inputs: [
+        {
+          formControlName: 'start',
+          placeholder: '0',
+        },
+        {
+          formControlName: 'stop',
+          placeholder: '100',
+        },
+      ],
     },
     {
-      formControlName: 'stop',
-      label: 'Stop LED',
-      placeholder: '100',
+      name: 'Offset',
+      description: 'Offset before first LED.',
+      inputs: [
+        {
+          formControlName: 'offset',
+          placeholder: '0',
+        },
+      ],
     },
     {
-      formControlName: 'offset',
-      label: 'Offset',
-      placeholder: '0',
+      name: 'Grouping',
+      description: 'The group number that includes this segment.',
+      inputs: [
+        {
+          formControlName: 'grouping',
+          placeholder: '1',
+        },
+      ],
     },
     {
-      formControlName: 'grouping',
-      label: 'Grouping',
-      placeholder: '1',
-    },
-    {
-      formControlName: 'spacing',
-      label: 'Spacing',
-      placeholder: '0',
+      name: 'Spacing',
+      description: 'Number of LEDs to add space around the segment.',
+      inputs: [
+        {
+          formControlName: 'spacing',
+          placeholder: '0',
+        },
+      ],
     },
   ];
 
@@ -120,7 +148,7 @@ export class SegmentComponent extends UnsubscriberComponent implements OnInit {
   }
 
   getSegmentsLength() {
-    return this.segmentsService.getSegmentsLength();
+    return this.segmentsService.getSegments().length;
   }
 
   onNameKeyDown(event: KeyboardEvent) {

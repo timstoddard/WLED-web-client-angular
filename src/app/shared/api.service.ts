@@ -439,6 +439,18 @@ export class ApiService extends UnsubscriberService {
     return this.httpPostState(body);
   }
 
+  /** Sets the name of the specified segment. */
+  setSegmentName(segmentId: number, name: string) {
+    // TODO does this api call work?
+    const body = this.createBody({
+      seg: {
+        id: segmentId,
+        n: name,
+      },
+    });
+    return this.httpPostState(body);
+  }
+
   /**
    * Returns list of saved presets, sorted by ID in ascending order.
    * @returns 

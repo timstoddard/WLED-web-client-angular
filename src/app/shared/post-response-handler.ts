@@ -3,6 +3,9 @@ import { ApiTypeMapper } from './api-type-mapper';
 import { WledApiResponse, WledState } from './api-types';
 import { AppStateService } from './app-state/app-state.service';
 
+// TODO can this functionality be provided directly in the api service?
+// so we don't have to import & call it in many places
+
 @Injectable({ providedIn: 'root' })
 export class PostResponseHandler {
   constructor(
@@ -35,8 +38,8 @@ export class PostResponseHandler {
     // }
 
     // TODO wire up so this appStateService used if ws connection fails
-    this.appStateService.updateState(
-      this.apiTypeMapper.mapWledStateToAppWledState(response));
+    const newState = this.apiTypeMapper.mapWledStateToAppWledState(response);
+    this.appStateService.updateState(newState);
     console.log('POST response [state only]', response);
 
     // run any custom logic after updating the whole app state

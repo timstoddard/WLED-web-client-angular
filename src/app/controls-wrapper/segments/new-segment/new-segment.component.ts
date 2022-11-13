@@ -69,6 +69,11 @@ export class NewSegmentComponent extends UnsubscriberComponent implements OnInit
       });
   }
 
+  cancel() {
+    // TODO this mess up the submit listeners?
+    this.submit.emit();
+  }
+
   submitForm() {
     const {
       name,
@@ -118,7 +123,7 @@ export class NewSegmentComponent extends UnsubscriberComponent implements OnInit
   }
 
   private createForm() {
-    const defaultName = `Segment ${this.segmentsService.getSegmentsLength() + 1}`;
+    const defaultName = `Segment ${this.segmentsService.getSegments().length + 1}`;
     return this.formService.createFormGroup({
       name: defaultName,
       start: 0,

@@ -5,10 +5,10 @@
 <!-- TODO make own component -->
 <div class="segments__topMenuBar">
   <button
-    *ngIf="!showNewSegmentForm"
     mat-raised-button
     color="primary"
     (click)="setShowNewSegmentForm(true)"
+    [disabled]="showNewSegmentForm"
     class="segments__addButton">
     <!-- TODO or just a '+' sign? -->
     New Segment
@@ -45,7 +45,6 @@
 
   <app-segment
     *ngFor="let segment of getSegments()"
-    [segment]="segment"
-    [showDeleteButton]="showDeleteButtons">
+    [segment]="segment">
   </app-segment>
 </div>

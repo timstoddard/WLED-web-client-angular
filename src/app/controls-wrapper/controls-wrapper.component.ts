@@ -7,7 +7,6 @@ import { AppUIConfig, UIConfigService } from '../shared/ui-config.service';
 import { UnsubscriberComponent } from '../shared/unsubscribing/unsubscriber.component';
 import { ControlsService } from './controls.service';
 import { generateApiUrl } from './json.service';
-import { SegmentsService } from './segments/segments.service';
 
 @Component({
   selector: 'app-controls-wrapper',
@@ -31,7 +30,6 @@ export class ControlsWrapperComponent extends UnsubscriberComponent implements O
     private localStorageService: LocalStorageService,
     private route: ActivatedRoute,
     private appStateService: AppStateService,
-    private segmentsService: SegmentsService,
     private uiConfigService: UIConfigService,
   ) {
     super();
@@ -44,8 +42,6 @@ export class ControlsWrapperComponent extends UnsubscriberComponent implements O
     }
     // needed because only this response include palettes/effects lists
     this.appStateService.setAll(apiData);
-    // needed for offline mode to set the segments
-    this.segmentsService.loadApiSegments(apiData.state.seg);
 
     this.uiConfigService.getUIConfig(this.ngUnsubscribe)
       .subscribe((uiConfig) => {

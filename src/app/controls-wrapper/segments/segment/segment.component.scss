@@ -2,12 +2,11 @@
 
 :host {
   @include overrideMatTextInputStyles(--backgroundColorPrimary);
-  max-width: 420px;
-  width: 90%;
+  @include segmentHostBaseStyles;
 }
 
 .segment {
-  @include segmentBaseStyles();
+  @include segmentBaseStyles;
 
   &__header {
     align-items: center;
@@ -68,7 +67,7 @@
     padding: 10px;
 
     & > * {
-      margin: 4px;
+      margin: 6px;
     }
 
     & ::ng-deep .mat-button-wrapper {
@@ -97,6 +96,16 @@
     }
   }
 
+  &__checkboxes {
+    @include flex-center;
+    flex-direction: column;
+
+    & > * {
+      margin: 3px;
+      padding: 3px;
+    }
+  }
+
   &__numberButtonWrapper {
     align-items: center;
     display: flex;
@@ -107,5 +116,54 @@
   }
 
   &__applyButton {
+  }
+
+  &__numberInputWrapper {
+    @include flex-center;
+    border: 1px solid var(--borderColorAccent);
+    border-radius: 6px;
+    flex-direction: column;
+    padding: 4px 6px;
+
+    // breakpoint under which the number inputs start to wrap
+    @media screen and (max-width: 660px) {
+      flex-direction: row;
+    }
+  }
+
+  &__numberInputLabel {
+    margin: 3px;
+  }
+
+  &__numberInputs {
+    @include flex-center;
+    flex-wrap: nowrap;
+  }
+
+  &__numberInput {
+    @include forceWidth(69px);
+    background: transparent;
+    border: 1px solid var(--borderColorPrimary);
+    color: inherit;
+    font-size: 18px;
+    margin: 3px 0;
+    padding: 3px;
+    text-align: center;
+
+    &:first-of-type {
+      border-bottom-left-radius: 6px;
+      border-top-left-radius: 6px;
+      margin-left: 3px;
+    }
+
+    &:last-of-type {
+      border-bottom-right-radius: 6px;
+      border-top-right-radius: 6px;
+      margin-right: 3px;
+    }
+
+    &:not(:first-of-type) {
+      border-left: 0;
+    }
   }
 }
