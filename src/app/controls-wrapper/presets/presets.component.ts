@@ -138,8 +138,8 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
     this.updateSelectedPresetBackground();*/
   }
 
-  setShowCreateForm(show: boolean) {
-    this.showCreateForm = show;
+  setShowCreateForm(setShowCreateForm: boolean) {
+    this.showCreateForm = setShowCreateForm;
   }
 
   private getDefaultPlaylists() {
@@ -149,6 +149,7 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
     return playlist;
   }
 
+  // TODO do this in API service
   private loadPresets(callback?: () => void) {
     //1st boot (because there is a callback)
     if (callback && this.pmt === this.pmtLS && this.pmt > 0) {

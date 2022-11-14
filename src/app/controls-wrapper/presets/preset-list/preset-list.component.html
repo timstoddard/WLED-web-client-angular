@@ -2,34 +2,49 @@
   <span>
     All Presets
   </span>
-  <button
-    (click)="onAddPresetClick()"
-    class="presetList__title__createNew">
-    +
-  </button>
+  <div>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="toggleCreatePresetForm()"
+      class="presetList__title__createNew">
+      +
+    </button>
+  </div>
 </h2>
-<div class="presetList__items">
-  <div
+
+<app-preset-form
+  *ngIf="showCreateForm"
+  (closeForm)="toggleCreatePresetForm()">
+</app-preset-form>
+
+<ul class="presetList__items">
+  <li
     *ngFor="let preset of presets"
     class="presetListItem">
-    <div class="presetListItem__display">
+
+    <div class="presetListItem__mainContent">
       <div class="presetListItem__id">
         {{ preset.id }}
       </div>
-      <div class="presetListItem__name">
+      <h3 class="presetListItem__name">
         {{ renderPresetName(preset) }}
+      </h3>
+      <div>
+        <span
+          (click)="toggleEditPreset(preset.id)"
+          [ngClass]="{ 'presetListItem__expandIcon--expanded': preset.id === editPresetId }"
+          class="presetListItem__expandIcon material-symbols-outlined">
+          expand_more
+        </span>
       </div>
-      <button
-        (click)="toggleEditPreset(preset.id)"
-        class="presetListItem__editButton">
-        <!-- TODO pencil icon (?) -->
-        {{ preset.id === editPresetId ? 'Cancel' : 'Edit' }}
-      </button>
     </div>
+
     <app-preset-form
       *ngIf="preset.id === editPresetId"
       (closeForm)="toggleEditPreset(preset.id)"
       [preset]="preset">
     </app-preset-form>
-  </div>
-</div>
+
+  </li>
+</ul>

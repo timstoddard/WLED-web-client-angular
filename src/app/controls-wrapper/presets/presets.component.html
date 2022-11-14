@@ -2,13 +2,7 @@
   [presets]="presetsV2">
 </app-preset-quick-load>
 
-<app-preset-form
-  *ngIf="showCreateForm"
-  (closeForm)="setShowCreateForm(false)">
-</app-preset-form>
-
 <app-preset-list
-  (addPreset)="setShowCreateForm(true)"
   [presets]="presetsV2">
 </app-preset-list>
 

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Preset, PresetsService } from '../presets.service';
 
 const NO_PRESET_ID = -1;
@@ -8,18 +8,18 @@ const NO_PRESET_ID = -1;
   templateUrl: './preset-list.component.html',
   styleUrls: ['./preset-list.component.scss']
 })
-export class PresetListComponent implements OnInit {
+export class PresetListComponent {
   @Input() presets: Preset[] = [];
-  @Output() addPreset = new EventEmitter();
-  editPresetId = NO_PRESET_ID;
+  editPresetId: number;
+  showCreateForm: boolean;
 
-  constructor(private presetsService: PresetsService) { }
-
-  ngOnInit() {
+  constructor(private presetsService: PresetsService) {
+    this.editPresetId = NO_PRESET_ID;
+    this.showCreateForm = false;
   }
 
-  onAddPresetClick() {
-    this.addPreset.emit();
+  toggleCreatePresetForm() {
+    this.showCreateForm = !this.showCreateForm;
   }
 
   toggleEditPreset(presetId: number) {

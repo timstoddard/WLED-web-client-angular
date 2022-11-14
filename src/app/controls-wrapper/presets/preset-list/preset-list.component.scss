@@ -1,3 +1,5 @@
+@import 'src/app/shared/scss/mixins';
+
 :host {
   align-items: center;
   display: flex;
@@ -17,28 +19,11 @@
   }
 
   &__items {
-    display: flex;
-    flex-direction: column;
-    max-width: 600px;
-    text-align: center;
-    width: 90%; // 90vw;
+    @include listWrapperBaseStyles;
   }
 
   &Item {
-    display: flex;
-    flex-direction: column;
-
-    &__display {
-      align-items: flex-start;
-      display: flex;
-      justify-content: space-between;
-      padding: 5px 8px;
-      width: 100%;
-    
-      & > * {
-        padding: 4px 8px;
-      }
-    }
+    @include listItemBaseStyles;
   
     &__id {
       //
@@ -47,9 +32,18 @@
     &__name {
       //
     }
-  
-    &__editButton {
-      //
+
+  }
+
+  &__expandIcon {
+    cursor: pointer;
+    font-size: 30px;
+    transform: rotate(0deg);
+    transition: transform .35s ease;
+
+    &--expanded {
+      // TODO use angular animations
+      transform: rotate(180deg);
     }
   }
 }

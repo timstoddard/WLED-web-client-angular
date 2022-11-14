@@ -2,11 +2,11 @@
 
 :host {
   @include overrideMatTextInputStyles(--backgroundColorPrimary);
-  @include segmentHostBaseStyles;
+  @include listWrapperBaseStyles;
 }
 
 .newSegment {
-  @include segmentBaseStyles;
+  @include listItemBaseStyles;
 
   > * {
     align-items: center;

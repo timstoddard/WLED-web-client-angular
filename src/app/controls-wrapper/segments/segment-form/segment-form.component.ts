@@ -19,14 +19,13 @@ interface NumberInput {
 }
 
 @Component({
-  selector: 'app-segment',
-  templateUrl: './segment.component.html',
-  styleUrls: ['./segment.component.scss'],
+  selector: 'app-segment-form',
+  templateUrl: './segment-form.component.html',
+  styleUrls: ['./segment-form.component.scss'],
 })
-export class SegmentComponent extends UnsubscriberComponent implements OnInit {
+export class SegmentFormComponent extends UnsubscriberComponent implements OnInit {
   @Input() segment!: AppSegment;
   segmentForm!: FormGroup;
-  isEditingName: boolean = false;
   ledCountLabel!: string;
   useSegmentLength!: boolean;
   newNumberInputs: NumberInput[] = [
@@ -95,24 +94,6 @@ export class SegmentComponent extends UnsubscriberComponent implements OnInit {
     this.updateLedCountLabel(this.segment);
   }
 
-  selectOnlySegment() {
-    this.handleUnsubscribe(
-      this.segmentsService.selectOnlySegment(this.segment.id))
-      .subscribe(this.postResponseHandler.handleFullJsonResponse());
-  }
-
-  toggleEditName() {
-    this.isEditingName = !this.isEditingName;
-    if (!this.isEditingName) {
-      const segmentName = this.segmentForm.get('name')!.value as string;
-      this.segmentsService.setSegmentName(this.segment.id, segmentName);
-    }
-  }
-
-  toggleExpanded() {
-    this.segmentsService.toggleSegmentExpanded(this.segment.id);
-  }
-
   updateSegment() {
     // TODO if `stop < start` show validation error message, don't submit form
     const name = this.segmentForm.get('name')!.value as string;
@@ -151,13 +132,6 @@ export class SegmentComponent extends UnsubscriberComponent implements OnInit {
     return this.segmentsService.getSegments().length;
   }
 
-  onNameKeyDown(event: KeyboardEvent) {
-    if (event.key === 'Enter') {
-      this.toggleEditName();
-      event.stopImmediatePropagation();
-    }
-  }
-
   private updateLedCountLabel(segment: AppSegment) {
     const { start, stop } = segment;
     const length = stop - (this.useSegmentLength ? 0 : start);
@@ -183,12 +157,6 @@ export class SegmentComponent extends UnsubscriberComponent implements OnInit {
     this.handleUnsubscribe(
       this.segmentsService.setSegmentOn(this.segment.id, isOn))
       .subscribe(this.postResponseHandler.handleFullJsonResponse());
-  }
-
-  private toggleSelected(isSelected: boolean) {
-    this.handleUnsubscribe(
-      this.segmentsService.selectSegment(this.segment.id, isSelected))
-      .subscribe(this.postResponseHandler.handleStateResponse());
   }
 
   private setBrightness(brightness: number) {
@@ -231,8 +199,6 @@ export class SegmentComponent extends UnsubscriberComponent implements OnInit {
 
   private createForm() {
     const form = this.formService.createFormGroup({
-      isSelected: this.segment.isSelected,
-      name: this.segment.name,
       isOn: this.segment.isOn,
       brightness: this.segment.brightness,
       start: this.segment.start,
@@ -245,11 +211,9 @@ export class SegmentComponent extends UnsubscriberComponent implements OnInit {
     });
 
     // add validators
-    form.get('stop')?.addValidators(this.validateStopGreaterThanStart());
+    form.get('stop')!.addValidators(this.validateStopGreaterThanStart());
 
     // listen to value changes
-    this.getValueChanges<boolean>(form, 'isSelected')
-      .subscribe((isSelected: boolean) => this.toggleSelected(isSelected));
     this.getValueChanges<boolean>(form, 'isOn')
       .subscribe((isOn: boolean) => this.toggleOn(isOn));
     this.getValueChanges<number>(form, 'brightness')

@@ -33,7 +33,8 @@ import { PresetsComponent } from './presets/presets.component';
 import { RgbSlidersComponent } from './color-inputs/rgb-sliders/rgb-sliders.component';
 // import { RoverComponent } from './rover/rover.component';
 import { SearchInputComponent } from './search-input/search-input.component';
-import { SegmentComponent } from './segments/segment/segment.component';
+import { SegmentFormComponent } from './segments/segment-form/segment-form.component';
+import { SegmentListComponent } from './segments/segment-list/segment-list.component';
 import { SegmentsComponent } from './segments/segments.component';
 import { TopMenuBarComponent } from './top-menu-bar/top-menu-bar.component';
 
@@ -67,7 +68,8 @@ const COMPONENTS = [
   PresetsComponent,
   // RoverComponent,
   SearchInputComponent,
-  SegmentComponent,
+  SegmentFormComponent,
+  SegmentListComponent,
   SegmentsComponent,
   TopMenuBarComponent,
   COLOR_INPUTS,

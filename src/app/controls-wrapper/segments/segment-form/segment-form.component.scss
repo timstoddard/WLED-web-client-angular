@@ -2,61 +2,11 @@
 
 :host {
   @include overrideMatTextInputStyles(--backgroundColorPrimary);
-  @include segmentHostBaseStyles;
+  width: 100%;
 }
 
-.segment {
-  @include segmentBaseStyles;
-
-  &__header {
-    align-items: center;
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-  }
-
-  &__name {
-    align-items: center;
-    display: flex;
-
-    &__text {
-      font-size: 22px;
-      font-weight: bold;
-      text-transform: uppercase;
-      padding: 16px 0;
-    }
-
-    &__icon {
-      border: 1px solid var(--textColorAccent);
-      border-radius: 6px;
-      color: var(--textColorAccent);
-      cursor: pointer;
-      font-size: 20px;
-      margin-left: 10px;
-      padding: 2px;
-
-      &:hover {
-        border-color: var(--textColorPrimary);
-        color: var(--textColorPrimary);
-      }
-    }
-  }
-
-  &__expandIcon {
-    cursor: pointer;
-    font-size: 30px;
-    transform: rotate(0deg);
-    transition: transform 2.5s ease;
-
-    &--expanded {
-      // TODO use angular animations
-      transform: rotate(180deg);
-    }
-  }
-
-  &__content {
-    margin-top: 8px;
-  }
+.segmentForm {
+  width: 100%;
 
   &__row {
     align-items: center;

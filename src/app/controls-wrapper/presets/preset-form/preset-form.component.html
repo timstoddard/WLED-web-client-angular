@@ -1,22 +1,8 @@
 <div
   [formGroup]="newPreset"
   class="presetForm">
-  <h2 class="presetForm__header">
-    {{ preset ? 'Edit' : 'Add' }} Preset
-  </h2>
 
-  <div class="presetForm__row presetForm__row1">
-    <mat-form-field
-      appearance="fill"
-      class="presetForm__id">
-      <mat-label>ID</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="id"
-        class="">
-    </mat-form-field>
-
+  <div class="presetForm__row">
     <mat-form-field
       appearance="fill"
       class="presetForm__name">
@@ -27,18 +13,31 @@
         class="">
     </mat-form-field>
 
-    <mat-form-field
-      appearance="fill"
-      class="presetForm__quickLoadLabel">
-      <mat-label>Quick Load label</mat-label>
-      <input
-        matInput
-        formControlName="quickLoadLabel"
-        class="">
-    </mat-form-field>
+    <div class="presetForm__horizontalSection">
+      <mat-form-field
+        appearance="fill"
+        class="presetForm__id">
+        <mat-label>ID</mat-label>
+        <input
+          matInput
+          type="number"
+          formControlName="id"
+          class="">
+      </mat-form-field>
+  
+      <mat-form-field
+        appearance="fill"
+        class="presetForm__quickLoadLabel">
+        <mat-label>Quick Load label</mat-label>
+        <input
+          matInput
+          formControlName="quickLoadLabel"
+          class="">
+      </mat-form-field>
+    </div>
   </div>
 
-  <div class="presetForm__row presetForm__row2">
+  <div class="presetForm__row">
     <mat-checkbox
       formControlName="useCurrentState"
       class="">
@@ -73,16 +72,22 @@
     </ng-template>
   </div>
 
-  <div class="presetForm__row presetForm__row3">
-    <button
-      (click)="emitCloseForm()"
-      class="">
-      Cancel
-    </button>
-    <button
-      (click)="savePreset()"
-      class="">
-      Save
-    </button>
+  <div class="presetForm__row">
+    <div class="presetForm__bottomButtons presetForm__horizontalSection">
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="emitCloseForm()"
+        class="">
+        Cancel
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="savePreset()"
+        class="">
+        Save
+      </button>
+    </div>
   </div>
 </div>

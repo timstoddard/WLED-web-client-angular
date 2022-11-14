@@ -33,18 +33,14 @@
   </button>
 </div>
 
-<!-- TODO make own component -->
-<div class="segments__list">
-  <app-new-segment
-    *ngIf="showNewSegmentForm"
-    (submit)="setShowNewSegmentForm(false)"
-    [newSegmentId]="getSegments().length"
-    [ledCount]="ledCount"
-    [lastLed]="lastLed">
-  </app-new-segment>
+<app-new-segment
+  *ngIf="showNewSegmentForm"
+  (submit)="setShowNewSegmentForm(false)"
+  [newSegmentId]="getSegments().length"
+  [ledCount]="ledCount"
+  [lastLed]="lastLed">
+</app-new-segment>
 
-  <app-segment
-    *ngFor="let segment of getSegments()"
-    [segment]="segment">
-  </app-segment>
-</div>
+<app-segment-list
+  [segments]="getSegments()">
+</app-segment-list>

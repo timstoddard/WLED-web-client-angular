@@ -2,10 +2,11 @@
   Quick Load
 </h2>
 <div class="presetQuickLoad__buttons">
-  <button
-    *ngFor="let preset of presets"
-    (click)="loadPreset(preset.id)"
-    class="presetQuickLoad__button">
-    {{ preset.quickLoadLabel }}
-  </button>
+  <div *ngFor="let preset of presets">
+    <div
+      (click)="loadPreset(preset.id)"
+      class="presetQuickLoad__button">
+      {{ preset.quickLoadLabel }}
+    </div>
+  </div>
 </div>

@@ -1,0 +1,64 @@
+<ul class="segmentList">
+  <li
+    *ngFor="let segment of segments; let i = index"
+    [formGroup]="segmentFormGroupMap[segment.id]"
+    class="segmentListItem">
+
+    <div class="segmentListItem__mainContent">
+      <mat-checkbox
+        formControlName="isSelected"
+        class="">
+      </mat-checkbox>
+  
+      <div
+        *ngIf="segment.id !== editSegmentId; else nameEditor"
+        class="segmentList__name">
+        <span
+          (click)="selectOnlySegment(segment.id)"
+          class="segmentList__name__text">
+          {{ segment.name }}
+        </span>
+        <span
+          (click)="toggleEditName(segment.id)"
+          class="segmentList__name__icon material-symbols-outlined">
+          edit
+        </span>
+      </div>
+      <ng-template #nameEditor>
+        <div class="segmentList__name">
+          <mat-form-field
+            appearance="fill"
+            class="segmentList__nameFormField">
+            <mat-label>Segment Name</mat-label>
+            <input
+              matInput
+              formControlName="name"
+              (keydown)="onNameKeyDown(segment.id, $event)"
+              placeholder="Name"
+              maxlength=32
+              autocomplete="off"
+              class="">
+          </mat-form-field>
+          <span
+            (click)="toggleEditName(segment.id)"
+            class="segmentList__name__icon material-symbols-outlined">
+            done
+          </span>
+        </div>
+      </ng-template>
+  
+      <span
+        (click)="toggleExpanded(segment.id)"
+        [ngClass]="{ 'segmentListItem__expandIcon--expanded': segment.isExpanded }"
+        class="segmentListItem__expandIcon material-symbols-outlined">
+        expand_more
+      </span>
+    </div>
+
+    <app-segment-form
+      *ngIf="segment.isExpanded"
+      (closeForm)="toggleExpanded(segment.id)"
+      [segment]="segment">
+    </app-segment-form>
+  </li>
+</ul>
