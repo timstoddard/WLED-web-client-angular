@@ -54,6 +54,7 @@
     </div>
 
     <app-segment-form
+      @expand
       *ngIf="segment.isExpanded"
       (closeForm)="toggleExpanded(segment.id)"
       [segment]="segment">

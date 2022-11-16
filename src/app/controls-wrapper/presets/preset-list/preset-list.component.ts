@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { expandFade } from '../../../shared/animations';
 import { Preset, PresetsService } from '../presets.service';
 
 const NO_PRESET_ID = -1;
@@ -6,7 +7,8 @@ const NO_PRESET_ID = -1;
 @Component({
   selector: 'app-preset-list',
   templateUrl: './preset-list.component.html',
-  styleUrls: ['./preset-list.component.scss']
+  styleUrls: ['./preset-list.component.scss'],
+  animations: [expandFade],
 })
 export class PresetListComponent {
   @Input() presets: Preset[] = [];

@@ -37,6 +37,7 @@
     </div>
 
     <app-preset-form
+      @expand
       *ngIf="preset.id === editPresetId"
       (closeForm)="toggleEditPreset(preset.id)"
       [preset]="preset">

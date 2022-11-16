@@ -5,6 +5,7 @@ import { FormService } from '../../../shared/form-service';
 import { PostResponseHandler } from '../../../shared/post-response-handler';
 import { UnsubscriberComponent } from '../../../shared/unsubscribing/unsubscriber.component';
 import { SegmentsService } from '../segments.service';
+import { expandFade } from '../../../shared/animations';
 
 interface FormGroupMap {
   [segmentId: number]: FormGroup;
@@ -13,7 +14,8 @@ interface FormGroupMap {
 @Component({
   selector: 'app-segment-list',
   templateUrl: './segment-list.component.html',
-  styleUrls: ['./segment-list.component.scss']
+  styleUrls: ['./segment-list.component.scss'],
+  animations: [expandFade],
 })
 export class SegmentListComponent extends UnsubscriberComponent implements OnInit {
   @Input() segments: AppSegment[] = [];
