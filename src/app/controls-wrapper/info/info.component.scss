@@ -35,16 +35,23 @@
   }
 
   &__flexContainer {
+    $itemMargin: 10px;
+    $itemMaxWidth: 500px;
+
     align-items: flex-start;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    margin: 0 auto;
+    max-width: #{($itemMaxWidth + $itemMargin * 2) * 2 + 1};
 
     & > * {
       border: 1px solid var(--borderColorPrimary);
       border-radius: 6px;
-      margin: 10px;
+      margin: $itemMargin;
+      max-width: $itemMaxWidth;
       padding: 8px;
+      width: 90%;
     }
   }
 
