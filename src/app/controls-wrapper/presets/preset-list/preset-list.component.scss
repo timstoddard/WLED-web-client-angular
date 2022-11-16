@@ -8,13 +8,11 @@
 
 .presetList {
   &__title {
-    align-items: center;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
+    @include flex-center;
+    margin: 6px;
 
     &__createNew {
-      margin: 4px 8px;
+      margin: 6px;
     }
   }
 
@@ -24,26 +22,5 @@
 
   &Item {
     @include listItemBaseStyles;
-  
-    &__id {
-      //
-    }
-  
-    &__name {
-      //
-    }
-
-  }
-
-  &__expandIcon {
-    cursor: pointer;
-    font-size: 30px;
-    transform: rotate(0deg);
-    transition: transform .35s ease;
-
-    &--expanded {
-      // TODO use angular animations
-      transform: rotate(180deg);
-    }
   }
 }

@@ -30,14 +30,10 @@
       <h3 class="presetListItem__name">
         {{ renderPresetName(preset) }}
       </h3>
-      <div>
-        <span
-          (click)="toggleEditPreset(preset.id)"
-          [ngClass]="{ 'presetListItem__expandIcon--expanded': preset.id === editPresetId }"
-          class="presetListItem__expandIcon material-symbols-outlined">
-          expand_more
-        </span>
-      </div>
+      <app-expand-icon
+        (toggle)="toggleEditPreset(preset.id)"
+        [expanded]="preset.id === editPresetId">
+      </app-expand-icon>
     </div>
 
     <app-preset-form

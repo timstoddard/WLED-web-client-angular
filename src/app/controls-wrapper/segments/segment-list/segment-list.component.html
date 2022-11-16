@@ -13,11 +13,11 @@
       <div
         *ngIf="segment.id !== editSegmentId; else nameEditor"
         class="segmentList__name">
-        <span
+        <h3
           (click)="selectOnlySegment(segment.id)"
           class="segmentList__name__text">
           {{ segment.name }}
-        </span>
+        </h3>
         <span
           (click)="toggleEditName(segment.id)"
           class="segmentList__name__icon material-symbols-outlined">
@@ -28,7 +28,7 @@
         <div class="segmentList__name">
           <mat-form-field
             appearance="fill"
-            class="segmentList__nameFormField">
+            class="">
             <mat-label>Segment Name</mat-label>
             <input
               matInput
@@ -47,12 +47,10 @@
         </div>
       </ng-template>
   
-      <span
-        (click)="toggleExpanded(segment.id)"
-        [ngClass]="{ 'segmentListItem__expandIcon--expanded': segment.isExpanded }"
-        class="segmentListItem__expandIcon material-symbols-outlined">
-        expand_more
-      </span>
+      <app-expand-icon
+        (toggle)="toggleExpanded(segment.id)"
+        [expanded]="segment.isExpanded">
+      </app-expand-icon>
     </div>
 
     <app-segment-form

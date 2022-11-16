@@ -145,18 +145,6 @@
     }
   }
 
-  &__expandIcon {
-    cursor: pointer;
-    font-size: 30px;
-    transform: rotate(0deg);
-    transition: transform .35s ease;
-  
-    &--expanded {
-      // TODO use angular animations
-      transform: rotate(180deg);
-    }
-  }
-
   // TODO audit usage
   &__nameFormField {
     margin-top: 2px;

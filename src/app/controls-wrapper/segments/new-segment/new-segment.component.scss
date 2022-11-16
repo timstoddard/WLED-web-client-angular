@@ -6,6 +6,7 @@
 }
 
 .newSegment {
+  // TODO maybe don't use this here
   @include listItemBaseStyles;
 
   > * {

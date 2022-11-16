@@ -9,18 +9,16 @@
 
   &Item {
     @include listItemBaseStyles;
-    @include flex-center;
   }
   
   &__name {
-    align-items: center;
-    display: flex;
+    @include flex-center;
   
     &__text {
       font-size: 22px;
       font-weight: bold;
+      margin: 0;
       text-transform: uppercase;
-      padding: 16px 0;
     }
   
     &__icon {

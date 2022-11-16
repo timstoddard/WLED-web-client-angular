@@ -20,6 +20,7 @@ import { ControlsRoutingModule } from './controls-routing.module';
 import { ControlsServicesModule } from './controls-services.module';
 import { DeviceSelectorComponent } from './top-menu-bar/device-selector/device-selector.component';
 import { EffectsComponent } from './effects/effects.component';
+import { ExpandIconComponent } from '../shared/expand-icon/expand-icon.component';
 import { HexInputComponent } from './color-inputs/hex-input/hex-input.component';
 import { InfoComponent } from './info/info.component';
 import { LiveViewModule } from '../shared/live-view/live-view.module';
@@ -50,6 +51,7 @@ const COLOR_INPUTS = [
 
 const SHARED_COMPONENTS = [
   ColorSliderComponent,
+  ExpandIconComponent,
 ]
 
 const COMPONENTS = [
