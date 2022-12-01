@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { App, Tags } from 'aws-cdk-lib'
-import { CloudFrontStack, CloudFrontStackProps } from '../lib/cloudfront-stack'
+import { CloudFrontWebsiteStack, CloudFrontStackProps } from '../lib/cloudfront-website-stack'
 
 const app = new App()
 
@@ -27,8 +27,8 @@ for (const website of websites) {
     websiteDescription,
     publicSSLCertificateArn,
   } = website
-  // NOTE: bucket region will be `aws configure` setting
-  const websiteInfraStack = new CloudFrontStack(app, 'CloudFrontStack', {
+
+  const websiteInfraStack = new CloudFrontWebsiteStack(app, 'CloudFrontWebsiteStack', {
     websiteUrl,
     websiteDescription,
     publicSSLCertificateArn,

@@ -1,11 +1,11 @@
 import * as cdk from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
-import { CloudFrontStack } from '../lib/cloudfront-stack';
+import { CloudFrontWebsiteStack } from '../lib/cloudfront-website-stack';
 
 test('SQS Queue and SNS Topic Created', () => {
   const app = new cdk.App();
   // WHEN
-  const stack = new CloudFrontStack(app, 'MyTestStack', {
+  const stack = new CloudFrontWebsiteStack(app, 'MyTestStack', {
     websiteUrl: '',
     websiteDescription: '',
     publicSSLCertificateArn: '',

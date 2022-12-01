@@ -6,6 +6,7 @@
     "start": "ng serve",
     "build": "npm run clean && ng build",
     "deploy": "npm run build && ./scripts/deploy-website.sh dist/WLED-Web-Client",
+    "deploy-infra": "./scripts/deploy-website.sh dist/WLED-Web-Client",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "clean": "rm -rf dist"
