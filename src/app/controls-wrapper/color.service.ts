@@ -7,7 +7,6 @@ import { AppStateService } from '../shared/app-state/app-state.service';
 import { AppLedInfo } from '../shared/app-types';
 import { PostResponseHandler } from '../shared/post-response-handler';
 import { UnsubscriberService } from '../shared/unsubscribing/unsubscriber.service';
-import { ControlsServicesModule } from './controls-services.module';
 
 export interface CurrentColor {
   rgb: RgbColor;
@@ -17,7 +16,7 @@ export interface CurrentColor {
   kelvin: number;
 }
 
-@Injectable({ providedIn: ControlsServicesModule })
+@Injectable()
 export class ColorService extends UnsubscriberService {
   private _colorPicker!: iro.ColorPicker;
   private currentColorData$: Subject<CurrentColor>;

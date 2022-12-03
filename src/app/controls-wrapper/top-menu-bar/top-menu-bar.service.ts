@@ -6,7 +6,6 @@ import { AppStateService } from '../../shared/app-state/app-state.service';
 import { PostResponseHandler } from '../../shared/post-response-handler';
 import { UnsubscriberService } from '../../shared/unsubscribing/unsubscriber.service';
 import { WebSocketService } from '../../shared/web-socket.service';
-import { ControlsServicesModule } from '../controls-services.module';
 
 export class TopMenuBarButtonName {
   static readonly POWER = 'Power';
@@ -16,7 +15,7 @@ export class TopMenuBarButtonName {
   static readonly PC_MODE = 'PC Mode';
 }
 
-@Injectable({ providedIn: ControlsServicesModule })
+@Injectable()
 export class TopMenuBarService extends UnsubscriberService {
   private processingStatus!: { [key: string]: boolean };
 

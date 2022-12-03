@@ -3,9 +3,8 @@ import { ApiService } from '../../shared/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { AppSegment } from '../../shared/app-types';
 import { UnsubscriberService } from '../../shared/unsubscribing/unsubscriber.service';
-import { ControlsServicesModule } from '../controls-services.module';
 
-@Injectable({ providedIn: ControlsServicesModule })
+@Injectable()
 export class SegmentsService extends UnsubscriberService {
   private segments: AppSegment[];
   private ledCount: number;

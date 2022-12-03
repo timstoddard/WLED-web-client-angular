@@ -3,10 +3,9 @@ import { ApiService } from '../../shared/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { AppFileSystemInfo, AppInfo, AppLedInfo } from '../../shared/app-types';
 import { UnsubscriberService } from '../../shared/unsubscribing/unsubscriber.service';
-import { ControlsServicesModule } from '../controls-services.module';
 import { formatPlural } from '../utils';
 
-@Injectable({ providedIn: ControlsServicesModule })
+@Injectable()
 export class InfoService extends UnsubscriberService {
   constructor(
     private apiService: ApiService,

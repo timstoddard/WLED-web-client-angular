@@ -3,11 +3,10 @@ import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/r
 import { forkJoin, of } from 'rxjs';
 import { ApiService } from '../../shared/api.service';
 import { OnlineStatusService } from '../../shared/online-status.service';
-import { ControlsServicesModule } from '../controls-services.module';
 import { MOCK_PALETTES_DATA } from '../mock-api-data';
 import { PalettesApiData } from './palettes.service';
 
-@Injectable({ providedIn: ControlsServicesModule })
+@Injectable()
 export class PalettesDataResolver implements Resolve<PalettesApiData[]> {
   constructor(
     private apiService: ApiService,

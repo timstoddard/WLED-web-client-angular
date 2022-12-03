@@ -3,10 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { ApiService } from '../../shared/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
-import { AppWledState } from '../../shared/app-types';
 import { UnsubscriberService } from '../../shared/unsubscribing/unsubscriber.service';
 import { ColorSlotsService } from '../color-inputs/color-slots/color-slots.service';
-import { ControlsServicesModule } from '../controls-services.module';
 import { compareNames, findRouteData } from '../utils';
 
 // TODO do these types belong here?
@@ -38,7 +36,7 @@ export interface PaletteWithoutBackground {
 
 const NONE_SELECTED = -1;
 
-@Injectable({ providedIn: ControlsServicesModule })
+@Injectable()
 export class PalettesService extends UnsubscriberService {
   private sortedPalettes!: PaletteWithBackground[];
   private filteredPalettes$: BehaviorSubject<PaletteWithBackground[]>;

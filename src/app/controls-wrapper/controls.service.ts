@@ -2,9 +2,8 @@ import { Injectable } from '@angular/core';
 import { AppStateService } from '../shared/app-state/app-state.service';
 import { UnsubscriberService } from '../shared/unsubscribing/unsubscriber.service';
 import { WebSocketService } from '../shared/web-socket.service';
-import { ControlsServicesModule } from './controls-services.module';
 
-@Injectable({ providedIn: ControlsServicesModule })
+@Injectable()
 export class ControlsService extends UnsubscriberService {
   constructor(
     private webSocketService: WebSocketService,

@@ -3,7 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../shared/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { UnsubscriberService } from '../../shared/unsubscribing/unsubscriber.service';
-import { ControlsServicesModule } from '../controls-services.module';
 
 export interface Preset {
   id: number;
@@ -12,7 +11,7 @@ export interface Preset {
   apiValue: string;
 }
 
-@Injectable({ providedIn: ControlsServicesModule })
+@Injectable()
 export class PresetsService extends UnsubscriberService {
   constructor(
     private apiService: ApiService,

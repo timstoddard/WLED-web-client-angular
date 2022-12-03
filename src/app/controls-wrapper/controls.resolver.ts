@@ -3,11 +3,10 @@ import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/r
 import { of } from 'rxjs';
 import { ApiService } from '../shared/api.service';
 import { WledApiResponse } from '../shared/api-types';
-import { ControlsServicesModule } from './controls-services.module';
 import { MOCK_API_RESPONSE } from './mock-api-data';
 import { OnlineStatusService } from '../shared/online-status.service';
 
-@Injectable({ providedIn: ControlsServicesModule })
+@Injectable()
 export class ControlsResolver implements Resolve<WledApiResponse> {
   constructor(
     private apiService: ApiService,

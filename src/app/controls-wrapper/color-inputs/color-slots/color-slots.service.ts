@@ -3,7 +3,6 @@ import { BehaviorSubject } from 'rxjs';
 import { AppStateService } from '../../../shared/app-state/app-state.service';
 import { UnsubscriberService } from '../../../shared/unsubscribing/unsubscriber.service';
 import { ColorService, CurrentColor } from '../../color.service';
-import { ControlsServicesModule } from '../../controls-services.module';
 
 const DEFAULT_SLOT_COUNT = 3;
 const DEFAULT_SLOT = 0;
@@ -14,7 +13,7 @@ const DEFAULT_COLORS = [
 ];
 const DEFAULT_WHITE_CHANNELS = [0, 0, 0];
 
-@Injectable({ providedIn: ControlsServicesModule })
+@Injectable()
 export class ColorSlotsService extends UnsubscriberService {
   private selectedColor$: BehaviorSubject<string>;
   private slots: number[] = [];
