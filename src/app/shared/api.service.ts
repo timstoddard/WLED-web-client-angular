@@ -15,7 +15,7 @@ import { UnsubscriberService } from './unsubscribing/unsubscriber.service';
 
 const ALL_JSON_PATH = 'json';
 const STATE_INFO_PATH = 'json/si';
-const STATES_PATH = 'json/state';
+const STATE_PATH = 'json/state';
 const INFO_PATH = 'json/info';
 const EFFECTS_PATH = 'json/eff';
 const PALETTES_PATH = 'json/pal';
@@ -82,7 +82,7 @@ export class ApiService extends UnsubscriberService {
       // return fake data
       return of(offlineDefault);
     } else {
-      // TODO handle unsubscribe here (post too)
+      // TODO if http error, return offline default
       return this.http.get<T>(url, options);
     }
   }
@@ -112,7 +112,7 @@ export class ApiService extends UnsubscriberService {
 
   private httpPostState = (body: any) => {
     return this.httpPost<WledState>(
-      this.createApiUrl(STATES_PATH),
+      this.createApiUrl(STATE_PATH),
       body,
       MOCK_API_RESPONSE.state,
     );
@@ -164,7 +164,7 @@ export class ApiService extends UnsubscriberService {
   /** Contains the current state of the light. All values may be modified by the client. */
   getState() {
     return this.httpGet<WledState>(
-      this.createApiUrl(STATES_PATH), MOCK_API_RESPONSE.state);
+      this.createApiUrl(STATE_PATH), MOCK_API_RESPONSE.state);
   }
 
   /** Contains general information about the device. All values are read-only. */
@@ -464,6 +464,7 @@ export class ApiService extends UnsubscriberService {
     }
 
     const url = this.createApiUrl('presets.json');
+    // TODO don't load this when calling a disconnected wled instance
     const presets = this.httpGet<APIPresets>(url, MOCK_API_PRESETS)
       .pipe(
         map((apiPresets: APIPresets) => {

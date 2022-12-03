@@ -6,7 +6,11 @@ import {
   transition,
 } from '@angular/animations';
 
-const ANIMATION_DURATION_MS = 250;
+const ENTER_ANIMATION_DURATION_MS = 420 / 2;
+const LEAVE_ANIMATION_DURATION_MS = 420 / 4;
+
+const enterDuration = `${ENTER_ANIMATION_DURATION_MS}ms`;
+const leaveDuration = `${LEAVE_ANIMATION_DURATION_MS}ms`;
 
 export const expandFade = trigger('expand', [
   transition(':enter', [
@@ -14,11 +18,11 @@ export const expandFade = trigger('expand', [
       height: 0,
       opacity: 0,
     }),
-    animate(`${ANIMATION_DURATION_MS}ms`, style({
+    animate(enterDuration, style({
       height: AUTO_STYLE,
       opacity: 0,
     })),
-    animate(`${ANIMATION_DURATION_MS}ms`, style({
+    animate(enterDuration, style({
       height: AUTO_STYLE,
       opacity: 1,
     })),
@@ -28,11 +32,11 @@ export const expandFade = trigger('expand', [
       height: AUTO_STYLE,
       opacity: 1,
     }),
-    animate(`${ANIMATION_DURATION_MS}ms`, style({
+    animate(leaveDuration, style({
       height: AUTO_STYLE,
       opacity: 0,
     })),
-    animate(`${ANIMATION_DURATION_MS}ms`, style({
+    animate(leaveDuration, style({
       height: 0,
       opacity: 0,
     })),
