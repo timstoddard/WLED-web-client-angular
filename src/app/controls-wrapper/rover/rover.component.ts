@@ -13,8 +13,8 @@ export class RoverComponent implements OnInit {
   ngOnInit() {
   }
 
-  setLor(lor: number) { // TODO better name ("set light override??")
-    // TODO this.roverService.setLor()
+  setLiveViewOverride(lor: number) { // TODO better name ("set light override??")
+    // TODO this.roverService.setLiveViewOverride()
   }
 
   displayRover(info: any /* TODO type */, state: any /* TODO type */) {

@@ -1,5 +1,3 @@
-import { WledSegment } from './api-types';
-
 // TODO add comments to properties (can mostly copy from api types)
 
 export interface AppState {
@@ -55,7 +53,7 @@ export interface AppInfo {
   readonly wledDevicesOnNetwork: number;
   readonly platform: string;
   readonly arduinoVersion: string;
-  readonly freeHeapBytes: number; // TODO is this bytes or other unit?
+  readonly freeHeapBytes: number;
   readonly uptimeSeconds: number;
   readonly opt: number; // TODO is this needed?
   readonly brand: string;

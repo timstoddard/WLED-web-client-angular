@@ -93,7 +93,7 @@ export class ApiService extends UnsubscriberService {
 
   private httpPost = <T = WledApiResponse | WledState>(
     url: string,
-    body: any,
+    body: { [key: string]: unknown },
     offlineDefault: T,
   ) => {
     if (this.isBaseUrlUnset()) {
@@ -105,18 +105,18 @@ export class ApiService extends UnsubscriberService {
     }
   }
 
-  private httpPostStateAndInfo = (body: any) => {
+  private httpPostStateAndInfo = (data: { [key: string]: unknown }) => {
     return this.httpPost<WledApiResponse>(
       this.createApiUrl(STATE_INFO_PATH),
-      body,
+      this.createBody(data),
       MOCK_API_RESPONSE,
     );
   }
 
-  private httpPostState = (body: any) => {
+  private httpPostState = (data: { [key: string]: unknown }) => {
     return this.httpPost<WledState>(
       this.createApiUrl(STATE_PATH),
-      body,
+      this.createBody(data),
       MOCK_API_RESPONSE.state,
     );
   }
@@ -209,40 +209,45 @@ export class ApiService extends UnsubscriberService {
 
   /** Sets current palette by id. */
   setPalette(paletteId: number) {
-    const body = this.createBody({
-      seg: { pal: paletteId },
+    return this.httpPostStateAndInfo({
+      seg: {
+        pal: paletteId,
+      },
     });
-    return this.httpPostStateAndInfo(body);
   }
 
   /** Sets current effect by id. */
   setEffect(effectId: number) {
-    const body = this.createBody({
-      seg: { fx: effectId },
+    return this.httpPostStateAndInfo({
+      seg: {
+        fx: effectId,
+      },
     });
-    return this.httpPostStateAndInfo(body);
   }
 
   /** Sets light brightness. */
   setBrightness(brightness: number) {
-    const body = this.createBody({ bri: brightness });
-    return this.httpPostStateAndInfo(body);
+    return this.httpPostStateAndInfo({
+      bri: brightness,
+    });
   }
 
   /** Sets effect speed. */
   setSpeed(speed: number) {
-    const body = this.createBody({
-      seg: { sx: speed },
+    return this.httpPostState({
+      seg: {
+        sx: speed,
+      },
     });
-    return this.httpPostState(body);
   }
 
   /** Sets effect intensity. */
   setIntensity(intensity: number) {
-    const body = this.createBody({
-      seg: { ix: intensity },
+    return this.httpPostState({
+      seg: {
+        ix: intensity,
+      },
     });
-    return this.httpPostState(body);
   }
 
   /**
@@ -257,33 +262,37 @@ export class ApiService extends UnsubscriberService {
     // TODO allow for variable # of slots?
     const colors: number[][] = [[], [], []];
     colors[slot] = [r, g, b, w];
-    const body = this.createBody({
-      seg: { col: colors },
+    return this.httpPostStateAndInfo({
+      seg: {
+        col: colors,
+      },
     });
-    return this.httpPostStateAndInfo(body);
   }
 
   // TODO potentially not needed?
   /** Sets white balance. */
   setWhiteBalance(whiteBalance: number) {
-    const body = this.createBody({
-      seg: { cct: whiteBalance },
+    return this.httpPostStateAndInfo({
+      seg: {
+        cct: whiteBalance,
+      },
     });
-    return this.httpPostStateAndInfo(body);
   }
 
   /** Toggles the LED strip(s) on/off. */
   togglePower(isOn: boolean) {
-    const body = this.createBody({ on: isOn });
-    return this.httpPostStateAndInfo(body);
+    return this.httpPostStateAndInfo({
+      on: isOn,
+    });
   }
 
   /** Toggles the night light timer on/off. */
   toggleNightLight(isNightLightActive: boolean) {
-    const body = this.createBody({
-      nl: { on: isNightLightActive },
+    return this.httpPostStateAndInfo({
+      nl: {
+        on: isNightLightActive,
+      },
     });
-    return this.httpPostStateAndInfo(body);
   }
 
   /** Toggles the night light timer on/off. */
@@ -294,51 +303,66 @@ export class ApiService extends UnsubscriberService {
     if (shouldToggleReceiveWithSend) {
       udpn.recv = shouldSync;
     }
-    const body = this.createBody({ udpn });
-    return this.httpPostStateAndInfo(body);
+    return this.httpPostStateAndInfo({
+      udpn,
+    });
   }
 
   /** Selects the specified segment. */
   selectSegment(segmentId: number, isSelected: boolean) {
-    const body = this.createBody({
+    return this.httpPostState({
       seg: {
         id: segmentId,
         sel: isSelected,
       },
     });
-    return this.httpPostState(body);
   }
 
   /** Selects the specified segment and deselects all others. */
   selectOnlySegment(segmentId: number, segmentsLength: number) {
-    const seg = [];
+    const segments = [];
     for (let i = 0; i < segmentsLength; i++) {
-      seg.push({ sel: i === segmentId });
+      segments.push({ sel: i === segmentId });
     }
-    const body = this.createBody({ seg });
-    return this.httpPostStateAndInfo(body);
+    return this.httpPostStateAndInfo({
+      seg: segments,
+    });
   }
 
   /** Selects all segments. */
   selectAllSegments(segmentsLength: number) {
-    const seg = [];
+    const segments = [];
     for (let i = 0; i < segmentsLength; i++) {
-      seg.push({ sel: true });
+      segments.push({ sel: true });
     }
-    const body = this.createBody({ seg });
-    return this.httpPostStateAndInfo(body);
+    return this.httpPostStateAndInfo({
+      seg: segments,
+    });
   }
 
   /** Creates a new segment. */
   createSegment(options: {
+    segmentId: number,
     name: string,
     start: number,
     stop: number,
     useSegmentLength: boolean,
   }) {
-    // TODO real body field to create segment
-    const body = this.createBody({});
-    return this.httpPostStateAndInfo(body);
+    const {
+      segmentId,
+      name,
+      start,
+      stop,
+      useSegmentLength,
+    } = options;
+    const result = this.updateSegment({
+      segmentId,
+      name,
+      start,
+      stop,
+      useSegmentLength,
+    });
+    return result;
   }
 
   /** Updates the settings of the specified segment. */
@@ -353,35 +377,35 @@ export class ApiService extends UnsubscriberService {
     spacing?: number,
   }) {
     const calculatedStop = (options.useSegmentLength ? options.start : 0) + options.stop;
-    const seg: Partial<WledSegment> = {
+    const segment: Partial<WledSegment> = {
       id: options.segmentId,
       n: options.name, // TODO is this really needed?
       start: options.start,
       stop: calculatedStop,
     };
     if (options.offset) {
-      seg.of = options.offset;
+      segment.of = options.offset;
     }
     if (options.grouping) {
-      seg.grp = options.grouping;
+      segment.grp = options.grouping;
     }
     if (options.spacing) {
-      seg.spc = options.spacing;
+      segment.spc = options.spacing;
     }
 
-    const body = this.createBody({ seg });
-    return this.httpPostStateAndInfo(body);
+    return this.httpPostStateAndInfo({
+      seg: segment,
+    });
   }
 
   /** Deletes the specified segment. */
   deleteSegment(segmentId: number) {
-    const body = this.createBody({
+    return this.httpPostState({
       seg: {
         id: segmentId,
         stop: 0,
       },
     });
-    return this.httpPostState(body);
   }
 
   /** Resets all segments, creating a single segment that covers the entire length of the LED strip. */
@@ -395,64 +419,60 @@ export class ApiService extends UnsubscriberService {
     for (let i = 1; i < segmentsLength; i++) {
       segments.push({ stop: 0 });
     }
-    const body = this.createBody({ seg: segments });
-    return this.httpPostStateAndInfo(body);
+    return this.httpPostStateAndInfo({
+      seg: segments,
+    });
   }
 
   /** Toggles the specified segment on or off. */
   setSegmentOn(segmentId: number, isOn: boolean) {
-    const body = this.createBody({
+    return this.httpPostStateAndInfo({
       seg: {
         id: segmentId,
         on: isOn,
       },
     });
-    return this.httpPostStateAndInfo(body);
   }
   
   /** Sets the brightness of the specified segment. */
   setSegmentBrightness(segmentId: number, brightness: number) {
-    const body = this.createBody({
+    return this.httpPostStateAndInfo({
       seg: {
         id: segmentId,
         bri: brightness,
       },
     });
-    return this.httpPostStateAndInfo(body);
   }
 
   /** Toggles the reverse setting of the specified segment. */
   setSegmentReverse(segmentId: number, isReverse: boolean) {
-    const body = this.createBody({
+    return this.httpPostState({
       seg: {
         id: segmentId,
         rev: isReverse,
       },
     });
-    return this.httpPostState(body);
   }
 
   /** Toggles the mirror setting of the specified segment. */
   setSegmentMirror(segmentId: number, isMirror: boolean) {
-    const body = this.createBody({
+    return this.httpPostState({
       seg: {
         id: segmentId,
         mi: isMirror,
       },
     });
-    return this.httpPostState(body);
   }
 
   /** Sets the name of the specified segment. */
   setSegmentName(segmentId: number, name: string) {
     // TODO does this api call work?
-    const body = this.createBody({
+    return this.httpPostState({
       seg: {
         id: segmentId,
         n: name,
       },
     });
-    return this.httpPostState(body);
   }
 
   /**
@@ -497,10 +517,9 @@ export class ApiService extends UnsubscriberService {
   }
 
   loadPreset(presetId: number) {
-    const body = this.createBody({
+    return this.httpPostStateAndInfo({
       ps: presetId,
     });
-    return this.httpPostStateAndInfo(body);
   }
 
   savePreset(
@@ -553,14 +572,14 @@ export class ApiService extends UnsubscriberService {
         ...apiState,
       };
     }
-    const body = this.createBody(request as {});
-    return this.httpPostStateAndInfo(body);
+    return this.httpPostStateAndInfo(request as {});
   }
 
   /** Sets the transition duration. The `transition` unit is 1/10 of a second (eg: `transition = 7` is 0.7s). */
   setTransitionDuration(seconds: number) {
-    const body = this.createBody({ transition: seconds * 10 });
-    return this.httpPostState(body);
+    return this.httpPostState({
+      transition: seconds * 10,
+    });
   }
 
   /** Submits LED settings form data to server. */
@@ -594,16 +613,17 @@ export class ApiService extends UnsubscriberService {
   }
 
   /** Sets the live view override setting. */
-  setLor(lor: number) {
-    const body = { lor };
-    this.httpPostStateAndInfo(body);
+  setLiveViewOverride(liveViewOverride: number) {
+    this.httpPostStateAndInfo({
+      lor: liveViewOverride,
+    });
   }
 
-  private createBody(body: { [key: string]: unknown }) {
+  private createBody(data: { [key: string]: unknown }) {
     return {
       v: true, // verbose setting to get full API response
       time: Math.floor(Date.now() / 1000),
-      ...body,
+      ...data,
     };
   }
 }
