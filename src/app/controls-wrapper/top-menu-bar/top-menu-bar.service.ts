@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { WledApiResponse } from '../../shared/api-types';
+import { WLEDApiResponse } from '../../shared/api-types';
 import { ApiService } from '../../shared/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { PostResponseHandler } from '../../shared/post-response-handler';
@@ -78,7 +78,7 @@ export class TopMenuBarService extends UnsubscriberService {
 
   private processToggle(
     name: string,
-    apiToggle: Observable<WledApiResponse>,
+    apiToggle: Observable<WLEDApiResponse>,
   ) {
     if (!this.getProcessingStatus(name)) {
       this.setProcessingStatus(name, true);

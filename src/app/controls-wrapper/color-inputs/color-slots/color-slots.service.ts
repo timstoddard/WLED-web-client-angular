@@ -31,7 +31,7 @@ export class ColorSlotsService extends UnsubscriberService {
 
     this.appStateService.getSelectedSegment(this.ngUnsubscribe)
       .subscribe((segment) => {
-        // TODO initialize colors with WledSegment.col from api response
+        // TODO initialize colors with WLEDSegment.col from api response
         const slots = [];
         for (let i = 0; i < DEFAULT_SLOT_COUNT; i++) {
           slots.push(i);

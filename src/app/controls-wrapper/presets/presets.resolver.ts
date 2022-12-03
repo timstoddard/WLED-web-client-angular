@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import { of } from 'rxjs';
 import { ApiService } from '../../shared/api.service';
+import { AppPreset } from '../../shared/app-types';
 import { OnlineStatusService } from '../../shared/online-status.service';
 import { MOCK_LOCAL_PRESETS } from '../mock-api-data';
-import { Preset } from './presets.service';
 
 @Injectable()
-export class PresetsResolver implements Resolve<Preset[]> {
+export class PresetsResolver implements Resolve<AppPreset[]> {
   constructor(
     private apiService: ApiService,
     private onlineStatusService: OnlineStatusService) { }

@@ -39,7 +39,7 @@
       <ng-container *ngSwitchCase="true">
         <div class="addDeviceForm__testSuccess"></div>
         <button
-          (click)="testWledIpAddress(i)"
+          (click)="testWLEDIpAddress(i)"
           mat-raised-button
           color="primary"
           class="">
@@ -49,7 +49,7 @@
       <ng-container *ngSwitchCase="false">
         <div class="addDeviceForm__testFail"></div>
         <button
-          (click)="testWledIpAddress(i)"
+          (click)="testWLEDIpAddress(i)"
           mat-raised-button
           color="primary"
           class="">
@@ -58,7 +58,7 @@
       </ng-container>
       <ng-container *ngSwitchDefault>
         <button
-          (click)="testWledIpAddress(i)"
+          (click)="testWLEDIpAddress(i)"
           mat-raised-button
           color="primary"
           class="">
@@ -69,7 +69,7 @@
 
     <div>
       <button
-        (click)="removeWledIpAddress(i)"
+        (click)="removeWLEDIpAddress(i)"
         mat-raised-button
         color="primary"
         class="">
@@ -80,14 +80,14 @@
   
   <div class="addDeviceForm__footer">
     <button
-      (click)="addWledIpAddress()"
+      (click)="addWLEDIpAddress()"
       mat-raised-button
       color="primary"
       class="">
       +
     </button>
     <button
-      (click)="saveWledIpAddresses()"
+      (click)="saveWLEDIpAddresses()"
       mat-raised-button
       color="primary"
       class="">

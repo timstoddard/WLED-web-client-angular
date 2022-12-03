@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Store, createState, withProps, select } from '@ngneat/elf';
 import { map, Subject, takeUntil } from 'rxjs';
 import { ApiTypeMapper } from '../api-type-mapper';
-import { WledApiResponse, WledNodesResponse } from '../api-types';
-import { AppInfo, AppLocalSettings, AppWledState, AppState, AppSegment } from '../app-types';
+import { WLEDApiResponse, WLEDNodesResponse } from '../api-types';
+import { AppInfo, AppLocalSettings, AppWLEDState, AppState, AppSegment } from '../app-types';
 import { ClientOnlyFieldsService, ClientOnlySegmentFieldsMap } from '../client-only-fields.service';
 import { DEFAULT_APP_STATE } from './app-state-defaults';
 
@@ -22,16 +22,16 @@ export class AppStateService {
   }
 
   /** Set all app state fields using the api response data. */
-  setAll = (response: WledApiResponse) => {
+  setAll = (response: WLEDApiResponse) => {
     this.appStateStore.update((state) =>
-      this.apiTypeMapper.mapWledApiResponseToAppState(response, state));
+      this.apiTypeMapper.mapWLEDApiResponseToAppState(response, state));
   }
 
   /** Updates nodes data. */
-  setNodes = (response: WledNodesResponse) => {
+  setNodes = (response: WLEDNodesResponse) => {
     this.appStateStore.update((state) => ({
       ...state,
-      nodes: this.apiTypeMapper.mapWledNodesToAppNodes(response),
+      nodes: this.apiTypeMapper.mapWLEDNodesToAppNodes(response),
     }));
   };
 
@@ -39,47 +39,47 @@ export class AppStateService {
   getAppState = (ngUnsubscribe: Subject<void>) =>
     this.selectFromAppState((n) => n)
       .pipe<AppState>(takeUntil(ngUnsubscribe));
-  getWledState = (ngUnsubscribe: Subject<void>) =>
+  getWLEDState = (ngUnsubscribe: Subject<void>) =>
     this.selectFromAppState((n) => n.state)
-      .pipe<AppWledState>(takeUntil(ngUnsubscribe));
+      .pipe<AppWLEDState>(takeUntil(ngUnsubscribe));
   getInfo = (ngUnsubscribe: Subject<void>) =>
     this.selectFromAppState((n) => n.info)
       .pipe<AppInfo>(takeUntil(ngUnsubscribe));
   // TODO remove individual getters
   getOn = (ngUnsubscribe: Subject<void>) =>
     this.selectFromAppState((n) => n.state.on)
-      .pipe<AppWledState['on']>(takeUntil(ngUnsubscribe));
+      .pipe<AppWLEDState['on']>(takeUntil(ngUnsubscribe));
   getBrightness = (ngUnsubscribe: Subject<void>) =>
     this.selectFromAppState((n) => n.state.brightness)
-      .pipe<AppWledState['brightness']>(takeUntil(ngUnsubscribe));
+      .pipe<AppWLEDState['brightness']>(takeUntil(ngUnsubscribe));
   getTransition = (ngUnsubscribe: Subject<void>) =>
     this.selectFromAppState((n) => n.state.transition)
-      .pipe<AppWledState['transition']>(takeUntil(ngUnsubscribe));
+      .pipe<AppWLEDState['transition']>(takeUntil(ngUnsubscribe));
   getCurrentPresetId = (ngUnsubscribe: Subject<void>) =>
     this.selectFromAppState((n) => n.state.currentPresetId)
-      .pipe<AppWledState['currentPresetId']>(takeUntil(ngUnsubscribe));
+      .pipe<AppWLEDState['currentPresetId']>(takeUntil(ngUnsubscribe));
   getCurrentPlaylistId = (ngUnsubscribe: Subject<void>) =>
     this.selectFromAppState((n) => n.state.currentPlaylistId)
-      .pipe<AppWledState['currentPlaylistId']>(takeUntil(ngUnsubscribe));
+      .pipe<AppWLEDState['currentPlaylistId']>(takeUntil(ngUnsubscribe));
   getNightLight = (ngUnsubscribe: Subject<void>) =>
     this.selectFromAppState((n) => n.state.nightLight)
-      .pipe<AppWledState['nightLight']>(takeUntil(ngUnsubscribe));
+      .pipe<AppWLEDState['nightLight']>(takeUntil(ngUnsubscribe));
   getUdp = (ngUnsubscribe: Subject<void>) =>
     this.selectFromAppState((n) => n.state.udp)
-      .pipe<AppWledState['udp']>(takeUntil(ngUnsubscribe));
+      .pipe<AppWLEDState['udp']>(takeUntil(ngUnsubscribe));
   getLiveViewOverride = (ngUnsubscribe: Subject<void>) =>
     this.selectFromAppState((n) => n.state.liveViewOverride)
-      .pipe<AppWledState['liveViewOverride']>(takeUntil(ngUnsubscribe));
+      .pipe<AppWLEDState['liveViewOverride']>(takeUntil(ngUnsubscribe));
   getMainSegmentId = (ngUnsubscribe: Subject<void>) =>
     this.selectFromAppState((n) => n.state.mainSegmentId)
-      .pipe<AppWledState['mainSegmentId']>(takeUntil(ngUnsubscribe));
+      .pipe<AppWLEDState['mainSegmentId']>(takeUntil(ngUnsubscribe));
   getSegments = (ngUnsubscribe: Subject<void>) =>
     this.selectFromAppState((n) => n.state.segments)
-      .pipe<AppWledState['segments']>(takeUntil(ngUnsubscribe));
+      .pipe<AppWLEDState['segments']>(takeUntil(ngUnsubscribe));
   getSelectedSegment = (ngUnsubscribe: Subject<void>) =>
     this.selectFromAppState((n) => n.state)
       .pipe<AppSegment, AppSegment>(
-        map(({ segments, mainSegmentId }: AppWledState) => {
+        map(({ segments, mainSegmentId }: AppWLEDState) => {
           // TODO account for segment.id property
           // (if segments are not sorted by id)
           const segmentId = mainSegmentId ?? 0;
@@ -130,7 +130,7 @@ export class AppStateService {
   getFileSystem = (ngUnsubscribe: Subject<void>) =>
     this.selectFromAppState((n) => n.info.fileSystem)
       .pipe<AppInfo['fileSystem']>(takeUntil(ngUnsubscribe));
-  getWledDevicesOnNetwork = (ngUnsubscribe: Subject<void>) =>
+  getWLEDDevicesOnNetwork = (ngUnsubscribe: Subject<void>) =>
     this.selectFromAppState((n) => n.info.wledDevicesOnNetwork)
       .pipe<AppInfo['wledDevicesOnNetwork']>(takeUntil(ngUnsubscribe));
   getPlatform = (ngUnsubscribe: Subject<void>) =>
@@ -172,33 +172,33 @@ export class AppStateService {
   getIsLiveViewActive = (ngUnsubscribe: Subject<void>) =>
     this.selectFromAppState((n) => n.localSettings.isLiveViewActive)
       .pipe<AppLocalSettings['isLiveViewActive']>(takeUntil(ngUnsubscribe));
-  getSelectedWledIpAddress = (ngUnsubscribe: Subject<void>) =>
-    this.selectFromAppState((n) => n.localSettings.selectedWledIpAddress)
-      .pipe<AppLocalSettings['selectedWledIpAddress']>(takeUntil(ngUnsubscribe));
-  getWledIpAddresses = (ngUnsubscribe: Subject<void>) =>
+  getSelectedWLEDIpAddress = (ngUnsubscribe: Subject<void>) =>
+    this.selectFromAppState((n) => n.localSettings.selectedWLEDIpAddress)
+      .pipe<AppLocalSettings['selectedWLEDIpAddress']>(takeUntil(ngUnsubscribe));
+  getWLEDIpAddresses = (ngUnsubscribe: Subject<void>) =>
     this.selectFromAppState((n) => n.localSettings.wledIpAddresses)
       .pipe<AppLocalSettings['wledIpAddresses']>(takeUntil(ngUnsubscribe));
 
   // setters
-  setOn = (on: AppWledState['on']) =>
+  setOn = (on: AppWLEDState['on']) =>
     this.updateState({ on });
-  setBrightness = (brightness: AppWledState['brightness']) =>
+  setBrightness = (brightness: AppWLEDState['brightness']) =>
     this.updateState({ brightness });
-  setTransition = (transition: AppWledState['transition']) =>
+  setTransition = (transition: AppWLEDState['transition']) =>
     this.updateState({ transition });
-  setCurrentPresetId = (currentPresetId: AppWledState['currentPresetId']) =>
+  setCurrentPresetId = (currentPresetId: AppWLEDState['currentPresetId']) =>
     this.updateState({ currentPresetId });
-  setCurrentPlaylistId = (currentPlaylistId: AppWledState['currentPlaylistId']) =>
+  setCurrentPlaylistId = (currentPlaylistId: AppWLEDState['currentPlaylistId']) =>
     this.updateState({ currentPlaylistId });
-  setNightLight = (nightLight: AppWledState['nightLight']) =>
+  setNightLight = (nightLight: AppWLEDState['nightLight']) =>
     this.updateState({ nightLight });
-  setUdp = (udp: AppWledState['udp']) =>
+  setUdp = (udp: AppWLEDState['udp']) =>
     this.updateState({ udp });
-  setLiveViewOverride = (liveViewOverride: AppWledState['liveViewOverride']) =>
+  setLiveViewOverride = (liveViewOverride: AppWLEDState['liveViewOverride']) =>
     this.updateState({ liveViewOverride });
-  setMainSegmentId = (mainSegmentId: AppWledState['mainSegmentId']) =>
+  setMainSegmentId = (mainSegmentId: AppWLEDState['mainSegmentId']) =>
     this.updateState({ mainSegmentId });
-  setSegments = (segments: AppWledState['segments']) => {
+  setSegments = (segments: AppWLEDState['segments']) => {
     this.updateState({ segments });
     // update client only fields store
     const clientOnlyFieldsMap: ClientOnlySegmentFieldsMap = {};
@@ -237,7 +237,7 @@ export class AppStateService {
     this.updateInfo({ wifi });
   setFileSystem = (fileSystem: AppInfo['fileSystem']) =>
     this.updateInfo({ fileSystem });
-  setWledDevicesOnNetwork = (wledDevicesOnNetwork: AppInfo['wledDevicesOnNetwork']) =>
+  setWLEDDevicesOnNetwork = (wledDevicesOnNetwork: AppInfo['wledDevicesOnNetwork']) =>
     this.updateInfo({ wledDevicesOnNetwork });
   setPlatform = (platform: AppInfo['platform']) =>
     this.updateInfo({ platform });
@@ -265,16 +265,16 @@ export class AppStateService {
     this.updateLocalSettings(localSettings);
   setIsLiveViewActive = (isLiveViewActive: AppLocalSettings['isLiveViewActive']) =>
     this.updateLocalSettings({ isLiveViewActive });
-  setSelectedWledIpAddress = (selectedWledIpAddress: AppLocalSettings['selectedWledIpAddress']) =>
-    this.updateLocalSettings({ selectedWledIpAddress });
-  setWledIpAddresses = (wledIpAddresses: AppLocalSettings['wledIpAddresses']) =>
+  setSelectedWLEDIpAddress = (selectedWLEDIpAddress: AppLocalSettings['selectedWLEDIpAddress']) =>
+    this.updateLocalSettings({ selectedWLEDIpAddress });
+  setWLEDIpAddresses = (wledIpAddresses: AppLocalSettings['wledIpAddresses']) =>
     this.updateLocalSettings({ wledIpAddresses });
 
   private selectFromAppState = (selectFn: (state: AppState) => any) =>
     // TODO handle unsubscribing here
     this.appStateStore.pipe(select(selectFn));
 
-  updateState = (newState: Partial<AppWledState>) => {
+  updateState = (newState: Partial<AppWLEDState>) => {
     this.appStateStore.update((appState) => ({
       ...appState,
       state: {

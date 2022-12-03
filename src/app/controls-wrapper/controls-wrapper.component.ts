@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { WledApiResponse } from '../shared/api-types';
+import { WLEDApiResponse } from '../shared/api-types';
 import { AppStateService } from '../shared/app-state/app-state.service';
 import { LocalStorageKey, LocalStorageService } from '../shared/local-storage.service';
 import { AppUIConfig, UIConfigService } from '../shared/ui-config.service';
@@ -36,9 +36,9 @@ export class ControlsWrapperComponent extends UnsubscriberComponent implements O
   }
 
   ngOnInit() {
-    const apiData = this.route.snapshot.data['data'] as WledApiResponse;
+    const apiData = this.route.snapshot.data['data'] as WLEDApiResponse;
     for (const key of ['state', 'info']) {
-      console.log(key, apiData[key as keyof WledApiResponse]);
+      console.log(key, apiData[key as keyof WLEDApiResponse]);
     }
     // needed because only this response include palettes/effects lists
     this.appStateService.setAll(apiData);

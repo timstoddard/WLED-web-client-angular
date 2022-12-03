@@ -2,18 +2,18 @@
 
 // Types based the WLED JSON API info page: https://kno.wled.ge/interfaces/json-api
 
-export interface WledApiResponse {
+export interface WLEDApiResponse {
   /** WLED app state, all fields are settable. */
-  state: WledState;
+  state: WLEDState;
   /** Read-only info about WLED and its configuration. */
-  readonly info: WledInfo;
+  readonly info: WLEDInfo;
   /** List of effect names. */
   effects: string[];
   /** List of palette names. */
   palettes: string[];
 }
 
-export interface WledState {
+export interface WLEDState {
   /** On/Off state of the light. */
   on: boolean;
   /** Brightness of the light [0-255]. If `on` is `false`, contains last brightness when light was on. Setting `bri` to `0` is supported but it is recommended to use the range `1-255` and use `on: false` to turn off. The state response will never have the value `0` for `bri`. */
@@ -25,15 +25,15 @@ export interface WledState {
   /** ID of currently set playlist. For now, this sets the preset cycle feature, `-1` is off and `0` is on. */
   pl: number;
   /** Nightlight settings. */
-  nl: WledNightLightState;
+  nl: WLEDNightLightState;
   /** UDP settings. */
-  udpn: WledUdpState;
+  udpn: WLEDUdpState;
   /** Live data override. 0 is off, 1 is override until live data ends, 2 is override until ESP reboot. */
   lor: number;
   /** ID of main segment. */
   mainseg: number;
   /** List of configured segments. */
-  seg: WledSegment[];
+  seg: WLEDSegment[];
 
   // Below are fields that can only be set, they are never included in an API response.
 
@@ -48,10 +48,10 @@ export interface WledState {
   /** Set module time to the specified unix timestamp. */
   time?: number;
   /** Custom preset playlists. */
-  playlist?: WledPlaylistSettings;
+  playlist?: WLEDPlaylistSettings;
 }
 
-export interface WledNightLightState {
+export interface WLEDNightLightState {
   /** `true` if nightlight currently active. */
   on: boolean;
   /** Duration of nightlight in minutes [1-255]. */
@@ -64,7 +64,7 @@ export interface WledNightLightState {
   readonly rem: number;
 }
 
-export interface WledUdpState {
+export interface WLEDUdpState {
   /** Send WLED broadcast (UDP sync) packet on state change. */
   send: boolean;
   /** Receive broadcast packets. */
@@ -76,7 +76,7 @@ export interface WledUdpState {
   nn?: boolean;
 }
 
-export interface WledSegment {
+export interface WLEDSegment {
   // TODO is ID included in api response?
   /** Zero-indexed ID of the segment. May be omitted, in that case the ID will be inferred from the order of the segment objects in the seg array. */
   id: number; // TODO `id` should have a ? for typescript
@@ -123,7 +123,7 @@ export interface WledSegment {
   ly?: number; // TODO is this an optional/deprecated field?
 }
 
-export interface WledSegmentPostRequest extends WledSegment {
+export interface WLEDSegmentPostRequest extends WLEDSegment {
   // TODO how to override these properties
   /** ID of the color palette or `'~'` to increment, `'~-'` to decrement, or `'r'` for random. */
   // pal: number | '~' | '~-' | 'r';
@@ -143,7 +143,7 @@ export interface WledSegmentPostRequest extends WledSegment {
   i?: Array<number | number[]>;
 }
 
-export interface WledPlaylistSettings {
+export interface WLEDPlaylistSettings {
   /** Array of preset ID integers to be applied in this order. */
   ps: number[];
   /** Array of time each preset should be kept, in tenths of seconds. If only one integer is supplied, all presets will be kept for that time. Defaults to 10 seconds (`dur` = 100) if not provided. */
@@ -156,13 +156,13 @@ export interface WledPlaylistSettings {
   end: number;
 }
 
-export interface WledInfo {
+export interface WLEDInfo {
   /** Version name. */
   readonly ver: string;
   /** Build ID (YYMMDDB, B = daily build index). */
   readonly vid: number;
   /** Info about the LED setup. */
-  readonly leds: WledLedInfo;
+  readonly leds: WLEDLedInfo;
   /** If `true`, a UI with only a single button for toggling sync should toggle receive & send, otherwise send only. */
   readonly str: boolean;
   /** Friendly name of the light. Intended for display in lists and titles. */
@@ -182,9 +182,9 @@ export interface WledInfo {
   /** Number of palettes configured. */
   readonly palcount: number;
   /** Info about the wifi signal strength. */
-  readonly wifi: WledWifiInfo;
+  readonly wifi: WLEDWifiInfo;
   /** Info about the embedded LittleFS filesystem. */
-  readonly fs: WledFileSystemInfo;
+  readonly fs: WLEDFileSystemInfo;
   /** Number of other WLED devices discovered on the network [-1 to 255]. -1 if Node discovery disabled. */
   readonly ndc: number;
   /** Name of the platform. */
@@ -207,7 +207,7 @@ export interface WledInfo {
   readonly ip: string;
 }
 
-export interface WledLedInfo {
+export interface WLEDLedInfo {
   /** Total LED count [1-1200]. */
   readonly count: number;
   /** Current frames per second [0-255]. */
@@ -224,7 +224,7 @@ export interface WledLedInfo {
   readonly maxseg: number;
 }
 
-export interface WledWifiInfo {
+export interface WLEDWifiInfo {
   /** The BSSID (hardware address) of the currently connected network. */
   readonly bssid: string;
   /** Measurement of how well your device can hear a signal from an access point or router. (Useful for determining if you have enough signal to get a good wireless connection.) */
@@ -235,7 +235,7 @@ export interface WledWifiInfo {
   readonly channel: number;
 }
 
-export interface WledFileSystemInfo {
+export interface WLEDFileSystemInfo {
   /** Estimate of used filesystem space in kilobytes. */
   readonly u: number;
   /** Total filesystem size in kilobytes. */
@@ -244,9 +244,9 @@ export interface WledFileSystemInfo {
   readonly pmt: number;
 }
 
-// TODO rename all api-prefixed types
-export interface APIPlaylists { [key: number]: APIPlaylist }
-export interface APIPlaylist {
+export interface WLEDPlaylists { [key: number]: WLEDPlaylist }
+
+export interface WLEDPlaylist {
   /** Preset IDs in this playlist */
   ps: number[];
   /** Duration of each preset in `ps` */
@@ -258,13 +258,13 @@ export interface APIPlaylist {
   r: boolean;
 }
 
-export interface APIPresets { [key: number]: APIPreset }
+export interface WLEDPresets { [key: number]: WLEDPreset }
 
-export interface APIPreset {
+export interface WLEDPreset {
   /** Preset name */
   n: string
   /** Playlist associated with this preset */
-  playlist: APIPlaylist
+  playlist: WLEDPlaylist
   psave: number
   o: boolean
   /** backup stringified json */
@@ -293,15 +293,15 @@ export interface SavePresetRequest1 extends SavePresetRequestBase {
   sb: boolean
 }
 // TODO define the specific properties of the partial state
-export type SavePresetRequest2 = SavePresetRequestBase & Partial<WledState>
+export type SavePresetRequest2 = SavePresetRequestBase & Partial<WLEDState>
 export type SavePresetRequest = SavePresetRequest1 | SavePresetRequest2
 
-export interface WledNodesResponse {
-  nodes: WledNode[];
+export interface WLEDNodesResponse {
+  nodes: WLEDNode[];
 }
 
 // TODO verify these field types
-export interface WledNode {
+export interface WLEDNode {
   name: string;
   ip: string;
   type: number;

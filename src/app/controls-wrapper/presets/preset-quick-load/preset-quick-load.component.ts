@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Preset, PresetsService } from '../presets.service';
+import { AppPreset } from '../../../shared/app-types';
+import { PresetsService } from '../presets.service';
 
 @Component({
   selector: 'app-preset-quick-load',
@@ -8,13 +9,13 @@ import { Preset, PresetsService } from '../presets.service';
 })
 export class PresetQuickLoadComponent implements OnInit {
   @Input()
-  get presets(): Preset[] { return this.presetsWithLabels; }
-  set presets(presets: Preset[]) {
+  get presets(): AppPreset[] { return this.presetsWithLabels; }
+  set presets(presets: AppPreset[]) {
     // only display presets with a quick load label
     this.presetsWithLabels = presets
       .filter(preset => !!preset.quickLoadLabel);
   }
-  private presetsWithLabels: Preset[] = [];
+  private presetsWithLabels: AppPreset[] = [];
 
   constructor(private presetsService: PresetsService) { }
 

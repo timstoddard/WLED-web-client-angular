@@ -1,8 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { AppPreset } from '../../../shared/app-types';
 import { FormService } from '../../../shared/form-service';
 import { OnlineStatusService } from '../../../shared/online-status.service';
-import { Preset, PresetsService } from '../presets.service';
+import { PresetsService } from '../presets.service';
 
 @Component({
   selector: 'app-preset-form',
@@ -10,7 +11,7 @@ import { Preset, PresetsService } from '../presets.service';
   styleUrls: ['./preset-form.component.scss']
 })
 export class PresetFormComponent implements OnInit {
-  @Input() preset?: Preset;
+  @Input() preset?: AppPreset;
   newPreset!: FormGroup;
   @Output() closeForm = new EventEmitter();
 
@@ -35,7 +36,7 @@ export class PresetFormComponent implements OnInit {
       includeBrightness,
       saveSegmentBounds,
     } = this.newPreset.value
-    let preset: Partial<Preset> = {};
+    let preset: Partial<AppPreset> = {};
 
     if (useCurrentState) {
       try {
@@ -46,7 +47,7 @@ export class PresetFormComponent implements OnInit {
         // TODO display error message
       }
     } else {
-      const preset: Preset = {
+      const preset: AppPreset = {
         id,
         name,
         quickLoadLabel,
@@ -68,7 +69,7 @@ export class PresetFormComponent implements OnInit {
     this.closeForm.emit();
   }
 
-  private createForm(existingPreset?: Preset) {
+  private createForm(existingPreset?: AppPreset) {
     let id = this.presetsService.getNextPresetId()
     let name = ''
     let quickLoadLabel = ''

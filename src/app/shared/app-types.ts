@@ -1,7 +1,7 @@
 // TODO add comments to properties (can mostly copy from api types)
 
 export interface AppState {
-  state: AppWledState;
+  state: AppWLEDState;
   info: AppInfo;
   palettes: string[];
   effects: string[];
@@ -9,7 +9,7 @@ export interface AppState {
   nodes: AppNode[];
 }
 
-export interface AppWledState {
+export interface AppWLEDState {
   on: boolean;
   brightness: number;
   transition: number;
@@ -88,11 +88,11 @@ export interface AppFileSystemInfo {
 export interface AppLocalSettings {
   isLiveViewActive: boolean;
   // TODO can this be a string? (pros/cons)
-  selectedWledIpAddress: WledIpAddress;
-  wledIpAddresses: WledIpAddress[];
+  selectedWLEDIpAddress: WLEDIpAddress;
+  wledIpAddresses: WLEDIpAddress[];
 }
 
-export interface WledIpAddress {
+export interface WLEDIpAddress {
   name: string,
   ipv4Address: string,
 }
@@ -144,10 +144,17 @@ export interface AppSegment {
   loxoneSecondaryRgb?: number;
 }
 
-/** Corresponds to `WledNode` type. */
+/** Corresponds to `WLEDNode` type. */
 export interface AppNode {
   name: string;
   ipAddress: string;
   type: number;
   versionId: string;
+}
+
+export interface AppPreset {
+  id: number;
+  name: string;
+  quickLoadLabel: string;
+  apiValue: string;
 }

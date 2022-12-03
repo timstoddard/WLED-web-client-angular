@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs';
 import { ApiService } from '../../../shared/api.service';
 import { NO_DEVICE_IP_SELECTED } from '../../../shared/app-state/app-state-defaults';
 import { AppStateService } from '../../../shared/app-state/app-state.service';
-import { WledIpAddress } from '../../../shared/app-types';
+import { WLEDIpAddress } from '../../../shared/app-types';
 import { OverlayPositionService } from '../../../shared/overlay-position.service';
 import { UnsubscriberComponent } from '../../../shared/unsubscribing/unsubscriber.component';
 
@@ -16,8 +16,8 @@ type ConnectionStatus = 'connected' | 'disconnected' | 'loading';
 })
 export class DeviceSelectorComponent extends UnsubscriberComponent implements OnInit {
   @Input() selectClass: string = '';
-  wledIpAddresses!: WledIpAddress[];
-  selectedWledIpAddress!: WledIpAddress;
+  wledIpAddresses!: WLEDIpAddress[];
+  selectedWLEDIpAddress!: WLEDIpAddress;
   connectionStatus!: ConnectionStatus | null;
   testIpAddressSubscription: Subscription | null = null;
   showList!: boolean;
@@ -33,32 +33,32 @@ export class DeviceSelectorComponent extends UnsubscriberComponent implements On
 
   ngOnInit() {
     this.wledIpAddresses = [];
-    this.selectedWledIpAddress = NO_DEVICE_IP_SELECTED;
+    this.selectedWLEDIpAddress = NO_DEVICE_IP_SELECTED;
     this.connectionStatus = null;
     this.showList = false;
 
     this.appStateService.getLocalSettings(this.ngUnsubscribe)
       .subscribe(({
-        selectedWledIpAddress,
+        selectedWLEDIpAddress,
         wledIpAddresses,
       }) => {
         this.wledIpAddresses = [
           NO_DEVICE_IP_SELECTED,
           ...wledIpAddresses,
         ];
-        this.selectedWledIpAddress = selectedWledIpAddress;
+        this.selectedWLEDIpAddress = selectedWLEDIpAddress;
       });
   }
 
   getSelectedDeviceName() {
-    return this.selectedWledIpAddress.name === NO_DEVICE_IP_SELECTED.name
+    return this.selectedWLEDIpAddress.name === NO_DEVICE_IP_SELECTED.name
       ? 'Select Device'
-      : this.selectedWledIpAddress.name;
+      : this.selectedWLEDIpAddress.name;
   }
 
-  setSelectedDevice = (wledIpAddress: WledIpAddress) => {
+  setSelectedDevice = (wledIpAddress: WLEDIpAddress) => {
     console.log('selecting wledIpAddress:', wledIpAddress);
-    this.appStateService.setSelectedWledIpAddress(wledIpAddress);
+    this.appStateService.setSelectedWLEDIpAddress(wledIpAddress);
 
     // cancel any existing http call
     if (this.testIpAddressSubscription) {

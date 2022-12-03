@@ -1,11 +1,11 @@
 import { ApiTypeMapper } from './api-type-mapper';
-import { WledApiResponse, WledFileSystemInfo, WledInfo, WledLedInfo, WledNightLightState, WledNodesResponse, WledSegment, WledState, WledUdpState, WledWifiInfo } from './api-types';
+import { WLEDApiResponse, WLEDFileSystemInfo, WLEDInfo, WLEDLedInfo, WLEDNightLightState, WLEDNodesResponse, WLEDSegment, WLEDState, WLEDUdpState, WLEDWifiInfo } from './api-types';
 import { DEFAULT_APP_STATE } from './app-state/app-state-defaults';
-import { AppFileSystemInfo, AppInfo, AppLedInfo, AppNightLightState, AppNode, AppSegment, AppState, AppUdpState, AppWifiInfo, AppWledState } from './app-types';
+import { AppFileSystemInfo, AppInfo, AppLedInfo, AppNightLightState, AppNode, AppSegment, AppState, AppUdpState, AppWifiInfo, AppWLEDState } from './app-types';
 
 /* Set up all mocks for WLED types. */
 
-const MOCK_WLED_NIGHTLIGHT: WledNightLightState = {
+const MOCK_WLED_NIGHTLIGHT: WLEDNightLightState = {
   on: true,
   dur: 6,
   mode: 1,
@@ -13,12 +13,12 @@ const MOCK_WLED_NIGHTLIGHT: WledNightLightState = {
   rem: 100,
 };
 
-const MOCK_WLED_UDP: WledUdpState = {
+const MOCK_WLED_UDP: WLEDUdpState = {
   send: true,
   recv: false,
 };
 
-const MOCK_WLED_SEGMENTS: WledSegment[] = [
+const MOCK_WLED_SEGMENTS: WLEDSegment[] = [
   {
     id: 0,
     start: 0,
@@ -46,7 +46,7 @@ const MOCK_WLED_SEGMENTS: WledSegment[] = [
   },
 ];
 
-const MOCK_WLED_STATE: WledState = {
+const MOCK_WLED_STATE: WLEDState = {
   on: true,
   bri: 128,
   transition: 3,
@@ -59,7 +59,7 @@ const MOCK_WLED_STATE: WledState = {
   seg: MOCK_WLED_SEGMENTS,
 };
 
-const MOCK_WLED_LED_INFO: WledLedInfo = {
+const MOCK_WLED_LED_INFO: WLEDLedInfo = {
   count: 101,
   fps: 60,
   rgbw: false,
@@ -69,20 +69,20 @@ const MOCK_WLED_LED_INFO: WledLedInfo = {
   maxseg: 3,
 };
 
-const MOCK_WLED_WIFI_INFO: WledWifiInfo = {
+const MOCK_WLED_WIFI_INFO: WLEDWifiInfo = {
   bssid: 'bssid',
   rssi: 23,
   signal: 67,
   channel: 5,
 };
 
-const MOCK_WLED_FILESYSTEM_INFO: WledFileSystemInfo = {
+const MOCK_WLED_FILESYSTEM_INFO: WLEDFileSystemInfo = {
   u: 123,
   t: 321,
   pmt: 9999,
 };
 
-const MOCK_WLED_INFO: WledInfo = {
+const MOCK_WLED_INFO: WLEDInfo = {
   ver: 'version_name',
   vid: 123,
   leds: MOCK_WLED_LED_INFO,
@@ -121,7 +121,7 @@ const MOCK_EFFECTS: string[] = [
   'effect_3',
 ];
 
-const MOCK_WLED_API_RESPONSE: WledApiResponse = {
+const MOCK_WLED_API_RESPONSE: WLEDApiResponse = {
   state: MOCK_WLED_STATE,
   info: MOCK_WLED_INFO,
   palettes: MOCK_PALETTES,
@@ -172,7 +172,7 @@ const MOCK_APP_SEGMENTS: AppSegment[] = [
   },
 ];
 
-const MOCK_APP_WLED_STATE: AppWledState = {
+const MOCK_APP_WLED_STATE: AppWLEDState = {
   on: true,
   brightness: 128,
   transition: 0.3,
@@ -251,20 +251,20 @@ fdescribe('ApiTypeMapper', () => {
     apiTypeMapper = new ApiTypeMapper();
   });
 
-  it('mapWledApiResponseToAppState should work', () => {
+  it('mapWLEDApiResponseToAppState should work', () => {
     // assemble
     // n/a
 
     // act
-    const appState = apiTypeMapper.mapWledApiResponseToAppState(MOCK_WLED_API_RESPONSE, DEFAULT_APP_STATE);
+    const appState = apiTypeMapper.mapWLEDApiResponseToAppState(MOCK_WLED_API_RESPONSE, DEFAULT_APP_STATE);
 
     // assert
     expect(appState).toEqual(EXPECTED_APP_STATE);
   });
 
-  it('mapWledNodesToAppNodes should work', () => {
+  it('mapWLEDNodesToAppNodes should work', () => {
     // assemble
-    const MOCK_WLED_NODES: WledNodesResponse = {
+    const MOCK_WLED_NODES: WLEDNodesResponse = {
       nodes: [
         {
           name: 'node 1',
@@ -308,7 +308,7 @@ fdescribe('ApiTypeMapper', () => {
     ];
 
     // act
-    const appNodes = apiTypeMapper.mapWledNodesToAppNodes(MOCK_WLED_NODES);
+    const appNodes = apiTypeMapper.mapWLEDNodesToAppNodes(MOCK_WLED_NODES);
 
     // assert
     expect(appNodes).toEqual(MOCK_APP_NODES);

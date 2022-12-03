@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
-import { WledApiResponse } from './api-types';
+import { WLEDApiResponse } from './api-types';
 import { AppStateService } from './app-state/app-state.service';
 import { LiveViewData } from './live-view/live-view.service';
 import { OnlineStatusService } from './online-status.service';
@@ -14,7 +14,7 @@ const STATE_AND_INFO_MESSAGE = 'STATE_AND_INFO_MESSAGE';
 @Injectable({ providedIn: 'root' })
 export class WebSocketService extends UnsubscriberService {
   private socket$!: WebSocketSubject<any>;
-  private stateAndInfoSocket$!: Observable<WledApiResponse>;
+  private stateAndInfoSocket$!: Observable<WLEDApiResponse>;
   private liveViewSocket$!: Observable<LiveViewData>;
 
   constructor(
@@ -26,7 +26,7 @@ export class WebSocketService extends UnsubscriberService {
   }
 
   private init() {
-    this.appStateService.getSelectedWledIpAddress(this.ngUnsubscribe)
+    this.appStateService.getSelectedWLEDIpAddress(this.ngUnsubscribe)
       .subscribe(({ ipv4Address }) => {
         if (this.onlineStatusService.getIsOffline()) {
           this.fakeConnect();

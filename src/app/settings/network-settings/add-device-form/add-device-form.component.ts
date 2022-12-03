@@ -4,11 +4,11 @@ import { Observer } from 'rxjs';
 import { ApiService } from '../../../shared/api.service';
 import { NO_DEVICE_IP_SELECTED } from '../../../shared/app-state/app-state-defaults';
 import { AppStateService } from '../../../shared/app-state/app-state.service';
-import { WledIpAddress } from '../../../shared/app-types';
+import { WLEDIpAddress } from '../../../shared/app-types';
 import { FormService } from '../../../shared/form-service';
 import { UnsubscriberComponent } from '../../../shared/unsubscribing/unsubscriber.component';
 
-interface SelectableWledIpAddress extends WledIpAddress {
+interface SelectableWLEDIpAddress extends WLEDIpAddress {
   selected: boolean;
 }
 
@@ -24,7 +24,7 @@ interface IpAddressTestResults {
 export class AddDeviceFormComponent extends UnsubscriberComponent implements OnInit {
   wledIpAddresses!: FormArray;
   ipAddressTestResults!: IpAddressTestResults;
-  private selectedWledIpAddress!: WledIpAddress;
+  private selectedWLEDIpAddress!: WLEDIpAddress;
 
   constructor(
     private appStateService: AppStateService,
@@ -42,10 +42,10 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
 
     this.appStateService.getLocalSettings(this.ngUnsubscribe)
       .subscribe(({
-        selectedWledIpAddress,
+        selectedWLEDIpAddress,
         wledIpAddresses,
       }) => {
-        this.selectedWledIpAddress = selectedWledIpAddress;
+        this.selectedWLEDIpAddress = selectedWLEDIpAddress;
         this.updateFormValue(wledIpAddresses);
       });
   }
@@ -54,11 +54,11 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
     return this.wledIpAddresses.controls as FormGroup[];
   }
 
-  addWledIpAddress() {
-    this.wledIpAddresses.push(this.createWledIpAddressGroup());
+  addWLEDIpAddress() {
+    this.wledIpAddresses.push(this.createWLEDIpAddressGroup());
   }
 
-  removeWledIpAddress(removeIndex: number) {
+  removeWLEDIpAddress(removeIndex: number) {
     this.wledIpAddresses.removeAt(removeIndex);
 
     // if the removed was current selected, update current selected to first in list
@@ -82,7 +82,7 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
 
   // TODO show loading animation
   // TODO should allow multiple tests at once?
-  testWledIpAddress(index: number) {
+  testWLEDIpAddress(index: number) {
     // remove current index result, if it exists
     this.ipAddressTestResults = {
       ...this.ipAddressTestResults,
@@ -92,7 +92,7 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
     // test the provided IP address
     const wledIpAddress = this.wledIpAddresses.at(index);
     if (wledIpAddress) {
-      const ipAddress = (wledIpAddress.value as SelectableWledIpAddress).ipv4Address;
+      const ipAddress = (wledIpAddress.value as SelectableWLEDIpAddress).ipv4Address;
       this.testIpAddress(ipAddress, {
           next: ({ success }) => {
             this.updateTestResultAtIndex(index, success);
@@ -106,22 +106,22 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
     }
   }
 
-  saveWledIpAddresses() {
+  saveWLEDIpAddresses() {
     if (!this.wledIpAddresses.valid) {
       alert('Please fix the error(s).');
       return;
     }
 
-    const newIpAddresses = this.wledIpAddresses.value as WledIpAddress[];
+    const newIpAddresses = this.wledIpAddresses.value as WLEDIpAddress[];
     const selected = this.getSelected();
     if (selected) {
       // test IP address before saving it blindly
-      const selectedWledIpAddress = selected.value as WledIpAddress;
-      this.testIpAddress(selectedWledIpAddress.ipv4Address, {
+      const selectedWLEDIpAddress = selected.value as WLEDIpAddress;
+      this.testIpAddress(selectedWLEDIpAddress.ipv4Address, {
         next: ({ success }) => {
           if (success) {
             this.appStateService.setLocalSettings({
-              selectedWledIpAddress,
+              selectedWLEDIpAddress,
               wledIpAddresses: newIpAddresses,
             });
             // TODO show messages in component/in snackbar instead of alerts
@@ -136,7 +136,7 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
       })
     } else {
       this.appStateService.setLocalSettings({
-        selectedWledIpAddress: NO_DEVICE_IP_SELECTED,
+        selectedWLEDIpAddress: NO_DEVICE_IP_SELECTED,
         wledIpAddresses: newIpAddresses,
       });
     }
@@ -156,11 +156,11 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
 
   private createForm() {
     return this.formService.formBuilder.array([
-      this.createWledIpAddressGroup(),
+      this.createWLEDIpAddressGroup(),
     ]);
   }
 
-  private createWledIpAddressGroup(values: SelectableWledIpAddress = {
+  private createWLEDIpAddressGroup(values: SelectableWLEDIpAddress = {
     selected: false,
     name: '',
     ipv4Address: '',
@@ -175,12 +175,12 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
     return formGroup;
   }
 
-  private updateFormValue(wledIpAddresses: WledIpAddress[]) {
+  private updateFormValue(wledIpAddresses: WLEDIpAddress[]) {
     // wire up form logic
     this.wledIpAddresses.controls = [];
     for (const ipAddress of wledIpAddresses) {
-      const selected = ipAddress.ipv4Address === this.selectedWledIpAddress.ipv4Address;
-      const newFormGroup = this.createWledIpAddressGroup({
+      const selected = ipAddress.ipv4Address === this.selectedWLEDIpAddress.ipv4Address;
+      const newFormGroup = this.createWLEDIpAddressGroup({
         selected,
         ...ipAddress,
       });

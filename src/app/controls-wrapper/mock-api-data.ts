@@ -1,8 +1,8 @@
-import { APIPreset, WledApiResponse, WledNodesResponse } from '../shared/api-types';
+import { WLEDPreset, WLEDApiResponse, WLEDNodesResponse } from '../shared/api-types';
 import { LiveViewData } from '../shared/live-view/live-view.service';
 import { PalettesApiData } from './palettes/palettes.service';
 
-export const MOCK_API_RESPONSE: WledApiResponse = {
+export const MOCK_API_RESPONSE: WLEDApiResponse = {
   state: {
     on: true,
     bri: 100,
@@ -174,7 +174,7 @@ export const MOCK_API_RESPONSE: WledApiResponse = {
   palettes: ['Default', '* Random Cycle', '* Color 1', '* Colors 1&2', '* Color Gradient', '* Colors Only', 'Party', 'Cloud', 'Lava', 'Ocean', 'Forest', 'Rainbow', 'Rainbow Bands', 'Sunset', 'Rivendell', 'Breeze', 'Red & Blue', 'Yellowout', 'Analogous', 'Splash', 'Pastel', 'Sunset 2', 'Beech', 'Vintage', 'Departure', 'Landscape', 'Beach', 'Sherbet', 'Hult', 'Hult 64', 'Drywet', 'Jul', 'Grintage', 'Rewhi', 'Tertiary', 'Fire', 'Icefire', 'Cyane', 'Light Pink', 'Autumn', 'Magenta', 'Magred', 'Yelmag', 'Yelblu', 'Orange & Teal', 'Tiamat', 'April Night', 'Orangery', 'C9', 'Sakura', 'Aurora', 'Atlantica', 'C9 2', 'C9 New', 'Temperature', 'Aurora 2', 'Retro Clown', 'Candy', 'Toxy Reaf', 'Fairy Reaf', 'Semi Blue', 'Pink Candy', 'Red Reaf', 'Aqua Flash', 'Yelblu Hot', 'Lite Light', 'Red Flash', 'Blink Red', 'Red Shift', 'Red Tide', 'Candy2'],
 };
 
-export const MOCK_NODES_RESPONSE: WledNodesResponse = {
+export const MOCK_NODES_RESPONSE: WLEDNodesResponse = {
   nodes: [
     {
       name: 'test 1',
@@ -328,7 +328,7 @@ export const ALL_PALETTES_DATA = MOCK_PALETTES_DATA.reduce((prev, curr) => {
   }
 }, { m: 0, p: {} });
 
-export const MOCK_API_PRESETS: APIPreset[] = [
+export const MOCK_API_PRESETS: WLEDPreset[] = [
   // TODO verify these values
   {
     n: 'Preset 1',

@@ -3,9 +3,10 @@ import { UIConfigService } from '../../shared/ui-config.service';
 import { LocalStorageKey, LocalStorageService } from '../../shared/local-storage.service';
 import { getInput } from '../utils';
 import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
-import { Preset, PresetsService } from './presets.service';
+import { PresetsService } from './presets.service';
 import { ActivatedRoute } from '@angular/router';
-import { APIPlaylist, APIPlaylists, APIPreset, APIPresets } from '../../shared/api-types';
+import { WLEDPlaylist, WLEDPlaylists, WLEDPreset, WLEDPresets } from '../../shared/api-types';
+import { AppPreset } from '../../shared/app-types';
 
 interface PresetError {
   isEmpty: boolean;
@@ -13,7 +14,7 @@ interface PresetError {
   backupString: string;
 }
 
-const getDefaultPlaylist = (partial: Partial<APIPlaylist> = {}): APIPlaylist => {
+const getDefaultPlaylist = (partial: Partial<WLEDPlaylist> = {}): WLEDPlaylist => {
   const defaultPlaylist = {
     ps: [0],
     dur: [100],
@@ -39,8 +40,8 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
   showPresetIds!: boolean;
   presetError!: PresetError;
   templateType: string = 'default'; // TODO more specific type
-  private presets: APIPresets = {};
-  presetsV2: Preset[] = [];
+  private presets: WLEDPresets = {};
+  presetsV2: AppPreset[] = [];
   showCreateForm = false;
   private pmt = 1;
   private pmtLS = 0;
@@ -50,7 +51,7 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
   private tr = 0.7;
   private currentPresetName = ''; // current playlist/preset name
   private currentPresetId = 0; // current playlist/preset id
-  private playlists: APIPlaylists = this.getDefaultPlaylists();
+  private playlists: WLEDPlaylists = this.getDefaultPlaylists();
 
   constructor(
     private localStorageService: LocalStorageService,
@@ -62,7 +63,7 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.presetsV2 = this.route.snapshot.data['presets'] as Preset[];
+    this.presetsV2 = this.route.snapshot.data['presets'] as AppPreset[];
     console.log('PRESETS', this.presetsV2);
 
     this.uiConfigService.getUIConfig(this.ngUnsubscribe)
@@ -201,7 +202,7 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
    * 
    * Returns a negative value if the first argument is less than the second argument, zero if they're equal, and a positive value otherwise.
    */
-  private sortPresetsByName = (a: APIPreset, b: APIPreset) => {
+  private sortPresetsByName = (a: WLEDPreset, b: WLEDPreset) => {
     if (!a.n) {
       // TODO better way to sort?
       // (can we assume they will always have a name?)
@@ -258,7 +259,7 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
       : `Preset ${presetId}`;
   }
 
-  getPresetNameV2(preset: APIPreset) {
+  getPresetNameV2(preset: WLEDPreset) {
     return preset.n
       ? preset.n
       : `Preset ${preset.psave}`;
@@ -558,10 +559,10 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
    * @param incPl 
    * @returns 
    */
-  getPresetsList(incPl = false /* TODO better name*/): APIPreset[] {
+  getPresetsList(incPl = false /* TODO better name*/): WLEDPreset[] {
     return Object
       .values(this.presets)
-      .filter((preset: APIPreset) => {
+      .filter((preset: WLEDPreset) => {
         const isPlaylist = preset.playlist && preset.playlist.ps
         // remove playlists, sub-playlists not yet supported
         return incPl || !isPlaylist
@@ -572,7 +573,7 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
     let plSelContent = '';
     delete this.presets[0];	// remove filler preset
 
-    const presetsList: [string, APIPreset][] = Object.entries(this.presets);
+    const presetsList: [string, WLEDPreset][] = Object.entries(this.presets);
     for (const [presetKey, presetValue] of presetsList) {
       const presetName = presetValue.n
         ? presetValue.n
@@ -595,12 +596,12 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
       presetName: string,
     }> = Object
     .entries(this.presets)
-    .filter((entry: [string, APIPreset]) => {
+    .filter((entry: [string, WLEDPreset]) => {
       const [presetKey, presetValue] = entry
       // remove playlists, sub-playlists not yet supported
       return incPl || presetValue.playlist?.ps;
     })
-    .map((entry: [string, APIPreset]) => {
+    .map((entry: [string, WLEDPreset]) => {
       const [presetKey, presetValue] = entry
       const presetName = presetValue.n
         ? presetValue.n
@@ -631,7 +632,7 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
       const pType = isPlaylist ? 'Playlist' : 'Preset';
       this.currentPresetName = `${pType} ${this.currentPresetId}`;
     }
-    let preset: Partial<APIPreset> = {};
+    let preset: Partial<WLEDPreset> = {};
 
     if (!getInput(`p${pIndex}cstgl`).checked) {
       const raw = (document.getElementById(`p${pIndex}api`)! as HTMLTextAreaElement).value;
@@ -742,7 +743,7 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
     if (preset.win) {
       return preset.win;
     }
-    const fieldsToRemove: Array<keyof APIPreset> = ['n', 'p', 'ql']
+    const fieldsToRemove: Array<keyof WLEDPreset> = ['n', 'p', 'ql']
     for (const fieldName of fieldsToRemove) {
       delete preset[fieldName]
     }
@@ -784,7 +785,7 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
     } else {
       (bt as any).dataset.test = 1;
       bt.innerHTML = "<i class='icons btn-icon'>&#xe38f;</i>Stop";
-      const preset: Partial<APIPreset> = {};
+      const preset: Partial<WLEDPreset> = {};
       preset.playlist = this.playlists[playlistId];
       preset.on = true;
 
@@ -802,7 +803,7 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
    * Ensure that `dur` and `transition` are arrays with at least the length of `ps`.
    * @param playlist 
    */
-  private validatePlaylist = (playlist: APIPlaylist) => {
+  private validatePlaylist = (playlist: WLEDPlaylist) => {
     const length1 = playlist.ps.length;
     if (!Array.isArray(playlist.dur)) {
       // TODO according to typescript this is an impossible case

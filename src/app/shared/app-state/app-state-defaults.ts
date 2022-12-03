@@ -1,16 +1,16 @@
-import { AppState, WledIpAddress } from '../app-types';
+import { AppState, WLEDIpAddress } from '../app-types';
 import { environment } from 'src/environments/environment';
 
-export const NO_DEVICE_IP_SELECTED: WledIpAddress = {
+export const NO_DEVICE_IP_SELECTED: WLEDIpAddress = {
   name: 'None',
   ipv4Address: '',
 };
 
-const getMockWledIpAddresses = (options: {
+const getMockWLEDIpAddresses = (options: {
   testMaxHeight: boolean,
   testMaxWidth: boolean,
 }) => {
-  const wledIpAddresses: WledIpAddress[] = [
+  const wledIpAddresses: WLEDIpAddress[] = [
     {
       name: 'Living Room',
       ipv4Address: '192.168.100.171',
@@ -40,7 +40,7 @@ const getMockWledIpAddresses = (options: {
   }
   return wledIpAddresses;
 }
-const DEFAULT_WLED_IP_ADDRESSES: WledIpAddress[] = getMockWledIpAddresses({
+const DEFAULT_WLED_IP_ADDRESSES: WLEDIpAddress[] = getMockWLEDIpAddresses({
   testMaxHeight: true,
   testMaxWidth: false,
 });
@@ -48,7 +48,7 @@ const DEFAULT_WLED_IP_ADDRESSES: WledIpAddress[] = getMockWledIpAddresses({
 const DEFAULT_SELECTED_WLED_IP_ADDRESS = NO_DEVICE_IP_SELECTED;
 
 // TODO uncomment once device switching is fully implemented & working
-// const DEFAULT_SELECTED_WLED_IP_ADDRESS: WledIpAddress = environment.production
+// const DEFAULT_SELECTED_WLED_IP_ADDRESS: WLEDIpAddress = environment.production
 // ? NO_DEVICE_IP_SELECTED
 // : DEFAULT_WLED_IP_ADDRESSES[0];
 
@@ -122,7 +122,7 @@ export const DEFAULT_APP_STATE: AppState = {
   effects: [],
   localSettings: {
     isLiveViewActive: false,
-    selectedWledIpAddress: DEFAULT_SELECTED_WLED_IP_ADDRESS,
+    selectedWLEDIpAddress: DEFAULT_SELECTED_WLED_IP_ADDRESS,
     wledIpAddresses: DEFAULT_WLED_IP_ADDRESSES,
   },
   nodes: [],

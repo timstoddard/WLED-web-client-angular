@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { AppPreset } from '../../../shared/app-types';
 import { FormService } from '../../../shared/form-service';
-import { Preset } from '../presets.service';
 
 @Component({
   selector: 'app-preset-cycle',
@@ -9,7 +9,7 @@ import { Preset } from '../presets.service';
   styleUrls: ['./preset-cycle.component.scss']
 })
 export class PresetCycleComponent implements OnInit {
-  @Input() presets: Preset[] = [];
+  @Input() presets: AppPreset[] = [];
   formGroup!: FormGroup;
   isOn: boolean = false;
 

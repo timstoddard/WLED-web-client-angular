@@ -3,11 +3,10 @@ import { Injectable } from '@angular/core';
 import { catchError, map, of, timeout } from 'rxjs';
 import { ALL_PALETTES_DATA, MOCK_API_PRESETS, MOCK_API_RESPONSE, MOCK_LIVE_DATA, MOCK_NODES_RESPONSE } from '../controls-wrapper/mock-api-data';
 import { PalettesApiData } from '../controls-wrapper/palettes/palettes.service';
-import { Preset } from '../controls-wrapper/presets/presets.service';
-import { APIPreset, APIPresets, SavePresetRequest, WledApiResponse, WledInfo, WledNodesResponse, WledSegment, WledSegmentPostRequest, WledState, WledUdpState } from './api-types';
+import { WLEDPreset, WLEDPresets, SavePresetRequest, WLEDApiResponse, WLEDInfo, WLEDNodesResponse, WLEDSegment, WLEDSegmentPostRequest, WLEDState, WLEDUdpState } from './api-types';
 import { NO_DEVICE_IP_SELECTED } from './app-state/app-state-defaults';
 import { AppStateService } from './app-state/app-state.service';
-import { AppWledState } from './app-types';
+import { AppPreset, AppWLEDState } from './app-types';
 import { FormValues } from './form-service';
 import { LiveViewData } from './live-view/live-view.service';
 import { PostResponseHandler } from './post-response-handler';
@@ -41,7 +40,7 @@ export class ApiService extends UnsubscriberService {
   }
 
   private init() {
-    this.appStateService.getSelectedWledIpAddress(this.ngUnsubscribe)
+    this.appStateService.getSelectedWLEDIpAddress(this.ngUnsubscribe)
       .subscribe(({ ipv4Address }) => {
         this.setBaseUrl(ipv4Address);
         this.refreshAppState();
@@ -91,7 +90,7 @@ export class ApiService extends UnsubscriberService {
     }
   }
 
-  private httpPost = <T = WledApiResponse | WledState>(
+  private httpPost = <T = WLEDApiResponse | WLEDState>(
     url: string,
     body: { [key: string]: unknown },
     offlineDefault: T,
@@ -106,7 +105,7 @@ export class ApiService extends UnsubscriberService {
   }
 
   private httpPostStateAndInfo = (data: { [key: string]: unknown }) => {
-    return this.httpPost<WledApiResponse>(
+    return this.httpPost<WLEDApiResponse>(
       this.createApiUrl(STATE_INFO_PATH),
       this.createBody(data),
       MOCK_API_RESPONSE,
@@ -114,7 +113,7 @@ export class ApiService extends UnsubscriberService {
   }
 
   private httpPostState = (data: { [key: string]: unknown }) => {
-    return this.httpPost<WledState>(
+    return this.httpPost<WLEDState>(
       this.createApiUrl(STATE_PATH),
       this.createBody(data),
       MOCK_API_RESPONSE.state,
@@ -125,12 +124,12 @@ export class ApiService extends UnsubscriberService {
     const TIMEOUT_MS = 3000;
     const FAILED = 'FAILED';
     const url = `http://${ipAddress}/${ALL_JSON_PATH}`;
-    const isValidResponse = (result: WledApiResponse) =>
+    const isValidResponse = (result: WLEDApiResponse) =>
       result.state
       && result.info
       && result.palettes
       && result.effects
-    return this.http.get<WledApiResponse>(url)
+    return this.http.get<WLEDApiResponse>(url)
       .pipe(
         timeout({
           first: TIMEOUT_MS,
@@ -160,19 +159,19 @@ export class ApiService extends UnsubscriberService {
 
   /** Returns an object containing the state, info, effects, and palettes. */
   getJson() {
-    return this.httpGet<WledApiResponse>(
+    return this.httpGet<WLEDApiResponse>(
       this.createApiUrl(ALL_JSON_PATH), MOCK_API_RESPONSE);
   }
 
   /** Contains the current state of the light. All values may be modified by the client. */
   getState() {
-    return this.httpGet<WledState>(
+    return this.httpGet<WLEDState>(
       this.createApiUrl(STATE_PATH), MOCK_API_RESPONSE.state);
   }
 
   /** Contains general information about the device. All values are read-only. */
   getInfo() {
-    return this.httpGet<WledInfo>(
+    return this.httpGet<WLEDInfo>(
       this.createApiUrl(INFO_PATH), MOCK_API_RESPONSE.info);
   }
 
@@ -203,7 +202,7 @@ export class ApiService extends UnsubscriberService {
   }
 
   getNodes() {
-    return this.httpGet<WledNodesResponse>(
+    return this.httpGet<WLEDNodesResponse>(
       this.createApiUrl(NODES_PATH), MOCK_NODES_RESPONSE);
   }
 
@@ -295,7 +294,7 @@ export class ApiService extends UnsubscriberService {
 
   /** Toggles the night light timer on/off. */
   toggleSync(shouldSync: boolean, shouldToggleReceiveWithSend: boolean) {
-    const udpn: Partial<WledUdpState> = {
+    const udpn: Partial<WLEDUdpState> = {
       send: shouldSync,
     }
     if (shouldToggleReceiveWithSend) {
@@ -371,7 +370,7 @@ export class ApiService extends UnsubscriberService {
     spacing?: number,
   }) {
     const calculatedStop = (options.useSegmentLength ? options.start : 0) + options.stop;
-    const segment: Partial<WledSegment> = {
+    const segment: Partial<WLEDSegment> = {
       id: options.segmentId,
       start: options.start,
       stop: calculatedStop,
@@ -403,7 +402,7 @@ export class ApiService extends UnsubscriberService {
 
   /** Resets all segments, creating a single segment that covers the entire length of the LED strip. */
   resetSegments(ledCount: number, segmentsLength: number) {
-    const segments: Partial<WledSegmentPostRequest>[] = [];
+    const segments: Partial<WLEDSegmentPostRequest>[] = [];
     segments.push({
       start: 0,
       stop: ledCount,
@@ -473,8 +472,8 @@ export class ApiService extends UnsubscriberService {
    * @returns 
    */
   getPresets() {
-    const getApiValue = (preset: APIPreset) => {
-      const presetCopy: Partial<APIPreset> = { ...preset }
+    const getApiValue = (preset: WLEDPreset) => {
+      const presetCopy: Partial<WLEDPreset> = { ...preset }
       delete presetCopy.n
       delete presetCopy.ql
       return JSON.stringify(presetCopy)
@@ -482,14 +481,14 @@ export class ApiService extends UnsubscriberService {
 
     const url = this.createApiUrl('presets.json');
     // TODO don't load this when calling a disconnected wled instance
-    const presets = this.httpGet<APIPresets>(url, MOCK_API_PRESETS)
+    const presets = this.httpGet<WLEDPresets>(url, MOCK_API_PRESETS)
       .pipe(
-        map((apiPresets: APIPresets) => {
+        map((apiPresets: WLEDPresets) => {
           // delete empty default preset
           delete apiPresets[0];
 
           // convert presets to list
-          const presets: Preset[] = []
+          const presets: AppPreset[] = []
           for (const presetId in apiPresets) {
             const preset = apiPresets[presetId]
             presets.push({
@@ -501,7 +500,7 @@ export class ApiService extends UnsubscriberService {
           }
 
           // sort presets by id ascending
-          presets.sort((a: Preset, b: Preset) => a.id - b.id);
+          presets.sort((a: AppPreset, b: AppPreset) => a.id - b.id);
 
           return presets;
         })
@@ -516,11 +515,11 @@ export class ApiService extends UnsubscriberService {
   }
 
   savePreset(
-    preset: Preset,
+    preset: AppPreset,
     useCurrentState: boolean,
     includeBrightness: boolean,
     saveSegmentBounds: boolean,
-    state: AppWledState,
+    state: AppWLEDState,
   ) {
     let request: SavePresetRequest;
     const name = preset.name || `Preset ${preset.id}`;
@@ -537,7 +536,7 @@ export class ApiService extends UnsubscriberService {
       };
     } else {
       // TODO create util function to map app state to wled state (and vice versa?)
-      const apiState: Partial<WledState> = {
+      const apiState: Partial<WLEDState> = {
         // TODO create app to api mapper for this?
         on: state.on,
         bri: state.brightness,
@@ -557,7 +556,7 @@ export class ApiService extends UnsubscriberService {
         },
         lor: state.liveViewOverride,
         mainseg: state.mainSegmentId,
-        seg: {}, // WledSegment*/
+        seg: {}, // WLEDSegment*/
       };
       request = {
         ...base,
@@ -577,7 +576,7 @@ export class ApiService extends UnsubscriberService {
 
   /** Submits LED settings form data to server. */
   setLedSettings(ledSettings: FormValues) {
-    // TODO does this return WledApiResponse type or other type?
+    // TODO does this return WLEDApiResponse type or other type?
     return this.httpPost(
       this.createApiUrl(LED_SETTINGS_PATH),
       ledSettings,
@@ -587,7 +586,7 @@ export class ApiService extends UnsubscriberService {
 
   /** Submits ui settings form data to server. */
   setUISettings(uiSettings: FormValues) {
-    // TODO does this return WledApiResponse type or other type?
+    // TODO does this return WLEDApiResponse type or other type?
     return this.httpPost(
       this.createApiUrl(UI_SETTINGS_PATH),
       uiSettings,
@@ -597,7 +596,7 @@ export class ApiService extends UnsubscriberService {
 
   /** Submits wifi settings form data to server. */
   setWifiSettings(wifiSettings: FormValues) {
-    // TODO does this return WledApiResponse type or other type?
+    // TODO does this return WLEDApiResponse type or other type?
     return this.httpPost(
       this.createApiUrl(WIFI_SETTINGS_PATH),
       wifiSettings,

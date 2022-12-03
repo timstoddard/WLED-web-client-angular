@@ -2,14 +2,8 @@ import { Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../shared/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
+import { AppPreset } from '../../shared/app-types';
 import { UnsubscriberService } from '../../shared/unsubscribing/unsubscriber.service';
-
-export interface Preset {
-  id: number;
-  name: string;
-  quickLoadLabel: string;
-  apiValue: string;
-}
 
 @Injectable()
 export class PresetsService extends UnsubscriberService {
@@ -22,7 +16,7 @@ export class PresetsService extends UnsubscriberService {
   }
 
   getPresets() {
-    const presets = (this.route.snapshot.data['presets'] || []) as Preset[]
+    const presets = (this.route.snapshot.data['presets'] || []) as AppPreset[]
     return presets;
   }
 
@@ -31,7 +25,7 @@ export class PresetsService extends UnsubscriberService {
   }
 
   savePreset(
-    preset: Preset,
+    preset: AppPreset,
     useCurrentState: boolean,
     includeBrightness: boolean,
     saveSegmentBounds: boolean,
