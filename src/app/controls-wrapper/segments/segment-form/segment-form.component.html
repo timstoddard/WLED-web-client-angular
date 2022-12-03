@@ -1,3 +1,5 @@
+<!-- TODO add simplified view (can toggle "advanced settings") for new segment form -->
+
 <div
   [formGroup]="segmentForm"
   class="segment">
@@ -41,7 +43,7 @@
   </div>
 
   <div class="segmentForm__row segmentForm__row__numberInputs">
-    <div
+    <label
       *ngFor="let numberInput of newNumberInputs"
       class="segmentForm__numberInputWrapper">
       <div class="segmentForm__numberInputLabel">
@@ -67,7 +69,7 @@
             class="segmentForm__numberInput__input">
         </mat-form-field> -->
       </div>
-    </div>
+    </label>
   </div>
 
   <div class="segmentForm__row">

@@ -52,7 +52,7 @@ export class ApiTypeMapper {
   mapWledSegmentsToAppSegments = (segments: WledSegment[]): AppSegment[] => {
     const {
       ids: segmentIds,
-    } = this.normalizeIds(segments);
+    } = this.normalizeIds<WledSegment>(segments, 'id');
 
     // read client only fields to join with API data
     const segmentFieldsMap = this.clientOnlyFieldsService.getSegmentFieldsMap();
@@ -154,21 +154,22 @@ export class ApiTypeMapper {
       versionId: node.vid,
     }));
 
-  normalizeIds(items: Array<{ id?: number }>) {
+  // TODO create an external ID service
+  normalizeIds = <T>(items: T[], idField: keyof T) => {
     // TODO api segment id will never be 0 right?
     let lowestUnusedId = 1;
     let existingIdsIndex = 0;
     const ids: number[] = [];
 
     const existingIds = items
-      .map(({ id }) => id)
+      .map((item) => item[idField])
       .filter(id => id !== undefined);
     // sort by ascending
-    existingIds.sort((a, b) => a! - b!);
-    for (const segment of items) {
+    existingIds.sort((a, b) => (a as number)! - (b as number)!);
+    for (const item of items) {
       let id: number;
-      if (typeof segment.id === 'number') {
-        id = segment.id;
+      if (typeof item[idField] === 'number') {
+        id = item[idField] as number;
       } else {
         // find next available ID
         while (lowestUnusedId === existingIds[existingIdsIndex]) {

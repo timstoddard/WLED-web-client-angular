@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ApiTypeMapper } from '../../shared/api-type-mapper';
 import { ApiService } from '../../shared/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { AppSegment } from '../../shared/app-types';
@@ -12,6 +13,7 @@ export class SegmentsService extends UnsubscriberService {
   constructor (
     private apiService: ApiService,
     private appStateService: AppStateService,
+    private apiTypeMapper: ApiTypeMapper,
   ) {
     super();
 
@@ -31,18 +33,22 @@ export class SegmentsService extends UnsubscriberService {
   }
 
   createSegment(options: {
-    name: string,
     start: number,
     stop: number,
     useSegmentLength: boolean,
     // TODO add other fields?
   }) {
-    return this.apiService.createSegment(options);
+    const {
+      nextId,
+    } = this.apiTypeMapper.normalizeIds<AppSegment>(this.segments, 'id');
+    return this.apiService.createSegment({
+      segmentId: nextId,
+      ...options,
+    });
   }
 
   updateSegment(options: {
     segmentId: number,
-    name: string,
     start: number,
     stop: number,
     useSegmentLength: boolean,
@@ -66,26 +72,21 @@ export class SegmentsService extends UnsubscriberService {
   }
 
   toggleSegmentExpanded(segmentId: number) {
-    const segment = this.getSegmentById(segmentId);
-    if (segment) {
-      const updatedSegments = this.segments.map(segment => {
-        return segment.id === segmentId
-          ? {
-            ...segment,
-            isExpanded: !segment.isExpanded,
-          }
-          : segment;
-      });
-      this.appStateService.setSegments(updatedSegments);
+    for (const segment of this.segments) {
+      if (segment.id === segmentId) {
+        segment.isExpanded = !segment.isExpanded;
+        break;
+      }
     }
+    this.appStateService.setSegments(this.segments);
   }
 
   setSegmentName(segmentId: number, name: string) {
     const segment = this.getSegmentById(segmentId);
     if (segment) {
-      // TODO is default name needed?
       const newName = name || this.getDefaultName(segmentId);
-      return this.apiService.setSegmentName(segmentId, newName);
+      // TODO update client only field
+      // return this.apiService.setSegmentName(segmentId, newName);
     }
     return null;
   }
@@ -130,6 +131,6 @@ export class SegmentsService extends UnsubscriberService {
   }
 
   private getDefaultName(segmentId: number) {
-    return `Segment ${segmentId + 1}`;
+    return `Segment ${segmentId}`;
   }
 }

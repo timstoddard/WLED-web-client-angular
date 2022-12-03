@@ -121,7 +121,7 @@ export class SegmentFormComponent extends UnsubscriberComponent implements OnIni
     try {
       this.handleUnsubscribe(
         this.segmentsService.deleteSegment(this.segment.id)!)
-        .subscribe(this.postResponseHandler.handleStateResponse());
+        .subscribe(this.postResponseHandler.handleFullJsonResponse());
     } catch (e) { // delete failed, segments length is < 2
       // TODO show form error instead of toast (?)
       // showToast('You need to have multiple segments to delete one!');

@@ -244,6 +244,7 @@ export interface WledFileSystemInfo {
   readonly pmt: number;
 }
 
+// TODO rename all api-prefixed types
 export interface APIPlaylists { [key: number]: APIPlaylist }
 export interface APIPlaylist {
   /** Preset IDs in this playlist */

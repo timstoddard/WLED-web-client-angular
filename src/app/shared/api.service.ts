@@ -259,7 +259,6 @@ export class ApiService extends UnsubscriberService {
    * @param slot Slot to update
    */
   setColor(r: number, g: number, b: number, w: number, slot: number) {
-    // TODO allow for variable # of slots?
     const colors: number[][] = [[], [], []];
     colors[slot] = [r, g, b, w];
     return this.httpPostStateAndInfo({
@@ -269,7 +268,6 @@ export class ApiService extends UnsubscriberService {
     });
   }
 
-  // TODO potentially not needed?
   /** Sets white balance. */
   setWhiteBalance(whiteBalance: number) {
     return this.httpPostStateAndInfo({
@@ -343,21 +341,18 @@ export class ApiService extends UnsubscriberService {
   /** Creates a new segment. */
   createSegment(options: {
     segmentId: number,
-    name: string,
     start: number,
     stop: number,
     useSegmentLength: boolean,
   }) {
     const {
       segmentId,
-      name,
       start,
       stop,
       useSegmentLength,
     } = options;
     const result = this.updateSegment({
       segmentId,
-      name,
       start,
       stop,
       useSegmentLength,
@@ -368,7 +363,6 @@ export class ApiService extends UnsubscriberService {
   /** Updates the settings of the specified segment. */
   updateSegment(options: {
     segmentId: number,
-    name: string,
     start: number,
     stop: number,
     useSegmentLength: boolean,
@@ -379,7 +373,6 @@ export class ApiService extends UnsubscriberService {
     const calculatedStop = (options.useSegmentLength ? options.start : 0) + options.stop;
     const segment: Partial<WledSegment> = {
       id: options.segmentId,
-      n: options.name, // TODO is this really needed?
       start: options.start,
       stop: calculatedStop,
     };
@@ -400,7 +393,7 @@ export class ApiService extends UnsubscriberService {
 
   /** Deletes the specified segment. */
   deleteSegment(segmentId: number) {
-    return this.httpPostState({
+    return this.httpPostStateAndInfo({
       seg: {
         id: segmentId,
         stop: 0,
@@ -466,7 +459,7 @@ export class ApiService extends UnsubscriberService {
 
   /** Sets the name of the specified segment. */
   setSegmentName(segmentId: number, name: string) {
-    // TODO does this api call work?
+    // TODO does this api call work? (probably not but test before deleting)
     return this.httpPostState({
       seg: {
         id: segmentId,

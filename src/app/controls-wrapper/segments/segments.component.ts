@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UIConfigService } from '../../shared/ui-config.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
-import { AppSegment } from '../../shared/app-types';
 import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
 import { SegmentsService } from './segments.service';
 import { PostResponseHandler } from '../../shared/post-response-handler';
@@ -55,13 +54,11 @@ export class SegmentsComponent extends UnsubscriberComponent implements OnInit {
   }
 
   createSegment(
-    name: string,
     start: number,
     stop: number,
     useSegmentLength: boolean,
   ) {
     const result = this.segmentsService.createSegment({
-      name,
       start,
       stop,
       useSegmentLength,
