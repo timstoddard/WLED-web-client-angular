@@ -1,10 +1,10 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, of, timeout } from 'rxjs';
+import { catchError, map, of, timeout } from 'rxjs';
 import { ALL_PALETTES_DATA, MOCK_API_PRESETS, MOCK_API_RESPONSE, MOCK_LIVE_DATA, MOCK_NODES_RESPONSE } from '../controls-wrapper/mock-api-data';
 import { PalettesApiData } from '../controls-wrapper/palettes/palettes.service';
 import { Preset } from '../controls-wrapper/presets/presets.service';
-import { APIPreset, APIPresets, SavePresetRequest, WledApiResponse, WledInfo, WledNodesResponse, WledSegment, WledSegmentPostRequest, WledState } from './api-types';
+import { APIPreset, APIPresets, SavePresetRequest, WledApiResponse, WledInfo, WledNodesResponse, WledSegment, WledSegmentPostRequest, WledState, WledUdpState } from './api-types';
 import { NO_DEVICE_IP_SELECTED } from './app-state/app-state-defaults';
 import { AppStateService } from './app-state/app-state.service';
 import { AppWledState } from './app-types';
@@ -82,8 +82,12 @@ export class ApiService extends UnsubscriberService {
       // return fake data
       return of(offlineDefault);
     } else {
-      // TODO if http error, return offline default
-      return this.http.get<T>(url, options);
+      return this.http.get<T>(url, options)
+        .pipe(catchError(e => {
+          // if response can't be loaded, return fake data
+          console.warn(`Calling http.get('${url}') failed:`, e);
+          return of(offlineDefault);
+        }));
     }
   }
 
@@ -97,7 +101,6 @@ export class ApiService extends UnsubscriberService {
       return of(offlineDefault);
     } else {
       console.log('REAL POST:', url, body);
-      // TODO handle unsubscribe here (get too)
       return this.http.post<T>(url, body);
     }
   }
@@ -285,12 +288,13 @@ export class ApiService extends UnsubscriberService {
 
   /** Toggles the night light timer on/off. */
   toggleSync(shouldSync: boolean, shouldToggleReceiveWithSend: boolean) {
-    const body = this.createBody({
-      udpn: { send: shouldSync },
-    });
-    if (shouldToggleReceiveWithSend) {
-      (body as any /* TODO no any */)['udpn'].recv = shouldSync;
+    const udpn: Partial<WledUdpState> = {
+      send: shouldSync,
     }
+    if (shouldToggleReceiveWithSend) {
+      udpn.recv = shouldSync;
+    }
+    const body = this.createBody({ udpn });
     return this.httpPostStateAndInfo(body);
   }
 
@@ -349,7 +353,7 @@ export class ApiService extends UnsubscriberService {
     spacing?: number,
   }) {
     const calculatedStop = (options.useSegmentLength ? options.start : 0) + options.stop;
-    const seg: any /* TODO type */ = {
+    const seg: Partial<WledSegment> = {
       id: options.segmentId,
       n: options.name, // TODO is this really needed?
       start: options.start,
@@ -589,73 +593,17 @@ export class ApiService extends UnsubscriberService {
     );
   }
 
-  private createBody(body: { [key: string]: unknown }) {
-    const basicOptions = {
-      v: true, // get complete API response
-      time: Math.floor(Date.now() / 1000),
-    };
-    return { ...basicOptions, ...body };
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
+  /** Sets the live view override setting. */
   setLor(lor: number) {
     const body = { lor };
     this.httpPostStateAndInfo(body);
-    // this.requestJson(body);
   }
 
-  // setSi(lor: number) {
-  //   const body = { lor };
-  //   this.httpPost('/json/si', body);
-  //   // this.requestJson(body);
-  // }
-
-  // getSi(lor: number) {
-  //   const body = { lor };
-  //   this.httpPost('/json/si', body);
-  //   // this.requestJson(body);
-  // }
-
-  // TODO better name
-  setJsonObj(obj: any) {
-  }
-
-  requestJson(command: any /* TODO type */, rinfo = true) {
-    const url = rinfo
-      ? 'json/si'
-      : (command ? 'json/state' : 'json');
-    if (rinfo) {
-      // 'json/si'
-    } else if (command) {
-      // 'json/state'
-    } else {
-      // 'json'
-    }
-
-    if (command) {
-      // TODO set data
-    } else {
-      // TODO get data
-    }
+  private createBody(body: { [key: string]: unknown }) {
+    return {
+      v: true, // verbose setting to get full API response
+      time: Math.floor(Date.now() / 1000),
+      ...body,
+    };
   }
 }
