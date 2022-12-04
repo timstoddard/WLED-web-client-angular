@@ -107,4 +107,12 @@ export class SegmentsComponent extends UnsubscriberComponent implements OnInit {
         .subscribe(this.postResponseHandler.handleFullJsonResponse());
     }
   }
+
+  expandAll() {
+    this.segmentsService.expandAll();
+  }
+
+  collapseAll() {
+    this.segmentsService.collapseAll();
+  }
 }

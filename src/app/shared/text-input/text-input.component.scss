@@ -6,7 +6,7 @@
   $inputBorderRadius: 3px;
 
   @include flex-center;
-  border: 1px solid var(--borderColorAccent);
+  border: 1px solid var(--borderColorPrimary);
   border-radius: 6px;
   flex-direction: column;
   padding: 4px;
@@ -36,7 +36,7 @@
 
   &__input {
     background: transparent;
-    border: 1px solid var(--backgroundColorAccent);
+    border: 1px solid var(--borderColorAccent);
     border-radius: 0;
     color: inherit;
     font-size: 16px;

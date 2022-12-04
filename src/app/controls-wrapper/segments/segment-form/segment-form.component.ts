@@ -19,7 +19,19 @@ export class SegmentFormComponent extends UnsubscriberComponent implements OnIni
   segmentForm!: FormGroup;
   ledCountLabel!: string;
   useSegmentLength!: boolean;
-  numberInputs: CustomInput[] = [
+  inputs: CustomInput[] = [
+    {
+      label: 'Name',
+      description: 'Segment name.',
+      inputs: [
+        {
+          type: 'text',
+          getFormControl: () => getFormControl(this.segmentForm, 'name'),
+          placeholder: 'Name',
+          widthPx: 120,
+        },
+      ],
+    },
     {
       label: 'Start/Stop LED',
       description: 'The first and last LEDs to be included in this segment.',
@@ -97,7 +109,7 @@ export class SegmentFormComponent extends UnsubscriberComponent implements OnIni
 
   updateSegment() {
     // TODO if `stop < start` show validation error message, don't submit form
-    const name = this.segmentForm.get('name')!.value as string;
+    const name = this.segmentForm.get('name')!.value as string; // TODO save name in local storage
     const start = this.segmentForm.get('start')!.value as number;
     const stop = this.segmentForm.get('stop')!.value as number;
     const offset = this.segmentForm.get('offset')!.value as number;
@@ -105,7 +117,6 @@ export class SegmentFormComponent extends UnsubscriberComponent implements OnIni
     const spacing = this.segmentForm.get('spacing')!.value as number;
     const options = {
       segmentId: this.segment.id,
-      name,
       start,
       stop,
       useSegmentLength: this.useSegmentLength,
@@ -200,6 +211,7 @@ export class SegmentFormComponent extends UnsubscriberComponent implements OnIni
 
   private createForm() {
     const form = this.formService.createFormGroup({
+      name: this.segment.name,
       isOn: this.segment.isOn,
       brightness: this.segment.brightness,
       start: this.segment.start,

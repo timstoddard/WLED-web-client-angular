@@ -9,7 +9,7 @@
     color="primary"
     (click)="setShowNewSegmentForm(true)"
     [disabled]="showNewSegmentForm"
-    class="segments__addButton">
+    class="">
     <!-- TODO or just a '+' sign? -->
     New Segment
   </button>
@@ -18,7 +18,7 @@
     mat-raised-button
     color="primary"
     (click)="selectAllSegments()"
-    class="segments__addButton">
+    class="">
     Select All
   </button>
 
@@ -28,8 +28,24 @@
     color="primary"
     (click)="resetSegments()"
     ngClass="{ 'segments__resetButton--confirm': '!confirmedResetSegments' }"
-    class="segments__resetButton">
+    class="">
     {{ getResetButtonText() }}
+</button>
+
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="expandAll()"
+    class="">
+    Expand All
+  </button>
+
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="collapseAll()"
+    class="">
+    Collapse All
   </button>
 </div>
 

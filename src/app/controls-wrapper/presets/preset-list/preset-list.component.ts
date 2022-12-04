@@ -39,4 +39,12 @@ export class PresetListComponent {
       ? `${preset.name} ${label}`
       : preset.name;
   }
+
+  expandAll() {
+    this.presetsService.expandAll();
+  }
+
+  collapseAll() {
+    this.presetsService.collapseAll();
+  }
 }

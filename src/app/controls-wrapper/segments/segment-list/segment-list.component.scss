@@ -10,30 +10,4 @@
   &Item {
     @include listItemBaseStyles;
   }
-  
-  &__name {
-    @include flex-center;
-  
-    &__text {
-      font-size: 22px;
-      font-weight: bold;
-      margin: 0;
-      text-transform: uppercase;
-    }
-  
-    &__icon {
-      border: 1px solid var(--textColorAccent);
-      border-radius: 6px;
-      color: var(--textColorAccent);
-      cursor: pointer;
-      font-size: 20px;
-      margin-left: 10px;
-      padding: 2px;
-  
-      &:hover {
-        border-color: var(--textColorPrimary);
-        color: var(--textColorPrimary);
-      }
-    }
-  }
 }

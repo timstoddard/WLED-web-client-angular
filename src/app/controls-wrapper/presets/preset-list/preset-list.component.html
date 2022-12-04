@@ -1,17 +1,28 @@
-<h2 class="presetList__title">
-  <span>
-    All Presets
-  </span>
-  <div>
-    <button
-      mat-raised-button
-      color="primary"
-      (click)="toggleCreatePresetForm()"
-      class="presetList__title__createNew">
-      +
-    </button>
-  </div>
-</h2>
+<div class="presetList__buttons">
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="toggleCreatePresetForm()"
+    class="presetList__title__createNew">
+    New Preset
+  </button>
+
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="expandAll()"
+    class="">
+    Expand All
+  </button>
+
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="collapseAll()"
+    class="">
+    Collapse All
+  </button>
+</div>
 
 <app-preset-form
   *ngIf="showCreateForm"
@@ -25,15 +36,16 @@
 
     <!-- TODO update background of selected preset -->
 
-    <div class="presetListItem__mainContent">
+    <div
+      (click)="toggleEditPreset(preset.id)"
+      class="presetListItem__mainContent">
       <div class="presetListItem__id">
         {{ preset.id }}
       </div>
-      <h3 class="presetListItem__name">
+      <h3 class="presetListItem__title">
         {{ renderPresetName(preset) }}
       </h3>
       <app-expand-icon
-        (toggle)="toggleEditPreset(preset.id)"
         [expanded]="preset.id === editPresetId">
       </app-expand-icon>
     </div>

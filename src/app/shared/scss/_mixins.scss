@@ -130,43 +130,32 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin: 10px;
-  padding: 6px 20px;
+  margin: 5px;
+  user-select: none;
 
   &__mainContent {
     align-items: center;
+    border-radius: 6px;
+    cursor: pointer;
     display: flex;
     justify-content: space-between;
-    padding: 5px 8px;
+    padding: 10px;
     width: 100%;
+
+    &:hover {
+      background-color: var(--backgroundColorAccent);
+    }
 
     & > * {
       margin: 3px 5px;
     }
   }
 
-  // TODO audit usage
-  &__nameFormField {
-    margin-top: 2px;
-    margin-bottom: -18px;
-    min-width: 80px;
-
-    & ::ng-deep .mat-form-field-flex {
-      padding-top: 4px;
-    }
+  &__title {
+    font-size: 22px;
+    margin: 0;
+    text-transform: capitalize;
   }
-
-  // TODO remove?
-  // &__numberFormField {
-  //   font-size: 18px;
-  //   margin: 0px 4px -12px;
-  //   max-width: 70px;
-  //   min-width: 70px;
-
-  //   & ::ng-deep .mat-form-field-flex {
-  //     padding-top: 6px;
-  //   }
-  // }
 }
 
 // TODO this doesn't work

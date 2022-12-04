@@ -56,4 +56,12 @@ export class PresetsService extends UnsubscriberService {
     }
     return Math.min(min, max);
   }
+
+  expandAll() {
+    // TODO
+  }
+
+  collapseAll() {
+    // TODO
+  }
 }

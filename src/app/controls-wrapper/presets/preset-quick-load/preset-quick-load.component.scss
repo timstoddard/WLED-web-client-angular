@@ -1,23 +1,16 @@
 @import 'src/app/shared/scss/mixins';
+@import 'src/app/shared/scss/rainbow';
 
 :host {
-  align-items: center;
-  display: flex;
+  @include flex-center;
   flex-direction: column;
-  justify-content: center;
   margin: 0 auto;
   padding: 8px;
 }
 
 .presetQuickLoad {
-  &__title {
-    margin: 4px;
-  }
-
   &__buttons {
-    align-items: center;
-    display: flex;
-    justify-content: center;
+    @include flex-center;
   }
 
   &__button {
@@ -34,6 +27,7 @@
     width: 40px;
 
     &:hover {
+      @include rainbow(border-color);
       background: var(--backgroundColorAccent);
     }
   }

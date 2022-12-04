@@ -81,6 +81,20 @@ export class SegmentsService extends UnsubscriberService {
     this.appStateService.setSegments(this.segments);
   }
 
+  expandAll() {
+    for (const segment of this.segments) {
+      segment.isExpanded = true;
+    }
+    this.appStateService.setSegments(this.segments);
+  }
+
+  collapseAll() {
+    for (const segment of this.segments) {
+      segment.isExpanded = false;
+    }
+    this.appStateService.setSegments(this.segments);
+  }
+
   setSegmentName(segmentId: number, name: string) {
     const segment = this.getSegmentById(segmentId);
     if (segment) {

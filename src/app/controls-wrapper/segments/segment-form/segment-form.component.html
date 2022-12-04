@@ -44,10 +44,10 @@
 
   <div class="segmentForm__row segmentForm__row__numberInputs">
     <app-text-input
-      *ngFor="let numberInput of numberInputs"
-      [label]="numberInput.label"
-      [inputs]="numberInput.inputs"
-      [description]="numberInput.description">
+      *ngFor="let input of inputs"
+      [label]="input.label"
+      [inputs]="input.inputs"
+      [description]="input.description">
     </app-text-input>
   </div>
 
