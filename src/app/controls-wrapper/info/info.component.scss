@@ -1,4 +1,5 @@
 @import 'src/app/shared/scss/mixins';
+@import 'src/app/shared/scss/rainbow';
 @import 'src/app/shared/scss/variables';
 
 :host {
@@ -147,6 +148,10 @@
   }
 
   &__developerInfo {
+    &__name {
+      @include rainbow(color);
+    }
+
     & a {
       color: var(--textColorPrimary);
     }

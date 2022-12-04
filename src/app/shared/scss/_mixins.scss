@@ -1,5 +1,6 @@
 @use 'sass:math';
 
+@import 'src/app/shared/scss/rainbow';
 @import 'src/app/shared/scss/variables';
 
 @mixin radioButtonList {
@@ -46,8 +47,8 @@
   }
 
   &--selected {
-    animation: onSelect 0.3s cubic-bezier(.25,.75,1,1);
-    border-color: $selectedBorderColor;
+    $selectAnimation: onSelect 0.3s cubic-bezier(.25,.75,1,1);
+    @include rainbow(border-color, $otherAnimations: $selectAnimation);
 
     & #{$grandparentSelector}__text {
       font-weight: bold;

@@ -1,4 +1,5 @@
 @import 'src/app/shared/scss/mixins';
+@import 'src/app/shared/scss/rainbow';
 
 :host {
   max-width: 100%;
@@ -7,6 +8,7 @@
 
 .deviceSelector {
   &__main {
+    @include rainbow(border-color);
     align-items: center;
     background: var(--backgroundColorAccent);
     border: 1px solid var(--borderColorPrimary);

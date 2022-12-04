@@ -1,3 +1,5 @@
+@import 'src/app/shared/scss/rainbow';
+
 :host {
   align-items: center;
   display: flex;
@@ -24,9 +26,14 @@
 
     &--selected {
       color: var(--textColorPrimary) !important; // prevent hover style on selected link
-    }
 
-    &__icon {
+      & .bottomMenuBar__button__text {
+        text-decoration: underline;
+      }
+
+      & .bottomMenuBar__button__icon {
+        @include rainbow(color);
+      }
     }
 
     &__text {
