@@ -143,7 +143,7 @@ export class ApiTypeMapper {
   mapWLEDFileSystemInfoToAppFileSystemInfo = (fileSystemInfo: WLEDFileSystemInfo): AppFileSystemInfo => ({
     usedSpaceKb: fileSystemInfo.u,
     totalSpaceKb: fileSystemInfo.t,
-    lastPresetsJsonEditTimestamp: fileSystemInfo.pmt,
+    presetsJsonLastEditTimestamp: fileSystemInfo.pmt,
   });
 
   mapWLEDNodesToAppNodes = ({ nodes }: WLEDNodesResponse): AppNode[] =>

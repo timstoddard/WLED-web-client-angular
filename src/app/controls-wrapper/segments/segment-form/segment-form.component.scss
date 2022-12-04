@@ -1,7 +1,6 @@
 @import 'src/app/shared/scss/mixins';
 
 :host {
-  @include overrideMatTextInputStyles(--backgroundColorPrimary);
   width: 100%;
 }
 
@@ -66,54 +65,5 @@
   }
 
   &__applyButton {
-  }
-
-  &__numberInputWrapper {
-    @include flex-center;
-    border: 1px solid var(--borderColorAccent);
-    border-radius: 6px;
-    flex-direction: column;
-    padding: 4px 6px;
-
-    // breakpoint under which the number inputs start to wrap
-    @media screen and (max-width: 660px) {
-      flex-direction: row;
-    }
-  }
-
-  &__numberInputLabel {
-    margin: 3px;
-  }
-
-  &__numberInputs {
-    @include flex-center;
-    flex-wrap: nowrap;
-  }
-
-  &__numberInput {
-    @include forceWidth(69px);
-    background: transparent;
-    border: 1px solid var(--borderColorPrimary);
-    color: inherit;
-    font-size: 18px;
-    margin: 3px 0;
-    padding: 3px;
-    text-align: center;
-
-    &:first-of-type {
-      border-bottom-left-radius: 6px;
-      border-top-left-radius: 6px;
-      margin-left: 3px;
-    }
-
-    &:last-of-type {
-      border-bottom-right-radius: 6px;
-      border-top-right-radius: 6px;
-      margin-right: 3px;
-    }
-
-    &:not(:first-of-type) {
-      border-left: 0;
-    }
   }
 }

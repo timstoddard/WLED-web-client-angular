@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { UIConfigService } from '../../shared/ui-config.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
-import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
+import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
 import { MenuBarButton, setCssColor } from '../utils';
 import { TopMenuBarButtonName, TopMenuBarService } from './top-menu-bar.service';
 import { FormService } from '../../shared/form-service';

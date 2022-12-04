@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UIConfigService } from '../../shared/ui-config.service';
-import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
+import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
 
 @Component({
   selector: 'app-bottom-menu-bar',

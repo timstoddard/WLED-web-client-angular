@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ApiService } from '../../shared/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
-import { UnsubscriberService } from '../../shared/unsubscribing/unsubscriber.service';
+import { UnsubscriberService } from '../../shared/unsubscriber/unsubscriber.service';
 import { compareNames } from '../utils';
 
 export interface Effect {

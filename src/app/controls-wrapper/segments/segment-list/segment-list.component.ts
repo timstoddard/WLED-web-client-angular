@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { AppSegment } from '../../../shared/app-types';
 import { FormService } from '../../../shared/form-service';
 import { PostResponseHandler } from '../../../shared/post-response-handler';
-import { UnsubscriberComponent } from '../../../shared/unsubscribing/unsubscriber.component';
+import { UnsubscriberComponent } from '../../../shared/unsubscriber/unsubscriber.component';
 import { SegmentsService } from '../segments.service';
 import { expandFade } from '../../../shared/animations';
 

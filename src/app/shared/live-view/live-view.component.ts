@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@an
 import { ApiService } from '../api.service';
 import { WebSocketService } from '../web-socket.service';
 import { AppStateService } from '../app-state/app-state.service';
-import { UnsubscriberComponent } from '../unsubscribing/unsubscriber.component';
+import { UnsubscriberComponent } from '../unsubscriber/unsubscriber.component';
 import { generateApiUrl } from '../../controls-wrapper/json.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { LiveViewService } from './live-view.service';

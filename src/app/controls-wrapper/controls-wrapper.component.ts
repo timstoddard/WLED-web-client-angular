@@ -4,7 +4,7 @@ import { WLEDApiResponse } from '../shared/api-types';
 import { AppStateService } from '../shared/app-state/app-state.service';
 import { LocalStorageKey, LocalStorageService } from '../shared/local-storage.service';
 import { AppUIConfig, UIConfigService } from '../shared/ui-config.service';
-import { UnsubscriberComponent } from '../shared/unsubscribing/unsubscriber.component';
+import { UnsubscriberComponent } from '../shared/unsubscriber/unsubscriber.component';
 import { ControlsService } from './controls.service';
 import { generateApiUrl } from './json.service';
 

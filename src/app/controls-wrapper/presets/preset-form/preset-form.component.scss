@@ -1,7 +1,6 @@
 @import 'src/app/shared/scss/mixins';
 
 :host {
-  @include overrideMatTextInputStyles(--backgroundColorAccent);
   display: flex;
   justify-content: center;
   padding: 6px;
@@ -25,30 +24,17 @@
     & > * {
       margin: 6px;
     }
-  }
 
-  &__id {
-    @include forceWidth(70px);
-    margin-right: 20px;
-  }
-
-  &__name {
-    @include forceWidth(250px);
-  }
-
-
-  &__quickLoadLabel {
-    @include forceWidth(150px);
+    &--wrapped {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
   }
 
   &__horizontalSection {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-  }
-
-  &__apiValue {
-    margin: 0px 0 -16px;
   }
 
   &__bottomButtons {

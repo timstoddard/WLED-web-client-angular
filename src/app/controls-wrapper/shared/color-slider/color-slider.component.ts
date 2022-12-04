@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, HostBinding, Input, OnInit, ViewC
 import { AbstractControl, FormControl } from '@angular/forms';
 import { MatSliderChange } from '@angular/material/slider';
 import { Subject, throttleTime } from 'rxjs';
-import { UnsubscriberComponent } from '../../../shared/unsubscribing/unsubscriber.component';
+import { UnsubscriberComponent } from '../../../shared/unsubscriber/unsubscriber.component';
 
 // TODO make this a setting
 const THROTTLE_MAX_FPS = 60;

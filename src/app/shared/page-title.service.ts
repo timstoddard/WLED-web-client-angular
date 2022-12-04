@@ -3,7 +3,7 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, LoadChildrenCallback, NavigationEnd, Route, Router } from '@angular/router';
 import { filter, takeUntil } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
-import { UnsubscriberService } from './unsubscribing/unsubscriber.service';
+import { UnsubscriberService } from './unsubscriber/unsubscriber.service';
 
 const DEFAULT_PAGE_TITLE = 'WLED';
 
@@ -38,7 +38,7 @@ export class PageTitleService extends UnsubscriberService {
    * Updates the page title whenever the page url changes, using data from the routing config.
    * 
    * To set the title data, see the relevant routing module.
-   * @param ngUnsubscribe used for unsubscribing, should be passed from a Component that extends `UnsubscribingComponent`
+   * @param ngUnsubscribe used for unsubscribing, should be passed from a Component that extends `UnsubscriberComponent`
    */
   updateOnRouteChange(ngUnsubscribe: Subject<void>) {
     this.router.events.pipe(

@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { FormService } from '../../shared/form-service';
 import { OverlayPositionService } from '../../shared/overlay-position.service';
-import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
+import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
 
 // TODO use in palettes & effects services
 interface SearchableItem {

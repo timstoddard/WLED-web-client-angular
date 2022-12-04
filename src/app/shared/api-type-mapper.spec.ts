@@ -205,7 +205,7 @@ const MOCK_APP_WIFI_INFO: AppWifiInfo = {
 const MOCK_APP_FILESYSTEM_INFO: AppFileSystemInfo = {
   usedSpaceKb: 123,
   totalSpaceKb: 321,
-  lastPresetsJsonEditTimestamp: 9999,
+  presetsJsonLastEditTimestamp: 9999,
 };
 
 const MOCK_APP_INFO: AppInfo = {

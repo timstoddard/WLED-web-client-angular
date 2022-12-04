@@ -105,7 +105,7 @@ export const DEFAULT_APP_STATE: AppState = {
     fileSystem: {
       usedSpaceKb: 0,
       totalSpaceKb: 0,
-      lastPresetsJsonEditTimestamp: 0,
+      presetsJsonLastEditTimestamp: 0,
     },
     wledDevicesOnNetwork: 0,
     platform: '',

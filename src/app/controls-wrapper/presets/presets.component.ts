@@ -2,7 +2,7 @@ import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { UIConfigService } from '../../shared/ui-config.service';
 import { LocalStorageKey, LocalStorageService } from '../../shared/local-storage.service';
 import { getInput } from '../utils';
-import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
+import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
 import { PresetsService } from './presets.service';
 import { ActivatedRoute } from '@angular/router';
 import { WLEDPlaylist, WLEDPlaylists, WLEDPreset, WLEDPresets } from '../../shared/api-types';
@@ -52,6 +52,7 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
   private currentPresetName = ''; // current playlist/preset name
   private currentPresetId = 0; // current playlist/preset id
   private playlists: WLEDPlaylists = this.getDefaultPlaylists();
+  apiCommandWarningMessage = '';
 
   constructor(
     private localStorageService: LocalStorageService,
@@ -77,7 +78,6 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
         this.presets = storedPresets;
       }
     }
-    delete this.presets[0]; // delete default preset
     // let cn = '';
     const presets = this.getPresetsList(true);
     presets.sort(this.sortPresetsByName);
@@ -148,49 +148,6 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
       0: getDefaultPlaylist(),
     };
     return playlist;
-  }
-
-  // TODO do this in API service
-  private loadPresets(callback?: () => void) {
-    //1st boot (because there is a callback)
-    if (callback && this.pmt === this.pmtLS && this.pmt > 0) {
-      // we have a copy of the presets in local storage and don't need to fetch another one
-      // this.populatePresets(true);
-      this.pmtLast = this.pmt;
-      callback();
-      return;
-    }
-
-    //afterwards
-    if (!callback && this.pmt === this.pmtLast) {
-      return;
-    }
-
-    this.pmtLast = this.pmt;
-
-    // const url = generateApiUrl('presets.json', true);
-
-    // fetch(url, { method: 'get' })
-    //   .then(res => {
-    //     if (!res.ok) {
-    //       // this.showErrorToast();
-    //     }
-    //     return res.json();
-    //   })
-    //   .then(json => {
-    //     this.presets = json;
-    //     // this.populatePresets();
-    //   })
-    //   .catch((error) => {
-    //     // showToast(error, true);
-    //     console.log(error);
-    //     this.showPresetError(false);
-    //   })
-    //   .finally(() => {
-    //     if (callback) {
-    //       setTimeout(callback, 99);
-    //     }
-    //   });
   }
 
   private isPlaylist(i: number) {
@@ -293,14 +250,15 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
       if (isNaN(this.playlists[p].repeat)) {
         this.playlists[p].repeat = 0;
       }
-      if (!this.playlists[p].r) {
-        this.playlists[p].r = false;
-      }
+      // if (!this.playlists[p].r) {
+      //   this.playlists[p].r = false;
+      // }
       if (isNaN(this.playlists[p].end as number)) {
         this.playlists[p].end = 0;
       }
 
-      document.getElementById('seg' + index)!.innerHTML = this.createPreset(p, true);
+      // TODO create new playlist
+      // document.getElementById('seg' + index)!.innerHTML = this.createPreset(p, true);
       this.refreshPlE(p);
     } else {
       document.getElementById('seg' + index)!.innerHTML = this.createPreset(p);
@@ -311,39 +269,7 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
     if (plApiValue.indexOf('Please') === 0) {
       getInput(`p${p}cstgl`).checked = true;
     }
-    this.toggleUseCurrentState(p);
-  }
-
-  /**
-   * Updates background color of currently selected preset
-   */
-  private updateSelectedPresetBackground() {
-    // reset all preset buttons
-    const seg = Array.from(document.getElementsByClassName('seg'));
-    for (const element of seg) {
-      (element as HTMLElement).style.backgroundColor = 'var(--c-2)';
-    }
-    
-    // reset all quick selectors
-    const psts = Array.from(document.getElementsByClassName('psts'));
-    for (const element of psts) {
-      (element as HTMLElement).style.backgroundColor = 'var(--c-2)';
-    }
-
-    if (this.currentPreset > 0) {
-
-      const oElement = document.getElementById(`p${this.currentPreset}o`);
-      if (oElement && !this.expanded[this.currentPreset + 100]) {
-        // highlight current preset  
-        oElement.style.background = 'var(--c-6)';
-      }
-
-      const qlbElement = document.getElementById(`p${this.currentPreset}qlb`);
-      if (qlbElement) {
-        // highlight quick selector
-        qlbElement.style.background = 'var(--c-6)';
-      }
-    }
+    // this.toggleUseCurrentState(p);
   }
 
   private getPresetCount() {
@@ -358,9 +284,9 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
       return;
     }
     // TODO what is this checking?
-    if (this.playlists[0].transition[0] < 0) {
-      this.playlists[0].transition[0] = this.tr;
-    }
+    // if (this.playlists[0].transition[0] < 0) {
+    //   this.playlists[0].transition[0] = this.tr;
+    // }
     this.templateType = 'createPlaylist'
     // document.getElementById('putil')!.innerHTML = `<div class="seg pres">
     // <div class="segname newseg">
@@ -478,7 +404,7 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
     }
   }
 
-  private addPl(playlistId: number, psIndex: number) {
+  /*private addPl(playlistId: number, psIndex: number) {
     this.playlists[playlistId].ps.splice(psIndex + 1, 0, 0);
     this.playlists[playlistId].dur.splice(psIndex + 1, 0, this.playlists[playlistId].dur[psIndex]);
     this.playlists[playlistId].transition.splice(psIndex + 1, 0, this.playlists[playlistId].transition[psIndex]);
@@ -495,7 +421,7 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
     this.refreshPlE(playlistId);
   }
 
-  setPlaylistPs(playlistId: number, psIndex: number, psValue: number) {
+  setPlaylistPreset(playlistId: number, psIndex: number, psValue: number) {
     this.playlists[playlistId].ps[psIndex] = psValue;
   }
 
@@ -505,7 +431,7 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
 
   setPlaylistTransition(playlistId: number, psIndex: number, transition: number) {
     this.playlists[playlistId].transition[psIndex] = transition;
-  }
+  }*/
 
   /**
    * rtgl = shuffle
@@ -514,7 +440,7 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
    */
   private plR(playlistId: number) {
     const playlist = this.playlists[playlistId];
-    playlist.r = getInput(`pl${playlistId}rtgl`).checked;
+    // playlist.r = getInput(`pl${playlistId}rtgl`).checked;
     if (getInput(`pl${playlistId}rptgl`).checked) { //infinite
       playlist.repeat = 0;
       // TODO make this null for infinite
@@ -614,67 +540,56 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
     return presetsList
   }
 
-  private toggleUseCurrentState(i: number) {
-    const shouldUseCurrentState = getInput(`p${i}cstgl`).checked;
-    document.getElementById(`p${i}o1`)!.style.display = shouldUseCurrentState ? 'block' : 'none';
-    document.getElementById(`p${i}o2`)!.style.display = !shouldUseCurrentState ? 'block' : 'none';
-  }
+  private savePreset(
+    pIndex: number,
+    preset: AppPreset,
+    useCurrentState: boolean,
+    includeBrightness: boolean,
+    saveSegmentBounds: boolean,
+  ) {
+    const {
+      id,
+      name,
+      quickLoadLabel,
+      apiValue,
+    } = preset;
 
-  private savePreset(pIndex: number, isPlaylist: boolean) {
-    this.currentPresetId = parseInt(getInput(`p${pIndex}id`).value);
+    this.currentPresetId = id;
     if (!this.currentPresetId || this.currentPresetId <= 0) {
       // TODO get next id from preset service
       // this.playlistIndex = (pIndex > 0) ? pIndex : this.getLowestUnusedPlId();
     }
-    this.currentPresetName = getInput(`p${pIndex}txt`).value;
+    this.currentPresetName = name || `Preset ${this.currentPresetId}`;
 
-    if (!this.currentPresetName) {
-      const pType = isPlaylist ? 'Playlist' : 'Preset';
-      this.currentPresetName = `${pType} ${this.currentPresetId}`;
-    }
-    let preset: Partial<WLEDPreset> = {};
+    let _preset: Partial<WLEDPreset> = {};
 
-    if (!getInput(`p${pIndex}cstgl`).checked) {
-      const raw = (document.getElementById(`p${pIndex}api`)! as HTMLTextAreaElement).value;
+    if (!useCurrentState) {
+      const raw = apiValue;
       try {
-        preset = JSON.parse(raw);
+        _preset = JSON.parse(raw);
       } catch (e) {
-        preset.win = raw;
-        const getWarning = () => {
-          if (raw.length < 2) {
-            return '&#9888; Please enter your API command first';
-          } else if (raw.indexOf('{') > -1) {
-            return '&#9888; Syntax error in custom JSON API command';
-          } else if (raw.indexOf('Please') === 0) {
-            return '&#9888; Please refresh the page before modifying this preset';
-          } else {
-            // TODO required for TS to be happy?
-            return ''
-          }
+        _preset.win = raw;
+        let warningMessage = '';
+        if (raw.length < 2) {
+          warningMessage = '&#9888; Please enter your API command first';
+        } else if (raw.indexOf('{') > -1) {
+          warningMessage = '&#9888; Syntax error in custom JSON API command';
+        } else if (raw.indexOf('Please') === 0) {
+          warningMessage = '&#9888; Please refresh the page before modifying this preset';
         }
-        const warningMessage = getWarning()
-        if (warningMessage) {
-          document.getElementById(`p${pIndex}warn`)!.innerHTML = warningMessage;
-          return;
-        }
+        this.apiCommandWarningMessage = warningMessage;
+        return;
       }
-      preset.o = true;
+      _preset.o = true;
     } else {
-      if (isPlaylist) {
-        preset.playlist = this.playlists[pIndex];
-        preset.on = true;
-        preset.o = true;
-      } else {
-        preset.ib = getInput(`p${pIndex}ibtgl`).checked;
-        preset.sb = getInput(`p${pIndex}sbtgl`).checked;
-      }
+      _preset.ib = includeBrightness;
+      _preset.sb = saveSegmentBounds;
     }
 
-    preset.psave = this.currentPresetId;
-    preset.n = this.currentPresetName;
-    const plQuickLoadLabel = getInput(`p${pIndex}ql`).value;
-    if (plQuickLoadLabel.length > 0) {
-      preset.ql = plQuickLoadLabel;
+    _preset.psave = this.currentPresetId;
+    _preset.n = this.currentPresetName;
+    if (quickLoadLabel) {
+      _preset.ql = quickLoadLabel;
     }
 
     // TODO api call to save
@@ -682,8 +597,8 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
     // this.requestJson(obj);
 
     // TODO figure out this logic...
-    /*if (preset.o) {
-      this.presets[this.playlistIndex] = preset;
+    /*if (_preset.o) {
+      this.presets[this.playlistIndex] = _preset;
       delete this.presets[this.playlistIndex].psave;
       delete this.presets[this.playlistIndex].o;
       delete this.presets[this.playlistIndex].v;
@@ -693,19 +608,13 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
         n: this.pName,
         win: 'Please refresh the page to see this newly saved command.',
       };
-      if (preset.win) {
-        this.presets[this.playlistIndex].win = preset.win;
+      if (_preset.win) {
+        this.presets[this.playlistIndex].win = _preset.win;
       }
-      if (preset.ql) {
-        this.presets[this.playlistIndex].ql = preset.ql;
+      if (_preset.ql) {
+        this.presets[this.playlistIndex].ql = _preset.ql;
       }
     }*/
-
-    // TODO rerender presets
-    // this.populatePresets();
-    
-    // TODO hide form
-    // this.resetPUtil();
   }
 
   private deleteP(presetIndex: number) {

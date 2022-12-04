@@ -6,7 +6,7 @@ import { NO_DEVICE_IP_SELECTED } from '../../../shared/app-state/app-state-defau
 import { AppStateService } from '../../../shared/app-state/app-state.service';
 import { WLEDIpAddress } from '../../../shared/app-types';
 import { FormService } from '../../../shared/form-service';
-import { UnsubscriberComponent } from '../../../shared/unsubscribing/unsubscriber.component';
+import { UnsubscriberComponent } from '../../../shared/unsubscriber/unsubscriber.component';
 
 interface SelectableWLEDIpAddress extends WLEDIpAddress {
   selected: boolean;

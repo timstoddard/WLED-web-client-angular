@@ -43,33 +43,12 @@
   </div>
 
   <div class="segmentForm__row segmentForm__row__numberInputs">
-    <label
-      *ngFor="let numberInput of newNumberInputs"
-      class="segmentForm__numberInputWrapper">
-      <div class="segmentForm__numberInputLabel">
-        {{ numberInput.name }}
-      </div>
-      <div class="segmentForm__numberInputs">
-        <input
-          *ngFor="let input of numberInput.inputs"
-          type="number"
-          [formControlName]="input.formControlName"
-          [placeholder]="input.placeholder"
-          class="segmentForm__numberInput">
-        <!-- TODO remove, probably -->
-        <!-- <mat-form-field
-          *ngFor="let input of numberInput.inputs"
-          appearance="fill"
-          class="segmentForm__numberFormField">
-          <input
-            matInput
-            type="number"
-            [formControlName]="input.formControlName"
-            [placeholder]="input.placeholder"
-            class="segmentForm__numberInput__input">
-        </mat-form-field> -->
-      </div>
-    </label>
+    <app-text-input
+      *ngFor="let numberInput of numberInputs"
+      [label]="numberInput.label"
+      [inputs]="numberInput.inputs"
+      [description]="numberInput.description">
+    </app-text-input>
   </div>
 
   <div class="segmentForm__row">

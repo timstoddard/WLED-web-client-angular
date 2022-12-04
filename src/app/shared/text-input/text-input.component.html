@@ -1,0 +1,26 @@
+<label class="textInput">
+  <div class="textInput__label">
+    {{ label }}
+  </div>
+  <div class="textInput__inputList">
+    <ng-container *ngFor="let input of inputs">
+      <ng-container *ngIf="input.type !== 'textarea'; else textAreaInput">
+
+        <input
+          [type]="input.type"
+          [formControl]="input.getFormControl()"
+          [placeholder]="input.placeholder"
+          [ngStyle]="getNgStyle(input, true)"
+          class="textInput__input textInput__input--centered">
+      </ng-container>
+      <ng-template #textAreaInput>
+        <textarea
+          [formControl]="input.getFormControl()"
+          [placeholder]="input.placeholder"
+          [ngStyle]="getNgStyle(input, false)"
+          class="textInput__input">
+        </textarea>
+      </ng-template>
+    </ng-container>
+  </div>
+</label>

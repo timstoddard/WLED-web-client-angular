@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { ApiService } from '../../shared/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
-import { UnsubscriberService } from '../../shared/unsubscribing/unsubscriber.service';
+import { UnsubscriberService } from '../../shared/unsubscriber/unsubscriber.service';
 import { ColorSlotsService } from '../color-inputs/color-slots/color-slots.service';
 import { compareNames, findRouteData } from '../utils';
 

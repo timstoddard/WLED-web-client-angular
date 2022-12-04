@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { AppInfo, AppNode } from '../../shared/app-types';
-import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
+import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
 import { InfoService } from './info.service';
 
 interface InfoButton {

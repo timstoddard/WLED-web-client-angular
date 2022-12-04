@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { FormService, FormValues } from '../../shared/form-service';
 import { LocalStorageKey, LocalStorageService } from '../../shared/local-storage.service';
 import { AppUIConfig, UIConfigService } from '../../shared/ui-config.service';
-import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
+import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
 import { UISettingsService } from './ui-settings.service';
 
 @Component({

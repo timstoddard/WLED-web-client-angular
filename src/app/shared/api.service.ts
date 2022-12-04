@@ -10,7 +10,7 @@ import { AppPreset, AppWLEDState } from './app-types';
 import { FormValues } from './form-service';
 import { LiveViewData } from './live-view/live-view.service';
 import { PostResponseHandler } from './post-response-handler';
-import { UnsubscriberService } from './unsubscribing/unsubscriber.service';
+import { UnsubscriberService } from './unsubscriber/unsubscriber.service';
 
 const ALL_JSON_PATH = 'json';
 const STATE_INFO_PATH = 'json/si';

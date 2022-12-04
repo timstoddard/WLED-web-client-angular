@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { merge } from 'rxjs';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { FormService } from '../../shared/form-service';
-import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
+import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
 import { ColorService, CurrentColor } from '../color.service';
 import { ColorSlotsService } from './color-slots/color-slots.service';
 

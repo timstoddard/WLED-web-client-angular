@@ -6,7 +6,7 @@ import { ApiService } from '../shared/api.service';
 import { AppStateService } from '../shared/app-state/app-state.service';
 import { AppLedInfo } from '../shared/app-types';
 import { PostResponseHandler } from '../shared/post-response-handler';
-import { UnsubscriberService } from '../shared/unsubscribing/unsubscriber.service';
+import { UnsubscriberService } from '../shared/unsubscriber/unsubscriber.service';
 
 export interface CurrentColor {
   rgb: RgbColor;

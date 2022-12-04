@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { AppPreset } from '../../../shared/app-types';
-import { FormService } from '../../../shared/form-service';
-import { OnlineStatusService } from '../../../shared/online-status.service';
+import { FormService, getFormControl } from '../../../shared/form-service';
+import { CustomInput } from '../../../shared/text-input/text-input.component';
 import { PresetsService } from '../presets.service';
 
 @Component({
@@ -12,17 +12,67 @@ import { PresetsService } from '../presets.service';
 })
 export class PresetFormComponent implements OnInit {
   @Input() preset?: AppPreset;
-  newPreset!: FormGroup;
+  newPresetForm!: FormGroup;
   @Output() closeForm = new EventEmitter();
+  inputs: CustomInput[] = [
+    {
+      label: 'Name',
+      description: 'Preset name.',
+      inputs: [
+        {
+          type: 'text',
+          getFormControl: () => getFormControl(this.newPresetForm, 'name'),
+          placeholder: 'Name',
+          widthPx: 200,
+        },
+      ],
+    },
+    {
+      label: 'ID',
+      description: 'Preset ID number.',
+      inputs: [
+        {
+          type: 'number',
+          getFormControl: () => getFormControl(this.newPresetForm, 'id'),
+          placeholder: 'ID',
+          widthPx: 70,
+        },
+      ],
+    },
+    {
+      label: 'Label',
+      description: 'Quick load label.',
+      inputs: [
+        {
+          type: 'text',
+          getFormControl: () => getFormControl(this.newPresetForm, 'quickLoadLabel'),
+          placeholder: 'Label',
+          widthPx: 100,
+        },
+      ],
+    },
+  ];
+  textareaInput: CustomInput = {
+    label: 'API Command', // TODO better label
+    description: 'Manually set the API parameters.',
+    inputs: [
+      {
+        type: 'textarea',
+        getFormControl: () => getFormControl(this.newPresetForm, 'apiValue'),
+        placeholder: '{}', // TODO better placeholder
+        widthPx: 200,
+        heightPx: 100,
+      },
+    ],
+  };
 
   constructor(
     private formSerivce: FormService,
     private presetsService: PresetsService,
-    private onlineStatusService: OnlineStatusService,
   ) { }
 
   ngOnInit() {
-    this.newPreset = this.createForm(this.preset);
+    this.newPresetForm = this.createForm(this.preset);
   }
 
   savePreset() {
@@ -35,7 +85,7 @@ export class PresetFormComponent implements OnInit {
       useCurrentState,
       includeBrightness,
       saveSegmentBounds,
-    } = this.newPreset.value
+    } = this.newPresetForm.value
     let preset: Partial<AppPreset> = {};
 
     if (useCurrentState) {
@@ -53,13 +103,11 @@ export class PresetFormComponent implements OnInit {
         quickLoadLabel,
         apiValue,
       };
-      if (!this.onlineStatusService.getIsOffline()) {
-        this.presetsService.savePreset(
-          preset,
-          useCurrentState,
-          includeBrightness,
-          saveSegmentBounds);
-      }
+      this.presetsService.savePreset(
+        preset,
+        useCurrentState,
+        includeBrightness,
+        saveSegmentBounds);
     }
 
     this.emitCloseForm()
@@ -82,27 +130,27 @@ export class PresetFormComponent implements OnInit {
       apiValue = existingPreset.apiValue
     }
 
-    // TODO use formSerivce.createFormGroup()
-    const form = this.formSerivce.formBuilder.group({
-      id: this.formSerivce.formBuilder.control(id, Validators.required),
-      name: this.formSerivce.formBuilder.control(name, Validators.required),
-      quickLoadLabel: this.formSerivce.formBuilder.control(quickLoadLabel),
-      useCurrentState: this.formSerivce.formBuilder.control(true, Validators.required),
+    const form = this.formSerivce.createFormGroup({
+      id,
+      name,
+      quickLoadLabel,
+      useCurrentState: true,
+    }, {
       includeBrightness: this.formSerivce.formBuilder.control(true, this.requiredIfUseCurrentStateEquals(true)),
       saveSegmentBounds: this.formSerivce.formBuilder.control(true, this.requiredIfUseCurrentStateEquals(true)),
       apiValue: this.formSerivce.formBuilder.control(apiValue, this.requiredIfUseCurrentStateEquals(false)),
-    });
+    })
 
     return form;
   }
 
   private requiredIfUseCurrentStateEquals(expectedValue: boolean) {
     return (control: AbstractControl): ValidationErrors | null => {
-      if (!this.newPreset) {
+      if (!this.newPresetForm) {
         return null
       }
 
-      const useCurrentStateControl = this.newPreset.get('useCurrentState')
+      const useCurrentStateControl = this.newPresetForm.get('useCurrentState')
       const isRequired = useCurrentStateControl &&
         useCurrentStateControl.value === expectedValue;
       return isRequired

@@ -5,7 +5,7 @@ import { NO_DEVICE_IP_SELECTED } from '../../../shared/app-state/app-state-defau
 import { AppStateService } from '../../../shared/app-state/app-state.service';
 import { WLEDIpAddress } from '../../../shared/app-types';
 import { OverlayPositionService } from '../../../shared/overlay-position.service';
-import { UnsubscriberComponent } from '../../../shared/unsubscribing/unsubscriber.component';
+import { UnsubscriberComponent } from '../../../shared/unsubscriber/unsubscriber.component';
 
 type ConnectionStatus = 'connected' | 'disconnected' | 'loading';
 

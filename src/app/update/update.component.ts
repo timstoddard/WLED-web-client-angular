@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormService } from '../shared/form-service';
-import { UnsubscriberComponent } from '../shared/unsubscribing/unsubscriber.component';
+import { UnsubscriberComponent } from '../shared/unsubscriber/unsubscriber.component';
 
 @Component({
   selector: 'app-update',

@@ -338,7 +338,7 @@ export const MOCK_API_PRESETS: WLEDPreset[] = [
       transition: [1,1,1],
       repeat: 3,
       end: null,
-      r: false,
+      // r: false,
     },
     psave: 0,
     o: true, // TODO
@@ -357,19 +357,19 @@ export const MOCK_LOCAL_PRESETS = [
     id: 1,
     name: 'Preset One',
     quickLoadLabel: 'P1',
-    apiValue: 'TODO',
+    apiValue: '{}', // TODO
   },
   {
     id: 2,
     name: 'Number 2',
     quickLoadLabel: '#2',
-    apiValue: 'TODO',
+    apiValue: '{}', // TODO
   },
   {
     id: 3,
     name: 'Thr33!!!',
     quickLoadLabel: '',
-    apiValue: 'TODO',
+    apiValue: '{}', // TODO
   },
 ];
 

@@ -3,7 +3,7 @@ import { ApiTypeMapper } from '../../shared/api-type-mapper';
 import { ApiService } from '../../shared/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { AppSegment } from '../../shared/app-types';
-import { UnsubscriberService } from '../../shared/unsubscribing/unsubscriber.service';
+import { UnsubscriberService } from '../../shared/unsubscriber/unsubscriber.service';
 
 @Injectable()
 export class SegmentsService extends UnsubscriberService {

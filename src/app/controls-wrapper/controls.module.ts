@@ -37,6 +37,7 @@ import { SearchInputComponent } from './search-input/search-input.component';
 import { SegmentFormComponent } from './segments/segment-form/segment-form.component';
 import { SegmentListComponent } from './segments/segment-list/segment-list.component';
 import { SegmentsComponent } from './segments/segments.component';
+import { TextInputComponent } from '../shared/text-input/text-input.component';
 import { TopMenuBarComponent } from './top-menu-bar/top-menu-bar.component';
 
 const COLOR_INPUTS = [
@@ -52,6 +53,7 @@ const COLOR_INPUTS = [
 const SHARED_COMPONENTS = [
   ColorSliderComponent,
   ExpandIconComponent,
+  TextInputComponent,
 ]
 
 const COMPONENTS = [

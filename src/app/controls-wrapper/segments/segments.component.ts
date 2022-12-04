@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UIConfigService } from '../../shared/ui-config.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
-import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
+import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
 import { SegmentsService } from './segments.service';
 import { PostResponseHandler } from '../../shared/post-response-handler';
 

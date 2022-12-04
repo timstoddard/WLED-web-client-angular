@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { AppStateService } from '../../../shared/app-state/app-state.service';
-import { UnsubscriberService } from '../../../shared/unsubscribing/unsubscriber.service';
+import { UnsubscriberService } from '../../../shared/unsubscriber/unsubscriber.service';
 import { ColorService, CurrentColor } from '../../color.service';
 
 const DEFAULT_SLOT_COUNT = 3;

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Meta, MetaDefinition } from '@angular/platform-browser';
 import { LocalStorageKey, LocalStorageService } from './shared/local-storage.service';
 import { PageTitleService } from './shared/page-title.service';
-import { UnsubscriberComponent } from './shared/unsubscribing/unsubscriber.component';
+import { UnsubscriberComponent } from './shared/unsubscriber/unsubscriber.component';
 
 @Component({
   selector: 'app-root',

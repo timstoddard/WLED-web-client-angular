@@ -1,5 +1,12 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+
+export const getFormControl = (
+  formGroup: FormGroup,
+  formControlName: string,
+) => {
+  return formGroup.get(formControlName) as FormControl;
+}
 
 /**
  * Generalized interface for FormGroup keyvalue pairs.

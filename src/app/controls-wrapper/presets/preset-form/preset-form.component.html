@@ -1,40 +1,14 @@
 <div
-  [formGroup]="newPreset"
+  [formGroup]="newPresetForm"
   class="presetForm">
 
-  <div class="presetForm__row">
-    <mat-form-field
-      appearance="fill"
-      class="presetForm__name">
-      <mat-label>Name</mat-label>
-      <input
-        matInput
-        formControlName="name"
-        class="">
-    </mat-form-field>
-
-    <div class="presetForm__horizontalSection">
-      <mat-form-field
-        appearance="fill"
-        class="presetForm__id">
-        <mat-label>ID</mat-label>
-        <input
-          matInput
-          type="number"
-          formControlName="id"
-          class="">
-      </mat-form-field>
-  
-      <mat-form-field
-        appearance="fill"
-        class="presetForm__quickLoadLabel">
-        <mat-label>Quick Load label</mat-label>
-        <input
-          matInput
-          formControlName="quickLoadLabel"
-          class="">
-      </mat-form-field>
-    </div>
+  <div class="presetForm__row presetForm__row--wrapped">
+    <app-text-input
+      *ngFor="let input of inputs"
+      [label]="input.label"
+      [inputs]="input.inputs"
+      [description]="input.description">
+    </app-text-input>
   </div>
 
   <div class="presetForm__row">
@@ -44,7 +18,7 @@
       Use current state
     </mat-checkbox>
 
-    <ng-container *ngIf="newPreset.get('useCurrentState')?.value === true; else apiValueInput">
+    <ng-container *ngIf="newPresetForm.get('useCurrentState')?.value === true; else apiValueInput">
       <mat-checkbox
         formControlName="includeBrightness"
         class="">
@@ -58,17 +32,11 @@
     </ng-container>
 
     <ng-template #apiValueInput>
-      <mat-form-field
-        class="presetForm__apiValue"
-        appearance="fill">
-        <mat-label>API Command</mat-label>
-        <!-- TODO better placeholder -->
-        <textarea
-          matInput
-          formControlName="apiValue"
-          placeholder="{}">
-        </textarea>
-      </mat-form-field>
+      <app-text-input
+        [label]="textareaInput.label"
+        [inputs]="textareaInput.inputs"
+        [description]="textareaInput.description">
+      </app-text-input>
     </ng-template>
   </div>
 

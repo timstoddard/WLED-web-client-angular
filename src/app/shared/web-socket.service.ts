@@ -5,7 +5,7 @@ import { WLEDApiResponse } from './api-types';
 import { AppStateService } from './app-state/app-state.service';
 import { LiveViewData } from './live-view/live-view.service';
 import { OnlineStatusService } from './online-status.service';
-import { UnsubscriberService } from './unsubscribing/unsubscriber.service';
+import { UnsubscriberService } from './unsubscriber/unsubscriber.service';
 
 // TODO how are these used by the web socket?
 const LIVE_VIEW_MESSAGE = 'LIVE_VIEW_MESSAGE';

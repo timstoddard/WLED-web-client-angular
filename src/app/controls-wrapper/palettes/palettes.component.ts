@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { FormService } from '../../shared/form-service';
 import { PostResponseHandler } from '../../shared/post-response-handler';
-import { UnsubscriberComponent } from '../../shared/unsubscribing/unsubscriber.component';
+import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
 import { PalettesService } from './palettes.service';
 
 const NO_PALETTE_SELECTED = -1;

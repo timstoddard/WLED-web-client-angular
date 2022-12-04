@@ -4,7 +4,7 @@ import { AppStateService } from '../../../shared/app-state/app-state.service';
 import { FormService } from '../../../shared/form-service';
 import { PostResponseHandler } from '../../../shared/post-response-handler';
 import { UIConfigService } from '../../../shared/ui-config.service';
-import { UnsubscriberComponent } from '../../../shared/unsubscribing/unsubscriber.component';
+import { UnsubscriberComponent } from '../../../shared/unsubscriber/unsubscriber.component';
 import { formatPlural } from '../../utils';
 import { SegmentsService } from '../segments.service';
 

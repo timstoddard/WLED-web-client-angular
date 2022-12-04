@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../shared/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { AppPreset } from '../../shared/app-types';
-import { UnsubscriberService } from '../../shared/unsubscribing/unsubscriber.service';
+import { UnsubscriberService } from '../../shared/unsubscriber/unsubscriber.service';
 
 @Injectable()
 export class PresetsService extends UnsubscriberService {

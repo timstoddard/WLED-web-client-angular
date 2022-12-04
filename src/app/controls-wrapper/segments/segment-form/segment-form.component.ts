@@ -1,22 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { AppSegment } from '../../../shared/app-types';
-import { FormService } from '../../../shared/form-service';
+import { FormService, getFormControl } from '../../../shared/form-service';
 import { PostResponseHandler } from '../../../shared/post-response-handler';
+import { CustomInput } from '../../../shared/text-input/text-input.component';
 import { UIConfigService } from '../../../shared/ui-config.service';
-import { UnsubscriberComponent } from '../../../shared/unsubscribing/unsubscriber.component';
+import { UnsubscriberComponent } from '../../../shared/unsubscriber/unsubscriber.component';
 import { formatPlural } from '../../utils';
 import { SegmentsService } from '../segments.service';
-
-interface NumberInput {
-  name: string;
-  // TODO add description to UI via optional toggle
-  description: string;
-  inputs: Array<{
-    formControlName: string;
-    placeholder: string;
-  }>;
-}
 
 @Component({
   selector: 'app-segment-form',
@@ -28,48 +19,58 @@ export class SegmentFormComponent extends UnsubscriberComponent implements OnIni
   segmentForm!: FormGroup;
   ledCountLabel!: string;
   useSegmentLength!: boolean;
-  newNumberInputs: NumberInput[] = [
+  numberInputs: CustomInput[] = [
     {
-      name: 'Start/Stop LED',
+      label: 'Start/Stop LED',
       description: 'The first and last LEDs to be included in this segment.',
       inputs: [
         {
-          formControlName: 'start',
+          type: 'number',
+          getFormControl: () => getFormControl(this.segmentForm, 'start'),
           placeholder: '0',
+          widthPx: 69,
         },
         {
-          formControlName: 'stop',
+          type: 'number',
+          getFormControl: () => getFormControl(this.segmentForm, 'stop'),
           placeholder: '100',
+          widthPx: 69,
         },
       ],
     },
     {
-      name: 'Offset',
+      label: 'Offset',
       description: 'Offset before first LED.',
       inputs: [
         {
-          formControlName: 'offset',
+          type: 'number',
+          getFormControl: () => getFormControl(this.segmentForm, 'offset'),
           placeholder: '0',
+          widthPx: 69,
         },
       ],
     },
     {
-      name: 'Grouping',
+      label: 'Grouping',
       description: 'The group number that includes this segment.',
       inputs: [
         {
-          formControlName: 'grouping',
+          type: 'number',
+          getFormControl: () => getFormControl(this.segmentForm, 'grouping'),
           placeholder: '1',
+          widthPx: 69,
         },
       ],
     },
     {
-      name: 'Spacing',
+      label: 'Spacing',
       description: 'Number of LEDs to add space around the segment.',
       inputs: [
         {
-          formControlName: 'spacing',
+          type: 'number',
+          getFormControl: () => getFormControl(this.segmentForm, 'spacing'),
           placeholder: '0',
+          widthPx: 69,
         },
       ],
     },

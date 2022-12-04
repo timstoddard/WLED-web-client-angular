@@ -1,0 +1,81 @@
+@import 'src/app/shared/scss/mixins';
+
+.textInput {
+  $inputMargin: 3px;
+  $inputBorderRadius: 3px;
+
+  @include flex-center;
+  border: 1px solid var(--borderColorAccent);
+  border-radius: 6px;
+  flex-direction: column;
+  padding: 4px;
+
+  // TODO make this generic (was just for segments)
+  // breakpoint under which the number inputs start to wrap
+  @media screen and (max-width: 670px) {
+    flex-direction: row;
+  }
+
+  &__inputList {
+    @include flex-center;
+    flex-wrap: nowrap;
+  }
+
+  &__label {
+    font-size: 14px;
+    margin: 1px 5px;
+
+    // emphasized style when associated input is focused.
+    // works when input is the direct sibling, or a descdendant of the direct sibling.
+    &:has(+ .textInput__input:focus),
+    &:has(+ * .textInput__input:focus) {
+      font-style: italic;
+      text-decoration: underline;
+    }
+  }
+
+  &__input {
+    background: transparent;
+    border: 1px solid var(--backgroundColorAccent);
+    border-radius: 0;
+    color: inherit;
+    font-size: 16px;
+    margin: $inputMargin 0;
+    padding: 3px;
+
+    // emphasized style for focused input
+    &:focus {
+      background-color: var(--backgroundColorAccent);
+      border-color: var(--borderColorPrimary);
+      outline: 0;
+    }
+
+    // add border radius and margin to left side of first input
+    &:first-of-type {
+      border-bottom-left-radius: $inputBorderRadius;
+      border-top-left-radius: $inputBorderRadius;
+      margin-left: $inputMargin;
+    }
+
+    // add border radius and margin to right side of last input
+    &:last-of-type {
+      border-bottom-right-radius: $inputBorderRadius;
+      border-top-right-radius: $inputBorderRadius;
+      margin-right: $inputMargin;
+    }
+
+    // remove double vertical border between consecutive inputs
+    &:not(:first-of-type) {
+      border-left: 0;
+    }
+
+    // add left border for non-first focused input
+    &:has(::ng-deep + &:focus) {
+      border-right-color: var(--borderColorPrimary);
+    }
+
+    &--centered {
+      text-align: center;
+    }
+  }
+}
