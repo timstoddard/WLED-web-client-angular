@@ -1,4 +1,5 @@
 @import 'src/app/shared/scss/mixins';
+@import 'src/app/shared/scss/rainbow';
 
 .textInput {
   $inputMargin: 3px;
@@ -29,7 +30,6 @@
     // works when input is the direct sibling, or a descdendant of the direct sibling.
     &:has(+ .textInput__input:focus),
     &:has(+ * .textInput__input:focus) {
-      font-style: italic;
       text-decoration: underline;
     }
   }
@@ -45,8 +45,8 @@
 
     // emphasized style for focused input
     &:focus {
+      @include rainbow(border-color);
       background-color: var(--backgroundColorAccent);
-      border-color: var(--borderColorPrimary);
       outline: 0;
     }
 
@@ -71,7 +71,7 @@
 
     // add left border for non-first focused input
     &:has(::ng-deep + &:focus) {
-      border-right-color: var(--borderColorPrimary);
+      @include rainbow(border-right-color);
     }
 
     &--centered {

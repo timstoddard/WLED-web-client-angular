@@ -1,0 +1,42 @@
+@use 'sass:list';
+
+$rainbowColors:
+  rgb(255,0,0),
+  rgb(255,128,0),
+  rgb(225,255,0),
+  rgb(0,255,0),
+  rgb(0,0,255),
+  rgb(128,0,255);
+
+/*
+ * Only include color properties that are actually used to keep final bundle size smaller.
+ * Full list: https://www.quackit.com/css/color/properties/
+ */
+$colorProperties:
+  border-color,
+  border-right-color;
+
+// Generates rainbow animation keyframes for the specified color properties.
+@each $colorProperty in $colorProperties {
+  @keyframes rainbow-#{$colorProperty} {
+    @for $i from 1 through length($rainbowColors) {
+      #{(($i - 1) / length($rainbowColors)) * 100%} {
+        #{$colorProperty}: list.nth($rainbowColors, $i);
+      }
+    }
+    100% {
+      #{$colorProperty}: list.nth($rainbowColors, 1);
+    }
+  }
+}
+
+$defaultDuration: 4.20s;
+
+@mixin rainbow($colorProperty, $duration: $defaultDuration) {
+  // throw error if color property isn't in above list
+  @if not list.index($colorProperties, $colorProperty) {
+    @error 'Unexpected property for rainbow animation: `#{$colorProperty}`. Expected one of [#{$colorProperties}].';
+  }
+
+  animation: rainbow-#{$colorProperty} $duration linear infinite;
+}
