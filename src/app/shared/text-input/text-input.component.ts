@@ -5,9 +5,11 @@ export interface CustomInput {
   label: string;
   description: string;
   inputs: InputConfig[];
+  prefix?: string;
+  suffix?: string;
 }
 
-interface InputConfig {
+export interface InputConfig {
   /** Input type. */
   type: 'text' | 'number' | 'textarea';
   /** Function that returns the form control. */
@@ -18,6 +20,12 @@ interface InputConfig {
   widthPx?: number;
   /** Manually set the height. */
   heightPx?: number;
+  /** Min numeric value. For number type inputs only. */
+  min?: number;
+  /** Max numeric value. For number type inputs only. */
+  max?: number;
+  /** Step value. For number type inputs only. */
+  step?: number;
 }
 
 @Component({
@@ -30,6 +38,8 @@ export class TextInputComponent {
   @Input() inputs: InputConfig[] = [];
   // TODO use this
   @Input() @Optional() description: string = '';
+  @Input() @Optional() prefix: string = '';
+  @Input() @Optional() suffix: string = '';
 
   /**
    * Sets the width and height styles for an input based on its config.

@@ -4,9 +4,10 @@
 }
 
 .liveView {
-  border: 1px solid var(--borderColorPrimary);
-  border-left-width: 0;
-  border-right-width: 0;
-  height: 16px;
+  border-bottom: 1px solid var(--borderColorAccent);
+  border-left: 0;
+  border-right: 0;
+  border-top: 1px solid var(--borderColorAccent);
+  height: 12px;
   width: 100%;
 }

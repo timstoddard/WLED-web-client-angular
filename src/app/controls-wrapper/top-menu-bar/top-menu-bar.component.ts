@@ -5,9 +5,10 @@ import { AppStateService } from '../../shared/app-state/app-state.service';
 import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
 import { MenuBarButton, setCssColor } from '../utils';
 import { TopMenuBarButtonName, TopMenuBarService } from './top-menu-bar.service';
-import { FormService } from '../../shared/form-service';
+import { FormService, getFormControl } from '../../shared/form-service';
 import { AppState } from '../../shared/app-types';
 import { OverlayPositionService } from '../../shared/overlay-position.service';
+import { InputConfig } from '../../shared/text-input/text-input.component';
 
 const MIN_SHOW_BRIGHTNESS_SLIDER_THRESHOLD_PX = 800;
 const MIN_SHOW_PC_MODE_BUTTON_THRESHOLD_PX = 1200; // TODO might need to be bigger
@@ -26,6 +27,15 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
   showPcModeButton: boolean = false;
   isDarkMode!: boolean;
   showLabels!: boolean;
+  transitionInput: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.topMenuBarForm, 'transitionTime'),
+    placeholder: '0.5',
+    widthPx: 60,
+    min: 0,
+    max: 65.5,
+    step: 0.1,
+  };
 
   // TODO convert to object/array
   // button controls

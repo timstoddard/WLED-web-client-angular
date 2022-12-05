@@ -2,25 +2,48 @@
   <div class="textInput__label">
     {{ label }}
   </div>
-  <div class="textInput__inputList">
-    <ng-container *ngFor="let input of inputs">
-      <ng-container *ngIf="input.type !== 'textarea'; else textAreaInput">
+  <div class="textInput__contentWrapper">
+    <div
+      *ngIf="prefix"
+      class="textInput__prefix">
+      {{ prefix }}
+    </div>
 
+    <div class="textInput__inputList">
+      <ng-container
+        *ngFor="let input of inputs"
+        [ngSwitch]="input.type">
         <input
+          *ngSwitchCase="'text'"
           [type]="input.type"
           [formControl]="input.getFormControl()"
           [placeholder]="input.placeholder"
           [ngStyle]="getNgStyle(input, true)"
           class="textInput__input textInput__input--centered">
-      </ng-container>
-      <ng-template #textAreaInput>
+        <input
+          *ngSwitchCase="'number'"
+          [type]="input.type"
+          [min]="input.min"
+          [max]="input.max"
+          [step]="input.step"
+          [formControl]="input.getFormControl()"
+          [placeholder]="input.placeholder"
+          [ngStyle]="getNgStyle(input, true)"
+          class="textInput__input textInput__input--centered">
         <textarea
+          *ngSwitchCase="'textarea'"
           [formControl]="input.getFormControl()"
           [placeholder]="input.placeholder"
           [ngStyle]="getNgStyle(input, false)"
           class="textInput__input">
         </textarea>
-      </ng-template>
-    </ng-container>
+      </ng-container>
+    </div>
+
+    <div
+      *ngIf="suffix"
+      class="textInput__suffix">
+      {{ suffix }}
+    </div>
   </div>
 </label>
