@@ -27,7 +27,8 @@
   // TODO add light mode palette
 
   // key layout constants
-  --edgeSpacing: 8px;
+  --controlsEdgeSpacing: 0;
+  --controlsGridSpacing: 8px;
 }
 
-$mainViewEdgeSpacing: 3px var(--edgeSpacing);
+$mainViewEdgeSpacing: 3px var(--controlsEdgeSpacing);

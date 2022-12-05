@@ -3,7 +3,7 @@
 
 :host {
   display: grid;
-  grid-gap: var(--edgeSpacing);
+  grid-gap: var(--controlsGridSpacing);
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto 1fr;
   padding: $mainViewEdgeSpacing;
