@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ApiTypeMapper } from './api-type-mapper';
-import { WLEDApiResponse, WLEDState } from './api-types';
+import { WLEDApiResponse, WLEDPresets, WLEDState } from './api-types';
 import { AppStateService } from './app-state/app-state.service';
 
 // TODO can this functionality be provided directly in the api service?
@@ -14,7 +14,7 @@ export class PostResponseHandler {
   ) {}
 
   /** Basic handling for a POST response. */
-  handleFullJsonResponse = (customLogic: () => void = () => { }) => (response: WLEDApiResponse) => {
+  handleFullJsonResponse = (customLogic: () => void = () => { }) => (response: WLEDApiResponse, presets?: WLEDPresets) => {
     // TODO check for error
     // if (!response.success) {
     //   // TODO show error toast
@@ -22,8 +22,8 @@ export class PostResponseHandler {
     // }
 
     // TODO wire up so this appStateService used if ws connection fails
-    this.appStateService.setAll(response);
-    console.log('POST response', response);
+    this.appStateService.setAll(response, presets);
+    console.log('POST response', response, presets);
 
     // run any custom logic after updating the whole app state
     customLogic();

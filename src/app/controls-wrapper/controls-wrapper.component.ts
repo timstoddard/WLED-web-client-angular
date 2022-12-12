@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { WLEDApiResponse } from '../shared/api-types';
+import { WLEDApiResponse, WLEDPresets } from '../shared/api-types';
 import { AppStateService } from '../shared/app-state/app-state.service';
 import { LocalStorageKey, LocalStorageService } from '../shared/local-storage.service';
 import { AppUIConfig, UIConfigService } from '../shared/ui-config.service';
@@ -36,12 +36,13 @@ export class ControlsWrapperComponent extends UnsubscriberComponent implements O
   }
 
   ngOnInit() {
-    const apiData = this.route.snapshot.data['data'] as WLEDApiResponse;
+    const apiJson = this.route.snapshot.data['data'] as WLEDApiResponse;
+    const presets = this.route.snapshot.data['presets'] as WLEDPresets;
     for (const key of ['state', 'info']) {
-      console.log(key, apiData[key as keyof WLEDApiResponse]);
+      console.log(key, apiJson[key as keyof WLEDApiResponse]);
     }
     // needed because only this response include palettes/effects lists
-    this.appStateService.setAll(apiData);
+    this.appStateService.setAll(apiJson, presets);
 
     this.uiConfigService.getUIConfig(this.ngUnsubscribe)
       .subscribe((uiConfig) => {

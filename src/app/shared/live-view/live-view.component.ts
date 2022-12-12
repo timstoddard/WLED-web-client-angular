@@ -34,8 +34,8 @@ export class LiveViewComponent extends UnsubscriberComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.appStateService.getIsLiveViewActive(this.ngUnsubscribe)
-      .subscribe(isLiveViewActive => {
+    this.appStateService.getLocalSettings(this.ngUnsubscribe)
+      .subscribe(({ isLiveViewActive }) => {
         if (isLiveViewActive) {
           try {
             this.updateWithWebSocket();

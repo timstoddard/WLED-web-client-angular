@@ -59,7 +59,7 @@ export class TopMenuBarService extends UnsubscriberService {
   }
 
   toggleLiveView(isLiveViewActive: boolean) {
-    this.appStateService.setIsLiveViewActive(isLiveViewActive);
+    this.appStateService.setLocalSettings({ isLiveViewActive });
 
     // TODO this was moved from the component's app state subscription, make sure it doesn't cause any bugs by being here
     // update backend with current setting (no json api setting for this)

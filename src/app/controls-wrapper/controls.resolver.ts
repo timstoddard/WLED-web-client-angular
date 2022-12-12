@@ -17,6 +17,6 @@ export class ControlsResolver implements Resolve<WLEDApiResponse> {
 
     return this.onlineStatusService.getIsOffline()
       ? of(MOCK_API_RESPONSE)
-      : this.apiService.getJson()
+      : this.apiService.getJson();
   }
 }

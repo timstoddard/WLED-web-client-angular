@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ApiTypeMapper } from '../../shared/api-type-mapper';
 import { ApiService } from '../../shared/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { AppFileSystemInfo, AppInfo, AppLedInfo } from '../../shared/app-types';
@@ -10,6 +11,7 @@ export class InfoService extends UnsubscriberService {
   constructor(
     private apiService: ApiService,
     private appStateService: AppStateService,
+    private apiTypeMapper: ApiTypeMapper,
   ) {
     super();
   }
@@ -20,7 +22,10 @@ export class InfoService extends UnsubscriberService {
 
   fetchNodes() {
     this.handleUnsubscribe(this.apiService.getNodes())
-      .subscribe(this.appStateService.setNodes);
+      .subscribe(nodes => {
+        const appNodes = this.apiTypeMapper.mapWLEDNodesToAppNodes(nodes);
+        this.appStateService.setNodes(appNodes);
+      });
   }
 
   // TODO add unit tests!

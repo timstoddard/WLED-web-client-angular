@@ -3,8 +3,6 @@ import { expandFade } from '../../../shared/animations';
 import { AppPreset } from '../../../shared/app-types';
 import { PresetsService } from '../presets.service';
 
-const NO_PRESET_ID = -1;
-
 @Component({
   selector: 'app-preset-list',
   templateUrl: './preset-list.component.html',
@@ -13,11 +11,9 @@ const NO_PRESET_ID = -1;
 })
 export class PresetListComponent {
   @Input() presets: AppPreset[] = [];
-  editPresetId: number;
   showCreateForm: boolean;
 
   constructor(private presetsService: PresetsService) {
-    this.editPresetId = NO_PRESET_ID;
     this.showCreateForm = false;
   }
 
@@ -25,10 +21,8 @@ export class PresetListComponent {
     this.showCreateForm = !this.showCreateForm;
   }
 
-  toggleEditPreset(presetId: number) {
-    this.editPresetId = presetId === this.editPresetId
-      ? NO_PRESET_ID
-      : presetId;
+  toggleExpanded(presetId: number) {
+    this.presetsService.togglePresetExpanded(presetId);
   }
 
   renderPresetName(preset: AppPreset) {

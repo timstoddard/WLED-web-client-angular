@@ -38,8 +38,9 @@ export class ColorService extends UnsubscriberService {
     this.currentColorData$ = new Subject();
     this.whiteChannel = 0;
 
-    this.appStateService.getLedInfo(this.ngUnsubscribe)
-      .subscribe(({ hasWhiteChannel }: AppLedInfo) => {
+    this.appStateService.getInfo(this.ngUnsubscribe)
+      .subscribe(({ ledInfo }) => {
+        const { hasWhiteChannel } = ledInfo;
         this.hasWhiteChannel = hasWhiteChannel;
       });
   }

@@ -37,7 +37,7 @@
     <!-- TODO update background of selected preset -->
 
     <div
-      (click)="toggleEditPreset(preset.id)"
+      (click)="toggleExpanded(preset.id)"
       class="presetListItem__mainContent">
       <div class="presetListItem__id">
         {{ preset.id }}
@@ -46,14 +46,14 @@
         {{ renderPresetName(preset) }}
       </h3>
       <app-expand-icon
-        [expanded]="preset.id === editPresetId">
+        [expanded]="preset.isExpanded">
       </app-expand-icon>
     </div>
 
     <app-preset-form
       @expand
-      *ngIf="preset.id === editPresetId"
-      (closeForm)="toggleEditPreset(preset.id)"
+      *ngIf="preset.isExpanded"
+      (closeForm)="toggleExpanded(preset.id)"
       [preset]="preset">
     </app-preset-form>
 

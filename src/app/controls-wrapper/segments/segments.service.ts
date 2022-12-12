@@ -22,14 +22,18 @@ export class SegmentsService extends UnsubscriberService {
 
     this.appStateService.getSegments(this.ngUnsubscribe)
       .subscribe(segments => {
-        console.log(segments);
         this.segments = segments || [];
       });
 
-    this.appStateService.getLedInfo(this.ngUnsubscribe)
-      .subscribe(({ totalLeds  }) => {
+    this.appStateService.getInfo(this.ngUnsubscribe)
+      .subscribe(({ ledInfo }) => {
+        const { totalLeds } = ledInfo;
         this.ledCount = totalLeds;
       });
+  }
+
+  getSegments() {
+    return this.segments;
   }
 
   createSegment(options: {
@@ -65,10 +69,6 @@ export class SegmentsService extends UnsubscriberService {
     }
     return null;
     // TODO update client only fields
-  }
-
-  getSegments() {
-    return this.segments;
   }
 
   toggleSegmentExpanded(segmentId: number) {

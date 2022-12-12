@@ -7,10 +7,6 @@ import { UnsubscriberComponent } from '../../../shared/unsubscriber/unsubscriber
 import { SegmentsService } from '../segments.service';
 import { expandFade } from '../../../shared/animations';
 
-interface FormGroupMap {
-  [segmentId: number]: FormGroup;
-}
-
 @Component({
   selector: 'app-segment-list',
   templateUrl: './segment-list.component.html',
@@ -19,7 +15,7 @@ interface FormGroupMap {
 })
 export class SegmentListComponent extends UnsubscriberComponent implements OnInit {
   @Input() segments: AppSegment[] = [];
-  segmentFormGroupMap!: FormGroupMap;
+  segmentForm!: FormGroup;
 
   constructor(
     private segmentsService: SegmentsService,
@@ -30,7 +26,7 @@ export class SegmentListComponent extends UnsubscriberComponent implements OnIni
   }
 
   ngOnInit() {
-    this.segmentFormGroupMap = this.createFormGroupMap();
+    this.segmentForm = this.createForm();
   }
 
   selectOnlySegment(segmentId: number, event: Event) {
@@ -44,26 +40,30 @@ export class SegmentListComponent extends UnsubscriberComponent implements OnIni
     this.segmentsService.toggleSegmentExpanded(segmentId);
   }
 
+  getFormGroupBySegmentId(segmentId: number) {
+    return this.segmentForm.get([segmentId])! as FormGroup;
+  }
+
   private toggleSelected(segmentId: number, isSelected: boolean) {
     this.handleUnsubscribe(
       this.segmentsService.selectSegment(segmentId, isSelected))
       .subscribe(this.postResponseHandler.handleStateResponse());
   }
 
-  // TODO simpler way to do this?
-  private createFormGroupMap() {
-    const formGroupMap: FormGroupMap = {};
+  private createForm() {
+    const formGroup = this.formService.createFormGroup({});
+
     for (const segment of this.segments) {
-      const formGroup = this.formService.createFormGroup({
+      const childFormGroup = this.formService.createFormGroup({
         isSelected: segment.isSelected,
       });
 
-      this.getValueChanges<boolean>(formGroup, 'isSelected')
+      this.getValueChanges<boolean>(childFormGroup, 'isSelected')
         .subscribe((isSelected: boolean) =>
           this.toggleSelected(segment.id, isSelected));
 
-      formGroupMap[segment.id] = formGroup;
+      formGroup.addControl(`${segment.id}`, childFormGroup);
     }
-    return formGroupMap;
+    return formGroup;
   }
 }

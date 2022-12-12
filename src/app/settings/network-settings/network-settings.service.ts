@@ -20,6 +20,6 @@ export class NetworkSettingsService {
    * @param wledIpAddresses ip addresses of WLED devices on the local network, format '123.456.789.123'
    */
   setWLEDIpAddresses(wledIpAddresses: WLEDIpAddress[]) {
-    this.appStateService.setWLEDIpAddresses(wledIpAddresses);
+    this.appStateService.setLocalSettings({ wledIpAddresses });
   }
 }

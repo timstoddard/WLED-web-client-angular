@@ -29,10 +29,14 @@ export class SegmentsComponent extends UnsubscriberComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.appStateService.getLedInfo(this.ngUnsubscribe)
-      .subscribe((ledInfo) => {
-        this.ledCount = ledInfo.totalLeds;
-        this.maxSegments = ledInfo.maxSegments;
+    this.appStateService.getInfo(this.ngUnsubscribe)
+      .subscribe(({ ledInfo }) => {
+        const {
+          totalLeds,
+          maxSegments,
+        } = ledInfo;
+        this.ledCount = totalLeds;
+        this.maxSegments = maxSegments;
       });
 
     this.uiConfigService.getUIConfig(this.ngUnsubscribe)

@@ -102,8 +102,9 @@ export class PresetFormComponent implements OnInit {
         name,
         quickLoadLabel,
         apiValue,
+        isExpanded: false,
       };
-      this.presetsService.savePreset(
+      this.presetsService.updatePreset(
         preset,
         useCurrentState,
         includeBrightness,

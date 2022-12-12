@@ -1,4 +1,4 @@
-import { WLEDPreset, WLEDApiResponse, WLEDNodesResponse } from '../shared/api-types';
+import { WLEDApiResponse, WLEDNodesResponse, WLEDPresets } from '../shared/api-types';
 import { LiveViewData } from '../shared/live-view/live-view.service';
 import { PalettesApiData } from './palettes/palettes.service';
 
@@ -328,9 +328,9 @@ export const ALL_PALETTES_DATA = MOCK_PALETTES_DATA.reduce((prev, curr) => {
   }
 }, { m: 0, p: {} });
 
-export const MOCK_API_PRESETS: WLEDPreset[] = [
-  // TODO verify these values
-  {
+export const MOCK_API_PRESETS: WLEDPresets = {
+  1: {
+    // TODO verify these fields
     n: 'Preset 1',
     playlist: { // TODO
       ps: [1,2,3],
@@ -350,28 +350,7 @@ export const MOCK_API_PRESETS: WLEDPreset[] = [
     p: 0, // TODO
   },
   // TODO add another
-];
-
-export const MOCK_LOCAL_PRESETS = [
-  {
-    id: 1,
-    name: 'Preset One',
-    quickLoadLabel: 'P1',
-    apiValue: '{}', // TODO
-  },
-  {
-    id: 2,
-    name: 'Number 2',
-    quickLoadLabel: '#2',
-    apiValue: '{}', // TODO
-  },
-  {
-    id: 3,
-    name: 'Thr33!!!',
-    quickLoadLabel: '',
-    apiValue: '{}', // TODO
-  },
-];
+};
 
 export const MOCK_LIVE_DATA: LiveViewData = {
   leds: [

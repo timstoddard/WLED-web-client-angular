@@ -58,7 +58,9 @@ export class DeviceSelectorComponent extends UnsubscriberComponent implements On
 
   setSelectedDevice = (wledIpAddress: WLEDIpAddress) => {
     console.log('selecting wledIpAddress:', wledIpAddress);
-    this.appStateService.setSelectedWLEDIpAddress(wledIpAddress);
+    this.appStateService.setLocalSettings({
+      selectedWLEDIpAddress: wledIpAddress,
+    });
 
     // cancel any existing http call
     if (this.testIpAddressSubscription) {

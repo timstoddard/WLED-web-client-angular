@@ -15,8 +15,6 @@ const DEFAULT_EFFECT_INTENSITY = 128;
   selector: 'app-effects',
   templateUrl: './effects.component.html',
   styleUrls: ['./effects.component.scss'],
-  // need to provide here (child of routed component) so the service can access the activated route
-  providers: [EffectsService],
 })
 export class EffectsComponent extends UnsubscriberComponent implements OnInit {
   effectsForm!: FormGroup;

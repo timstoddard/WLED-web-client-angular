@@ -23,6 +23,12 @@ export type FormValues = { [key: string]: string | number | boolean | FormValues
 export class FormService {
   constructor(private _formBuilder: FormBuilder) { }
 
+  /**
+   * Creates a FormControl with an opinionated set of default options.
+   * @param value initial value
+   * @param updateOn 'change' (default), 'blur', or 'submit'
+   * @returns FormControl
+   */
   createFormControl<T>(
     value: T,
     updateOn: 'change' | 'blur' | 'submit' = 'change',
@@ -35,6 +41,13 @@ export class FormService {
     });
   }
 
+  /**
+   * Creates a FormGroup using the provided dict of values.
+   * Appends optional dict of predefined controls to the returned FormGroup.
+   * @param values dict of form control names and initial values
+   * @param additionalControls optional dict of predefined controls
+   * @returns FormGroup
+   */
   createFormGroup(
     values: FormValues,
     additionalControls?: { [key: string]: AbstractControl },

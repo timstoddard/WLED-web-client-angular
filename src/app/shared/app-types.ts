@@ -7,6 +7,7 @@ export interface AppState {
   effects: string[];
   localSettings: AppLocalSettings;
   nodes: AppNode[];
+  presets: AppPreset[];
 }
 
 export interface AppWLEDState {
@@ -156,7 +157,8 @@ export interface AppPreset {
   id: number;
   name: string;
   quickLoadLabel: string;
-  apiValue: string;
+  apiValue: string; // TODO make this an interface type
+  isExpanded: boolean;
 }
 
 export interface AppPlaylist {

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { WLEDApiResponse, WLEDFileSystemInfo, WLEDInfo, WLEDLedInfo, WLEDNightLightState, WLEDNodesResponse, WLEDSegment, WLEDState, WLEDUdpState, WLEDWifiInfo } from './api-types';
-import { AppFileSystemInfo, AppInfo, AppLedInfo, AppNightLightState, AppWLEDState, AppState, AppUdpState, AppWifiInfo, AppNode, AppSegment } from './app-types';
+import { WLEDApiResponse, WLEDFileSystemInfo, WLEDInfo, WLEDLedInfo, WLEDNightLightState, WLEDNodesResponse, WLEDPreset, WLEDPresets, WLEDSegment, WLEDState, WLEDUdpState, WLEDWifiInfo } from './api-types';
+import { AppFileSystemInfo, AppInfo, AppLedInfo, AppNightLightState, AppWLEDState, AppState, AppUdpState, AppWifiInfo, AppNode, AppSegment, AppPreset } from './app-types';
 import { ClientOnlyFieldsService, createDefaultSegmentFields } from './client-only-fields.service';
 
 @Injectable({ providedIn: 'root' })
@@ -10,15 +10,21 @@ export class ApiTypeMapper {
 
   /** Maps an entire WLED API response into the format expected by this app. */
   mapWLEDApiResponseToAppState = (
-    { state, info, palettes, effects }: WLEDApiResponse,
     existingState: AppState,
-  ): AppState => ({
-    ...existingState,
-    state: this.mapWLEDStateToAppWLEDState(state),
-    info: this.mapWLEDInfoToAppInfo(info),
-    palettes: palettes ?? existingState.palettes,
-    effects: effects ?? existingState.effects,
-  });
+    { state, info, palettes, effects }: WLEDApiResponse,
+    presets?: WLEDPresets,
+  ): AppState => {
+    return {
+      ...existingState,
+      state: this.mapWLEDStateToAppWLEDState(state),
+      info: this.mapWLEDInfoToAppInfo(info),
+      palettes: palettes ?? existingState.palettes,
+      effects: effects ?? existingState.effects,
+      presets: presets
+        ? this.mapWLEDPresetsToAppPresets(presets)
+        : existingState.presets,
+    }
+  };
 
   /** Maps the `state` object in the WLED API resonse into the format expected by this app. */
   mapWLEDStateToAppWLEDState = (state: WLEDState): AppWLEDState => ({
@@ -153,6 +159,36 @@ export class ApiTypeMapper {
       type: node.type,
       versionId: node.vid,
     }));
+
+  mapWLEDPresetsToAppPresets = (presets: WLEDPresets) => {
+    // delete empty default preset
+    delete presets[0];
+
+    const getApiValue = (preset: WLEDPreset) => {
+      const presetCopy: Partial<WLEDPreset> = { ...preset };
+      delete presetCopy.n;
+      delete presetCopy.ql;
+      return JSON.stringify(presetCopy);
+    }
+
+    // convert presets to list
+    const appPresets: AppPreset[] = [];
+    for (const presetId in presets) {
+      const preset = presets[presetId];
+      appPresets.push({
+        id: parseInt(presetId, 10),
+        name: preset.n,
+        quickLoadLabel: preset.ql,
+        apiValue: getApiValue(preset),
+        isExpanded: false,
+      });
+    }
+
+    // sort presets by id ascending
+    appPresets.sort((a: AppPreset, b: AppPreset) => a.id - b.id);
+
+    return appPresets;
+  }
 
   // TODO create an external ID service
   normalizeIds = <T>(items: T[], idField: keyof T) => {

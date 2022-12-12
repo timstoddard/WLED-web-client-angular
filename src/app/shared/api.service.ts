@@ -1,9 +1,9 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, map, of, timeout } from 'rxjs';
+import { catchError, forkJoin, map, of, timeout } from 'rxjs';
 import { ALL_PALETTES_DATA, MOCK_API_PRESETS, MOCK_API_RESPONSE, MOCK_LIVE_DATA, MOCK_NODES_RESPONSE } from '../controls-wrapper/mock-api-data';
 import { PalettesApiData } from '../controls-wrapper/palettes/palettes.service';
-import { WLEDPreset, WLEDPresets, SavePresetRequest, WLEDApiResponse, WLEDInfo, WLEDNodesResponse, WLEDSegment, WLEDSegmentPostRequest, WLEDState, WLEDUdpState } from './api-types';
+import { WLEDPresets, SavePresetRequest, WLEDApiResponse, WLEDInfo, WLEDNodesResponse, WLEDSegment, WLEDSegmentPostRequest, WLEDState, WLEDUdpState } from './api-types';
 import { NO_DEVICE_IP_SELECTED } from './app-state/app-state-defaults';
 import { AppStateService } from './app-state/app-state.service';
 import { AppPreset, AppWLEDState } from './app-types';
@@ -40,10 +40,11 @@ export class ApiService extends UnsubscriberService {
   }
 
   private init() {
-    this.appStateService.getSelectedWLEDIpAddress(this.ngUnsubscribe)
-      .subscribe(({ ipv4Address }) => {
+    this.appStateService.getLocalSettings(this.ngUnsubscribe)
+      .subscribe(({ selectedWLEDIpAddress }) => {
+        const { ipv4Address } = selectedWLEDIpAddress;
         this.setBaseUrl(ipv4Address);
-        this.refreshAppState();
+        this.refreshAppState(true);
         console.log(
           'API BASE URL:',
           this.getBaseUrl()
@@ -152,9 +153,21 @@ export class ApiService extends UnsubscriberService {
   }
 
   /** Reload all app data from the backend. */
-  refreshAppState() {
-    this.handleUnsubscribe(this.getJson())
-      .subscribe(this.postResponseHandler.handleFullJsonResponse());
+  refreshAppState(includePresets = false) {
+    const apiResponse = forkJoin({
+      json: this.getJson(),
+      presets: includePresets
+        ? this.getPresets()
+        : of(undefined),
+    });
+
+    this.handleUnsubscribe(apiResponse)
+      .subscribe(({
+        json,
+        presets,
+      }) => {
+       this.postResponseHandler.handleFullJsonResponse()(json, presets);
+      });
   }
 
   /** Returns an object containing the state, info, effects, and palettes. */
@@ -201,9 +214,17 @@ export class ApiService extends UnsubscriberService {
       this.createApiUrl(LIVE_PATH), MOCK_LIVE_DATA);
   }
 
+  /** Gets all detected external WLED nodes. */
   getNodes() {
     return this.httpGet<WLEDNodesResponse>(
       this.createApiUrl(NODES_PATH), MOCK_NODES_RESPONSE);
+  }
+
+  /** Returns dict of saved presets. */
+  getPresets() {
+    const url = this.createApiUrl('presets.json');
+    // TODO don't load this when calling a disconnected wled instance
+    return this.httpGet<WLEDPresets>(url, MOCK_API_PRESETS);
   }
 
   /** Sets current palette by id. */
@@ -467,54 +488,13 @@ export class ApiService extends UnsubscriberService {
     });
   }
 
-  /**
-   * Returns list of saved presets, sorted by ID in ascending order.
-   * @returns 
-   */
-  getPresets() {
-    const getApiValue = (preset: WLEDPreset) => {
-      const presetCopy: Partial<WLEDPreset> = { ...preset }
-      delete presetCopy.n
-      delete presetCopy.ql
-      return JSON.stringify(presetCopy)
-    }
-
-    const url = this.createApiUrl('presets.json');
-    // TODO don't load this when calling a disconnected wled instance
-    const presets = this.httpGet<WLEDPresets>(url, MOCK_API_PRESETS)
-      .pipe(
-        map((apiPresets: WLEDPresets) => {
-          // delete empty default preset
-          delete apiPresets[0];
-
-          // convert presets to list
-          const presets: AppPreset[] = []
-          for (const presetId in apiPresets) {
-            const preset = apiPresets[presetId]
-            presets.push({
-              id: parseInt(presetId, 10),
-              name: preset.n,
-              quickLoadLabel: preset.ql,
-              apiValue: getApiValue(preset),
-            })
-          }
-
-          // sort presets by id ascending
-          presets.sort((a: AppPreset, b: AppPreset) => a.id - b.id);
-
-          return presets;
-        })
-      );
-    return presets;
-  }
-
   loadPreset(presetId: number) {
     return this.httpPostStateAndInfo({
       ps: presetId,
     });
   }
 
-  savePreset(
+  updatePreset(
     preset: AppPreset,
     useCurrentState: boolean,
     includeBrightness: boolean,

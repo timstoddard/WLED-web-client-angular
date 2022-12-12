@@ -43,6 +43,7 @@ export class EffectsService extends UnsubscriberService {
 
     this.appStateService.getEffects(this.ngUnsubscribe)
       .subscribe(effects => {
+        // TODO use api mapper to sort in app state service
         this.sortedEffects = this.sortEffects(effects);
         this.triggerUIRefresh();
       });

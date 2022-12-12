@@ -1,4 +1,4 @@
-import { AppState, WLEDIpAddress } from '../app-types';
+import { AppInfo, AppLocalSettings, AppPreset, AppState, AppWLEDState, WLEDIpAddress } from '../app-types';
 import { environment } from 'src/environments/environment';
 
 export const NO_DEVICE_IP_SELECTED: WLEDIpAddress = {
@@ -52,78 +52,85 @@ const DEFAULT_SELECTED_WLED_IP_ADDRESS = NO_DEVICE_IP_SELECTED;
 // ? NO_DEVICE_IP_SELECTED
 // : DEFAULT_WLED_IP_ADDRESSES[0];
 
+const DEFAULT_WLED_STATE: AppWLEDState = {
+  on: false,
+  brightness: 0,
+  transition: 0,
+  currentPresetId: 0,
+  currentPlaylistId: 0,
+  nightLight: {
+    on: false,
+    durationMinutes: 0,
+    mode: 0,
+    targetBrightness: 0,
+    remainingSeconds: 0,
+  },
+  udp: {
+    shouldSend: false,
+    shouldReceive: false,
+  },
+  liveViewOverride: 0,
+  mainSegmentId: 0,
+  segments: [],
+};
+
+const DEFAULT_INFO: AppInfo = {
+  versionName: '',
+  versionId: 0,
+  ledInfo: {
+    totalLeds: 0,
+    fps: 0,
+    hasWhiteChannel: false,
+    showWhiteChannelSlider: false,
+    amps: 0,
+    maxAmps: 0,
+    maxSegments: 0,
+  },
+  shouldToggleReceiveWithSend: false,
+  name: '',
+  udpPort: 0,
+  isLive: false,
+  lm: '',
+  sourceIpAddress: '',
+  webSocketCount: 0,
+  effectCount: 0,
+  paletteCount: 0,
+  wifi: {
+    bssid: '',
+    rssi: 0,
+    signalStrength: 0,
+    channel: 0,
+  },
+  fileSystem: {
+    usedSpaceKb: 0,
+    totalSpaceKb: 0,
+    presetsJsonLastEditTimestamp: 0,
+  },
+  wledDevicesOnNetwork: 0,
+  platform: '',
+  arduinoVersion: '',
+  freeHeapBytes: 0,
+  uptimeSeconds: 0,
+  opt: 0,
+  brand: '',
+  productName: '',
+  macAddress: '',
+  ipAddress: '',
+};
+
+const DEFAULT_LOCAL_SETTINGS: AppLocalSettings = {
+  isLiveViewActive: false,
+  selectedWLEDIpAddress: DEFAULT_SELECTED_WLED_IP_ADDRESS,
+  wledIpAddresses: DEFAULT_WLED_IP_ADDRESSES,
+};
+
 /** State of the app before hydration. Everything is turned off. */
 export const DEFAULT_APP_STATE: AppState = {
-  state: {
-    on: false,
-    brightness: 0,
-    transition: 0,
-    currentPresetId: 0,
-    currentPlaylistId: 0,
-    nightLight: {
-      on: false,
-      durationMinutes: 0,
-      mode: 0,
-      targetBrightness: 0,
-      remainingSeconds: 0,
-    },
-    udp: {
-      shouldSend: false,
-      shouldReceive: false,
-    },
-    liveViewOverride: 0,
-    mainSegmentId: 0,
-    segments: [],
-  },
-  info: {
-    versionName: '',
-    versionId: 0,
-    ledInfo: {
-      totalLeds: 0,
-      fps: 0,
-      hasWhiteChannel: false,
-      showWhiteChannelSlider: false,
-      amps: 0,
-      maxAmps: 0,
-      maxSegments: 0,
-    },
-    shouldToggleReceiveWithSend: false,
-    name: '',
-    udpPort: 0,
-    isLive: false,
-    lm: '',
-    sourceIpAddress: '',
-    webSocketCount: 0,
-    effectCount: 0,
-    paletteCount: 0,
-    wifi: {
-      bssid: '',
-      rssi: 0,
-      signalStrength: 0,
-      channel: 0,
-    },
-    fileSystem: {
-      usedSpaceKb: 0,
-      totalSpaceKb: 0,
-      presetsJsonLastEditTimestamp: 0,
-    },
-    wledDevicesOnNetwork: 0,
-    platform: '',
-    arduinoVersion: '',
-    freeHeapBytes: 0,
-    uptimeSeconds: 0,
-    opt: 0,
-    brand: '',
-    productName: '',
-    macAddress: '',
-    ipAddress: '',
-  },
+  state: DEFAULT_WLED_STATE,
+  info: DEFAULT_INFO,
   palettes: [],
   effects: [],
-  localSettings: {
-    isLiveViewActive: false,
-    selectedWLEDIpAddress: DEFAULT_SELECTED_WLED_IP_ADDRESS,
-    wledIpAddresses: DEFAULT_WLED_IP_ADDRESSES,
-  },
+  localSettings: DEFAULT_LOCAL_SETTINGS,
   nodes: [],
+  presets: [],
 };

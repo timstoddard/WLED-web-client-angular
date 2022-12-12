@@ -26,8 +26,9 @@ export class WebSocketService extends UnsubscriberService {
   }
 
   private init() {
-    this.appStateService.getSelectedWLEDIpAddress(this.ngUnsubscribe)
-      .subscribe(({ ipv4Address }) => {
+    this.appStateService.getLocalSettings(this.ngUnsubscribe)
+      .subscribe(({ selectedWLEDIpAddress }) => {
+        const { ipv4Address } = selectedWLEDIpAddress;
         if (this.onlineStatusService.getIsOffline()) {
           this.fakeConnect();
         } else {

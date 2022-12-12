@@ -4,7 +4,6 @@ import { LocalStorageKey, LocalStorageService } from '../../shared/local-storage
 import { getInput } from '../utils';
 import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
 import { PresetsService } from './presets.service';
-import { ActivatedRoute } from '@angular/router';
 import { WLEDPlaylist, WLEDPlaylists, WLEDPreset, WLEDPresets } from '../../shared/api-types';
 import { AppPreset } from '../../shared/app-types';
 
@@ -40,8 +39,7 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
   showPresetIds!: boolean;
   presetError!: PresetError;
   templateType: string = 'default'; // TODO more specific type
-  private presets: WLEDPresets = {};
-  presetsV2: AppPreset[] = [];
+  private presets: WLEDPresets = {}; // TODO remove
   showCreateForm = false;
   private pmt = 1;
   private pmtLS = 0;
@@ -58,15 +56,11 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
     private localStorageService: LocalStorageService,
     private uiConfigService: UIConfigService,
     private presetsService: PresetsService,
-    private route: ActivatedRoute,
   ) {
     super();
   }
 
   ngOnInit() {
-    this.presetsV2 = this.route.snapshot.data['presets'] as AppPreset[];
-    console.log('PRESETS', this.presetsV2);
-
     this.uiConfigService.getUIConfig(this.ngUnsubscribe)
       .subscribe((uiConfig) => {
         this.showPresetIds = uiConfig.showPresetIds;
@@ -137,6 +131,10 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
       this.showPresetError(true);
     }
     this.updateSelectedPresetBackground();*/
+  }
+
+  getPresets() {
+    return this.presetsService.getPresets();
   }
 
   setShowCreateForm(setShowCreateForm: boolean) {
