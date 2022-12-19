@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { WLEDApiResponse, WLEDPresets } from '../shared/api-types';
+import { WLEDPresets } from '../shared/api-types/api-presets';
+import { WLEDApiResponse } from '../shared/api-types/api-types';
 import { AppStateService } from '../shared/app-state/app-state.service';
 import { LocalStorageKey, LocalStorageService } from '../shared/local-storage.service';
 import { AppUIConfig, UIConfigService } from '../shared/ui-config.service';

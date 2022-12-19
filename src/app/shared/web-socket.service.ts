@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
-import { WLEDApiResponse } from './api-types';
+import { WLEDApiResponse } from './api-types/api-types';
 import { AppStateService } from './app-state/app-state.service';
 import { LiveViewData } from './live-view/live-view.service';
 import { OnlineStatusService } from './online-status.service';

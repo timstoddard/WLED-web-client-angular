@@ -1,5 +1,7 @@
-import { AppInfo, AppLocalSettings, AppPreset, AppState, AppWLEDState, WLEDIpAddress } from '../app-types';
+import { AppLocalSettings, AppState, WLEDIpAddress } from '../app-types/app-types';
 import { environment } from 'src/environments/environment';
+import { AppWLEDState } from '../app-types/app-state';
+import { AppInfo } from '../app-types/app-info';
 
 export const NO_DEVICE_IP_SELECTED: WLEDIpAddress = {
   name: 'None',
@@ -80,11 +82,11 @@ const DEFAULT_INFO: AppInfo = {
   ledInfo: {
     totalLeds: 0,
     fps: 0,
-    hasWhiteChannel: false,
-    showWhiteChannelSlider: false,
     amps: 0,
     maxAmps: 0,
     maxSegments: 0,
+    lightCapabilities: 0,
+    segmentLightCapabilities: [],
   },
   shouldToggleReceiveWithSend: false,
   name: '',

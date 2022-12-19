@@ -1,4 +1,6 @@
-import { WLEDApiResponse, WLEDNodesResponse, WLEDPresets } from '../shared/api-types';
+import { WLEDNodesResponse } from '../shared/api-types/api-nodes';
+import { WLEDPresets } from '../shared/api-types/api-presets';
+import { WLEDApiResponse } from '../shared/api-types/api-types';
 import { LiveViewData } from '../shared/live-view/live-view.service';
 import { PalettesApiData } from './palettes/palettes.service';
 
@@ -31,10 +33,6 @@ export const MOCK_API_RESPONSE: WLEDApiResponse = {
         grp: 1,
         spc: 0,
         of: 0,
-        on: true,
-        bri: 255,
-        cct: 127,
-        n: 'stove',
         col: [
           [255, 10, 100, 128],
           [0, 0, 0],
@@ -46,7 +44,14 @@ export const MOCK_API_RESPONSE: WLEDApiResponse = {
         pal: 0,
         sel: true,
         rev: false,
+        on: true,
+        bri: 255,
         mi: false,
+        cct: 127,
+        lx: 0,
+        ly: 0,
+        frz: false,
+        // n: 'stove',
       },
       {
         id: 1,
@@ -56,10 +61,6 @@ export const MOCK_API_RESPONSE: WLEDApiResponse = {
         grp: 1,
         spc: 0,
         of: 0,
-        on: true,
-        bri: 255,
-        cct: 127,
-        n: 'sink',
         col: [
           [102, 153, 0, 128],
           [0, 0, 0],
@@ -71,7 +72,14 @@ export const MOCK_API_RESPONSE: WLEDApiResponse = {
         pal: 0,
         sel: false,
         rev: false,
+        on: true,
+        bri: 255,
         mi: false,
+        cct: 127,
+        lx: 0,
+        ly: 0,
+        frz: false,
+        // n: 'sink',
       },
       {
         id: 2,
@@ -81,10 +89,6 @@ export const MOCK_API_RESPONSE: WLEDApiResponse = {
         grp: 1,
         spc: 0,
         of: 0,
-        on: true,
-        bri: 255,
-        cct: 127,
-        n: 'window',
         col: [
           [0, 204, 51, 128],
           [0, 0, 0],
@@ -96,7 +100,14 @@ export const MOCK_API_RESPONSE: WLEDApiResponse = {
         pal: 0,
         sel: false,
         rev: false,
+        on: true,
+        bri: 255,
         mi: false,
+        cct: 127,
+        lx: 0,
+        ly: 0,
+        frz: false,
+        // n: 'window',
       },
       {
         id: 3,
@@ -106,10 +117,6 @@ export const MOCK_API_RESPONSE: WLEDApiResponse = {
         grp: 1,
         spc: 0,
         of: 0,
-        on: true,
-        bri: 255,
-        cct: 127,
-        n: 'couch',
         col: [
           [0, 51, 204, 128],
           [0, 0, 0],
@@ -121,7 +128,14 @@ export const MOCK_API_RESPONSE: WLEDApiResponse = {
         pal: 0,
         sel: false,
         rev: false,
+        on: true,
+        bri: 255,
         mi: false,
+        cct: 127,
+        lx: 0,
+        ly: 0,
+        frz: false,
+        // n: 'couch',
       },
     ],
   },
@@ -130,13 +144,12 @@ export const MOCK_API_RESPONSE: WLEDApiResponse = {
     vid: 2112080,
     leds: {
       count: 1429,
-      rgbw: false,
-      wv: false,
-      // cct: false,
-      pwr: 3556,
       fps: 33,
+      pwr: 3556,
       maxpwr: 8574,
       maxseg: 32,
+      lc: 0,
+      seglc: [0, 0, 0, 0],
     },
     str: false,
     name: 'WLED',
@@ -326,7 +339,10 @@ export const ALL_PALETTES_DATA = MOCK_PALETTES_DATA.reduce((prev, curr) => {
       ...p,
     }
   }
-}, { m: 0, p: {} });
+}, {
+  m: 0,
+  p: {},
+});
 
 export const MOCK_API_PRESETS: WLEDPresets = {
   1: {
@@ -337,10 +353,10 @@ export const MOCK_API_PRESETS: WLEDPresets = {
       dur: [10,10,10],
       transition: [1,1,1],
       repeat: 3,
-      end: null,
+      end: undefined,
       // r: false,
     },
-    psave: 0,
+    // psave: 0,
     o: true, // TODO
     win: '', // TODO
     ql: 'P1',

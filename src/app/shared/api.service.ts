@@ -3,10 +3,16 @@ import { Injectable } from '@angular/core';
 import { catchError, forkJoin, map, of, timeout } from 'rxjs';
 import { ALL_PALETTES_DATA, MOCK_API_PRESETS, MOCK_API_RESPONSE, MOCK_LIVE_DATA, MOCK_NODES_RESPONSE } from '../controls-wrapper/mock-api-data';
 import { PalettesApiData } from '../controls-wrapper/palettes/palettes.service';
-import { WLEDPresets, SavePresetRequest, WLEDApiResponse, WLEDInfo, WLEDNodesResponse, WLEDSegment, WLEDSegmentPostRequest, WLEDState, WLEDUdpState } from './api-types';
+import { WLEDInfo } from './api-types/api-info';
+import { WLEDNodesResponse } from './api-types/api-nodes';
+import { WLEDPresets } from './api-types/api-presets';
+import { WLEDSegment, WLEDState, WLEDUdpState } from './api-types/api-state';
+import { WLEDApiResponse } from './api-types/api-types';
+import { SavePresetRequest, WLEDSegmentPostRequest } from './api-types/post-requests';
 import { NO_DEVICE_IP_SELECTED } from './app-state/app-state-defaults';
 import { AppStateService } from './app-state/app-state.service';
-import { AppPreset, AppWLEDState } from './app-types';
+import { AppPreset } from './app-types/app-presets';
+import { AppWLEDState } from './app-types/app-state';
 import { FormValues } from './form-service';
 import { LiveViewData } from './live-view/live-view.service';
 import { PostResponseHandler } from './post-response-handler';
@@ -21,6 +27,7 @@ const PALETTES_PATH = 'json/pal';
 const PALETTES_DATA_PATH = 'json/palx';
 const LIVE_PATH = 'json/live';
 const NODES_PATH = 'json/nodes';
+const PRESETS_PATH = 'presets.json';
 
 const LED_SETTINGS_PATH = 'settings/leds';
 const UI_SETTINGS_PATH = 'settings/ui';
@@ -173,31 +180,36 @@ export class ApiService extends UnsubscriberService {
   /** Returns an object containing the state, info, effects, and palettes. */
   getJson() {
     return this.httpGet<WLEDApiResponse>(
-      this.createApiUrl(ALL_JSON_PATH), MOCK_API_RESPONSE);
+      this.createApiUrl(ALL_JSON_PATH),
+      MOCK_API_RESPONSE);
   }
 
   /** Contains the current state of the light. All values may be modified by the client. */
   getState() {
     return this.httpGet<WLEDState>(
-      this.createApiUrl(STATE_PATH), MOCK_API_RESPONSE.state);
+      this.createApiUrl(STATE_PATH),
+      MOCK_API_RESPONSE.state);
   }
 
   /** Contains general information about the device. All values are read-only. */
   getInfo() {
     return this.httpGet<WLEDInfo>(
-      this.createApiUrl(INFO_PATH), MOCK_API_RESPONSE.info);
+      this.createApiUrl(INFO_PATH),
+      MOCK_API_RESPONSE.info);
   }
 
   /** Contains an array of the effect mode names. */
   getEffects() {
     return this.httpGet<string[]>(
-      this.createApiUrl(EFFECTS_PATH), MOCK_API_RESPONSE.effects);
+      this.createApiUrl(EFFECTS_PATH),
+      MOCK_API_RESPONSE.effects);
   }
 
   /** Contains an array of the palette names. */
   getPalettes() {
     return this.httpGet<string[]>(
-      this.createApiUrl(PALETTES_PATH), MOCK_API_RESPONSE.palettes);
+      this.createApiUrl(PALETTES_PATH),
+      MOCK_API_RESPONSE.palettes);
   }
 
   /** Gets palettes data, 8 palettes per page. */
@@ -205,26 +217,31 @@ export class ApiService extends UnsubscriberService {
     const params = new HttpParams()
       .set('page', page);
     return this.httpGet<PalettesApiData>(
-      this.createApiUrl(PALETTES_DATA_PATH), ALL_PALETTES_DATA, { params });
+      this.createApiUrl(PALETTES_DATA_PATH),
+      ALL_PALETTES_DATA,
+      { params });
   }
 
   /** Gets live data for all LEDs. */
   getLiveData() {
     return this.httpGet<LiveViewData>(
-      this.createApiUrl(LIVE_PATH), MOCK_LIVE_DATA);
+      this.createApiUrl(LIVE_PATH),
+      MOCK_LIVE_DATA);
   }
 
   /** Gets all detected external WLED nodes. */
   getNodes() {
     return this.httpGet<WLEDNodesResponse>(
-      this.createApiUrl(NODES_PATH), MOCK_NODES_RESPONSE);
+      this.createApiUrl(NODES_PATH),
+      MOCK_NODES_RESPONSE);
   }
 
   /** Returns dict of saved presets. */
   getPresets() {
-    const url = this.createApiUrl('presets.json');
     // TODO don't load this when calling a disconnected wled instance
-    return this.httpGet<WLEDPresets>(url, MOCK_API_PRESETS);
+    return this.httpGet<WLEDPresets>(
+      this.createApiUrl(PRESETS_PATH),
+      MOCK_API_PRESETS);
   }
 
   /** Sets current palette by id. */

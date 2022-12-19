@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ApiTypeMapper } from '../../shared/api-type-mapper';
 import { ApiService } from '../../shared/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
-import { AppSegment } from '../../shared/app-types';
+import { AppSegment } from '../../shared/app-types/app-state';
 import { UnsubscriberService } from '../../shared/unsubscriber/unsubscriber.service';
 
 @Injectable()

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../../shared/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
-import { WLEDIpAddress } from '../../shared/app-types';
+import { WLEDIpAddress } from '../../shared/app-types/app-types';
 
 // TODO provide in settings services module
 @Injectable({ providedIn: 'root' })

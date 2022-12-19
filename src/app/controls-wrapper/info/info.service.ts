@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ApiTypeMapper } from '../../shared/api-type-mapper';
 import { ApiService } from '../../shared/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
-import { AppFileSystemInfo, AppInfo, AppLedInfo } from '../../shared/app-types';
+import { AppFileSystemInfo, AppInfo, AppLedInfo } from '../../shared/app-types/app-info';
 import { UnsubscriberService } from '../../shared/unsubscriber/unsubscriber.service';
 import { formatPlural } from '../utils';
 

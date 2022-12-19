@@ -2,8 +2,12 @@ import { Injectable } from '@angular/core';
 import { Store, createState, withProps, select } from '@ngneat/elf';
 import { map, Subject, takeUntil } from 'rxjs';
 import { ApiTypeMapper } from '../api-type-mapper';
-import { WLEDApiResponse, WLEDNodesResponse, WLEDPresets } from '../api-types';
-import { AppWLEDState, AppState, AppSegment, AppInfo } from '../app-types';
+import { WLEDNodesResponse } from '../api-types/api-nodes';
+import { WLEDPresets } from '../api-types/api-presets';
+import { WLEDApiResponse } from '../api-types/api-types';
+import { AppInfo } from '../app-types/app-info';
+import { AppSegment, AppWLEDState } from '../app-types/app-state';
+import { AppState } from '../app-types/app-types';
 import { ClientOnlyFieldsService, ClientOnlySegmentFieldsMap } from '../client-only-fields.service';
 import { DEFAULT_APP_STATE } from './app-state-defaults';
 

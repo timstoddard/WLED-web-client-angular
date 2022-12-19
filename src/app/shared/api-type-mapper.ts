@@ -1,6 +1,14 @@
 import { Injectable } from '@angular/core';
-import { WLEDApiResponse, WLEDFileSystemInfo, WLEDInfo, WLEDLedInfo, WLEDNightLightState, WLEDNodesResponse, WLEDPreset, WLEDPresets, WLEDSegment, WLEDState, WLEDUdpState, WLEDWifiInfo } from './api-types';
-import { AppFileSystemInfo, AppInfo, AppLedInfo, AppNightLightState, AppWLEDState, AppState, AppUdpState, AppWifiInfo, AppNode, AppSegment, AppPreset } from './app-types';
+import { WLEDFileSystemInfo, WLEDInfo, WLEDLedInfo, WLEDWifiInfo } from './api-types/api-info';
+import { WLEDNodesResponse } from './api-types/api-nodes';
+import { WLEDPreset, WLEDPresets } from './api-types/api-presets';
+import { WLEDNightLightState, WLEDSegment, WLEDState, WLEDUdpState } from './api-types/api-state';
+import { WLEDApiResponse } from './api-types/api-types';
+import { AppFileSystemInfo, AppInfo, AppLedInfo, AppWifiInfo } from './app-types/app-info';
+import { AppNode } from './app-types/app-nodes';
+import { AppPreset } from './app-types/app-presets';
+import { AppNightLightState, AppSegment, AppUdpState, AppWLEDState } from './app-types/app-state';
+import { AppState } from './app-types/app-types';
 import { ClientOnlyFieldsService, createDefaultSegmentFields } from './client-only-fields.service';
 
 @Injectable({ providedIn: 'root' })
@@ -13,18 +21,18 @@ export class ApiTypeMapper {
     existingState: AppState,
     { state, info, palettes, effects }: WLEDApiResponse,
     presets?: WLEDPresets,
-  ): AppState => {
-    return {
-      ...existingState,
-      state: this.mapWLEDStateToAppWLEDState(state),
-      info: this.mapWLEDInfoToAppInfo(info),
-      palettes: palettes ?? existingState.palettes,
-      effects: effects ?? existingState.effects,
-      presets: presets
-        ? this.mapWLEDPresetsToAppPresets(presets)
-        : existingState.presets,
-    }
-  };
+  ): AppState => ({
+    ...existingState,
+    state: this.mapWLEDStateToAppWLEDState(state),
+    info: this.mapWLEDInfoToAppInfo(info),
+    palettes: palettes ?? existingState.palettes,
+    effects: effects
+      ? this.filterWLEDEffects(effects)
+      : existingState.effects,
+    presets: presets
+      ? this.mapWLEDPresetsToAppPresets(presets)
+      : existingState.presets,
+  });
 
   /** Maps the `state` object in the WLED API resonse into the format expected by this app. */
   mapWLEDStateToAppWLEDState = (state: WLEDState): AppWLEDState => ({
@@ -73,7 +81,7 @@ export class ApiTypeMapper {
       const clientOnlyFields = segmentFieldsMap[id];
       const isExpanded = clientOnlyFields?.isExpanded || false;
 
-      return {
+      const appSegment: AppSegment = {
         id,
         isExpanded,
         start: segment.start,
@@ -91,13 +99,15 @@ export class ApiTypeMapper {
         isReversed: segment.rev,
         isOn: segment.on,
         brightness: segment.bri,
-        name: segment.n,
-        colorTemp: segment.cct,
         isMirrored: segment.mi,
-        // TODO revisit these fields (see api types)
-        // loxonePrimaryRgb: segment.lx,
-        // loxoneSecondaryRgb: segment.ly,
-      }
+        colorTemp: segment.cct,
+        loxonePrimaryColor: segment.lx,
+        loxoneSecondaryColor: segment.ly,
+        isFrozen: segment.frz,
+        name: '', // TODO
+      };
+
+      return appSegment;
     });
   }
 
@@ -129,14 +139,18 @@ export class ApiTypeMapper {
     ipAddress: info.ip,
   });
 
+  filterWLEDEffects = (effects: string[]) => effects
+    // filter unsupported effects https://kno.wled.ge/interfaces/json-api/
+    .filter(effect => !['RSVD', '-'].includes(effect))
+
   mapWLEDLedInfoToAppLedInfo = (ledInfo: WLEDLedInfo): AppLedInfo => ({
     totalLeds: ledInfo.count,
     fps: ledInfo.fps,
-    hasWhiteChannel: ledInfo.rgbw,
-    showWhiteChannelSlider: ledInfo.wv,
     amps: ledInfo.pwr,
     maxAmps: ledInfo.maxpwr,
     maxSegments: ledInfo.maxseg,
+    lightCapabilities: ledInfo.lc,
+    segmentLightCapabilities: ledInfo.seglc,
   });
 
   mapWLEDWifiInfoToAppWifiInfo = (wifiInfo: WLEDWifiInfo): AppWifiInfo => ({

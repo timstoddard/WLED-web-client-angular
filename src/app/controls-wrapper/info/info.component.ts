@@ -2,7 +2,8 @@ import { KeyValue } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppStateService } from '../../shared/app-state/app-state.service';
-import { AppInfo, AppNode } from '../../shared/app-types';
+import { AppInfo } from '../../shared/app-types/app-info';
+import { AppNode } from '../../shared/app-types/app-nodes';
 import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
 import { InfoService } from './info.service';
 

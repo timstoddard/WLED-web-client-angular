@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../../shared/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
-import { AppPreset } from '../../shared/app-types';
+import { AppPreset } from '../../shared/app-types/app-presets';
 import { UnsubscriberService } from '../../shared/unsubscriber/unsubscriber.service';
 
 @Injectable()

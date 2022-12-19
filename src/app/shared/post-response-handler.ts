@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ApiTypeMapper } from './api-type-mapper';
-import { WLEDApiResponse, WLEDPresets, WLEDState } from './api-types';
+import { WLEDPresets } from './api-types/api-presets';
+import { WLEDState } from './api-types/api-state';
+import { WLEDApiResponse } from './api-types/api-types';
 import { AppStateService } from './app-state/app-state.service';
 
 // TODO can this functionality be provided directly in the api service?

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import { of } from 'rxjs';
-import { WLEDPresets } from '../../shared/api-types';
+import { WLEDPresets } from '../../shared/api-types/api-presets';
 import { ApiService } from '../../shared/api.service';
 import { OnlineStatusService } from '../../shared/online-status.service';
 import { MOCK_API_PRESETS } from '../mock-api-data';

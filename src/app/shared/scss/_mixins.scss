@@ -47,6 +47,8 @@
   }
 
   &--selected {
+    // TODO onSelect works in dev but not in prod
+    // due to missing ng prefix in prod
     $selectAnimation: onSelect 0.3s cubic-bezier(.25,.75,1,1);
     @include rainbow(border-color, $otherAnimations: $selectAnimation);
 

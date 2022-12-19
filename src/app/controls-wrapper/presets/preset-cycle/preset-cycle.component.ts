@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { AppPreset } from '../../../shared/app-types';
+import { AppPreset } from '../../../shared/app-types/app-presets';
 import { FormService } from '../../../shared/form-service';
 
 @Component({

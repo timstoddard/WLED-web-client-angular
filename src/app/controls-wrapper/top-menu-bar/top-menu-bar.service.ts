@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { WLEDApiResponse } from '../../shared/api-types';
+import { WLEDApiResponse } from '../../shared/api-types/api-types';
 import { ApiService } from '../../shared/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { PostResponseHandler } from '../../shared/post-response-handler';

@@ -1,7 +1,15 @@
 import { ApiTypeMapper } from './api-type-mapper';
-import { WLEDApiResponse, WLEDFileSystemInfo, WLEDInfo, WLEDLedInfo, WLEDNightLightState, WLEDNodesResponse, WLEDSegment, WLEDState, WLEDUdpState, WLEDWifiInfo } from './api-types';
+import { WLEDFileSystemInfo, WLEDInfo, WLEDLedInfo, WLEDWifiInfo } from './api-types/api-info';
+import { WLEDNodesResponse } from './api-types/api-nodes';
+import { WLEDPresets } from './api-types/api-presets';
+import { WLEDNightLightState, WLEDSegment, WLEDState, WLEDUdpState } from './api-types/api-state';
+import { WLEDApiResponse } from './api-types/api-types';
 import { DEFAULT_APP_STATE } from './app-state/app-state-defaults';
-import { AppFileSystemInfo, AppInfo, AppLedInfo, AppNightLightState, AppNode, AppSegment, AppState, AppUdpState, AppWifiInfo, AppWLEDState } from './app-types';
+import { AppFileSystemInfo, AppInfo, AppLedInfo, AppWifiInfo } from './app-types/app-info';
+import { AppNode } from './app-types/app-nodes';
+import { AppNightLightState, AppSegment, AppUdpState, AppWLEDState } from './app-types/app-state';
+import { AppState } from './app-types/app-types';
+import { ClientOnlyFieldsService } from './client-only-fields.service';
 
 /* Set up all mocks for WLED types. */
 
@@ -40,9 +48,11 @@ const MOCK_WLED_SEGMENTS: WLEDSegment[] = [
     rev: false,
     on: true,
     bri: 255,
-    n: 'name',
     cct: 1,
     mi: false,
+    lx: 0,
+    ly: 0,
+    frz: false,
   },
 ];
 
@@ -51,7 +61,7 @@ const MOCK_WLED_STATE: WLEDState = {
   bri: 128,
   transition: 3,
   ps: 1,
-  pl: 2,
+  pl: -1,
   nl: MOCK_WLED_NIGHTLIGHT,
   udpn: MOCK_WLED_UDP,
   lor: 0,
@@ -62,11 +72,11 @@ const MOCK_WLED_STATE: WLEDState = {
 const MOCK_WLED_LED_INFO: WLEDLedInfo = {
   count: 101,
   fps: 60,
-  rgbw: false,
-  wv: false,
   pwr: 8,
   maxpwr: 12,
   maxseg: 3,
+  lc: 4,
+  seglc: [4],
 };
 
 const MOCK_WLED_WIFI_INFO: WLEDWifiInfo = {
@@ -128,6 +138,10 @@ const MOCK_WLED_API_RESPONSE: WLEDApiResponse = {
   effects: MOCK_EFFECTS,
 };
 
+const MOCK_WLED_PRESETS: WLEDPresets = {
+  // TODO
+};
+
 /* Set up all mocks for APP types. */
 
 const MOCK_APP_NIGHTLIGHT: AppNightLightState = {
@@ -146,7 +160,6 @@ const MOCK_APP_UDP: AppUdpState = {
 const MOCK_APP_SEGMENTS: AppSegment[] = [
   {
     id: 0,
-    isExpanded: false,
     start: 0,
     stop: 10,
     length: 10,
@@ -166,9 +179,13 @@ const MOCK_APP_SEGMENTS: AppSegment[] = [
     isReversed: false,
     isOn: true,
     brightness: 255,
-    name: 'name',
-    colorTemp: 1,
     isMirrored: false,
+    colorTemp: 1,
+    loxonePrimaryColor: 0,
+    loxoneSecondaryColor: 0,
+    isFrozen: false,
+    name: 'name',
+    isExpanded: false,
   },
 ];
 
@@ -177,7 +194,7 @@ const MOCK_APP_WLED_STATE: AppWLEDState = {
   brightness: 128,
   transition: 0.3,
   currentPresetId: 1,
-  currentPlaylistId: 2,
+  currentPlaylistId: -1,
   nightLight: MOCK_APP_NIGHTLIGHT,
   udp: MOCK_APP_UDP,
   liveViewOverride: 0,
@@ -188,11 +205,11 @@ const MOCK_APP_WLED_STATE: AppWLEDState = {
 const MOCK_APP_LED_INFO: AppLedInfo = {
   totalLeds: 101,
   fps: 60,
-  hasWhiteChannel: false,
-  showWhiteChannelSlider: false,
   amps: 8,
   maxAmps: 12,
   maxSegments: 3,
+  lightCapabilities: 0,
+  segmentLightCapabilities: [],
 };
 
 const MOCK_APP_WIFI_INFO: AppWifiInfo = {
@@ -242,13 +259,16 @@ const EXPECTED_APP_STATE: AppState = {
   effects: MOCK_EFFECTS,
   localSettings: DEFAULT_APP_STATE.localSettings,
   nodes: DEFAULT_APP_STATE.nodes,
+  presets: [], // TODO add
 };
 
 fdescribe('ApiTypeMapper', () => {
   let apiTypeMapper: ApiTypeMapper;
+  let clientOnlyFieldsService: ClientOnlyFieldsService;
 
   beforeEach(() => {
-    apiTypeMapper = new ApiTypeMapper();
+    clientOnlyFieldsService = new ClientOnlyFieldsService();
+    apiTypeMapper = new ApiTypeMapper(clientOnlyFieldsService);
   });
 
   it('mapWLEDApiResponseToAppState should work', () => {
@@ -256,7 +276,11 @@ fdescribe('ApiTypeMapper', () => {
     // n/a
 
     // act
-    const appState = apiTypeMapper.mapWLEDApiResponseToAppState(MOCK_WLED_API_RESPONSE, DEFAULT_APP_STATE);
+    const appState = apiTypeMapper.mapWLEDApiResponseToAppState(
+      DEFAULT_APP_STATE,
+      MOCK_WLED_API_RESPONSE,
+      MOCK_WLED_PRESETS,
+    );
 
     // assert
     expect(appState).toEqual(EXPECTED_APP_STATE);
@@ -389,7 +413,7 @@ fdescribe('ApiTypeMapper', () => {
         const {
           ids,
           nextId,
-        } = apiTypeMapper.normalizeIds(items);
+        } = apiTypeMapper.normalizeIds(items, 'id');
 
         // assert
         for (let i = 0; i < ids.length; i++) {

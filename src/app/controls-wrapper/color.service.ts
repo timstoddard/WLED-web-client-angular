@@ -4,7 +4,6 @@ import iro from '@jaames/iro';
 import { Subject } from 'rxjs';
 import { ApiService } from '../shared/api.service';
 import { AppStateService } from '../shared/app-state/app-state.service';
-import { AppLedInfo } from '../shared/app-types';
 import { PostResponseHandler } from '../shared/post-response-handler';
 import { UnsubscriberService } from '../shared/unsubscriber/unsubscriber.service';
 
@@ -40,8 +39,9 @@ export class ColorService extends UnsubscriberService {
 
     this.appStateService.getInfo(this.ngUnsubscribe)
       .subscribe(({ ledInfo }) => {
-        const { hasWhiteChannel } = ledInfo;
-        this.hasWhiteChannel = hasWhiteChannel;
+        const { lightCapabilities } = ledInfo;
+        // TODO wire this up
+        // this.hasWhiteChannel = hasWhiteChannel;
       });
   }
 

@@ -4,7 +4,7 @@ import { Observer } from 'rxjs';
 import { ApiService } from '../../../shared/api.service';
 import { NO_DEVICE_IP_SELECTED } from '../../../shared/app-state/app-state-defaults';
 import { AppStateService } from '../../../shared/app-state/app-state.service';
-import { WLEDIpAddress } from '../../../shared/app-types';
+import { WLEDIpAddress } from '../../../shared/app-types/app-types';
 import { FormService } from '../../../shared/form-service';
 import { UnsubscriberComponent } from '../../../shared/unsubscriber/unsubscriber.component';
 

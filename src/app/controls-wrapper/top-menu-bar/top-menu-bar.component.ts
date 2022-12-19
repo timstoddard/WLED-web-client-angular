@@ -6,7 +6,7 @@ import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.co
 import { MenuBarButton, setCssColor } from '../utils';
 import { TopMenuBarButtonName, TopMenuBarService } from './top-menu-bar.service';
 import { FormService, getFormControl } from '../../shared/form-service';
-import { AppState } from '../../shared/app-types';
+import { AppState } from '../../shared/app-types/app-types';
 import { OverlayPositionService } from '../../shared/overlay-position.service';
 import { InputConfig } from '../../shared/text-input/text-input.component';
 

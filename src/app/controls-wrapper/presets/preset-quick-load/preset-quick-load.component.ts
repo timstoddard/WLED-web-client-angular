@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AppPreset } from '../../../shared/app-types';
+import { AppPreset } from '../../../shared/app-types/app-presets';
 import { PresetsService } from '../presets.service';
 
 @Component({

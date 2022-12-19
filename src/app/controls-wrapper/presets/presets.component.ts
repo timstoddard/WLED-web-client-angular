@@ -4,8 +4,8 @@ import { LocalStorageKey, LocalStorageService } from '../../shared/local-storage
 import { getInput } from '../utils';
 import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
 import { PresetsService } from './presets.service';
-import { WLEDPlaylist, WLEDPlaylists, WLEDPreset, WLEDPresets } from '../../shared/api-types';
-import { AppPreset } from '../../shared/app-types';
+import { WLEDPlaylist, WLEDPlaylists, WLEDPreset, WLEDPresets } from '../../shared/api-types/api-presets';
+import { AppPreset } from '../../shared/app-types/app-presets';
 
 interface PresetError {
   isEmpty: boolean;
@@ -217,7 +217,7 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
   getPresetNameV2(preset: WLEDPreset) {
     return preset.n
       ? preset.n
-      : `Preset ${preset.psave}`;
+      : `Preset`; // TODO use id here?
   }
 
   private expand(index: number, a: any /* TODO type & default */) {
@@ -245,7 +245,7 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
       this.validatePlaylist(this.playlists[p]);
       
       // TODO use getDefaultPlaylist
-      if (isNaN(this.playlists[p].repeat)) {
+      if (isNaN(this.playlists[p].repeat!)) {
         this.playlists[p].repeat = 0;
       }
       // if (!this.playlists[p].r) {
@@ -441,8 +441,7 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
     // playlist.r = getInput(`pl${playlistId}rtgl`).checked;
     if (getInput(`pl${playlistId}rptgl`).checked) { //infinite
       playlist.repeat = 0;
-      // TODO make this null for infinite
-      playlist.end = null;
+      playlist.end = undefined;
       document.getElementById(`pl${playlistId}o1`)!.style.display = 'none';
     } else {
       playlist.repeat = parseInt(getInput(`pl${playlistId}rp`).value);
@@ -584,7 +583,7 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
       _preset.sb = saveSegmentBounds;
     }
 
-    _preset.psave = this.currentPresetId;
+    // _preset.psave = this.currentPresetId;
     _preset.n = this.currentPresetName;
     if (quickLoadLabel) {
       _preset.ql = quickLoadLabel;
