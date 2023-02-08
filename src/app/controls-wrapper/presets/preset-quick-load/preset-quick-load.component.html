@@ -1,9 +1,24 @@
 <div class="presetQuickLoad__buttons">
-  <div *ngFor="let preset of presets">
-    <div
-      (click)="loadPreset(preset.id)"
-      class="presetQuickLoad__button">
-      {{ preset.quickLoadLabel }}
+  <ng-container *ngIf="presets.length > 0; else noPresetsMessage">
+    <div *ngFor="let preset of presets">
+      <div
+        (click)="loadPreset(preset.id)"
+        class="presetQuickLoad__button">
+        {{ preset.quickLoadLabel }}
+      </div>
     </div>
-  </div>
+  </ng-container>
+  <ng-template #noPresetsMessage>
+    <div class="presetQuickLoad__noPresetsMessage">
+      No Favorites yet!
+    </div>
+    <div class="presetQuickLoad__noPresetsMessage">
+      <a
+        routerLink="/presets"
+        mat-raised-button
+        color="primary">
+        Create Preset
+      </a>
+    </div>
+  </ng-template>
 </div>

@@ -11,6 +11,7 @@
 .presetQuickLoad {
   &__buttons {
     @include flex-center;
+    margin: 0 auto;
   }
 
   &__button {
@@ -30,5 +31,9 @@
       @include rainbow(border-color);
       background: var(--backgroundColorAccent);
     }
+  }
+
+  &__noPresetsMessage {
+    margin: 0 3px;
   }
 }

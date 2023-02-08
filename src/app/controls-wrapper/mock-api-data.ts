@@ -349,9 +349,9 @@ export const MOCK_API_PRESETS: WLEDPresets = {
     // TODO verify these fields
     n: 'Preset 1',
     playlist: { // TODO
-      ps: [1,2,3],
-      dur: [10,10,10],
-      transition: [1,1,1],
+      ps: [1, 2, 3],
+      dur: [10, 10, 10],
+      transition: [1, 1, 1],
       repeat: 3,
       end: undefined,
       // r: false,
@@ -365,7 +365,66 @@ export const MOCK_API_PRESETS: WLEDPresets = {
     sb: true,
     p: 0, // TODO
   },
-  // TODO add another
+  2: {
+    // TODO verify these fields
+    n: 'Preset 2',
+    playlist: { // TODO
+      ps: [1, 2, 3],
+      dur: [10, 10, 10],
+      transition: [1, 1, 1],
+      repeat: 3,
+      end: undefined,
+      // r: false,
+    },
+    // psave: 0,
+    o: true, // TODO
+    win: '', // TODO
+    ql: 'P2',
+    on: true, // TODO
+    ib: true,
+    sb: true,
+    p: 0, // TODO
+  },
+  3: {
+    // TODO verify these fields
+    n: 'Preset 3',
+    playlist: { // TODO
+      ps: [1, 2, 3],
+      dur: [10, 10, 10],
+      transition: [1, 1, 1],
+      repeat: 3,
+      end: undefined,
+      // r: false,
+    },
+    // psave: 0,
+    o: true, // TODO
+    win: '', // TODO
+    ql: 'P3',
+    on: true, // TODO
+    ib: true,
+    sb: true,
+    p: 0, // TODO
+  },
+  4: {
+    // TODO verify these fields
+    n: 'Preset 4',
+    playlist: { // TODO
+      ps: [1, 2, 3],
+      dur: [10, 10, 10],
+      transition: [1, 1, 1],
+      repeat: 3,
+      end: undefined,
+      // r: false,
+    },
+    // psave: 0,
+    o: true, // TODO
+    win: '', // TODO
+    ql: 'P4',
+    on: true, // TODO
+    ib: true,
+    sb: true,
+    p: 0, // TODO
+  },
 };
 
 export const MOCK_LIVE_DATA: LiveViewData = {
