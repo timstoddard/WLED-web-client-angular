@@ -96,7 +96,18 @@
         border-bottom: 1px solid var(--borderColorPrimary);
       }
 
-      &__name {
+      &__link {
+        color: inherit;
+        text-decoration: none;
+
+        &:hover {
+          background: var(--backgroundColorAccent);
+          text-decoration: underline;
+        }
+      }
+
+      &__name,
+      &__link {
         @include textOverflowEllipsis;
         max-width: $listMaxWidth;
         width: 75vw;

@@ -19,11 +19,7 @@ const getMockWLEDIpAddresses = (options: {
     },
     {
       name: 'Bedroom',
-      ipv4Address: '192.168.100.21',
-    },
-    {
-      name: 'Office',
-      ipv4Address: '192.168.100.5',
+      ipv4Address: '192.168.100.172',
     },
   ];
   if (options.testMaxHeight) {
@@ -43,7 +39,7 @@ const getMockWLEDIpAddresses = (options: {
   return wledIpAddresses;
 }
 const DEFAULT_WLED_IP_ADDRESSES: WLEDIpAddress[] = getMockWLEDIpAddresses({
-  testMaxHeight: true,
+  testMaxHeight: false,
   testMaxWidth: false,
 });
 

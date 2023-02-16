@@ -33,5 +33,13 @@
         {{ wledIpAddress.ipv4Address }}
       </div>
     </div>
+    <div class="deviceSelector__listItem">
+      <a
+        [routerLink]="['/', 'controls', 'settings', 'network']"
+        (click)="handleAddLinkClick($event)"
+        class="deviceSelector__listItem__link">
+        Add New
+      </a>
+    </div>
   </div>
 </ng-template>

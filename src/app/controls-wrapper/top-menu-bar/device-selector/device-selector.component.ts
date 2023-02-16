@@ -87,6 +87,11 @@ export class DeviceSelectorComponent extends UnsubscriberComponent implements On
     }
   }
 
+  handleAddLinkClick(event: Event) {
+    event.stopImmediatePropagation();
+    this.showList = false;
+  }
+
   getModifierClass() {
     const statusToClassMap = {
       'connected': 'deviceSelector__main--connected',
