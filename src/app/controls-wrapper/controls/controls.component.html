@@ -1,6 +1,10 @@
-<app-color-inputs class="controls__colorInputs"></app-color-inputs>
+<!-- TODO move to modal triggered by clicking on palette in palettes ellipsis dropdown -->
+<!-- (only open modal if palette is selected & has a color, or is not selected & doesn't have a color) -->
+<!-- <app-color-inputs class="controls__colorInputs"></app-color-inputs> -->
+
 <app-preset-quick-load
   [presets]="getPresets()"
+  title="Presets"
   class="controls__presetQuickLoad">
 </app-preset-quick-load>
 <app-palettes class="controls__palettes"></app-palettes>

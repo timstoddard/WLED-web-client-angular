@@ -29,6 +29,9 @@
   // key layout constants
   --controlsEdgeSpacing: 0;
   --controlsGridSpacing: 8px;
+
+  // default app height
+  --app-height: 100vh;
 }
 
 $mainViewEdgeSpacing: 3px var(--controlsEdgeSpacing);

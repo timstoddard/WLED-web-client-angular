@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
-import { ColorSlotsService } from './color-inputs/color-slots/color-slots.service';
 import { ColorService } from './color.service';
+import { ColorSlotsService } from './color-inputs/color-slots/color-slots.service';
 import { ControlsResolver } from './controls.resolver';
 import { ControlsService } from './controls.service';
 import { EffectsService } from './effects/effects.service';
@@ -16,9 +16,9 @@ import { TopMenuBarService } from './top-menu-bar/top-menu-bar.service';
 @NgModule({
   providers: [
     ColorService,
+    ColorSlotsService,
     ControlsResolver,
     ControlsService,
-    ColorSlotsService,
     EffectsService,
     InfoService,
     PalettesDataResolver,

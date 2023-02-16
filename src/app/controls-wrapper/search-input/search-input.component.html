@@ -28,21 +28,21 @@
     </mat-icon> -->
 
   <ng-template #showTitle>
-    <h2 class="searchInput__title">
+    <h3 class="searchInput__title">
       {{ headerText }}
-    </h2>
-  </ng-template>
-
-  <div
-    *ngIf="selectedItem$ | async as selectedItem; else noneSelected"
-    [ngClass]="{'searchInput__selectedName--hasValue': !!selectedItem}"
-    class="searchInput__selectedName">
-    {{ selectedItem.name }}
-  </div>
-  <ng-template #noneSelected>
-    <div class="searchInput__selectedName">
-      None selected
+    </h3>
+    <div
+      *ngIf="selectedItem$ | async as selectedItem; else noneSelected"
+      [ngClass]="{'searchInput__selectedName--hasValue': hasSelectedItem(selectedItem)}"
+      class="searchInput__selectedName">
+      {{ selectedItem.name }}
     </div>
+
+    <ng-template #noneSelected>
+      <div class="searchInput__selectedName">
+        None selected
+      </div>
+    </ng-template>
   </ng-template>
 </div>
 

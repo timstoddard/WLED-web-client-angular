@@ -27,7 +27,7 @@ export class PresetsService extends UnsubscriberService {
   }
 
   loadPreset(presetId: number) {
-    this.apiService.loadPreset(presetId);
+    return this.apiService.loadPreset(presetId);
   }
 
   updatePreset(
@@ -38,6 +38,7 @@ export class PresetsService extends UnsubscriberService {
   ) {
     this.appStateService.getAppState(this.ngUnsubscribe)
       .subscribe(({ state }) => {
+        // TODO need to return this?
         this.apiService.updatePreset(
           preset,
           useCurrentState,

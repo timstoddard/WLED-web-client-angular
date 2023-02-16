@@ -10,6 +10,9 @@ import { Construct } from 'constructs'
 // TODO add user flag/prop for this
 const IS_DEV_MODE = true
 
+// toggle HTTP instead of HTTPS
+const FORCE_HTTP = true
+
 const urlToIdFormat = (url: string) => url.replace(/[^a-z0-9-]+/gi, '-')
 
 export interface CloudFrontStackProps extends cdk.StackProps {
@@ -89,9 +92,13 @@ export class CloudFrontWebsiteStack extends cdk.Stack {
         compress: true,
         originRequestPolicy: cloudfront.OriginRequestPolicy.CORS_S3_ORIGIN,
         responseHeadersPolicy: cloudfront.ResponseHeadersPolicy.CORS_ALLOW_ALL_ORIGINS_WITH_PREFLIGHT_AND_SECURITY_HEADERS,
-        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        viewerProtocolPolicy: FORCE_HTTP
+          ? cloudfront.ViewerProtocolPolicy.ALLOW_ALL
+          : cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
       },
-      certificate: this.getCertificate(publicSSLCertificateArn, cfnIdPrefix),
+      certificate: FORCE_HTTP
+        ? undefined
+        : this.getCertificate(publicSSLCertificateArn, cfnIdPrefix),
       comment: `${websiteDescription} | ${DESCRIPTION_WARNING_MESSAGE}`,
       defaultRootObject: 'index.html',
       domainNames: [

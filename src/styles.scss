@@ -14,7 +14,6 @@
 
 html,
 body {
-  @include mobileSafariViewportHeightFix;
   margin: 0;
   overflow: hidden;
   padding: 0;

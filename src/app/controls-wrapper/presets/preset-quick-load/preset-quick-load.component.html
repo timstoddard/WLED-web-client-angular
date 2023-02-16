@@ -1,4 +1,20 @@
-<div class="presetQuickLoad__buttons">
+<div
+  *ngIf="title"
+  (click)="isExpanded = !isExpanded"
+  [ngClass]="{'presetQuickLoad__header--expanded': isExpanded}"
+  class="presetQuickLoad__header">
+  <span class="presetQuickLoad__title">
+    {{ title }}
+  </span>
+  <app-expand-icon
+    [expanded]="isExpanded"
+    class="presetQuickLoad__expandIcon">
+  </app-expand-icon>
+</div>
+<div
+  @expand
+  *ngIf="isExpanded"
+  class="presetQuickLoad__buttons">
   <ng-container *ngIf="presets.length > 0; else noPresetsMessage">
     <div *ngFor="let preset of presets">
       <div

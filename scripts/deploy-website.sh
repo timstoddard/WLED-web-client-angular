@@ -103,6 +103,7 @@ purge_caches() {
     --distribution-id $DISTRIBUTION_ID \
     --paths '/*')
   CLOUDFRONT_PURGE_CACHE_STATUS=$(echo $CLOUDFRONT_PURGE_CACHE_OUTPUT | jq -r '.Invalidation.Status')
+  
   echo "[CloudFront] Cache purge status: $CLOUDFRONT_PURGE_CACHE_STATUS"
 
   # purge cloudflare cache

@@ -74,10 +74,6 @@ export class AppComponent extends UnsubscriberComponent {
 
     this.pageTitleService.updateOnRouteChange(this.ngUnsubscribe);
     this.showDevNavBar = this.localStorageService.get(LocalStorageKey.SHOW_DEV_NAV_BAR, false);
-
-    // TODO fix safari viewport height bug
-    // window.addEventListener('resize', this.appHeight);
-    // this.appHeight();
   }
 
   hideDevNavBar() {
@@ -118,16 +114,5 @@ export class AppComponent extends UnsubscriberComponent {
       .map(([key, value]) => `${key}=${value}`)
       .join(',');
     return content;
-  }
-
-  /**
-   * Used for testing mobile safari viewport height fix.
-   * 
-   * TODO: remove after testing
-   */
-  private appHeight() {
-    console.log('--app-height', `${window.innerHeight}px`)
-    document.documentElement.style
-      .setProperty('--app-height', `${window.innerHeight}px`);
   }
 }

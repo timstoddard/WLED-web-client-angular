@@ -61,6 +61,12 @@ export class ControlsWrapperComponent extends UnsubscriberComponent implements O
     this.loadStoredUIConfig();
     this.loadHolidaysOrSkin();
 
+    if (this.shouldEnableAppHeightHack()) {
+      alert('app height fix enabled') // TODO remove
+      this.setAppHeight();
+      document.addEventListener('resize', this.setAppHeight);
+    }
+
     // TODO remove?
     // this.setupRanges();
 
@@ -76,7 +82,25 @@ export class ControlsWrapperComponent extends UnsubscriberComponent implements O
     // }
   }
 
-  private loadStoredUIConfig() {
+  private setAppHeight = () => {
+    const { documentElement: de } = document;
+    de.style.setProperty('--app-height', `${window.innerHeight}px`);
+    console.log('setAppHeight', window.innerHeight)
+  }
+
+  private shouldEnableAppHeightHack = () => {
+    // only enable for mobile safari, for now
+    const { userAgent } = navigator;
+    const expectedKeywords = ['Safari', 'Mobile', 'AppleWebKit']
+    for (const keyword of expectedKeywords) {
+      if (!userAgent.includes(keyword)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private loadStoredUIConfig = () => {
     const defaultConfig: any = {}; // TODO better default
     const config = this.localStorageService.get<AppUIConfig>(LocalStorageKey.UI_CONFIG, defaultConfig);
     if (config) {
@@ -84,7 +108,7 @@ export class ControlsWrapperComponent extends UnsubscriberComponent implements O
     }
   }
 
-  private loadHolidaysOrSkin() {
+  private loadHolidaysOrSkin = () => {
     // TODO move to loadHolidays() in controls service
     if (this.enableHolidays) { // should load custom holiday list
       const holidayJsonPath = generateApiUrl('holidays.json', true);
@@ -115,7 +139,7 @@ export class ControlsWrapperComponent extends UnsubscriberComponent implements O
   }
 
   // TODO better way to load background
-  private loadBackground(imageUrl: string) {
+  private loadBackground = (imageUrl: string) => {
     const backgroundElement = document.getElementById('bg')!;
     let imgElement = document.createElement('img');
     imgElement.src = imageUrl;
@@ -131,7 +155,7 @@ export class ControlsWrapperComponent extends UnsubscriberComponent implements O
     });
   }
 
-  private loadHolidayBackground(img: HTMLImageElement) {
+  private loadHolidayBackground = (img: HTMLImageElement) => {
     const today = new Date();
     for (let i = 0; i < this.holidayConfig.length; i++) {
       const year = this.holidayConfig[i][0] === 0 ? today.getFullYear() : this.holidayConfig[i][0] as number;
@@ -144,7 +168,7 @@ export class ControlsWrapperComponent extends UnsubscriberComponent implements O
     }
   }
 
-  private loadSkinCSS(skinCssId: string) {
+  private loadSkinCSS = (skinCssId: string) => {
     if (!document.getElementById(skinCssId)) { // check if element exists
       const documentHead = document.getElementsByTagName('head')[0];
       const stylesheet = document.createElement('link');

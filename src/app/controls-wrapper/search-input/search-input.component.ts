@@ -41,6 +41,10 @@ export class SearchInputComponent extends UnsubscriberComponent implements OnIni
     this.isContextMenuOpen = false;
   }
 
+  hasSelectedItem = ({ id, name }: SearchableItem) => {
+    return id != -1 && name != '';
+  }
+
   onChange = () => {
     this.searchValueChanges.emit(this.searchText.value);
   }

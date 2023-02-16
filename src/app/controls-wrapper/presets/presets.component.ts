@@ -31,7 +31,6 @@ const getDefaultPlaylist = (partial: Partial<WLEDPlaylist> = {}): WLEDPlaylist =
   selector: 'app-presets',
   templateUrl: './presets.component.html',
   styleUrls: ['./presets.component.scss'],
-  providers: [PresetsService],
 })
 export class PresetsComponent extends UnsubscriberComponent implements OnInit {
   @Input() useLocalStorage: boolean = true;

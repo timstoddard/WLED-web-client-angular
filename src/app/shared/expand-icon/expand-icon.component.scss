@@ -1,5 +1,6 @@
 .expandIcon {
   cursor: pointer;
+  display: flex;
   font-size: 30px;
   transform: rotate(0deg);
   transition: transform .35s ease;

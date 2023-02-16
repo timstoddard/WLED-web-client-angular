@@ -161,17 +161,6 @@
   }
 }
 
-// TODO this doesn't work
-/**
-* Mobile viewport bug fix
-* 
-* https://allthingssmitty.com/2020/05/11/css-fix-for-100vh-in-mobile-webkit
-*/
-@mixin mobileSafariViewportHeightFix {
-  min-height: 100vh;
-  min-height: stretch; // fill-available;
-}
-
 @mixin settingsPageContainer {
   align-items: center;
   display: flex;

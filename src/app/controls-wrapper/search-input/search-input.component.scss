@@ -4,10 +4,10 @@
   @include overrideMatTextInputStyles(--backgroundColorAccent);
   align-items: center;
   border-bottom: solid 1px var(--borderColorPrimary);
-  display: grid;
-  grid-template-columns: auto 1fr auto;
+  display: flex;
+  justify-content: space-between;
   min-width: 100px;
-  padding: 8px 10px 4px;
+  padding: 4px;
 
   @media screen and (max-width: 400px) {
     padding: 4px 2px;
@@ -16,15 +16,19 @@
 
 .searchInput {
   &__header {
-    align-items: center;
-    display: flex;
+    @include flex-center;
     flex-direction: column;
-    overflow: hidden;
     text-align: center;
   }
 
   &__title {
+    font-size: 1.5em;
     margin: 2px 0;
+    transition: font-size 0.5s ease-out;
+
+    &:has(+ .searchInput__selectedName--hasValue) {
+      font-size: 1.05em;
+    }
   }
 
   &__input {
@@ -32,8 +36,7 @@
     border: 1px solid var(--borderColorPrimary);
     border-radius: 6px;
     color: inherit;
-    // TODO convert to em/rem
-    font-size: 15.5px;
+    font-size: 1em;
     margin: 2px 0;
     max-width: 180px;
     outline: 0;
@@ -42,15 +45,28 @@
   }
 
   &__selectedName {
-    // TODO convert to em/rem
+    $selectedNameTransition: 0.5s ease-out 0.4s;
+
     @include textOverflowEllipsis;
-    font-size: 15px;
+    font-size: 0;
     font-weight: bold;
-    margin: 2px 0;
+    margin: 0;
     max-width: 100%;
+    opacity: 0;
+    transition:
+      border $selectedNameTransition,
+      font-size $selectedNameTransition,
+      margin $selectedNameTransition,
+      opacity $selectedNameTransition;
 
     &--hasValue {
+      border: 1px solid var(--themeColorPrimary);
+      border-radius: 4px;
       color: var(--themeColorPrimary);
+      font-size: 0.8em;
+      margin: 2px 0;
+      opacity: 1;
+      padding: 0 3px;
     }
   }
 
