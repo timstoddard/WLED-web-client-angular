@@ -20,10 +20,14 @@ body {
 }
 
 html {
-  background: var(--backgroundColorPrimary);
-  color: var(--textColorPrimary);
+  @include default-background-and-text-colors;
 }
 
 .material-symbols-outlined {
   user-select: none;
+}
+
+.mat-dialog-container {
+  @include default-background-and-text-colors;
+  border: 2px solid var(--themeColorPrimary);
 }

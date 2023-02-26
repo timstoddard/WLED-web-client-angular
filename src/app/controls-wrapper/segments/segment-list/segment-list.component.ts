@@ -11,7 +11,7 @@ import { AppSegment } from '../../../shared/app-types/app-state';
   selector: 'app-segment-list',
   templateUrl: './segment-list.component.html',
   styleUrls: ['./segment-list.component.scss'],
-  animations: [expandFade],
+  animations: [expandFade()],
 })
 export class SegmentListComponent extends UnsubscriberComponent implements OnInit {
   @Input() segments: AppSegment[] = [];

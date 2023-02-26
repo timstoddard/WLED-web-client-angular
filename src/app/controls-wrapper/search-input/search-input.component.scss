@@ -1,6 +1,6 @@
 @import 'src/app/shared/scss/mixins';
 
-:host {
+.searchInput {
   @include overrideMatTextInputStyles(--backgroundColorAccent);
   align-items: center;
   border-bottom: solid 1px var(--borderColorPrimary);
@@ -83,10 +83,5 @@
     &--selected {
       border: 1px solid var(--borderColorPrimary);
     }
-  }
-
-  &__contextMenu {
-    @include overlay-container;
-    max-width: 40vw;
   }
 }

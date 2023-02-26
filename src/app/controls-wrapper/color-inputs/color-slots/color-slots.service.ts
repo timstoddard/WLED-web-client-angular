@@ -20,6 +20,7 @@ export class ColorSlotsService extends UnsubscriberService {
   private selectedSlot = DEFAULT_SLOT;
   private colors = DEFAULT_COLORS;
   private whiteChannels = DEFAULT_WHITE_CHANNELS;
+  private isColorInputDialogOpen = false;
 
   constructor(
     private colorService: ColorService,
@@ -115,5 +116,13 @@ export class ColorSlotsService extends UnsubscriberService {
 
   isSlotSelected(slot: number) {
     return slot === this.selectedSlot;
+  }
+
+  getIsColorInputDialogOpen() {
+    return this.isColorInputDialogOpen
+  }
+
+  setIsColorInputDialogOpen(isColorInputDialogOpen: boolean) {
+    this.isColorInputDialogOpen = isColorInputDialogOpen;
   }
 }

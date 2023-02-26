@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
@@ -25,6 +26,7 @@ import { HexInputComponent } from './color-inputs/hex-input/hex-input.component'
 import { InfoComponent } from './info/info.component';
 import { LiveViewModule } from '../shared/live-view/live-view.module';
 import { NewSegmentComponent } from './segments/new-segment/new-segment.component';
+import { OverlayContainerComponent } from '../shared/overlay-container/overlay-container.component';
 import { PalettesComponent } from './palettes/palettes.component';
 import { PresetCycleComponent } from './presets/preset-cycle/preset-cycle.component';
 import { PresetFormComponent } from './presets/preset-form/preset-form.component';
@@ -53,6 +55,7 @@ const COLOR_INPUTS = [
 const SHARED_COMPONENTS = [
   ColorSliderComponent,
   ExpandIconComponent,
+  OverlayContainerComponent,
   TextInputComponent,
 ]
 
@@ -90,6 +93,7 @@ const COMPONENTS = [
     LiveViewModule,
     MatButtonModule,
     MatCheckboxModule,
+    MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
     MatSliderModule,

@@ -1,5 +1,6 @@
 <div class="colorSlots">
   <button
+    mat-button
     *ngFor="let slot of getSlots()"
     (click)="selectSlot(slot)"
     class="colorSlots__slot"

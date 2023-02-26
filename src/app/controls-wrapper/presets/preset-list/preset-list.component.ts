@@ -7,7 +7,7 @@ import { PresetsService } from '../presets.service';
   selector: 'app-preset-list',
   templateUrl: './preset-list.component.html',
   styleUrls: ['./preset-list.component.scss'],
-  animations: [expandFade],
+  animations: [expandFade()],
 })
 export class PresetListComponent {
   @Input() presets: AppPreset[] = [];

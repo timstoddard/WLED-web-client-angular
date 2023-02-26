@@ -1,66 +1,72 @@
-<span
-  (click)="toggleSearchInput()"
-  [title]="label"
-  [ngClass]="{ 'searchInput__icon--selected': showInput }"
-  class="searchInput__icon material-symbols-outlined">
-  {{ showInput ? 'search_off' : 'search' }}
-</span>
-
-<div class="searchInput__header">
-  <!-- TODO display to left of title/subtitle for desktop -->
-  <!-- and show instead of title/subtitle for mobile -->
-  <!-- also: should still display "more" button on mobile when input visible? -->
-  <input
-    *ngIf="showInput; else showTitle"
-    #searchInput
-    [formControl]="searchText"
-    (keydown)="onKeyDown($event)"
-    placeholder="Search"
-    class="searchInput__input">
-  <!-- TODO add mat icon suffix to normal input? -->
-  <!-- <mat-icon matSuffix>
-      <i
-        *ngIf="searchText.value?.length > 0"
-        [innerHTML]="'&#xe38f;'"
-        (click)="cancelSearch()"
-        class="searchInput__icon">
-      </i>
-    </mat-icon> -->
-
-  <ng-template #showTitle>
-    <h3 class="searchInput__title">
-      {{ headerText }}
-    </h3>
-    <div
-      *ngIf="selectedItem$ | async as selectedItem; else noneSelected"
-      [ngClass]="{'searchInput__selectedName--hasValue': hasSelectedItem(selectedItem)}"
-      class="searchInput__selectedName">
-      {{ selectedItem.name }}
-    </div>
-
-    <ng-template #noneSelected>
-      <div class="searchInput__selectedName">
-        None selected
-      </div>
-    </ng-template>
-  </ng-template>
-</div>
-
-<span
+<div
   cdkOverlayOrigin
   #trigger="cdkOverlayOrigin"
-  (click)="toggleContextMenu()"
-  [ngClass]="{ 'searchInput__icon--selected': isContextMenuOpen }"
-  class="searchInput__icon material-symbols-outlined">
-  more_vert
-</span>
+  class="searchInput">
+  <span
+    (click)="toggleSearchInput()"
+    [title]="label"
+    [ngClass]="{ 'searchInput__icon--selected': showInput }"
+    class="searchInput__icon material-symbols-outlined">
+    {{ showInput ? 'search_off' : 'search' }}
+  </span>
+  
+  <div class="searchInput__header">
+    <!-- TODO display to left of title/subtitle for desktop -->
+    <!-- and show instead of title/subtitle for mobile -->
+    <!-- also: should still display "more" button on mobile when input visible? -->
+    <input
+      *ngIf="showInput; else showTitle"
+      #searchInput
+      [formControl]="searchText"
+      (keydown)="onKeyDown($event)"
+      placeholder="Search"
+      class="searchInput__input">
+    <!-- TODO add mat icon suffix to normal input? -->
+    <!-- <mat-icon matSuffix>
+        <i
+          *ngIf="searchText.value?.length > 0"
+          [innerHTML]="'&#xe38f;'"
+          (click)="cancelSearch()"
+          class="searchInput__icon">
+        </i>
+      </mat-icon> -->
+  
+    <ng-template #showTitle>
+      <h3 class="searchInput__title">
+        {{ headerText }}
+      </h3>
+      <div
+        *ngIf="selectedItem$ | async as selectedItem; else noneSelected"
+        [ngClass]="{'searchInput__selectedName--hasValue': hasSelectedItem(selectedItem)}"
+        class="searchInput__selectedName">
+        {{ selectedItem.name }}
+      </div>
+  
+      <ng-template #noneSelected>
+        <div class="searchInput__selectedName">
+          None selected
+        </div>
+      </ng-template>
+    </ng-template>
+  </div>
+  
+  <span
+    (click)="toggleContextMenu()"
+    [ngClass]="{ 'searchInput__icon--selected': isContextMenuOpen }"
+    class="searchInput__icon material-symbols-outlined">
+    more_vert
+  </span>
+</div>
+
+<!-- TODO reposition overlay when header height changes (first item is selected) -->
 <ng-template
   cdkConnectedOverlay
   [cdkConnectedOverlayOrigin]="trigger"
   [cdkConnectedOverlayOpen]="isContextMenuOpen"
   [cdkConnectedOverlayPositions]="getOverlayPositions()"
   [cdkConnectedOverlayFlexibleDimensions]="true">
-  <div class="searchInput__contextMenu">
+  <!-- TODO why does the leave animation fail for this context menu -->
+  <app-overlay-container [isOpen]="isContextMenuOpen">
     <ng-content></ng-content>
-  </div>
+  </app-overlay-container>
 </ng-template>

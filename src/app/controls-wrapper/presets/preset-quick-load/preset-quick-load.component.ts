@@ -9,7 +9,7 @@ import { expandFade } from '../../../shared/animations';
   selector: 'app-preset-quick-load',
   templateUrl: './preset-quick-load.component.html',
   styleUrls: ['./preset-quick-load.component.scss'],
-  animations: [expandFade],
+  animations: [expandFade()],
 })
 export class PresetQuickLoadComponent extends UnsubscriberComponent implements OnInit {
   @Input()

@@ -55,12 +55,6 @@ $defaultSpacing: 5px;
   &__liveView {
   }
 
-  &__settingsOverlay {
-    @include flex-center;
-    @include overlay-container;
-    flex-direction: column;
-  }
-
   &__buttonWrapper {
     @include forceWidth(70px);
     align-items: center;

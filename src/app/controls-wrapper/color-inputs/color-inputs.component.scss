@@ -1,12 +1,17 @@
 @import 'src/app/shared/scss/mixins';
 
-:host {
-  display: flex;
-  overflow-x: auto;
-  width: 100%;
-}
-
 .colorInputs {
+  &__header {
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  &__colorSlots {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+
   &__container {
     display: flex;
     flex-basis: min-content;

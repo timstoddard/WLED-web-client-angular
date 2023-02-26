@@ -1,0 +1,10 @@
+:host {
+  > ::ng-deep * {
+    background: var(--backgroundColorPrimary);
+    border: 2px solid var(--themeColorPrimary);
+    border-radius: 6px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    padding: 8px;
+  }
+}

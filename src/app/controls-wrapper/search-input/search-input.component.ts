@@ -1,6 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
+import { fade } from '../../shared/animations';
 import { FormService } from '../../shared/form-service';
 import { OverlayPositionService } from '../../shared/overlay-position.service';
 import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
@@ -14,7 +15,8 @@ interface SearchableItem {
 @Component({
   selector: 'app-search-input',
   templateUrl: './search-input.component.html',
-  styleUrls: ['./search-input.component.scss']
+  styleUrls: ['./search-input.component.scss'],
+  animations: [fade()],
 })
 export class SearchInputComponent extends UnsubscriberComponent implements OnInit {
   /** Header title. */
@@ -81,7 +83,7 @@ export class SearchInputComponent extends UnsubscriberComponent implements OnIni
   }
 
   getOverlayPositions() {
-    const rightPosition = this.overlayPositionService.rightBottomPosition(0, 8);
+    const rightPosition = this.overlayPositionService.centerBottomPosition();
     return [rightPosition];
   }
 

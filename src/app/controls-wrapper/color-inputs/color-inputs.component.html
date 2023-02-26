@@ -1,13 +1,36 @@
-<div class="colorInputs__container">
-  <app-color-picker></app-color-picker>
-  <app-color-presets></app-color-presets>
-  <app-rgb-sliders
-    [rgbValues]="colorInputsForm.get('rgb')!">
-  </app-rgb-sliders>
-  <app-color-and-whiteness-sliders
-    [colorAndWhitenessSettings]="colorInputsForm.get('colorAndWhiteness')!">
-  </app-color-and-whiteness-sliders>
-  <app-hex-input
-    [hexInput]="colorInputsForm.get('hex')!">
-  </app-hex-input>
-</div>
+<h2
+  mat-dialog-title
+  class="colorInputs__header">
+  Set Color Slots
+</h2>
+
+<mat-dialog-content class="mat-typography">
+  <div class="colorInputs__colorSlots">
+    <app-color-slots></app-color-slots>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-content class="mat-typography">
+  <div class="colorInputs__container">
+    <app-color-picker></app-color-picker>
+    <app-color-presets></app-color-presets>
+    <app-rgb-sliders
+      [rgbValues]="colorInputsForm.get('rgb')!">
+    </app-rgb-sliders>
+    <app-color-and-whiteness-sliders
+      [colorAndWhitenessSettings]="colorInputsForm.get('colorAndWhiteness')!">
+    </app-color-and-whiteness-sliders>
+    <app-hex-input
+      [hexInput]="colorInputsForm.get('hex')!">
+    </app-hex-input>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button
+    mat-raised-button
+    mat-dialog-close
+    color="primary">
+    Close
+  </button>
+</mat-dialog-actions>

@@ -119,7 +119,7 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
 
   getOverlayPositions() {
     const offsetXPx = 0;
-    const offsetYPx = 12;
+    const offsetYPx = 4;
     const centerPosition = this.overlayPositionService.centerBottomPosition(offsetXPx, offsetYPx);
     const rightPosition = this.overlayPositionService.rightBottomPosition(offsetXPx, offsetYPx);
     return [centerPosition, rightPosition];

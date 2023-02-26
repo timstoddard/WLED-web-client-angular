@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ColorSlotsService } from './color-slots.service';
+import { ColorInputsComponent } from '../color-inputs.component';
 
 // TODO variable number of slots
 
@@ -11,7 +13,10 @@ import { ColorSlotsService } from './color-slots.service';
   styleUrls: ['./color-slots.component.scss']
 })
 export class ColorSlotsComponent implements OnInit {
-  constructor(private colorSlotsService: ColorSlotsService) {
+  constructor(
+    public dialog: MatDialog,
+    private colorSlotsService: ColorSlotsService,
+  ) {
   }
 
   ngOnInit() {
@@ -19,8 +24,28 @@ export class ColorSlotsComponent implements OnInit {
     // this.selectSlot(this.selectedSlot); // after getting api data
   }
 
+  /**
+   * Selects the specified slot. Optionally also options the dialog, which should happen under the following conditions:
+   * - slot was not selected, and does not yet have a color
+   * - slot was already selected
+   * @param slot 
+   * @param openDialog 
+   */
   selectSlot(slot: number) {
+    const hasOpenDialog = this.colorSlotsService.getIsColorInputDialogOpen();
+    // TODO better way of determining "should open"
+    const shouldOpenDialog = this.colorSlotsService.isSlotSelected(slot);
+
     this.colorSlotsService.selectSlot(slot);
+
+    if (!hasOpenDialog && shouldOpenDialog) {
+      const dialogRef = this.dialog.open(ColorInputsComponent);
+      this.colorSlotsService.setIsColorInputDialogOpen(true);
+
+      dialogRef.afterClosed().subscribe(result => {
+        this.colorSlotsService.setIsColorInputDialogOpen(false);
+      });
+    }
   }
 
   getSlots() {

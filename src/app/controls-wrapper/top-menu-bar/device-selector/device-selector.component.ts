@@ -104,7 +104,7 @@ export class DeviceSelectorComponent extends UnsubscriberComponent implements On
   }
 
   getOverlayPositions() {
-    const centerPosition = this.overlayPositionService.centerBottomPosition(0, 4);
+    const centerPosition = this.overlayPositionService.centerBottomPosition();
     return [centerPosition];
   }
 

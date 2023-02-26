@@ -43,10 +43,15 @@
       cdkConnectedOverlay
       [cdkConnectedOverlayOrigin]="trigger"
       [cdkConnectedOverlayOpen]="isSettingsOpen"
-      [cdkConnectedOverlayPositions]="getOverlayPositions()">
-      <div class="topMenuBar__settingsOverlay">
-        <ng-container *ngTemplateOutlet="topMenuBarSettings"></ng-container>
-      </div>
+      [cdkConnectedOverlayPositions]="getOverlayPositions()"
+      [cdkConnectedOverlayFlexibleDimensions]="true">
+      <app-overlay-container
+        [isOpen]="isSettingsOpen"
+        [hasTopBorderRadius]="true">
+        <div>
+          <ng-container *ngTemplateOutlet="topMenuBarSettings"></ng-container>
+        </div>
+      </app-overlay-container>
     </ng-template>
   </div>
 </div>

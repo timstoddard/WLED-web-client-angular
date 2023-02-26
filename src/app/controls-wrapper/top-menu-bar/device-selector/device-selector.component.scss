@@ -69,7 +69,6 @@
     $listMaxHeight: 70vh;
     $listMaxWidth: 420px;
 
-    @include overlay-container;
     max-height: $listMaxHeight;
     overflow: auto;
     padding: 0;
