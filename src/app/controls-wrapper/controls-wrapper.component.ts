@@ -62,7 +62,10 @@ export class ControlsWrapperComponent extends UnsubscriberComponent implements O
     this.loadHolidaysOrSkin();
 
     if (this.shouldEnableAppHeightHack()) {
-      alert('app height fix enabled') // TODO remove
+      const isDevMode = false;
+      if (isDevMode) {
+        alert('safari viewport height fix enabled');
+      }
       this.setAppHeight();
       document.addEventListener('resize', this.setAppHeight);
     }
@@ -80,6 +83,11 @@ export class ControlsWrapperComponent extends UnsubscriberComponent implements O
     // if (this.localStorageService.get('pcm') === 'true') {
     //   this.togglePcMode(true);
     // }
+  }
+
+  override ngOnDestroy() {
+    super.ngOnDestroy();
+    document.removeEventListener('resize', this.setAppHeight);
   }
 
   private setAppHeight = () => {

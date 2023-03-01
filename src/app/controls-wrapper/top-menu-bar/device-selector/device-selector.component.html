@@ -23,7 +23,7 @@
   <app-overlay-container [isOpen]="showList">
     <div class="deviceSelector__list">
       <div
-        *ngFor="let wledIpAddress of wledIpAddresses"
+        *ngFor="let wledIpAddress of getWledIpAddressesForDropdown()"
         (click)="setSelectedDevice(wledIpAddress)"
         class="deviceSelector__listItem">
         <div class="deviceSelector__listItem__name">

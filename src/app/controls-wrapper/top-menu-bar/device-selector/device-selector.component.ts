@@ -42,18 +42,36 @@ export class DeviceSelectorComponent extends UnsubscriberComponent implements On
         selectedWLEDIpAddress,
         wledIpAddresses,
       }) => {
-        this.wledIpAddresses = [
-          NO_DEVICE_IP_SELECTED,
-          ...wledIpAddresses,
-        ];
         this.selectedWLEDIpAddress = selectedWLEDIpAddress;
+        this.wledIpAddresses = wledIpAddresses;
       });
+  }
+
+  ngAfterViewInit() {
+    // connect to first device in ip addresses list
+    // TODO make the chosen device configurable
+    const DEVICE_CONNECT_TIMEOUT_MS = 500;
+    setTimeout(() => {
+      if (this.wledIpAddresses.length >= 1) {
+        const firstDevice = this.wledIpAddresses[0];
+        // TODO convert this to a toast notification
+        alert(`Connecting to device: ${firstDevice.name} (${firstDevice.ipv4Address})`);
+        this.setSelectedDevice(firstDevice);
+      }
+    }, DEVICE_CONNECT_TIMEOUT_MS);
   }
 
   getSelectedDeviceName() {
     return this.selectedWLEDIpAddress.name === NO_DEVICE_IP_SELECTED.name
       ? 'Select Device'
       : this.selectedWLEDIpAddress.name;
+  }
+
+  getWledIpAddressesForDropdown() {
+    return [
+      NO_DEVICE_IP_SELECTED,
+      ...this.wledIpAddresses,
+    ];
   }
 
   setSelectedDevice = (wledIpAddress: WLEDIpAddress) => {
