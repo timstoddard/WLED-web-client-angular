@@ -1,18 +1,10 @@
 @import 'src/app/shared/scss/mixins';
 @import 'src/app/shared/scss/rainbow';
 
-$presetHeaderTransition: 0.5s ease 0.3s;
-
 :host {
   @include flex-center;
   flex-direction: column;
   margin: 0 auto;
-  padding: 8px;
-  transition: padding $presetHeaderTransition;
-}
-
-:host-context(.is-minimized) {
-  padding: 3px 8px;
 }
 
 .presetQuickLoad {
@@ -20,21 +12,7 @@ $presetHeaderTransition: 0.5s ease 0.3s;
     align-items: center;
     cursor: pointer;
     display: flex;
-    font-size: 0.9em;
     justify-content: space-evenly;
-    transition: font-size $presetHeaderTransition;
-
-    .presetQuickLoad__expandIcon ::ng-deep .expandIcon {
-      font-size: 1.1em !important;
-    }
-
-    &--expanded {
-      font-size: 1.25em;
-
-      .presetQuickLoad__expandIcon ::ng-deep .expandIcon {
-        font-size: 1.25em !important;
-      }
-    }
   }
 
   &__title {

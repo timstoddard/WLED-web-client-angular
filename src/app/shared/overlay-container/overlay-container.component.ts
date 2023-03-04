@@ -8,9 +8,6 @@ import { fade } from '../../shared/animations';
   animations: [fade()],
 })
 export class OverlayContainerComponent {
-  constructor() {
-  }
-
   @Input() isOpen = false;
   @Input() hasTopBorderRadius = false;
   @HostBinding('@fade') get getIsOpen(): boolean {

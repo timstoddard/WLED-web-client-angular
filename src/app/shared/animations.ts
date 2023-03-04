@@ -4,11 +4,18 @@ import {
   style,
   animate,
   transition,
+  state,
+  group,
+  query,
+  animateChild,
 } from '@angular/animations';
 
+const DEFAULT_ENTER_DURATION_MS = 200;
+const DEFAULT_LEAVE_DURATION_MS = 160;
+
 export const expandFade = (
-  enterDurationMs = 200,
-  leaveDurationMs = 150,
+  enterDurationMs = DEFAULT_ENTER_DURATION_MS,
+  leaveDurationMs = DEFAULT_LEAVE_DURATION_MS,
 ) => trigger('expand', [
   transition(':enter', [
     style({
@@ -30,10 +37,6 @@ export const expandFade = (
       opacity: 1,
     }),
     animate(leaveDurationMs, style({
-      height: AUTO_STYLE,
-      opacity: 0,
-    })),
-    animate(leaveDurationMs, style({
       height: 0,
       opacity: 0,
     })),
@@ -41,28 +44,88 @@ export const expandFade = (
 ]);
 
 export const fade = (
-  enterDurationMs = 150,
-  leaveDurationMs = 150,
+  enterDurationMs = DEFAULT_ENTER_DURATION_MS,
+  leaveDurationMs = DEFAULT_LEAVE_DURATION_MS,
   initialScale = 0.9,
 ) => trigger('fade', [
   transition(':enter', [
-    style({
-      opacity: 0,
-      transform: `scale(${initialScale})`,
-    }),
-    animate(enterDurationMs, style({
-      opacity: 1,
-      transform: 'scale(1)',
-    })),
+    group([
+      style({
+        opacity: 0,
+        transform: `scale(${initialScale})`,
+      }),
+      animate(enterDurationMs, style({
+        opacity: 1,
+        transform: 'scale(1)',
+      })),
+      query('@*', animateChild(), { optional: true }),
+    ])
   ]),
   transition(':leave', [
-    style({
-      opacity: 1,
-      transform: 'scale(1)',
-    }),
-    animate(leaveDurationMs, style({
-      opacity: 0,
-      transform: `scale(${initialScale})`,
-    })),
+    group([
+      style({
+        opacity: 1,
+        transform: 'scale(1)',
+      }),
+      animate(leaveDurationMs, style({
+        opacity: 0,
+        transform: `scale(${initialScale})`,
+      })),
+      query('@*', animateChild(), { optional: true }),
+    ])
   ]),
 ]);
+
+export const expandText = (
+  expandedFontSizeEm: number,
+  minimizedFontSizeEm: number,
+  enterDurationMs = DEFAULT_ENTER_DURATION_MS,
+  leaveDurationMs = DEFAULT_LEAVE_DURATION_MS,
+) => trigger('expandText', [
+  // expanded
+  state('true', style({
+    fontSize: `${expandedFontSizeEm}em`,
+  })),
+  // minimized
+  state('false', style({
+    fontSize: `${minimizedFontSizeEm}em`,
+  })),
+  // expand
+  transition('0 => 1', animate(enterDurationMs)),
+  // minimize
+  transition('1 => 0', animate(leaveDurationMs)),
+]);
+
+export const expandVerticalPadding = (
+  expandedPaddingPx: number,
+  minimizedPaddingPx: number,
+  enterDurationMs = DEFAULT_ENTER_DURATION_MS,
+  leaveDurationMs = DEFAULT_LEAVE_DURATION_MS,
+) => trigger('expandVerticalPadding', [
+  // expanded
+  state('true', style({
+    paddingBottom: `${expandedPaddingPx}px`,
+    paddingTop: `${expandedPaddingPx}px`,
+  })),
+  // minimized
+  state('false', style({
+    paddingBottom: `${minimizedPaddingPx}px`,
+    paddingTop: `${minimizedPaddingPx}px`,
+  })),
+  // expand
+  transition('0 => 1', group([
+    animate(enterDurationMs),
+    query('@*', animateChild(), { optional: true }),
+  ])),
+  // minimize
+  transition('1 => 0', group([
+    animate(leaveDurationMs),
+    query('@*', animateChild(), { optional: true }),
+  ])),
+]);
+
+// export const foo = () => trigger('foo', [
+//   transition('* => void', [
+//     query('@*', animateChild(), { optional: true }),
+//   ]),
+// ]);

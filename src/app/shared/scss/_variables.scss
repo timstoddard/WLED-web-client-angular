@@ -27,7 +27,7 @@
   // TODO add light mode palette
 
   // key layout constants
-  --controlsEdgeSpacing: 0;
+  --controlsEdgeSpacing: max(10px, 2vw);
   --controlsGridSpacing: 8px;
 
   // default app height

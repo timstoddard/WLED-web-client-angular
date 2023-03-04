@@ -30,3 +30,9 @@
     overflow: hidden;
   }
 }
+
+@include mobile-layout {
+  :host {
+    --controlsEdgeSpacing: 0;
+  }
+}

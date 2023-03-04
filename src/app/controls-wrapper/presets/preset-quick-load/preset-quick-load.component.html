@@ -3,10 +3,13 @@
   (click)="isExpanded = !isExpanded"
   [ngClass]="{'presetQuickLoad__header--expanded': isExpanded}"
   class="presetQuickLoad__header">
-  <span class="presetQuickLoad__title">
+  <span
+    [@expandText]="isExpanded"
+    class="presetQuickLoad__title">
     {{ title }}
   </span>
   <app-expand-icon
+    [@expandText]="isExpanded"
     [expanded]="isExpanded"
     class="presetQuickLoad__expandIcon">
   </app-expand-icon>
