@@ -42,7 +42,8 @@
     user-select: none;
     width: 40px;
 
-    &:hover {
+    &:hover,
+    &--selected {
       @include rainbow(border-color);
       background: var(--backgroundColorAccent);
     }

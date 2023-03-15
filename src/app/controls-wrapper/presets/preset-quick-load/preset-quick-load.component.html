@@ -22,6 +22,7 @@
     <div *ngFor="let preset of presets">
       <div
         (click)="loadPreset(preset.id)"
+        [ngClass]="{ 'presetQuickLoad__button--selected': preset.id === currentPresetId }"
         class="presetQuickLoad__button">
         {{ preset.quickLoadLabel }}
       </div>

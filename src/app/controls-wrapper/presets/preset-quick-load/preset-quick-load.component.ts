@@ -4,6 +4,7 @@ import { PostResponseHandler } from '../../../shared/post-response-handler';
 import { UnsubscriberComponent } from '../../../shared/unsubscriber/unsubscriber.component';
 import { PresetsService } from '../presets.service';
 import { expandFade, expandVerticalPadding, expandText } from '../../../shared/animations';
+import { AppStateService } from '../../../shared/app-state/app-state.service';
 
 @Component({
   selector: 'app-preset-quick-load',
@@ -25,6 +26,7 @@ export class PresetQuickLoadComponent extends UnsubscriberComponent implements O
   }
   @Input() title = '';
   isExpanded = true;
+  currentPresetId = -1;
   private presetsWithLabels: AppPreset[] = [];
 
   @HostBinding('@expandVerticalPadding')
@@ -33,11 +35,16 @@ export class PresetQuickLoadComponent extends UnsubscriberComponent implements O
   constructor(
     private presetsService: PresetsService,
     private postResponseHandler: PostResponseHandler,
+    private appStateService: AppStateService,
   ) {
     super();
   }
 
   ngOnInit() {
+    this.appStateService.getWLEDState(this.ngUnsubscribe)
+      .subscribe(({ currentPresetId }) => {
+        this.currentPresetId = currentPresetId;
+      });
   }
 
   loadPreset(presetId: number) {
