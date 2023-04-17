@@ -10,8 +10,59 @@
 
   <!-- TODO create favicon with custom logo -->
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <style>
+    @keyframes rotate_circle {
+      from {
+        transform:
+          rotate(0deg)
+          translate(0, -50px)
+          rotate(0deg);
+      }
+      to {
+        transform:
+          rotate(360deg)
+          translate(0, -50px) 
+          rotate(-360deg);
+      }
+    }
+
+    .dot {
+      animation: rotate_circle 1.2s infinite cubic-bezier(0.8, 0.2, 0.2, 0.8);
+      color: #11ff00;
+      font-size: 50px;
+      left: calc(50%);
+      position: absolute;
+      top: calc(50% - 50px);
+    }
+    .dot::after {
+      content: ".";
+    }
+
+    .dot.one {
+      animation-delay: 0s;
+    }
+    .dot.two {
+      animation-delay: 100ms;
+    }
+    .dot.three {
+      animation-delay: 200ms;
+    }
+    .dot.four {
+      animation-delay: 300ms;
+    }
+    .dot.five {
+      animation-delay: 400ms;
+    }
+  </style>
 </head>
 <body>
   <app-root></app-root>
+  <div class="pre-js-loader">
+    <div class="dot five"></div>
+    <div class="dot four"></div>
+    <div class="dot three"></div>
+    <div class="dot two"></div>
+    <div class="dot one"></div>
+  </div>
 </body>
 </html>

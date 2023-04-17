@@ -76,6 +76,17 @@ export class AppComponent extends UnsubscriberComponent {
     this.showDevNavBar = this.localStorageService.get(LocalStorageKey.SHOW_DEV_NAV_BAR, false);
   }
 
+  // TODO control hiding loading animation from the router
+  ngAfterViewInit() {
+    this.hideLoadingAnimation();
+  }
+
+  hideLoadingAnimation() {
+    const loader = document.querySelector('.pre-js-loader') as HTMLDivElement;
+    loader.style.opacity = '0';
+    loader.style.visibility = 'false';
+  }
+
   hideDevNavBar() {
     this.showDevNavBar = false;
     this.localStorageService.set(LocalStorageKey.SHOW_DEV_NAV_BAR, false);

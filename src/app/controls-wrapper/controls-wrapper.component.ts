@@ -69,20 +69,6 @@ export class ControlsWrapperComponent extends UnsubscriberComponent implements O
       this.setAppHeight();
       document.addEventListener('resize', this.setAppHeight);
     }
-
-    // TODO remove?
-    // this.setupRanges();
-
-    // TODO call update size change
-    // this.size();
-
-    // TODO hide loading screen
-    // document.getElementById('cv')!.style.opacity = `${0}`;
-
-    // TODO load pc mode and update button
-    // if (this.localStorageService.get('pcm') === 'true') {
-    //   this.togglePcMode(true);
-    // }
   }
 
   override ngOnDestroy() {

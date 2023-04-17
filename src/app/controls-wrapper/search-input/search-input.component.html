@@ -66,6 +66,7 @@
   [cdkConnectedOverlayPositions]="getOverlayPositions()"
   [cdkConnectedOverlayFlexibleDimensions]="true">
   <!-- TODO why does the leave animation fail for this context menu -->
+  <!-- see https://github.com/angular/components/issues/10481#issuecomment-374328441 -->
   <app-overlay-container [isOpen]="isContextMenuOpen">
     <ng-content></ng-content>
   </app-overlay-container>
