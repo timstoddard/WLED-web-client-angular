@@ -44,8 +44,11 @@
 
     &:hover,
     &--selected {
-      @include rainbow(border-color);
       background: var(--backgroundColorAccent);
+    }
+
+    &--selected {
+      @include rainbow(border-color);
     }
   }
 
