@@ -4,6 +4,7 @@ import { AppPreset } from '../../../shared/app-types/app-presets';
 import { FormService, getFormControl } from '../../../shared/form-service';
 import { CustomInput } from '../../../shared/text-input/text-input.component';
 import { PresetsService } from '../presets.service';
+import { createGetFormControl, getFormControlFn } from '../../utils';
 
 @Component({
   selector: 'app-preset-form',
@@ -65,6 +66,7 @@ export class PresetFormComponent implements OnInit {
       },
     ],
   };
+  getFormControl!: getFormControlFn;
 
   constructor(
     private formSerivce: FormService,
@@ -73,6 +75,7 @@ export class PresetFormComponent implements OnInit {
 
   ngOnInit() {
     this.newPresetForm = this.createForm(this.preset);
+    this.getFormControl = createGetFormControl(this.newPresetForm);
   }
 
   savePreset() {

@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormArray, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observer } from 'rxjs';
 import { ApiService } from '../../../shared/api.service';
 import { NO_DEVICE_IP_SELECTED } from '../../../shared/app-state/app-state-defaults';
@@ -140,6 +140,10 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
         wledIpAddresses: newIpAddresses,
       });
     }
+  }
+
+  getFormControl(name: string, index: number) {
+    return this.wledIpAddresses.at(index).get(name) as FormControl;
   }
 
   private testIpAddress(ipAddress: string, observer: Partial<Observer<{ success: boolean }>>) {

@@ -25,12 +25,11 @@
         class="uiSettingsForm__input">
     </mat-form-field>
 
-    <mat-checkbox
-      formControlName="shouldToggleReceiveWithSend"
-      class="">
-      <!-- TODO this text gets confusing -->
-      {{ getShouldToggleReceiveWithSendDescription() }}
-    </mat-checkbox>
+    <!-- TODO this label text gets confusing -->
+    <app-checkbox
+      [control]="getFormControl('shouldToggleReceiveWithSend')"
+      [label]="getShouldToggleReceiveWithSendDescription()">
+    </app-checkbox>
   </app-settings-group>
 
   <app-settings-group>
@@ -45,38 +44,38 @@
   <app-settings-group
     title="Color Inputs"
     formGroupName="showColorInputs">
-    <mat-checkbox
+    <app-checkbox
       *ngFor="let checkbox of colorInputCheckboxes"
-      [formControlName]="checkbox.name"
+      [control]="getFormControl('showColorInputs.' + checkbox.name)"
+      [label]="checkbox.label"
       class="uiSettingsForm__checkbox">
-      {{ checkbox.label }}
-    </mat-checkbox>
+    </app-checkbox>
   </app-settings-group>
 
   <app-settings-group title="Appearance">
-    <mat-checkbox
-      formControlName="showLabels"
+    <app-checkbox
+      [control]="getFormControl('showLabels')"
+      label="Show button labels on top and bottom menu bars"
       class="uiSettingsForm__checkbox">
-      Show button labels on top and bottom menu bars
-    </mat-checkbox>
+    </app-checkbox>
 
-    <mat-checkbox
-      formControlName="showPresetIds"
+    <app-checkbox
+      [control]="getFormControl('showPresetIds')"
+      label="Show preset IDs"
       class="uiSettingsForm__checkbox">
-      Show preset IDs
-    </mat-checkbox>
+    </app-checkbox>
 
-    <mat-checkbox
-      formControlName="useSegmentLength"
+    <app-checkbox
+      [control]="getFormControl('useSegmentLength')"
+      label="Set segment length instead of stop LED"
       class="uiSettingsForm__checkbox">
-      Set segment length instead of stop LED
-    </mat-checkbox>
+    </app-checkbox>
 
-    <mat-checkbox
-      formControlName="isDarkMode"
+    <app-checkbox
+      [control]="getFormControl('isDarkMode')"
+      label="Dark mode"
       class="uiSettingsForm__checkbox">
-      Dark mode
-    </mat-checkbox>
+    </app-checkbox>
 
     <!-- TODO slider? -->
     <mat-form-field
@@ -128,17 +127,17 @@
         class="uiSettingsForm__input">
     </mat-form-field>
 
-    <mat-checkbox
-      formControlName="useRandomBackgroundImage"
+    <app-checkbox
+      [control]="getFormControl('useRandomBackgroundImage')"
+      label="Use random background image"
       class="uiSettingsForm__checkbox">
-      Use random background image
-    </mat-checkbox>
+    </app-checkbox>
 
-    <mat-checkbox
-      formControlName="useCustomCss"
+    <app-checkbox
+      [control]="getFormControl('useCustomCss')"
+      label="Use custom CSS file"
       class="uiSettingsForm__checkbox">
-      Use custom CSS file
-    </mat-checkbox>
+    </app-checkbox>
 
     <!-- TODO file inputs seem to have been removed from WLED app?? -->
 
@@ -149,11 +148,11 @@
       formControlName="customCssFile"
       class="uiSettingsForm__fileInput">
 
-    <mat-checkbox
-      formControlName="enableHolidays"
+    <app-checkbox
+      [control]="getFormControl('enableHolidays')"
+      label="Use holiday backgrounds"
       class="uiSettingsForm__checkbox">
-      Use holiday backgrounds
-    </mat-checkbox>
+    </app-checkbox>
 
     <!-- https://github.com/angular/components/issues/17922 -->
     <!-- ng material doesn't support file input yet -->

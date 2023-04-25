@@ -4,6 +4,7 @@ import { FormService } from '../../shared/form-service';
 import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
 import { SelectItem } from '../shared/settings-types';
 import { NetworkSettingsService } from './network-settings.service';
+import { createGetFormControl, getFormControlFn } from 'src/app/controls-wrapper/utils';
 
 const DEFAULT_ETHERNET_TYPE = 0;
 const DEFAULT_OPEN_AP_OPTION = 0;
@@ -65,6 +66,7 @@ export class NetworkSettingsComponent extends UnsubscriberComponent implements O
 
   networkSettingsForm!: FormGroup;
   hasEthernet: boolean = true; // TODO how to get this?
+  getFormControl!: getFormControlFn;
 
   constructor(
     private formService: FormService,
@@ -75,6 +77,7 @@ export class NetworkSettingsComponent extends UnsubscriberComponent implements O
 
   ngOnInit() {
     this.networkSettingsForm = this.createForm();
+    this.getFormControl = createGetFormControl(this.networkSettingsForm);
   }
 
   submitForm() {

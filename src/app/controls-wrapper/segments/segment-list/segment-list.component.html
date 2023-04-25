@@ -7,11 +7,11 @@
     <div
       (click)="toggleExpanded(segment.id)"
       class="segmentListItem__mainContent">
-      <mat-checkbox
-        (click)="$event.stopPropagation()"
-        formControlName="isSelected"
-        class="">
-      </mat-checkbox>
+      <!-- TODO stop propagation on click -->
+      <app-checkbox
+        [control]="getFormControl(segment.id, 'isSelected')"
+        label="">
+      </app-checkbox>
   
       <h3
         (click)="selectOnlySegment(segment.id, $event)"

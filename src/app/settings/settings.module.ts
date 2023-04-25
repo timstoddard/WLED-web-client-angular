@@ -22,6 +22,7 @@ import { SettingsFooterComponent } from './shared/settings-footer/settings-foote
 import { SettingsGroupComponent } from './shared/settings-group/settings-group.component';
 import { SettingsHeaderComponent } from './shared/settings-header/settings-header.component';
 import { SettingsRoutingModule } from './settings-routing.module';
+import { SharedComponentsModule } from '../shared/shared-components.module';
 import { SyncSettingsComponent } from './sync-settings/sync-settings.component';
 import { TimeSettingsComponent } from './time-settings/time-settings.component';
 import { UISettingsComponent } from './ui-settings/ui-settings.component';
@@ -61,6 +62,7 @@ const COMPONENTS = [
     MatToolbarModule,
     ReactiveFormsModule,
     SettingsRoutingModule,
+    SharedComponentsModule,
   ]
 })
 export class SettingsModule { }

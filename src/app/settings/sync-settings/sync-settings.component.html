@@ -72,54 +72,45 @@
 
     <div formGroupName="receive">
       Receive:
-      <mat-checkbox
-        formControlName="brightness"
-        class="">
-        <mat-label>Brightness</mat-label>
-      </mat-checkbox>
-      <mat-checkbox
-        formControlName="color"
-        class="">
-        <mat-label>Color</mat-label>
-      </mat-checkbox>
-      <mat-checkbox
-        formControlName="effects"
-        class="">
-        <mat-label>Effects</mat-label>
-      </mat-checkbox>
+      <app-checkbox
+        [control]="getFormControl('broadcast.receive.brightness')"
+        label="Brightness">
+      </app-checkbox>
+      <app-checkbox
+        [control]="getFormControl('broadcast.receive.color')"
+        label="Color">
+      </app-checkbox>
+      <app-checkbox
+        [control]="getFormControl('broadcast.receive.effects')"
+        label="Effects">
+      </app-checkbox>
     </div>
 
     <div formGroupName="notify">
-      <mat-checkbox
-        formControlName="onDirectChange"
-        class="">
-        <mat-label>On direct change</mat-label>
-      </mat-checkbox>
-      <mat-checkbox
-        formControlName="onButtonPressOrIr"
-        class="">
-        <mat-label>On button press or IR</mat-label>
-      </mat-checkbox>
-      <mat-checkbox
-        formControlName="alexa"
-        class="">
-        <mat-label>On Alexa notifications</mat-label>
-      </mat-checkbox>
-      <mat-checkbox
-        formControlName="philipsHue"
-        class="">
-        <mat-label>On Philips Hue notifications</mat-label>
-      </mat-checkbox>
-      <mat-checkbox
-        formControlName="macro"
-        class="">
-        <mat-label>On Macro notifications</mat-label>
-      </mat-checkbox>
-      <mat-checkbox
-        formControlName="sendTwice"
-        class="">
-        <mat-label>Send notifications twice</mat-label>
-      </mat-checkbox>
+      <app-checkbox
+        [control]="getFormControl('broadcast.notify.onDirectChange')"
+        label="On direct change">
+      </app-checkbox>
+      <app-checkbox
+        [control]="getFormControl('broadcast.notify.onButtonPressOrIr')"
+        label="On button press or IR">
+      </app-checkbox>
+      <app-checkbox
+        [control]="getFormControl('broadcast.notify.alexa')"
+        label="On Alexa notifications">
+      </app-checkbox>
+      <app-checkbox
+        [control]="getFormControl('broadcast.notify.philipsHue')"
+        label="On Philips Hue notifications">
+      </app-checkbox>
+      <app-checkbox
+        [control]="getFormControl('broadcast.notify.macro')"
+        label="On Macro notifications">
+      </app-checkbox>
+      <app-checkbox
+        [control]="getFormControl('broadcast.notify.sendTwice')"
+        label="Send notifications twice">
+      </app-checkbox>
 
       <div>
         Reboot required to apply changes.
@@ -132,27 +123,24 @@
     title="Device List"
     formGroupName="instanceList"
     class="syncSettingsForm__instanceList">
-    <mat-checkbox
-      formControlName="enable"
-      class="">
-      <mat-label>Enable device list</mat-label>
-    </mat-checkbox>
-    <mat-checkbox
-      formControlName="isThisInstanceDiscoverable"
-      class="">
-      <mat-label>Make this device discoverable</mat-label>
-    </mat-checkbox>
+    <app-checkbox
+      [control]="getFormControl('instanceList.enable')"
+      label="Enable device list">
+    </app-checkbox>
+    <app-checkbox
+      [control]="getFormControl('instanceList.isThisInstanceDiscoverable')"
+      label="Make this device discoverable">
+    </app-checkbox>
   </app-settings-group>
 
   <app-settings-group
     title="Realtime"
     formGroupName="realTime"
     class="syncSettingsForm__realTime">
-    <mat-checkbox
-      formControlName="receiveUdpRealTime"
-      class="">
-      <mat-label>Receive UDP realtime</mat-label>
-    </mat-checkbox>
+    <app-checkbox
+      [control]="getFormControl('realTime.receiveUdpRealTime')"
+      label="Receive UDP realtime">
+    </app-checkbox>
 
     <div>
       Network DMX input
@@ -167,11 +155,10 @@
       </option>
     </select>
 
-    <mat-checkbox
-      formControlName="multicast"
-      class="">
-      <mat-label>Multicast</mat-label>
-    </mat-checkbox>
+    <app-checkbox
+      [control]="getFormControl('realTime.multicast')"
+      label="Multicast">
+    </app-checkbox>
 
     <mat-form-field
       appearance="fill"
@@ -197,11 +184,10 @@
       </p>
     </div>
 
-    <mat-checkbox
-      formControlName="skipOutOfSequencePackets"
-      class="">
-      <mat-label>Skip out-of-sequence packets</mat-label>
-    </mat-checkbox>
+    <app-checkbox
+      [control]="getFormControl('realTime.skipOutOfSequencePackets')"
+      label="Skip out-of-sequence packets">
+    </app-checkbox>
 
     <mat-form-field
       appearance="fill"
@@ -244,17 +230,15 @@
         class="">
     </mat-form-field>
 
-    <mat-checkbox
-      formControlName="forceMaxBrightness"
-      class="">
-      <mat-label>Force Max Brightness</mat-label>
-    </mat-checkbox>
+    <app-checkbox
+      [control]="getFormControl('realTime.forceMaxBrightness')"
+      label="Force Max Brightness">
+    </app-checkbox>
 
-    <mat-checkbox
-      formControlName="disableGammaCorrection"
-      class="">
-      <mat-label>Disable realtime gamma correction</mat-label>
-    </mat-checkbox>
+    <app-checkbox
+      [control]="getFormControl('realTime.disableGammaCorrection')"
+      label="Disable realtime gamma correction">
+    </app-checkbox>
 
     <mat-form-field
       appearance="fill"
@@ -272,13 +256,12 @@
     title="Alexa"
     formGroupName="alexaConfig"
     class="syncSettingsForm__alexaConfig">
-    <mat-checkbox
-      formControlName="emulateDevice"
-      class="">
-      <!-- TODO better wording -->
-      <!-- TODO what does this actually do/affect? -->
-      <mat-label>Emulate Alexa device</mat-label>
-    </mat-checkbox>
+    <!-- TODO better label wording -->
+    <!-- TODO what does this actually do/affect? -->
+    <app-checkbox
+      [control]="getFormControl('alexaConfig.emulateDevice')"
+      label="Emulate Alexa device">
+    </app-checkbox>
 
     <mat-form-field
       appearance="fill"
@@ -360,11 +343,10 @@
     title="MQTT"
     formGroupName="mqttConfig"
     class="syncSettingsForm__mqttConfig">
-    <mat-checkbox
-      formControlName="enable"
-      class="">
-      <mat-label>Enable</mat-label>
-    </mat-checkbox>
+    <app-checkbox
+      [control]="getFormControl('mqttConfig.enable')"
+      label="Enable">
+    </app-checkbox>
 
     <mat-form-field
       appearance="fill"
@@ -452,11 +434,10 @@
     title="Philips Hue"
     formGroupName="philipsHueConfig"
     class="syncSettingsForm__philipsHueConfig">
-    <mat-checkbox
-      formControlName="enable"
-      class="">
-      <mat-label>Enable</mat-label>
-    </mat-checkbox>
+    <app-checkbox
+      [control]="getFormControl('philipsHueConfig.enable')"
+      label="Enable">
+    </app-checkbox>
     
     <mat-form-field
       appearance="fill"
@@ -482,21 +463,18 @@
 
     <div formGroupName="receive">
       Receive:
-      <mat-checkbox
-        formControlName="onOff"
-        class="">
-        <mat-label>On/Off</mat-label>
-      </mat-checkbox>
-      <mat-checkbox
-        formControlName="brightness"
-        class="">
-        <mat-label>Brightness</mat-label>
-      </mat-checkbox>
-      <mat-checkbox
-        formControlName="color"
-        class="">
-        <mat-label>Color</mat-label>
-      </mat-checkbox>
+      <app-checkbox
+        [control]="getFormControl('philipsHueConfig.receive.onOff')"
+        label="On/Off">
+      </app-checkbox>
+      <app-checkbox
+        [control]="getFormControl('philipsHueConfig.receive.brightness')"
+        label="Brightness">
+      </app-checkbox>
+      <app-checkbox
+        [control]="getFormControl('philipsHueConfig.receive.color')"
+        label="Color">
+      </app-checkbox>
     </div>
 
      <mat-form-field

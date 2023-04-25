@@ -13,9 +13,25 @@
   </h1>
 
   <app-settings-group title="Security">
-    <mat-checkbox formControlName="secureWirelessUpdate" class="">
-      <mat-label>Require password for OTA (wireless) software update</mat-label>
-    </mat-checkbox>
+    <mat-form-field
+      appearance="fill"
+      class="">
+      <mat-label>Settings PIN</mat-label>
+      <input
+        matInput
+        type="password"
+        formControlName="settingsPin"
+        class="">
+    </mat-form-field>
+
+    <p>
+      Unencrypted transmission. Be prudent when selecting PIN, do NOT use your banking, door, SIM, etc. pin!
+    </p>
+
+    <app-checkbox
+      [control]="getFormControl('secureWirelessUpdate')"
+      label="Require password for OTA (wireless) software update">
+    </app-checkbox>
     
     <mat-form-field
       appearance="fill"
@@ -30,53 +46,93 @@
   
     <!-- TODO add info toggle -->
     <div class="securitySettingsForm__infoToggle"></div>
-    <div>
+
+    <p>
       To enable OTA, for security reasons you need to enter the correct password.
-    </div>
-    <div>
+    </p>
+    <p>
       <!-- TODO clarify meaning of this -->
       Your password should be changed when OTA is enabled.
-    </div>
-    <div>
+    </p>
+    <p>
         Disable OTA when not in use, otherwise a malicious actor can tamper with device software.
-    </div>
-    <div>
+    </p>
+    <p>
       Settings on this page will only be saved if OTA lock is disabled!
-    </div>
+    </p>
     
-    <mat-checkbox
-      formControlName="denyWifiSettingsAccessIfLocked"
-      class="">
-      <mat-label>Deny access to wifi settings if locked</mat-label>
-    </mat-checkbox>
-    <mat-checkbox
-      formControlName="triggerFactoryReset"
-      class="">
-      <mat-label>Trigger factory reset (on save)</mat-label>
-      <div>
-        <!-- TODO put this in an info/detail comp -->
+    <app-checkbox
+      [control]="getFormControl('denyWifiSettingsAccessIfLocked')"
+      label="Deny access to wifi settings if locked">
+    </app-checkbox>
+    <app-checkbox
+      [control]="getFormControl('triggerFactoryReset')"
+      label="Trigger factory reset (on save)">
+      <p>
         All settings and presets will be erased.
-      </div>
-    </mat-checkbox>
+      </p>
+    </app-checkbox>
   
     <div>
-      HTTP traffic is <span style="font-weight: bold; text-decoration: underline;">unencrypted</span>. A malicious actor on the same network can intercept form data!
+      This page is served via HTTP (insecure). HTTP traffic is <span style="font-weight: bold; text-decoration: underline;">unencrypted</span>. A malicious actor on the same network can intercept form data!
     </div>
   </app-settings-group>
 
   <app-settings-group title="Software Update">
-    <a [routerLink]="['../../update']">
+    <a [routerLink]="['/', 'update']">
       Manual OTA Update
     </a>
 
-    <mat-checkbox
-      formControlName="enableArduinoOTA"
-      class="">
-      <mat-label>Enable Arduino OTA</mat-label>
-    </mat-checkbox>
+    <app-checkbox
+      [control]="getFormControl('enableArduinoOTA')"
+      label="Enable Arduino OTA">
+    </app-checkbox>
+  </app-settings-group>
+
+  <app-settings-group title="Backup and Restore">
+    <div>
+      <h2>
+        Presets
+      </h2>
+      <div>
+        <button
+          mat-raised-button
+          color="primary"
+          click="downloadPresets()">
+          Download
+        </button>
+        <button
+          mat-raised-button
+          color="primary"
+          click="uploadPresets()">
+          Upload
+        </button>
+      </div>
+    </div>
+
+    <div>
+      <h2>
+        Configuration
+      </h2>
+      <div>
+        <button
+          mat-raised-button
+          color="primary"
+          click="downloadConfig()">
+          Download
+        </button>
+        <button
+          mat-raised-button
+          color="primary"
+          click="uploadConfig()">
+          Upload
+        </button>
+      </div>
+    </div>
   </app-settings-group>
 
   <app-settings-group title="About">
+    <!-- TODO fix link styles (no buttons) -->
     <div>
       <app-external-link
         href="https://github.com/Aircoookie/WLED"

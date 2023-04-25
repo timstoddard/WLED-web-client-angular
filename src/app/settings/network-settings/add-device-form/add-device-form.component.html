@@ -11,11 +11,10 @@
     [formGroup]="ipAddressFormGroup"
     class="addDeviceForm__formGroup">
 
-    <mat-checkbox
-      formControlName="selected"
-      class="">
-      <mat-label>Selected</mat-label>
-    </mat-checkbox>
+    <app-checkbox
+      [control]="getFormControl('selected', i)"
+      label="Selected">
+    </app-checkbox>
     <mat-form-field
       appearance="fill"
       class="">

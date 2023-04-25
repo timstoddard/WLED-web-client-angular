@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
+import { FormArray, FormGroup } from '@angular/forms';
 import { FormService, FormValues } from '../../shared/form-service';
 import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
 import { SelectItem } from '../shared/settings-types';
+import { createGetFormControl, getFormControlFn } from 'src/app/controls-wrapper/utils';
 
 enum ScheduledPresetType {
   TIME = 'TIME',
@@ -183,6 +184,7 @@ export class TimeSettingsComponent extends UnsubscriberComponent implements OnIn
       abbreviated: 'Sat',
     },
   ];
+  getFormControl!: getFormControlFn;
 
   constructor(private formService: FormService) {
     super();
@@ -190,6 +192,7 @@ export class TimeSettingsComponent extends UnsubscriberComponent implements OnIn
 
   ngOnInit() {
     this.timeSettingsForm = this.createForm();
+    this.getFormControl = createGetFormControl(this.timeSettingsForm);
   }
 
   submitForm() {

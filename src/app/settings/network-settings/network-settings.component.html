@@ -119,11 +119,10 @@
         maxlength=32
         class="">
     </mat-form-field>
-    <mat-checkbox
-      formControlName="hideAPName"
-      class="">
-      Hide AP name
-    </mat-checkbox>
+    <app-checkbox
+      [control]="getFormControl('wledAccessPoint.hideAPName')"
+      label="Hide AP name">
+    </app-checkbox>
     <div>
       <i>Leave empty for open</i>
       <i>Empty or min. 8 characters</i>
@@ -172,11 +171,10 @@
   <app-settings-group
     title="Advanced"
     formGroupName="advanced">
-    <mat-checkbox
-      formControlName="disableWifiSleep"
-      class="">
-      Disable Wifi sleep
-    </mat-checkbox>
+    <app-checkbox
+      [control]="getFormControl('advanced.disableWifiSleep')"
+      label="Disable Wifi sleep">
+    </app-checkbox>
     <i>
       Experimental: Can help with connectivity issues.
       Do not enable if Wifi is working correctly, increases power consumption.

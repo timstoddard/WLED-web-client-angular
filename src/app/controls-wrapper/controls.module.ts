@@ -39,6 +39,7 @@ import { SearchInputComponent } from './search-input/search-input.component';
 import { SegmentFormComponent } from './segments/segment-form/segment-form.component';
 import { SegmentListComponent } from './segments/segment-list/segment-list.component';
 import { SegmentsComponent } from './segments/segments.component';
+import { SharedComponentsModule } from '../shared/shared-components.module';
 import { TextInputComponent } from '../shared/text-input/text-input.component';
 import { TopMenuBarComponent } from './top-menu-bar/top-menu-bar.component';
 
@@ -52,6 +53,7 @@ const COLOR_INPUTS = [
   RgbSlidersComponent,
 ];
 
+// TODO move some/all of these to shared components module
 const SHARED_COMPONENTS = [
   ColorSliderComponent,
   ExpandIconComponent,
@@ -99,6 +101,7 @@ const COMPONENTS = [
     MatSliderModule,
     OverlayModule,
     ReactiveFormsModule,
+    SharedComponentsModule,
   ],
 })
 export class ControlsModule { }

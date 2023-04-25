@@ -29,11 +29,10 @@
       <p>WS2815 12V 21A connected to LEDs</p>
     </div>
   
-    <mat-checkbox
-      formControlName="autoBrightnessLimit"
-      class="">
-      <mat-label>Enable automatic brightness limiter</mat-label>
-    </mat-checkbox>
+    <app-checkbox
+      [control]="getFormControl('autoBrightnessLimit')"
+      label="Enable automatic brightness limiter">
+    </app-checkbox>
     <div>
       <p>Automatically limits brightness to stay close to the limit.</p>
       <p>Keep at &lt;1A if powering LEDs directly from the ESP 5V pin!</p>
@@ -146,11 +145,10 @@
             class="">
         </mat-form-field>
 
-        <mat-checkbox
-          formControlName="isReverse"
-          class="">
-          <mat-label>Reverse</mat-label>
-        </mat-checkbox>
+        <app-checkbox
+          [control]="getFormControl('ledOutputs.' + i + '.isReverse')"
+          label="Reverse">
+        </app-checkbox>
 
         <div *ngIf="ledOutput.get('count')!.value > 800">
           <p>TODO warning icon</p>
@@ -215,19 +213,17 @@
     <button (click)="clearPin('relayPin')">
       X
     </button>
-    <mat-checkbox
-      formControlName="activeHigh"
-      class="">
-      <mat-label>Active High</mat-label>
-    </mat-checkbox>
+    <app-checkbox
+      [control]="getFormControl('activeHigh')"
+      label="Active High">
+    </app-checkbox>
   </app-settings-group>
 
   <app-settings-group title="Reboot Defaults">
-    <mat-checkbox
-      formControlName="turnOnAfterReboot"
-      class="">
-      <mat-label>Turn on after reboot</mat-label>
-    </mat-checkbox>
+    <app-checkbox
+      [control]="getFormControl('turnOnAfterReboot')"
+      label="Turn on after reboot">
+    </app-checkbox>
   
     <mat-form-field
       appearance="fill"
@@ -253,25 +249,22 @@
         class="">
     </mat-form-field>
   
-    <mat-checkbox
-      formControlName="setCurrentPresetAsRebootDefault"
-      class="">
-      <mat-label>Set current preset cycle setting as boot default</mat-label>
-    </mat-checkbox>
+    <app-checkbox
+      [control]="getFormControl('setCurrentPresetAsRebootDefault')"
+      label="Set current preset cycle setting as boot default">
+    </app-checkbox>
   </app-settings-group>
 
   <app-settings-group>
     <!-- TODO are the 3 below part of reboot defaults?? -->
-    <mat-checkbox
-      formControlName="useGammaCorrectionForColor"
-      class="">
-      <mat-label>Use Gamma correction for Color (strongly recommended)</mat-label>
-    </mat-checkbox>
-    <mat-checkbox
-      formControlName="useGammaCorrectionForBrightness"
-      class="">
-      <mat-label>Use Gamma correction for Brightness (not recommended)</mat-label>
-    </mat-checkbox>
+    <app-checkbox
+      [control]="getFormControl('useGammaCorrectionForColor')"
+      label="Use Gamma correction for Color (strongly recommended)">
+    </app-checkbox>
+    <app-checkbox
+      [control]="getFormControl('useGammaCorrectionForBrightness')"
+      label="Use Gamma correction for Brightness (not recommended)">
+    </app-checkbox>
     <mat-form-field
       appearance="fill"
       class="">
@@ -287,11 +280,10 @@
   </app-settings-group>
 
   <app-settings-group title="Transitions">
-    <mat-checkbox
-      formControlName="useCrossfade"
-      class="">
-      <mat-label>Use Crossfade</mat-label>
-    </mat-checkbox>
+    <app-checkbox
+      [control]="getFormControl('useCrossfade')"
+      label="Use Crossfade">
+    </app-checkbox>
   
     <mat-form-field
       appearance="fill"
@@ -305,11 +297,10 @@
         class="">
     </mat-form-field>
   
-    <mat-checkbox
-      formControlName="usePaletteTransitions"
-      class="">
-      <mat-label>Enable Palette Transitions</mat-label>
-    </mat-checkbox>
+    <app-checkbox
+      [control]="getFormControl('usePaletteTransitions')"
+      label="Enable Palette Transitions">
+    </app-checkbox>
   </app-settings-group>
 
   <app-settings-group
@@ -358,11 +349,10 @@
       </option>
     </select>
 
-    <mat-checkbox
-      formControlName="skipFirstLED"
-      class="">
-      <mat-label>Skip First LED</mat-label>
-    </mat-checkbox>
+    <app-checkbox
+      [control]="getFormControl('skipFirstLED')"
+      label="Skip First LED">
+    </app-checkbox>
   </app-settings-group>
 
   <app-settings-footer (save)="submitForm()"></app-settings-footer>

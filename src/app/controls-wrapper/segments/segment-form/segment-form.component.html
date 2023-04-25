@@ -28,17 +28,14 @@
     </app-color-slider>
 
     <div class="segmentForm__checkboxes">
-      <mat-checkbox
-        formControlName="isReverse"
-        class="">
-        Reverse direction
-      </mat-checkbox>
-  
-      <mat-checkbox
-        formControlName="isMirror"
-        class="">
-        Mirror effect
-      </mat-checkbox>
+      <app-checkbox
+        [control]="getFormControl('isReverse')"
+        label="Reverse direction">
+      </app-checkbox>
+      <app-checkbox
+        [control]="getFormControl('isMirror')"
+        label="Mirror effect">
+      </app-checkbox>
     </div>
   </div>
 

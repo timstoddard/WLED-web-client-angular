@@ -12,23 +12,20 @@
   </div>
 
   <div class="presetForm__row">
-    <mat-checkbox
-      formControlName="useCurrentState"
-      class="">
-      Use current state
-    </mat-checkbox>
+    <app-checkbox
+      [control]="getFormControl('useCurrentState')"
+      label="Use current state">
+    </app-checkbox>
 
     <ng-container *ngIf="newPresetForm.get('useCurrentState')?.value === true; else apiValueInput">
-      <mat-checkbox
-        formControlName="includeBrightness"
-        class="">
-        Include brightness
-      </mat-checkbox>
-      <mat-checkbox
-        formControlName="saveSegmentBounds"
-        class="">
-        Save segment bounds
-      </mat-checkbox>
+      <app-checkbox
+        [control]="getFormControl('includeBrightness')"
+        label="Include brightness">
+      </app-checkbox>
+      <app-checkbox
+        [control]="getFormControl('saveSegmentBounds')"
+        label="Save segment bounds">
+      </app-checkbox>
     </ng-container>
 
     <ng-template #apiValueInput>

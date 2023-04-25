@@ -6,7 +6,7 @@ import { PostResponseHandler } from '../../../shared/post-response-handler';
 import { CustomInput } from '../../../shared/text-input/text-input.component';
 import { UIConfigService } from '../../../shared/ui-config.service';
 import { UnsubscriberComponent } from '../../../shared/unsubscriber/unsubscriber.component';
-import { formatPlural } from '../../utils';
+import { createGetFormControl, formatPlural, getFormControlFn } from '../../utils';
 import { SegmentsService } from '../segments.service';
 
 @Component({
@@ -87,6 +87,7 @@ export class SegmentFormComponent extends UnsubscriberComponent implements OnIni
       ],
     },
   ];
+  getFormControl!: getFormControlFn;
 
   constructor(
     private segmentsService: SegmentsService,
@@ -104,6 +105,7 @@ export class SegmentFormComponent extends UnsubscriberComponent implements OnIni
       });
 
     this.segmentForm = this.createForm();
+    this.getFormControl = createGetFormControl(this.segmentForm);
     this.updateLedCountLabel(this.segment);
   }
 

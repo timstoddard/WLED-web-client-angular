@@ -1,0 +1,13 @@
+<div
+  [ngClass]="{ 'checkboxContainer--selected': control.value }"
+  class="checkboxContainer">
+  <mat-checkbox
+    [formControl]="control"
+    (click)="click.emit()"
+    class="">
+    <mat-label>
+      {{ label }}
+    </mat-label>
+  </mat-checkbox>
+</div>
+<ng-content></ng-content>

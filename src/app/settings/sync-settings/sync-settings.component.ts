@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormService, FormValues } from '../../shared/form-service';
 import { SelectItem } from '../shared/settings-types';
+import { createGetFormControl, getFormControlFn } from 'src/app/controls-wrapper/utils';
 
 @Component({
   selector: 'app-sync-settings',
@@ -134,11 +135,13 @@ export class SyncSettingsComponent implements OnInit {
       value: 6,
     },
   ];
+  getFormControl!: getFormControlFn;
 
   constructor(private formService: FormService) { }
 
   ngOnInit() {
     this.syncSettingsForm = this.createForm();
+    this.getFormControl = createGetFormControl(this.syncSettingsForm);
   }
 
   submitForm() {

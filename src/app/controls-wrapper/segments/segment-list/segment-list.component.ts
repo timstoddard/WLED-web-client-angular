@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { FormService } from '../../../shared/form-service';
 import { PostResponseHandler } from '../../../shared/post-response-handler';
 import { UnsubscriberComponent } from '../../../shared/unsubscriber/unsubscriber.component';
@@ -42,6 +42,11 @@ export class SegmentListComponent extends UnsubscriberComponent implements OnIni
 
   getFormGroupBySegmentId(segmentId: number) {
     return this.segmentForm.get([segmentId])! as FormGroup;
+  }
+
+  getFormControl(segmentId: number, name: string) {
+    const segmentGroup = this.segmentForm.get(`${segmentId}`) as FormGroup;
+    return segmentGroup.get(name) as FormControl;
   }
 
   private toggleSelected(segmentId: number, isSelected: boolean) {

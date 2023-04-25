@@ -1,3 +1,4 @@
+import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 // TODO move elsewhere
@@ -68,4 +69,17 @@ export const findRouteData = (key: string, route: ActivatedRoute | null): unknow
  */
 export const formatPlural = (type: string, count: number) => {
   return `${count} ${type}${count !== 1 ? 's' : ''}`;
+}
+
+export type getFormControlFn = (name: string) => FormControl;
+
+/**
+ * Simplifies the process of creating a function to return a specific form control
+ * @param formGroup form group to get the form control from
+ * @returns 
+ */
+export const createGetFormControl = (formGroup: FormGroup): getFormControlFn => {
+  return (name: string) => {
+    return formGroup.get(name) as FormControl;
+  }
 }

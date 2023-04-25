@@ -1,0 +1,35 @@
+@import 'src/app/shared/scss/mixins';
+
+// TODO get from material theme
+$materialThemeColor: #7c4dff;
+
+$backgroundOpacity1: 0.3;
+$backgroundOpacity2: 0.6;
+
+:host {
+  margin: 5px 3px;
+}
+
+// TODO instead of red/green use a color combo that fits with the theme
+.checkboxContainer {
+  background: rgba(225,128,128,$backgroundOpacity1);
+  border: 1px solid rgba(255,0,0,$backgroundOpacity1);
+  padding: 5px;
+  border-radius: 4px;
+  margin: 2px;
+
+  &:hover {
+    background: rgba(225,128,128,$backgroundOpacity2);
+    border: 1px solid rgba(255,0,0,1);
+  }
+
+  &--selected {
+    background: rgba(128,225,128,$backgroundOpacity1);
+    border: 1px solid rgba(0,255,0,$backgroundOpacity1);
+
+    &:hover {
+      background: rgba(128,225,128,$backgroundOpacity2);
+      border: 1px solid rgba(0,255,0,1);
+    }
+  }
+}

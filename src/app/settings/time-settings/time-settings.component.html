@@ -16,11 +16,10 @@
     <div
       formGroupName="ntp"
       class="timeSettingsForm__ntp">
-      <mat-checkbox
-        formControlName="enable"
-        class="">
-        <mat-label>Sync time from NTP server</mat-label>
-      </mat-checkbox>
+      <app-checkbox
+        [control]="getFormControl('ntp.enable')"
+        label="Sync time from NTP server">
+      </app-checkbox>
   
       <mat-form-field
         appearance="fill"
@@ -33,11 +32,10 @@
       </mat-form-field>
     </div>
   
-    <mat-checkbox
-      formControlName="use24HourTime"
-      class="">
-      <mat-label>Use 24H Format</mat-label>
-    </mat-checkbox>
+    <app-checkbox
+      [control]="getFormControl('use24HourTime')"
+      label="Use 24H Format">
+    </app-checkbox>
   
     Time Zone:
     <select formControlName="timeZone">
@@ -107,11 +105,10 @@
       </option>
     </select>
 
-    <mat-checkbox
-      formControlName="isCountdown"
-      class="">
-      <mat-label>Enable Countdown Mode</mat-label>
-    </mat-checkbox>
+    <app-checkbox
+      [control]="getFormControl('clock.isCountdown')"
+      label="Enable Countdown Mode">
+    </app-checkbox>
 
     <div
       *ngIf="timeSettingsForm.get('clock')!.get('isCountdown')!.value"
@@ -289,10 +286,10 @@
         [formGroupName]="i"
         class="timeSettingsForm__tableRow">
         <td>
-          <mat-checkbox
-            formControlName="enabled"
-            class="">
-          </mat-checkbox>
+          <app-checkbox
+            [control]="getFormControl('scheduledPresets.' + i + '.enabled')"
+            label="">
+          </app-checkbox>
         </td>
         <!-- TODO better time picker!! -->
         <td [ngSwitch]="scheduledPreset.get('type')!.value">

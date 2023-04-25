@@ -6,6 +6,7 @@ import { LocalStorageKey, LocalStorageService } from '../../shared/local-storage
 import { AppUIConfig, UIConfigService } from '../../shared/ui-config.service';
 import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
 import { UISettingsService } from './ui-settings.service';
+import { createGetFormControl, getFormControlFn } from 'src/app/controls-wrapper/utils';
 
 @Component({
   selector: 'app-ui-settings',
@@ -34,6 +35,7 @@ export class UISettingsComponent extends UnsubscriberComponent implements OnInit
       label: 'Hex Color Input',
     },
   ];
+  getFormControl!: getFormControlFn;
 
   constructor(
     private formService: FormService,
@@ -47,6 +49,7 @@ export class UISettingsComponent extends UnsubscriberComponent implements OnInit
 
   ngOnInit() {
     this.uiSettingsForm = this.createForm();
+    this.getFormControl = createGetFormControl(this.uiSettingsForm);
   }
 
   submitForm() {
