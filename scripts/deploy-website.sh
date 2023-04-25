@@ -124,7 +124,10 @@ cdk_deploy
 
 extract_cdk_output
 
-upload_to_s3 $BUILT_FILES_DIR $S3_BUCKET_NAME
+# replaced by BucketDeployment
+# TODO are file types of uploaded files correct?
+
+# upload_to_s3 $BUILT_FILES_DIR $S3_BUCKET_NAME
 
 purge_caches
 

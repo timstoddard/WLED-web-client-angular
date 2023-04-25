@@ -3,8 +3,11 @@ import * as certificate_manager from 'aws-cdk-lib/aws-certificatemanager'
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront'
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins'
 import * as iam from 'aws-cdk-lib/aws-iam'
+import * as logs from 'aws-cdk-lib/aws-logs'
 import * as s3 from 'aws-cdk-lib/aws-s3'
+import * as s3Deployment from 'aws-cdk-lib/aws-s3-deployment'
 import { Construct } from 'constructs'
+import * as path from 'path'
 
 // define constants
 // TODO add user flag/prop for this
@@ -61,6 +64,9 @@ export class CloudFrontWebsiteStack extends cdk.Stack {
     }))
 
     // TODO remove bucket policy granting (deprecated) OAI access
+
+    // upload built files to bucket
+    this.deployBuiltWebsiteFiles(websiteBucket, distribution, '../../dist/WLED-Web-Client')
 
     // output key info to console
     this.createCdkOutputs(websiteBucket, distribution)
@@ -172,6 +178,24 @@ export class CloudFrontWebsiteStack extends cdk.Stack {
 
     const bucket = new s3.Bucket(this, cfnIdPrefix, bucketProps)
     return bucket 
+  }
+
+  private deployBuiltWebsiteFiles(
+    websiteBucket: s3.Bucket,
+    distribution: cloudfront.Distribution,
+    relativePath: string,
+  ) {
+    // TODO remove this if it becomes a pain, alternative is AWS CLI
+    new s3Deployment.BucketDeployment(this, 'DeployWebsite', {
+      destinationBucket: websiteBucket,
+      sources: [
+        s3Deployment.Source.asset(
+          path.join(__dirname, relativePath),
+        ),
+      ],
+      distribution,
+      logRetention: logs.RetentionDays.ONE_MONTH,
+    })
   }
 
   /**
