@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
@@ -37,6 +38,7 @@ import { WelcomeComponent } from './welcome/welcome.component';
     BrowserAnimationsModule,
     BrowserModule,
     HttpClientModule,
+    MatSnackBarModule,
     ReactiveFormsModule,
   ],
   providers: [

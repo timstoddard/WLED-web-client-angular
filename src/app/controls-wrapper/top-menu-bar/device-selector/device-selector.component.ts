@@ -6,6 +6,7 @@ import { AppStateService } from '../../../shared/app-state/app-state.service';
 import { WLEDIpAddress } from '../../../shared/app-types/app-types';
 import { OverlayPositionService } from '../../../shared/overlay-position.service';
 import { UnsubscriberComponent } from '../../../shared/unsubscriber/unsubscriber.component';
+import { SnackbarService } from 'src/app/shared/snackbar.service';
 
 type ConnectionStatus = 'connected' | 'disconnected' | 'loading';
 
@@ -27,6 +28,7 @@ export class DeviceSelectorComponent extends UnsubscriberComponent implements On
     private apiService: ApiService,
     private changeDetectorRef: ChangeDetectorRef,
     private overlayPositionService: OverlayPositionService,
+    private snackbarService: SnackbarService,
   ) {
     super();
   }
@@ -54,9 +56,10 @@ export class DeviceSelectorComponent extends UnsubscriberComponent implements On
     setTimeout(() => {
       if (this.wledIpAddresses.length >= 1) {
         const firstDevice = this.wledIpAddresses[0];
-        // TODO convert this to a toast notification
-        alert(`Connecting to device: ${firstDevice.name} (${firstDevice.ipv4Address})`);
         this.setSelectedDevice(firstDevice);
+
+        const message = `Connecting to device: ${firstDevice.name} (${firstDevice.ipv4Address})`;
+        this.snackbarService.openSnackBar(message);
       }
     }, DEVICE_CONNECT_TIMEOUT_MS);
   }
