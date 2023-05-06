@@ -2,7 +2,7 @@
   *ngFor="let button of buttons"
   [routerLink]="button.routerLink"
   routerLinkActive="bottomMenuBar__button--selected"
-  [routerLinkActiveOptions]="{ exact: true }"
+  [routerLinkActiveOptions]="{ exact: button.routerLinkActiveExactMatch }"
   class="bottomMenuBar__button">
   <span class="bottomMenuBar__button__icon material-symbols-outlined">
     {{ button.icon }}
