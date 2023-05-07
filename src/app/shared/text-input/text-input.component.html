@@ -18,6 +18,18 @@
           [type]="input.type"
           [formControl]="input.getFormControl()"
           [placeholder]="input.placeholder"
+          [pattern]="input.pattern ?? ''"
+          [attr.inputmode]="getInputMode(input)"
+          [ngStyle]="getNgStyle(input, true)"
+          class="textInput__input textInput__input--centered">
+        <!-- same as text type due to https://stackoverflow.com/questions/40176061/two-switch-case-values-in-angular -->
+        <input
+          *ngSwitchCase="'password'"
+          [type]="input.type"
+          [formControl]="input.getFormControl()"
+          [placeholder]="input.placeholder"
+          [pattern]="input.pattern ?? ''"
+          [attr.inputmode]="getInputMode(input)"
           [ngStyle]="getNgStyle(input, true)"
           class="textInput__input textInput__input--centered">
         <input
@@ -28,6 +40,7 @@
           [step]="input.step"
           [formControl]="input.getFormControl()"
           [placeholder]="input.placeholder"
+          [attr.inputmode]="getInputMode(input)"
           [ngStyle]="getNgStyle(input, true)"
           class="textInput__input textInput__input--centered">
         <textarea

@@ -40,7 +40,6 @@ import { SegmentFormComponent } from './segments/segment-form/segment-form.compo
 import { SegmentListComponent } from './segments/segment-list/segment-list.component';
 import { SegmentsComponent } from './segments/segments.component';
 import { SharedComponentsModule } from '../shared/shared-components.module';
-import { TextInputComponent } from '../shared/text-input/text-input.component';
 import { TopMenuBarComponent } from './top-menu-bar/top-menu-bar.component';
 
 const COLOR_INPUTS = [
@@ -58,7 +57,6 @@ const SHARED_COMPONENTS = [
   ColorSliderComponent,
   ExpandIconComponent,
   OverlayContainerComponent,
-  TextInputComponent,
 ]
 
 const COMPONENTS = [

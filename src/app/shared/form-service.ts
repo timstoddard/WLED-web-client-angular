@@ -8,6 +8,19 @@ export const getFormControl = (
   return formGroup.get(formControlName) as FormControl;
 }
 
+export type getFormControlFn = (name: string) => FormControl;
+
+/**
+ * Simplifies the process of creating a function to return a specific form control
+ * @param formGroup form group to get the form control from
+ * @returns 
+ */
+export const createGetFormControl = (formGroup: FormGroup): getFormControlFn => {
+  return (name: string) => {
+    return formGroup.get(name) as FormControl;
+  }
+}
+
 /**
  * Generalized interface for FormGroup keyvalue pairs.
  * 

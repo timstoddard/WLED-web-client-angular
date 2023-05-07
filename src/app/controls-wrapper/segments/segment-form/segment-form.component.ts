@@ -1,12 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { AppSegment } from '../../../shared/app-types/app-state';
-import { FormService, getFormControl } from '../../../shared/form-service';
+import { FormService, getFormControl, createGetFormControl, getFormControlFn } from '../../../shared/form-service';
 import { PostResponseHandler } from '../../../shared/post-response-handler';
 import { CustomInput } from '../../../shared/text-input/text-input.component';
 import { UIConfigService } from '../../../shared/ui-config.service';
 import { UnsubscriberComponent } from '../../../shared/unsubscriber/unsubscriber.component';
-import { createGetFormControl, formatPlural, getFormControlFn } from '../../utils';
+import { formatPlural } from '../../utils';
 import { SegmentsService } from '../segments.service';
 
 @Component({

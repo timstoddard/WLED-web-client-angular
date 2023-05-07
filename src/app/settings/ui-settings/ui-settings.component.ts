@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { FormService, FormValues } from '../../shared/form-service';
+import { FormService, FormValues, createGetFormControl, getFormControlFn } from '../../shared/form-service';
 import { LocalStorageKey, LocalStorageService } from '../../shared/local-storage.service';
 import { AppUIConfig, UIConfigService } from '../../shared/ui-config.service';
 import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
 import { UISettingsService } from './ui-settings.service';
-import { createGetFormControl, getFormControlFn } from 'src/app/controls-wrapper/utils';
 
 @Component({
   selector: 'app-ui-settings',

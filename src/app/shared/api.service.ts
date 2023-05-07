@@ -17,7 +17,16 @@ import { FormValues } from './form-service';
 import { LiveViewData } from './live-view/live-view.service';
 import { PostResponseHandler } from './post-response-handler';
 import { UnsubscriberService } from './unsubscriber/unsubscriber.service';
+import { WledSecuritySettings } from '../settings/security-settings/security-settings.service';
 
+enum ApiFilePath {
+  CONFIG_JSON_FILE = 'cfg.json',
+  PRESETS_JSON_FILE = 'presets.json',
+}
+
+// TODO add enum for these paths
+enum ApiPath { 
+}
 const ALL_JSON_PATH = 'json';
 const STATE_INFO_PATH = 'json/si';
 const STATE_PATH = 'json/state';
@@ -27,12 +36,16 @@ const PALETTES_PATH = 'json/pal';
 const PALETTES_DATA_PATH = 'json/palx';
 const LIVE_PATH = 'json/live';
 const NODES_PATH = 'json/nodes';
-const PRESETS_PATH = 'presets.json';
 
 const LED_SETTINGS_PATH = 'settings/leds';
 const UI_SETTINGS_PATH = 'settings/ui';
+const SECURITY_SETTINGS_PATH = 'settings/sec';
 const WIFI_SETTINGS_PATH = 'settings/wifi';
 
+const FILE_UPLOAD_PATH = 'upload';
+const SECURITY_SETTINGS_JS_PATH = 'settings/s.js?p=6';
+
+// TODO split into sub classes per app section and use the ApiService to aggregate their usage
 @Injectable({ providedIn: 'root' })
 export class ApiService extends UnsubscriberService {
   private baseUrl = '';
@@ -83,13 +96,18 @@ export class ApiService extends UnsubscriberService {
     options: {
       // subset of options for http.get()
       params?: HttpParams,
+      responseType?: 'json' | 'text' | 'blob',
     } = {},
   ) => {
+    const parsedOptions = {
+      ...options,
+      responseType: responseTypeAsJsonHack(options.responseType),
+    }
     if (this.isBaseUrlUnset()) {
       // return fake data
       return of(offlineDefault);
     } else {
-      return this.http.get<T>(url, options)
+      return this.http.get<T>(url, parsedOptions)
         .pipe(catchError(e => {
           // if response can't be loaded, return fake data
           console.warn(`Calling http.get('${url}') failed:`, e);
@@ -100,15 +118,29 @@ export class ApiService extends UnsubscriberService {
 
   private httpPost = <T = WLEDApiResponse | WLEDState>(
     url: string,
-    body: { [key: string]: unknown },
+    body: { [key: string]: unknown } | FormData | {},
     offlineDefault: T,
+    options: {
+      // subset of options for http.post()
+      params?: HttpParams,
+      responseType?: 'json' | 'text',
+    } = {},
   ) => {
+    const parsedOptions = {
+      ...options,
+      responseType: responseTypeAsJsonHack(options.responseType),
+    }
     if (this.isBaseUrlUnset()) {
       console.log('MOCK POST:', url, body);
       return of(offlineDefault);
     } else {
       console.log('REAL POST:', url, body);
-      return this.http.post<T>(url, body);
+      return this.http.post<T>(url, body, parsedOptions)
+        .pipe(catchError(e => {
+          // if response can't be loaded, return fake data
+          console.warn(`Calling http.post('${url}') failed:`, e);
+          return of(offlineDefault);
+        }));
     }
   }
 
@@ -240,7 +272,7 @@ export class ApiService extends UnsubscriberService {
   getPresets() {
     // TODO don't load this when calling a disconnected wled instance
     return this.httpGet<WLEDPresets>(
-      this.createApiUrl(PRESETS_PATH),
+      this.createApiUrl(ApiFilePath.PRESETS_JSON_FILE),
       MOCK_API_PRESETS);
   }
 
@@ -601,11 +633,71 @@ export class ApiService extends UnsubscriberService {
     );
   }
 
+  getSecuritySettings() {
+    const offlineDefault = `
+      function GetV(){
+        var d=document;
+        d.Sf.PIN.value="";d.Sf.NO.checked=0;d.Sf.OW.checked=0;d.Sf.AO.checked=1;
+        d.getElementsByClassName("sip")[0].innerHTML="WLED 0.14.0-b1 (build 2212222)";
+        sd="WLED";
+      }
+    `;
+    return this.httpGet(
+      this.createApiUrl(SECURITY_SETTINGS_JS_PATH),
+      offlineDefault,
+      { responseType: 'text' },
+    );
+  }
+
+  /** Submits security settings form data to server. */
+  setSecuritySettings(securitySettings: WledSecuritySettings) {
+    // TODO this post doesn't work!!
+    return this.httpPost(
+      this.createApiUrl(SECURITY_SETTINGS_PATH),
+      securitySettings,
+      'Security settings saved.',
+      { responseType: 'text' },
+    );
+  }
+
   /** Sets the live view override setting. */
   setLiveViewOverride(liveViewOverride: number) {
     this.httpPostStateAndInfo({
       lor: liveViewOverride,
     });
+  }
+
+  /**
+   * Uploads a single file to a provided URL.
+   * @param file the file to upload
+   * @param path the path prefix to upload to
+   * @returns post reponse observable
+   */
+  uploadFile(file: File, name: string) {
+    const formData = new FormData();
+    formData.append('file', file, name);
+    return this.httpPost(
+      this.createApiUrl(FILE_UPLOAD_PATH),
+      formData,
+      MOCK_API_RESPONSE,
+      { responseType: 'text' },
+    );
+  }
+
+  downloadExternalFile(url: string) {
+    return this.httpGet(
+      url,
+      {},
+      { responseType: 'blob' },
+    );
+  }
+
+  getDownloadPresetsUrl() {
+    return this.createApiUrl(ApiFilePath.PRESETS_JSON_FILE);
+  }
+
+  getDownloadConfigUrl() {
+    return this.createApiUrl(ApiFilePath.CONFIG_JSON_FILE);
   }
 
   private createBody(data: { [key: string]: unknown }) {
@@ -616,3 +708,7 @@ export class ApiService extends UnsubscriberService {
     };
   }
 }
+
+/** Workaround for angular http method options responseType bug. */
+const responseTypeAsJsonHack = (responseType?: string) =>
+  responseType ? responseType as 'json' : 'json'

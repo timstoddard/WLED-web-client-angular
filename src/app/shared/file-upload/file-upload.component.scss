@@ -1,0 +1,21 @@
+@import 'src/app/shared/scss/mixins';
+
+.fileUpload {
+  &__input {
+    display: none;
+  }
+
+  &__buttonWrapper {
+    //
+  }
+
+  &__button {
+    @include flex-center;
+    background: var(--materialThemePurple);
+    color: var(--textColorPrimary);
+
+    &__icon {
+      margin: 2px;
+    }
+  }
+}

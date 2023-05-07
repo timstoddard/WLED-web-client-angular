@@ -1,0 +1,15 @@
+<div>
+  <p>
+    Password Requirements
+  </p>
+  <ul>
+    <li *ngFor="let requirement of requirements">
+      {{ requirement.description }}: 
+      <span [ngStyle]="{
+        color: getError(form, requirement.path, requirement.errorName) ? 'red' : 'green'
+      }">
+        {{ getError(form, requirement.path, requirement.errorName) ? 'invalid' : 'valid' }}
+      </span>
+    </li>
+  </ul>
+</div>

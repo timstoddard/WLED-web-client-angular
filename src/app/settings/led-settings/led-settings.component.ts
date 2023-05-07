@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import { FormService, FormValues } from '../../shared/form-service';
+import { FormArray, FormGroup } from '@angular/forms';
+import { FormService, FormValues, createGetFormControl, getFormControlFn } from '../../shared/form-service';
 import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
 import { SelectItem } from '../shared/settings-types';
-import { createGetFormControl, getFormControlFn } from 'src/app/controls-wrapper/utils';
 
 @Component({
   selector: 'app-led-settings',

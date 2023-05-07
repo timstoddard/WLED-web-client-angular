@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { FormService, FormValues } from '../../shared/form-service';
+import { FormService, FormValues, createGetFormControl, getFormControlFn } from '../../shared/form-service';
 import { SelectItem } from '../shared/settings-types';
-import { createGetFormControl, getFormControlFn } from 'src/app/controls-wrapper/utils';
 
 @Component({
   selector: 'app-sync-settings',

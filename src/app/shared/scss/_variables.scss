@@ -1,6 +1,7 @@
 :root {
   // dark mode is default
   --backgroundColorPrimaryRgb: 20,20,30;
+  --backgroundColorPrimaryOffsetRgb: 35,35,45;
   --backgroundColorAccentRgb: 55,55,60;
   --backgroundColorAccent2Rgb: 80,80,90;
   --borderColorPrimaryRgb: 210,210,210;
@@ -13,6 +14,7 @@
   --errorColorAccentRgb: 157,0,0;
 
   --backgroundColorPrimary: rgb(var(--backgroundColorPrimaryRgb));
+  --backgroundColorPrimaryOffset: rgb(var(--backgroundColorPrimaryOffsetRgb));
   --backgroundColorAccent: rgb(var(--backgroundColorAccentRgb));
   --backgroundColorAccent2: rgb(var(--backgroundColorAccent2Rgb));
   --borderColorPrimary: rgb(var(--borderColorPrimaryRgb));
@@ -23,6 +25,9 @@
   --themeColorAccent: rgb(var(--themeColorAccentRgb));
   --errorColorPrimary: rgb(var(--errorColorPrimaryRgb));
   --errorColorAccent: rgb(var(--errorColorAccentRgb));
+
+  // TODO get from material theme
+  --materialThemePurple: rgb(124,77,255);
 
   // TODO add light mode palette
 

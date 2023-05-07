@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
-import { FormService } from '../../shared/form-service';
+import { FormService, createGetFormControl, getFormControlFn } from '../../shared/form-service';
 import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
 import { SelectItem } from '../shared/settings-types';
 import { NetworkSettingsService } from './network-settings.service';
-import { createGetFormControl, getFormControlFn } from 'src/app/controls-wrapper/utils';
 
 const DEFAULT_ETHERNET_TYPE = 0;
 const DEFAULT_OPEN_AP_OPTION = 0;

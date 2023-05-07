@@ -1,0 +1,28 @@
+<div class="fileUpload__wrapper">
+  <label
+    class="fileUpload__buttonWrapper">
+    <input
+      type="file"
+      (change)="onFile($event)"
+      [disabled]="loading"
+      [accept]="fileExtensions"
+      class="fileUpload__input">
+    <div
+      mat-raised-button
+      color="primary"
+      class="fileUpload__button mat-raised-button">      
+      <span class="fileUpload__button__icon material-symbols-outlined">
+        upload_file
+      </span>
+      <span>
+        Upload
+      </span>
+    </div>
+  </label>
+  
+  <div
+    *ngIf="uploadedFileName"
+    class="fileUpload__fileName">
+    <p>Uploaded "{{ uploadedFileName }}" successfully!</p>
+  </div>
+</div>

@@ -1,10 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { AppPreset } from '../../../shared/app-types/app-presets';
-import { FormService, getFormControl } from '../../../shared/form-service';
+import { FormService, createGetFormControl, getFormControl, getFormControlFn } from '../../../shared/form-service';
 import { CustomInput } from '../../../shared/text-input/text-input.component';
 import { PresetsService } from '../presets.service';
-import { createGetFormControl, getFormControlFn } from '../../utils';
 
 @Component({
   selector: 'app-preset-form',

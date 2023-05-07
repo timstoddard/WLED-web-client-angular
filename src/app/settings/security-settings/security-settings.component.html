@@ -4,7 +4,7 @@
   <div>{{ securitySettingsForm.value | json }}</div>
 
   <app-settings-header
-    helpUrl="https://github.com/Aircoookie/WLED/wiki/Settings#security-settings"
+    helpUrl="https://kno.wled.ge/features/settings/#security-settings"
     (save)="submitForm()">
   </app-settings-header>
 
@@ -12,121 +12,151 @@
     Security Settings
   </h1>
 
-  <app-settings-group title="Security">
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Settings PIN</mat-label>
-      <input
-        matInput
-        type="password"
-        formControlName="settingsPin"
-        class="">
-    </mat-form-field>
+  <mat-card class="securitySettingsForm__warningCard">
+    <mat-card-title class="securitySettingsForm__warningCard__title">
+      Warning
+    </mat-card-title>
+    <mat-card-content>
+      <p>
+        This application is served over HTTP, which is <span style="font-weight: bold; text-decoration: underline;">unencrypted and therefore insecure</span>. Proceed with caution: a malicious actor on the same network can steal the information you enter on this page.
+      </p>
 
-    <p>
-      Unencrypted transmission. Be prudent when selecting PIN, do NOT use your banking, door, SIM, etc. pin!
-    </p>
+      <p>
+        For your settings PIN, do not reuse a PIN you use for your bank, home, etc.
+      </p>
+
+      <p>
+        The OTA update lock must be disabled to update the settings on this page.
+      </p>
+    </mat-card-content>
+  </mat-card>
+
+  <app-settings-group title="Security">
+    <app-text-input
+      label="Settings PIN"
+      [inputs]="[settingsPinInputConfig]"
+      description="4 digit PIN code">
+    </app-text-input>
+
+    <app-form-control-requirements
+      [form]="securitySettingsForm"
+      [requirements]="settingsPinRequirements">
+    </app-form-control-requirements>
+
+    <app-checkbox
+      [control]="getFormControl('triggerFactoryReset')"
+      label="Trigger factory reset on save">
+      <p>
+        All settings and presets will be erased.
+      </p>
+    </app-checkbox>
+  </app-settings-group>
+
+  <app-settings-group title="Over the Air (OTA) Update Lock">
+    <mat-card class="securitySettingsForm__warningCard">
+      <mat-card-content>
+        <p>
+          Enter the password to enable OTA updates.
+        </p>
+        <p>
+          Recommended: Change the default password the first time OTA is enabled.
+        </p>
+        <p>
+          Recommended: Disable OTA when not in use.
+          This ensures device software cannot be tampered with.
+        </p>
+      </mat-card-content>
+    </mat-card>
 
     <app-checkbox
       [control]="getFormControl('secureWirelessUpdate')"
       label="Require password for OTA (wireless) software update">
     </app-checkbox>
-    
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>OTA Update Password</mat-label>
-      <input
-        matInput
-        type="password"
-        formControlName="otaUpdatePassword"
-        class="">
-    </mat-form-field>
-  
-    <!-- TODO add info toggle -->
-    <div class="securitySettingsForm__infoToggle"></div>
 
-    <p>
-      To enable OTA, for security reasons you need to enter the correct password.
-    </p>
-    <p>
-      <!-- TODO clarify meaning of this -->
-      Your password should be changed when OTA is enabled.
-    </p>
-    <p>
-        Disable OTA when not in use, otherwise a malicious actor can tamper with device software.
-    </p>
-    <p>
-      Settings on this page will only be saved if OTA lock is disabled!
-    </p>
+    <app-text-input
+      label="OTA Password"
+      [inputs]="[OTAPasswordInputConfig]"
+      description="OTA Update Password">
+    </app-text-input>
+
+    <app-form-control-requirements
+      [form]="securitySettingsForm"
+      [requirements]="OTAPasswordRequirements">
+    </app-form-control-requirements>
     
     <app-checkbox
       [control]="getFormControl('denyWifiSettingsAccessIfLocked')"
-      label="Deny access to wifi settings if locked">
+      label="Deny access to wifi settings if OTA is locked">
     </app-checkbox>
-    <app-checkbox
-      [control]="getFormControl('triggerFactoryReset')"
-      label="Trigger factory reset (on save)">
-      <p>
-        All settings and presets will be erased.
-      </p>
-    </app-checkbox>
-  
-    <div>
-      This page is served via HTTP (insecure). HTTP traffic is <span style="font-weight: bold; text-decoration: underline;">unencrypted</span>. A malicious actor on the same network can intercept form data!
-    </div>
   </app-settings-group>
 
   <app-settings-group title="Software Update">
-    <a [routerLink]="['/', 'update']">
-      Manual OTA Update
-    </a>
-
     <app-checkbox
       [control]="getFormControl('enableArduinoOTA')"
       label="Enable Arduino OTA">
     </app-checkbox>
+
+    <a
+      *ngIf="getFormControl('enableArduinoOTA').value"
+      [routerLink]="['/', 'update']"
+      mat-raised-button
+      color="accent">
+      Manual OTA Update
+    </a>
   </app-settings-group>
 
   <app-settings-group title="Backup and Restore">
-    <div>
-      <h2>
-        Presets
-      </h2>
-      <div>
-        <button
-          mat-raised-button
-          color="primary"
-          click="downloadPresets()">
-          Download
-        </button>
-        <button
-          mat-raised-button
-          color="primary"
-          click="uploadPresets()">
-          Upload
-        </button>
+    <div class="securitySettingsForm__uploadDownload__wrapper">
+      <div class="securitySettingsForm__subGroup">
+        <h2>
+          Presets
+        </h2>
+        <div class="securitySettingsForm__uploadDownload">
+          <div>
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="downloadPresetsFile()"
+              class="securitySettingsForm__uploadDownload__button">
+              <span class="material-symbols-outlined">
+                download
+              </span>
+              <span>
+                Download
+              </span>
+            </button>
+          </div>
+          <app-file-upload
+            fileName="presets.json"
+            fileExtensions=".json">
+          </app-file-upload>
+        </div>
       </div>
-    </div>
-
-    <div>
-      <h2>
-        Configuration
-      </h2>
-      <div>
-        <button
-          mat-raised-button
-          color="primary"
-          click="downloadConfig()">
-          Download
-        </button>
-        <button
-          mat-raised-button
-          color="primary"
-          click="uploadConfig()">
-          Upload
-        </button>
+  
+      <div class="securitySettingsForm__subGroup">
+        <h2>
+          Configuration
+        </h2>
+        <div class="securitySettingsForm__uploadDownload">
+          <div>
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="downloadConfigFile()"
+              class="securitySettingsForm__uploadDownload__button">
+              <span class="material-symbols-outlined">
+                download
+              </span>
+              <span>
+                Download
+              </span>
+            </button>
+          </div>
+          <app-file-upload
+            fileName="cfg.json"
+            fileExtensions=".json">
+          </app-file-upload>
+        </div>
       </div>
     </div>
   </app-settings-group>
@@ -138,7 +168,7 @@
         href="https://github.com/Aircoookie/WLED"
         text="WLED">
       </app-external-link>
-      Version {{ versionNumber }}
+      Version: {{ versionNumber }}
     </div>
 
     <div>
