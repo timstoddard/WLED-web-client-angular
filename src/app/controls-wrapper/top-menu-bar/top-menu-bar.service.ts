@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { WLEDApiResponse } from '../../shared/api-types/api-types';
-import { ApiService } from '../../shared/api.service';
+import { ApiService } from '../../shared/api-service/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { PostResponseHandler } from '../../shared/post-response-handler';
 import { UnsubscriberService } from '../../shared/unsubscriber/unsubscriber.service';
@@ -37,27 +37,31 @@ export class TopMenuBarService extends UnsubscriberService {
     this.processingStatus[name] = status;
   }
 
+  // TODO update name to "set"
   togglePower(isOn: boolean) {
     this.processToggle(
       TopMenuBarButtonName.POWER,
-      this.apiService.togglePower(isOn),
+      this.apiService.appState.power.set(isOn),
     );
   }
 
+  // TODO update name to "set"
   toggleNightLight(isNightLightActive: boolean) {
     this.processToggle(
       TopMenuBarButtonName.TIMER,
-      this.apiService.toggleNightLight(isNightLightActive),
+      this.apiService.appState.nightLight.set(isNightLightActive),
     );
   }
 
+  // TODO update name to "set"
   toggleSync(shouldSync: boolean, shouldToggleReceiveWithSend: boolean) {
     this.processToggle(
       TopMenuBarButtonName.SYNC,
-      this.apiService.toggleSync(shouldSync, shouldToggleReceiveWithSend),
+      this.apiService.appState.sync.set(shouldSync, shouldToggleReceiveWithSend),
     );
   }
 
+  // TODO update name to "set"
   toggleLiveView(isLiveViewActive: boolean) {
     this.appStateService.setLocalSettings({ isLiveViewActive });
 
@@ -67,12 +71,12 @@ export class TopMenuBarService extends UnsubscriberService {
   }
 
   setBrightness(brightness: number) {
-    this.handleUnsubscribe(this.apiService.setBrightness(brightness))
+    this.handleUnsubscribe(this.apiService.appState.brightness.set(brightness))
       .subscribe(this.postResponseHandler.handleFullJsonResponse());
   }
 
   setTransitionDuration(seconds: number) {
-    this.handleUnsubscribe(this.apiService.setTransitionDuration(seconds))
+    this.handleUnsubscribe(this.apiService.appState.transitionDuration.set(seconds))
       .subscribe(this.postResponseHandler.handleStateResponse());
   }
 

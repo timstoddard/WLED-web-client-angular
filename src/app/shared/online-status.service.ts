@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { ApiService } from './api.service';
+import { ApiService } from './api-service/api.service';
 
 @Injectable({ providedIn: 'root' })
 export class OnlineStatusService {

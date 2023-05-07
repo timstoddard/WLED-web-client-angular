@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ApiTypeMapper } from '../../shared/api-type-mapper';
-import { ApiService } from '../../shared/api.service';
+import { ApiService } from '../../shared/api-service/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { AppFileSystemInfo, AppInfo, AppLedInfo } from '../../shared/app-types/app-info';
 import { UnsubscriberService } from '../../shared/unsubscriber/unsubscriber.service';
@@ -17,11 +17,11 @@ export class InfoService extends UnsubscriberService {
   }
 
   refreshAppState() {
-    this.apiService.refreshAppState();
+    this.apiService.appState.refresh();
   }
 
   fetchNodes() {
-    this.handleUnsubscribe(this.apiService.getNodes())
+    this.handleUnsubscribe(this.apiService.appState.nodes.get())
       .subscribe(nodes => {
         const appNodes = this.apiTypeMapper.mapWLEDNodesToAppNodes(nodes);
         this.appStateService.setNodes(appNodes);

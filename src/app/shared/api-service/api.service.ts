@@ -1,49 +1,24 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, forkJoin, map, of, timeout } from 'rxjs';
-import { ALL_PALETTES_DATA, MOCK_API_PRESETS, MOCK_API_RESPONSE, MOCK_LIVE_DATA, MOCK_NODES_RESPONSE } from '../controls-wrapper/mock-api-data';
-import { PalettesApiData } from '../controls-wrapper/palettes/palettes.service';
-import { WLEDInfo } from './api-types/api-info';
-import { WLEDNodesResponse } from './api-types/api-nodes';
-import { WLEDPresets } from './api-types/api-presets';
-import { WLEDSegment, WLEDState, WLEDUdpState } from './api-types/api-state';
-import { WLEDApiResponse } from './api-types/api-types';
-import { SavePresetRequest, WLEDSegmentPostRequest } from './api-types/post-requests';
-import { NO_DEVICE_IP_SELECTED } from './app-state/app-state-defaults';
-import { AppStateService } from './app-state/app-state.service';
-import { AppPreset } from './app-types/app-presets';
-import { AppWLEDState } from './app-types/app-state';
-import { FormValues } from './form-service';
-import { LiveViewData } from './live-view/live-view.service';
-import { PostResponseHandler } from './post-response-handler';
-import { UnsubscriberService } from './unsubscriber/unsubscriber.service';
-import { WledSecuritySettings } from '../settings/security-settings/security-settings.service';
-
-enum ApiFilePath {
-  CONFIG_JSON_FILE = 'cfg.json',
-  PRESETS_JSON_FILE = 'presets.json',
-}
-
-// TODO add enum for these paths
-enum ApiPath { 
-}
-const ALL_JSON_PATH = 'json';
-const STATE_INFO_PATH = 'json/si';
-const STATE_PATH = 'json/state';
-const INFO_PATH = 'json/info';
-const EFFECTS_PATH = 'json/eff';
-const PALETTES_PATH = 'json/pal';
-const PALETTES_DATA_PATH = 'json/palx';
-const LIVE_PATH = 'json/live';
-const NODES_PATH = 'json/nodes';
-
-const LED_SETTINGS_PATH = 'settings/leds';
-const UI_SETTINGS_PATH = 'settings/ui';
-const SECURITY_SETTINGS_PATH = 'settings/sec';
-const WIFI_SETTINGS_PATH = 'settings/wifi';
-
-const FILE_UPLOAD_PATH = 'upload';
-const SECURITY_SETTINGS_JS_PATH = 'settings/s.js?p=6';
+import { ALL_PALETTES_DATA, MOCK_API_PRESETS, MOCK_API_RESPONSE, MOCK_LIVE_DATA, MOCK_NODES_RESPONSE } from '../../controls-wrapper/mock-api-data';
+import { PalettesApiData } from '../../controls-wrapper/palettes/palettes.service';
+import { WLEDInfo } from '../api-types/api-info';
+import { WLEDNodesResponse } from '../api-types/api-nodes';
+import { WLEDPresets } from '../api-types/api-presets';
+import { WLEDSegment, WLEDState, WLEDUdpState } from '../api-types/api-state';
+import { WLEDApiResponse } from '../api-types/api-types';
+import { SavePresetRequest, WLEDSegmentPostRequest } from '../api-types/post-requests';
+import { NO_DEVICE_IP_SELECTED } from '../app-state/app-state-defaults';
+import { AppStateService } from '../app-state/app-state.service';
+import { AppPreset } from '../app-types/app-presets';
+import { AppWLEDState } from '../app-types/app-state';
+import { FormValues } from '../form-service';
+import { LiveViewData } from '../live-view/live-view.service';
+import { PostResponseHandler } from '../post-response-handler';
+import { UnsubscriberService } from '../unsubscriber/unsubscriber.service';
+import { WledSecuritySettings } from '../../settings/security-settings/security-settings.service';
+import { ApiFilePath, ApiPath } from './api-paths';
 
 // TODO split into sub classes per app section and use the ApiService to aggregate their usage
 @Injectable({ providedIn: 'root' })
@@ -59,7 +34,7 @@ export class ApiService extends UnsubscriberService {
     this.init();
   }
 
-  private init() {
+  private init = () => {
     this.appStateService.getLocalSettings(this.ngUnsubscribe)
       .subscribe(({ selectedWLEDIpAddress }) => {
         const { ipv4Address } = selectedWLEDIpAddress;
@@ -74,11 +49,11 @@ export class ApiService extends UnsubscriberService {
       });
   }
 
-  getBaseUrl() {
+  getBaseUrl = () => {
     return this.baseUrl;
   }
 
-  private setBaseUrl(baseUrl: string) {
+  private setBaseUrl = (baseUrl: string) => {
     this.baseUrl = baseUrl;
   }
 
@@ -144,9 +119,17 @@ export class ApiService extends UnsubscriberService {
     }
   }
 
+  private createBody = (data: { [key: string]: unknown }) => {
+    return {
+      v: true, // verbose setting to get full API response
+      time: Math.floor(Date.now() / 1000),
+      ...data,
+    };
+  }
+
   private httpPostStateAndInfo = (data: { [key: string]: unknown }) => {
     return this.httpPost<WLEDApiResponse>(
-      this.createApiUrl(STATE_INFO_PATH),
+      this.createApiUrl(ApiPath.STATE_INFO_PATH),
       this.createBody(data),
       MOCK_API_RESPONSE,
     );
@@ -154,16 +137,16 @@ export class ApiService extends UnsubscriberService {
 
   private httpPostState = (data: { [key: string]: unknown }) => {
     return this.httpPost<WLEDState>(
-      this.createApiUrl(STATE_PATH),
+      this.createApiUrl(ApiPath.STATE_PATH),
       this.createBody(data),
       MOCK_API_RESPONSE.state,
     );
   }
 
-  testIpAddressAsBaseUrl(ipAddress: string) {
+  testIpAddressAsBaseUrl = (ipAddress: string) => {
     const TIMEOUT_MS = 3000;
     const FAILED = 'FAILED';
-    const url = `http://${ipAddress}/${ALL_JSON_PATH}`;
+    const url = `http://${ipAddress}/${ApiPath.ALL_JSON_PATH}`;
     const isValidResponse = (result: WLEDApiResponse) =>
       result.state
       && result.info
@@ -192,7 +175,7 @@ export class ApiService extends UnsubscriberService {
   }
 
   /** Reload all app data from the backend. */
-  refreshAppState(includePresets = false) {
+  private refreshAppState = (includePresets = false) => {
     const apiResponse = forkJoin({
       json: this.getJson(),
       presets: includePresets
@@ -210,66 +193,66 @@ export class ApiService extends UnsubscriberService {
   }
 
   /** Returns an object containing the state, info, effects, and palettes. */
-  getJson() {
+  private getJson = () => { // TODO rename
     return this.httpGet<WLEDApiResponse>(
-      this.createApiUrl(ALL_JSON_PATH),
+      this.createApiUrl(ApiPath.ALL_JSON_PATH),
       MOCK_API_RESPONSE);
   }
 
   /** Contains the current state of the light. All values may be modified by the client. */
-  getState() {
+  private getState = () => {
     return this.httpGet<WLEDState>(
-      this.createApiUrl(STATE_PATH),
+      this.createApiUrl(ApiPath.STATE_PATH),
       MOCK_API_RESPONSE.state);
   }
 
   /** Contains general information about the device. All values are read-only. */
-  getInfo() {
+  private getInfo = () => {
     return this.httpGet<WLEDInfo>(
-      this.createApiUrl(INFO_PATH),
+      this.createApiUrl(ApiPath.INFO_PATH),
       MOCK_API_RESPONSE.info);
   }
 
   /** Contains an array of the effect mode names. */
-  getEffects() {
+  private getEffects = () => {
     return this.httpGet<string[]>(
-      this.createApiUrl(EFFECTS_PATH),
+      this.createApiUrl(ApiPath.EFFECTS_PATH),
       MOCK_API_RESPONSE.effects);
   }
 
   /** Contains an array of the palette names. */
-  getPalettes() {
+  private getPalettes = () => {
     return this.httpGet<string[]>(
-      this.createApiUrl(PALETTES_PATH),
+      this.createApiUrl(ApiPath.PALETTES_PATH),
       MOCK_API_RESPONSE.palettes);
   }
 
   /** Gets palettes data, 8 palettes per page. */
-  getPalettesData(page: number) {
+  private getPalettesData = (page: number) => {
     const params = new HttpParams()
       .set('page', page);
     return this.httpGet<PalettesApiData>(
-      this.createApiUrl(PALETTES_DATA_PATH),
+      this.createApiUrl(ApiPath.PALETTES_DATA_PATH),
       ALL_PALETTES_DATA,
       { params });
   }
 
   /** Gets live data for all LEDs. */
-  getLiveData() {
+  private getLiveData = () => {
     return this.httpGet<LiveViewData>(
-      this.createApiUrl(LIVE_PATH),
+      this.createApiUrl(ApiPath.LIVE_PATH),
       MOCK_LIVE_DATA);
   }
 
   /** Gets all detected external WLED nodes. */
-  getNodes() {
+  private getNodes = () => {
     return this.httpGet<WLEDNodesResponse>(
-      this.createApiUrl(NODES_PATH),
+      this.createApiUrl(ApiPath.NODES_PATH),
       MOCK_NODES_RESPONSE);
   }
 
   /** Returns dict of saved presets. */
-  getPresets() {
+  private getPresets = () => {
     // TODO don't load this when calling a disconnected wled instance
     return this.httpGet<WLEDPresets>(
       this.createApiUrl(ApiFilePath.PRESETS_JSON_FILE),
@@ -277,7 +260,7 @@ export class ApiService extends UnsubscriberService {
   }
 
   /** Sets current palette by id. */
-  setPalette(paletteId: number) {
+  private setPalette = (paletteId: number) => {
     return this.httpPostStateAndInfo({
       seg: {
         pal: paletteId,
@@ -286,7 +269,7 @@ export class ApiService extends UnsubscriberService {
   }
 
   /** Sets current effect by id. */
-  setEffect(effectId: number) {
+  private setEffect = (effectId: number) => {
     return this.httpPostStateAndInfo({
       seg: {
         fx: effectId,
@@ -295,14 +278,14 @@ export class ApiService extends UnsubscriberService {
   }
 
   /** Sets light brightness. */
-  setBrightness(brightness: number) {
+  private setBrightness = (brightness: number) => {
     return this.httpPostStateAndInfo({
       bri: brightness,
     });
   }
 
   /** Sets effect speed. */
-  setSpeed(speed: number) {
+  private setSpeed = (speed: number) => {
     return this.httpPostState({
       seg: {
         sx: speed,
@@ -311,7 +294,7 @@ export class ApiService extends UnsubscriberService {
   }
 
   /** Sets effect intensity. */
-  setIntensity(intensity: number) {
+  private setIntensity = (intensity: number) => {
     return this.httpPostState({
       seg: {
         ix: intensity,
@@ -327,7 +310,13 @@ export class ApiService extends UnsubscriberService {
    * @param w White channel
    * @param slot Slot to update
    */
-  setColor(r: number, g: number, b: number, w: number, slot: number) {
+  private setColor = (
+    r: number,
+    g: number,
+    b: number,
+    w: number,
+    slot: number,
+  ) => {
     const colors: number[][] = [[], [], []];
     colors[slot] = [r, g, b, w];
     return this.httpPostStateAndInfo({
@@ -338,7 +327,7 @@ export class ApiService extends UnsubscriberService {
   }
 
   /** Sets white balance. */
-  setWhiteBalance(whiteBalance: number) {
+  private setWhiteBalance = (whiteBalance: number) => {
     return this.httpPostStateAndInfo({
       seg: {
         cct: whiteBalance,
@@ -346,15 +335,29 @@ export class ApiService extends UnsubscriberService {
     });
   }
 
+  /** Sets the live view override setting. */
+  private setLiveViewOverride = (liveViewOverride: number) => {
+    this.httpPostStateAndInfo({
+      lor: liveViewOverride,
+    });
+  }
+
+  /** Sets the transition duration. The `transition` unit is 1/10 of a second (eg: `transition = 7` is 0.7s). */
+  private setTransitionDuration = (seconds: number) => {
+    return this.httpPostState({
+      transition: seconds * 10,
+    });
+  }
+
   /** Toggles the LED strip(s) on/off. */
-  togglePower(isOn: boolean) {
+  private setPower = (isOn: boolean) => {
     return this.httpPostStateAndInfo({
       on: isOn,
     });
   }
 
   /** Toggles the night light timer on/off. */
-  toggleNightLight(isNightLightActive: boolean) {
+  private setNightLightActive = (isNightLightActive: boolean) => {
     return this.httpPostStateAndInfo({
       nl: {
         on: isNightLightActive,
@@ -363,7 +366,7 @@ export class ApiService extends UnsubscriberService {
   }
 
   /** Toggles the night light timer on/off. */
-  toggleSync(shouldSync: boolean, shouldToggleReceiveWithSend: boolean) {
+  private setSync = (shouldSync: boolean, shouldToggleReceiveWithSend: boolean) => {
     const udpn: Partial<WLEDUdpState> = {
       send: shouldSync,
     }
@@ -376,7 +379,7 @@ export class ApiService extends UnsubscriberService {
   }
 
   /** Selects the specified segment. */
-  selectSegment(segmentId: number, isSelected: boolean) {
+  private selectSegment = (segmentId: number, isSelected: boolean) => {
     return this.httpPostState({
       seg: {
         id: segmentId,
@@ -386,7 +389,7 @@ export class ApiService extends UnsubscriberService {
   }
 
   /** Selects the specified segment and deselects all others. */
-  selectOnlySegment(segmentId: number, segmentsLength: number) {
+  private selectOnlySegment = (segmentId: number, segmentsLength: number) => {
     const segments = [];
     for (let i = 0; i < segmentsLength; i++) {
       segments.push({ sel: i === segmentId });
@@ -397,7 +400,7 @@ export class ApiService extends UnsubscriberService {
   }
 
   /** Selects all segments. */
-  selectAllSegments(segmentsLength: number) {
+  private selectAllSegments = (segmentsLength: number) => {
     const segments = [];
     for (let i = 0; i < segmentsLength; i++) {
       segments.push({ sel: true });
@@ -408,12 +411,12 @@ export class ApiService extends UnsubscriberService {
   }
 
   /** Creates a new segment. */
-  createSegment(options: {
+  private createSegment = (options: {
     segmentId: number,
     start: number,
     stop: number,
     useSegmentLength: boolean,
-  }) {
+  }) => {
     const {
       segmentId,
       start,
@@ -429,8 +432,8 @@ export class ApiService extends UnsubscriberService {
     return result;
   }
 
-  /** Updates the settings of the specified segment. */
-  updateSegment(options: {
+  /** Updates the specified segment. */
+  private updateSegment = (options: {
     segmentId: number,
     start: number,
     stop: number,
@@ -438,7 +441,7 @@ export class ApiService extends UnsubscriberService {
     offset?: number,
     grouping?: number,
     spacing?: number,
-  }) {
+  }) => {
     const calculatedStop = (options.useSegmentLength ? options.start : 0) + options.stop;
     const segment: Partial<WLEDSegment> = {
       id: options.segmentId,
@@ -461,7 +464,7 @@ export class ApiService extends UnsubscriberService {
   }
 
   /** Deletes the specified segment. */
-  deleteSegment(segmentId: number) {
+  private deleteSegment = (segmentId: number) => {
     return this.httpPostStateAndInfo({
       seg: {
         id: segmentId,
@@ -471,7 +474,7 @@ export class ApiService extends UnsubscriberService {
   }
 
   /** Resets all segments, creating a single segment that covers the entire length of the LED strip. */
-  resetSegments(ledCount: number, segmentsLength: number) {
+  private resetSegments = (ledCount: number, segmentsLength: number) => {
     const segments: Partial<WLEDSegmentPostRequest>[] = [];
     segments.push({
       start: 0,
@@ -487,7 +490,7 @@ export class ApiService extends UnsubscriberService {
   }
 
   /** Toggles the specified segment on or off. */
-  setSegmentOn(segmentId: number, isOn: boolean) {
+  private setSegmentOn = (segmentId: number, isOn: boolean) => {
     return this.httpPostStateAndInfo({
       seg: {
         id: segmentId,
@@ -497,7 +500,7 @@ export class ApiService extends UnsubscriberService {
   }
   
   /** Sets the brightness of the specified segment. */
-  setSegmentBrightness(segmentId: number, brightness: number) {
+  private setSegmentBrightness = (segmentId: number, brightness: number) => {
     return this.httpPostStateAndInfo({
       seg: {
         id: segmentId,
@@ -507,7 +510,7 @@ export class ApiService extends UnsubscriberService {
   }
 
   /** Toggles the reverse setting of the specified segment. */
-  setSegmentReverse(segmentId: number, isReverse: boolean) {
+  private setSegmentReverse = (segmentId: number, isReverse: boolean) => {
     return this.httpPostState({
       seg: {
         id: segmentId,
@@ -517,7 +520,7 @@ export class ApiService extends UnsubscriberService {
   }
 
   /** Toggles the mirror setting of the specified segment. */
-  setSegmentMirror(segmentId: number, isMirror: boolean) {
+  private setSegmentMirror = (segmentId: number, isMirror: boolean) => {
     return this.httpPostState({
       seg: {
         id: segmentId,
@@ -527,7 +530,7 @@ export class ApiService extends UnsubscriberService {
   }
 
   /** Sets the name of the specified segment. */
-  setSegmentName(segmentId: number, name: string) {
+  private setSegmentName = (segmentId: number, name: string) => {
     // TODO does this api call work? (probably not but test before deleting)
     return this.httpPostState({
       seg: {
@@ -536,20 +539,20 @@ export class ApiService extends UnsubscriberService {
       },
     });
   }
-
-  loadPreset(presetId: number) {
+  
+  private loadPreset = (presetId: number) => {
     return this.httpPostStateAndInfo({
       ps: presetId,
     });
   }
 
-  updatePreset(
+  private updatePreset = (
     preset: AppPreset,
     useCurrentState: boolean,
     includeBrightness: boolean,
     saveSegmentBounds: boolean,
     state: AppWLEDState,
-  ) {
+  ) => {
     let request: SavePresetRequest;
     const name = preset.name || `Preset ${preset.id}`;
     let base = {
@@ -596,44 +599,37 @@ export class ApiService extends UnsubscriberService {
     return this.httpPostStateAndInfo(request as {});
   }
 
-  /** Sets the transition duration. The `transition` unit is 1/10 of a second (eg: `transition = 7` is 0.7s). */
-  setTransitionDuration(seconds: number) {
-    return this.httpPostState({
-      transition: seconds * 10,
-    });
-  }
-
   /** Submits LED settings form data to server. */
-  setLedSettings(ledSettings: FormValues) {
+  private setLedSettings = (ledSettings: FormValues) => {
     // TODO does this return WLEDApiResponse type or other type?
     return this.httpPost(
-      this.createApiUrl(LED_SETTINGS_PATH),
+      this.createApiUrl(ApiPath.LED_SETTINGS_PATH),
       ledSettings,
       MOCK_API_RESPONSE,
     );
   }
 
   /** Submits ui settings form data to server. */
-  setUISettings(uiSettings: FormValues) {
+  private setUISettings = (uiSettings: FormValues) => {
     // TODO does this return WLEDApiResponse type or other type?
     return this.httpPost(
-      this.createApiUrl(UI_SETTINGS_PATH),
+      this.createApiUrl(ApiPath.UI_SETTINGS_PATH),
       uiSettings,
       MOCK_API_RESPONSE,
     );
   }
 
   /** Submits wifi settings form data to server. */
-  setWifiSettings(wifiSettings: FormValues) {
+  private setWifiSettings = (wifiSettings: FormValues) => {
     // TODO does this return WLEDApiResponse type or other type?
     return this.httpPost(
-      this.createApiUrl(WIFI_SETTINGS_PATH),
+      this.createApiUrl(ApiPath.WIFI_SETTINGS_PATH),
       wifiSettings,
       MOCK_API_RESPONSE,
     );
   }
 
-  getSecuritySettings() {
+  private getSecuritySettings = () => {
     const offlineDefault = `
       function GetV(){
         var d=document;
@@ -643,28 +639,21 @@ export class ApiService extends UnsubscriberService {
       }
     `;
     return this.httpGet(
-      this.createApiUrl(SECURITY_SETTINGS_JS_PATH),
+      this.createApiUrl(ApiFilePath.SECURITY_SETTINGS_JS_PATH),
       offlineDefault,
       { responseType: 'text' },
     );
   }
 
   /** Submits security settings form data to server. */
-  setSecuritySettings(securitySettings: WledSecuritySettings) {
+  private setSecuritySettings = (securitySettings: WledSecuritySettings) => {
     // TODO this post doesn't work!!
     return this.httpPost(
-      this.createApiUrl(SECURITY_SETTINGS_PATH),
+      this.createApiUrl(ApiPath.SECURITY_SETTINGS_PATH),
       securitySettings,
       'Security settings saved.',
       { responseType: 'text' },
     );
-  }
-
-  /** Sets the live view override setting. */
-  setLiveViewOverride(liveViewOverride: number) {
-    this.httpPostStateAndInfo({
-      lor: liveViewOverride,
-    });
   }
 
   /**
@@ -673,18 +662,18 @@ export class ApiService extends UnsubscriberService {
    * @param path the path prefix to upload to
    * @returns post reponse observable
    */
-  uploadFile(file: File, name: string) {
+  private uploadFile = (file: File, name: string) => {
     const formData = new FormData();
     formData.append('file', file, name);
     return this.httpPost(
-      this.createApiUrl(FILE_UPLOAD_PATH),
+      this.createApiUrl(ApiPath.FILE_UPLOAD_PATH),
       formData,
       MOCK_API_RESPONSE,
       { responseType: 'text' },
     );
   }
 
-  downloadExternalFile(url: string) {
+  private downloadExternalFile = (url: string) => {
     return this.httpGet(
       url,
       {},
@@ -692,21 +681,124 @@ export class ApiService extends UnsubscriberService {
     );
   }
 
-  getDownloadPresetsUrl() {
+  private getDownloadPresetsUrl = () => {
     return this.createApiUrl(ApiFilePath.PRESETS_JSON_FILE);
   }
 
-  getDownloadConfigUrl() {
+  private getDownloadConfigUrl = () => {
     return this.createApiUrl(ApiFilePath.CONFIG_JSON_FILE);
   }
 
-  private createBody(data: { [key: string]: unknown }) {
-    return {
-      v: true, // verbose setting to get full API response
-      time: Math.floor(Date.now() / 1000),
-      ...data,
-    };
-  }
+  appState = {
+    refresh: this.refreshAppState,
+    brightness: {
+      set: this.setBrightness,
+    },
+    color: {
+      set: this.setColor,
+    },
+    effect: {
+      getAll: this.getEffects,
+      set: this.setEffect,
+    },
+    intensity: {
+      set: this.setIntensity,
+    },
+    info: {
+      get: this.getInfo,
+    },
+    json: {
+      get: this.getJson,
+    },
+    liveData: {
+      get: this.getLiveData,
+    },
+    liveViewOverride: {
+      set: this.setLiveViewOverride,
+    },
+    nightLight: {
+      set: this.setNightLightActive,
+    },
+    nodes: {
+      get: this.getNodes,
+    },
+    palette: {
+      getAll: this.getPalettes,
+      getData: this.getPalettesData,
+      set: this.setPalette,
+    },
+    power: {
+      set: this.setPower,
+    },
+    speed: {
+      set: this.setSpeed,
+    },
+    state: {
+      get: this.getState,
+    },
+    sync: {
+      set: this.setSync,
+    },
+    transitionDuration: {
+      set: this.setTransitionDuration,
+    },
+    whiteBalance: {
+      set: this.setWhiteBalance,
+    },
+  };
+
+  segment = {
+    create: this.createSegment,
+    update: this.updateSegment,
+    delete: this.deleteSegment,
+    select: this.selectSegment,
+    selectOnly: this.selectOnlySegment,
+    selectAll: this.selectAllSegments,
+    reset: this.resetSegments,
+    setBrightness: this.setSegmentBrightness,
+    setMirror: this.setSegmentMirror,
+    setName: this.setSegmentName,
+    setOn: this.setSegmentOn,
+    setReverse: this.setSegmentReverse,
+  };
+
+  preset = {
+    getAll: this.getPresets,
+    load: this.loadPreset,
+    update: this.updatePreset,
+  };
+
+  settings = {
+    leds: {
+      get: null, // TODO
+      set: this.setLedSettings,
+    },
+    ui: {
+      get: null, // TODO
+      set: this.setUISettings,
+    },
+    wifi: {
+      get: null, // TODO
+      set: this.setWifiSettings,
+    },
+    security: {
+      get: this.getSecuritySettings,
+      set: this.setSecuritySettings,
+    },
+  };
+
+  file = {
+    upload: this.uploadFile,
+    download: {
+      internal: null, // TODO
+      external: this.downloadExternalFile,
+    },
+  };
+
+  downloadUrl = {
+    presets: this.getDownloadPresetsUrl,
+    config: this.getDownloadConfigUrl,
+  };
 }
 
 /** Workaround for angular http method options responseType bug. */

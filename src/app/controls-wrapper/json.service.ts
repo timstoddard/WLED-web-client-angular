@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ApiService } from '../shared/api.service';
+import { ApiService } from '../shared/api-service/api.service';
 import { AppUIConfig, UIConfigService } from '../shared/ui-config.service';
 import { LocalStorageKey, LocalStorageService } from '../shared/local-storage.service';
 import { asHtmlElem, getInput, setCssColor } from './utils';
@@ -17,7 +17,7 @@ export class JsonService {
   private isRgbw = false;
 
   constructor(
-    private apiService: ApiService,
+    // private apiService: ApiService,
     private localStorageService: LocalStorageService,
     private uiConfigService: UIConfigService) {}
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
-import { ApiService } from '../../shared/api.service';
+import { ApiService } from '../../shared/api-service/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { UnsubscriberService } from '../../shared/unsubscriber/unsubscriber.service';
 import { ColorSlotsService } from '../color-inputs/color-slots/color-slots.service';
@@ -87,7 +87,7 @@ export class PalettesService extends UnsubscriberService {
     });
 
     return (shouldCallApi && paletteId !== NONE_SELECTED)
-      ? this.apiService.setPalette(paletteId)
+      ? this.apiService.appState.palette.set(paletteId)
       : null;
   }
 

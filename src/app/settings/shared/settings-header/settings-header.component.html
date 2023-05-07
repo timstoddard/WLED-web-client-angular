@@ -6,14 +6,13 @@
 </div>
 <div>
   <a
-    routerLink="/settings"
+    [routerLink]="['/', 'controls', 'settings']"
     mat-raised-button
     color="accent">
     Back
   </a>
 </div>
 <div>
-  <!-- TODO does this need `type="submit"`? -->
   <button
     (click)="onSave()"
     mat-raised-button

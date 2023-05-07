@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
-import { ApiService } from '../../shared/api.service';
+import { ApiService } from '../../shared/api-service/api.service';
 import { OnlineStatusService } from '../../shared/online-status.service';
 import { MOCK_PALETTES_DATA } from '../mock-api-data';
 import { PalettesApiData } from './palettes.service';
@@ -26,7 +26,7 @@ export class PalettesDataResolver implements Resolve<PalettesApiData[]> {
     const LAST_PALETTE_DATA_PAGE = 9; // 9 pages (for now), zero indexed
     const apiCalls = [];
     for (let page = 0; page < LAST_PALETTE_DATA_PAGE; page++) {
-      apiCalls.push(this.apiService.getPalettesData(page));
+      apiCalls.push(this.apiService.appState.palette.getData(page));
     }
     return forkJoin(apiCalls);
   }

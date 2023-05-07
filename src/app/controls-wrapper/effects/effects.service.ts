@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { ApiService } from '../../shared/api.service';
+import { ApiService } from '../../shared/api-service/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { UnsubscriberService } from '../../shared/unsubscriber/unsubscriber.service';
 import { compareNames } from '../utils';
@@ -67,16 +67,16 @@ export class EffectsService extends UnsubscriberService {
     });
 
     return (shouldCallApi && effectId !== NONE_SELECTED)
-      ? this.apiService.setEffect(effectId)
+      ? this.apiService.appState.effect.set(effectId)
       : null;
   }
 
   setSpeed(effectId: number) {
-    return this.apiService.setSpeed(effectId);
+    return this.apiService.appState.speed.set(effectId);
   }
 
   setIntensity(effectId: number) {
-    return this.apiService.setIntensity(effectId);
+    return this.apiService.appState.intensity.set(effectId);
   }
 
   getSelectedEffect$() {

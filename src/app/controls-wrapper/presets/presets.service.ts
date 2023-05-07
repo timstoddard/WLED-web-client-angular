@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ApiService } from '../../shared/api.service';
+import { ApiService } from '../../shared/api-service/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { AppPreset } from '../../shared/app-types/app-presets';
 import { UnsubscriberService } from '../../shared/unsubscriber/unsubscriber.service';
@@ -27,7 +27,7 @@ export class PresetsService extends UnsubscriberService {
   }
 
   loadPreset(presetId: number) {
-    return this.apiService.loadPreset(presetId);
+    return this.apiService.preset.load(presetId);
   }
 
   updatePreset(
@@ -39,7 +39,7 @@ export class PresetsService extends UnsubscriberService {
     this.appStateService.getAppState(this.ngUnsubscribe)
       .subscribe(({ state }) => {
         // TODO need to return this?
-        this.apiService.updatePreset(
+        this.apiService.preset.update(
           preset,
           useCurrentState,
           includeBrightness,

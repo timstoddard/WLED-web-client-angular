@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ApiService } from '../../shared/api.service';
+import { ApiService } from '../../shared/api-service/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { WLEDIpAddress } from '../../shared/app-types/app-types';
 
@@ -12,7 +12,7 @@ export class NetworkSettingsService {
   ) {}
 
   setWifiSettings(wifiSettings: any /* TODO type */) {
-    return this.apiService.setWifiSettings(wifiSettings);
+    return this.apiService.settings.wifi.set(wifiSettings);
   }
 
   /**

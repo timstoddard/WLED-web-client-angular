@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ApiService } from '../api.service';
+import { ApiService } from '../api-service/api.service';
 import { WebSocketService } from '../web-socket.service';
 import { AppStateService } from '../app-state/app-state.service';
 import { UnsubscriberComponent } from '../unsubscriber/unsubscriber.component';
@@ -73,7 +73,7 @@ export class LiveViewComponent extends UnsubscriberComponent implements OnInit {
     // }
 
     this.handleUnsubscribe(
-      this.apiService.getLiveData())
+      this.apiService.appState.liveData.get())
       .subscribe(({ leds }) => {
         try {
           this.backgroundString = this.liveViewService.getBackgroundString(leds);

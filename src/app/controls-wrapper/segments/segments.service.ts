@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ApiTypeMapper } from '../../shared/api-type-mapper';
-import { ApiService } from '../../shared/api.service';
+import { ApiService } from '../../shared/api-service/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { AppSegment } from '../../shared/app-types/app-state';
 import { UnsubscriberService } from '../../shared/unsubscriber/unsubscriber.service';
@@ -45,7 +45,7 @@ export class SegmentsService extends UnsubscriberService {
     const {
       nextId,
     } = this.apiTypeMapper.normalizeIds<AppSegment>(this.segments, 'id');
-    return this.apiService.createSegment({
+    return this.apiService.segment.create({
       segmentId: nextId,
       ...options,
     });
@@ -60,12 +60,12 @@ export class SegmentsService extends UnsubscriberService {
     grouping?: number,
     spacing?: number,
   }) {
-    return this.apiService.updateSegment(options);
+    return this.apiService.segment.update(options);
   }
 
   deleteSegment(segmentId: number) {
     if (this.segments.length > 1) {
-      return this.apiService.deleteSegment(segmentId);
+      return this.apiService.segment.delete(segmentId);
     }
     return null;
     // TODO update client only fields
@@ -106,35 +106,35 @@ export class SegmentsService extends UnsubscriberService {
   }
 
   setSegmentOn(segmentId: number, isOn: boolean) {
-    return this.apiService.setSegmentOn(segmentId, isOn);
+    return this.apiService.segment.setOn(segmentId, isOn);
   }
 
   setSegmentBrightness(segmentId: number, brightness: number) {
-    return this.apiService.setSegmentBrightness(segmentId, brightness);
+    return this.apiService.segment.setBrightness(segmentId, brightness);
   }
 
   setSegmentReverse(segmentId: number, isReverse: boolean) {
-    return this.apiService.setSegmentReverse(segmentId, isReverse);
+    return this.apiService.segment.setReverse(segmentId, isReverse);
   }
 
   setSegmentMirror(segmentId: number, isMirror: boolean) {
-    return this.apiService.setSegmentMirror(segmentId, isMirror);
+    return this.apiService.segment.setMirror(segmentId, isMirror);
   }
 
   selectSegment(segmentId: number, isSelected: boolean) {
-    return this.apiService.selectSegment(segmentId, isSelected);
+    return this.apiService.segment.select(segmentId, isSelected);
   }
 
   selectOnlySegment(segmentId: number) {
-    return this.apiService.selectOnlySegment(segmentId, this.segments.length);
+    return this.apiService.segment.selectOnly(segmentId, this.segments.length);
   }
 
   selectAllSegments() {
-    return this.apiService.selectAllSegments(this.segments.length);
+    return this.apiService.segment.selectAll(this.segments.length);
   }
 
   resetSegments() {
-    return this.apiService.resetSegments(this.ledCount, this.segments.length);
+    return this.apiService.segment.reset(this.ledCount, this.segments.length);
     // TODO update client only fields
   }
 

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import { of } from 'rxjs';
 import { WLEDPresets } from '../../shared/api-types/api-presets';
-import { ApiService } from '../../shared/api.service';
+import { ApiService } from '../../shared/api-service/api.service';
 import { OnlineStatusService } from '../../shared/online-status.service';
 import { MOCK_API_PRESETS } from '../mock-api-data';
 
@@ -17,6 +17,6 @@ export class PresetsResolver implements Resolve<WLEDPresets> {
 
     return this.onlineStatusService.getIsOffline()
       ? of(MOCK_API_PRESETS)
-      : this.apiService.getPresets()
+      : this.apiService.preset.getAll()
   }
 }

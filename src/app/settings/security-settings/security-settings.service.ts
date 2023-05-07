@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { saveAs } from 'file-saver';
 import { BehaviorSubject, timer } from 'rxjs';
-import { ApiService } from 'src/app/shared/api.service';
+import { ApiService } from 'src/app/shared/api-service/api.service';
 import { UnsubscriberService } from 'src/app/shared/unsubscriber/unsubscriber.service';
 
 // TODO move these to proper types file
@@ -89,7 +89,7 @@ export class SecuritySettingsService extends UnsubscriberService {
     const LOAD_API_URL_DELAY_MS = 2000;
     timer(LOAD_API_URL_DELAY_MS)
       .subscribe(() => {
-        this.handleUnsubscribe(this.apiService.getSecuritySettings())
+        this.handleUnsubscribe(this.apiService.settings.security.get())
           .subscribe(this.parseJsFile);
       });
   }
@@ -100,19 +100,19 @@ export class SecuritySettingsService extends UnsubscriberService {
 
   setSecuritySettings(settings: SecuritySettings) {
     const formValues = transformSecuritySettingsToWledSecuritySettings(settings);
-    return this.apiService.setSecuritySettings(formValues);
+    return this.apiService.settings.security.set(formValues);
   }
 
   downloadPresetsFile() {
     saveAs(
-      this.apiService.getDownloadPresetsUrl(),
+      this.apiService.downloadUrl.presets(),
       this.PRESETS_FILE_NAME,
     );
   }
 
   downloadConfigFile() {
     saveAs(
-      this.apiService.getDownloadConfigUrl(),
+      this.apiService.downloadUrl.config(),
       this.CONFIG_FILE_NAME,
     );
   }
