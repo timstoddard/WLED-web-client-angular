@@ -85,7 +85,7 @@ export class SecuritySettingsService extends UnsubscriberService {
     super();
 
     const LOAD_API_URL_DELAY_MS = 2000;
-    timer(LOAD_API_URL_DELAY_MS)
+    this.handleUnsubscribe(timer(LOAD_API_URL_DELAY_MS))
       .subscribe(() => {
         this.handleUnsubscribe(this.apiService.settings.security.get())
           .subscribe((responseJs) => {

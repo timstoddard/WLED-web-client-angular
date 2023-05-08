@@ -31,3 +31,7 @@ html {
   @include default-background-and-text-colors;
   border: 2px solid var(--themeColorPrimary);
 }
+
+.mat-snack-bar-container {
+  margin-bottom: 80px !important;
+}

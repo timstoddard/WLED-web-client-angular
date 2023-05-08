@@ -77,7 +77,12 @@ export interface WledNetworkSettings {
 // TODO duplicated from security settings service
 type BinaryValue = 0 | 1;
 const convertToBoolean = (n?: BinaryValue) => !!n;
-const convertToString = (n: unknown) => n ? n.toString() : '';
+const convertToString = (n: unknown) => {
+  const isNonNullPrimitive = typeof n === 'string' || typeof n === 'number' || typeof n === 'boolean';
+  return isNonNullPrimitive
+    ? n.toString()
+    : (n?.toString() || '');
+};
 
 const transformNetworkSettingsToWledNetworkSettings = (settings: NetworkSettings) => {
   const {
@@ -195,7 +200,7 @@ export class NetworkSettingsService extends UnsubscriberService {
     super();
 
     const LOAD_API_URL_DELAY_MS = 2000;
-    timer(LOAD_API_URL_DELAY_MS)
+    this.handleUnsubscribe(timer(LOAD_API_URL_DELAY_MS))
       .subscribe(() => {
         this.handleUnsubscribe(this.apiService.settings.wifi.get())
           .subscribe((responseJs) => {

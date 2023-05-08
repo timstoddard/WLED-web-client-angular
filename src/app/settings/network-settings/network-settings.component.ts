@@ -94,28 +94,28 @@ export class NetworkSettingsComponent extends UnsubscriberComponent implements O
 
   staticIpInputConfig: InputConfig = {
     type: 'text',
-    getFormControl: () => getFormControl(this.networkSettingsForm, 'localNetwork.ipAddress.staticIp'),
+    getFormControl: () => getFormControl(this.networkSettingsForm, 'localNetwork.staticIp'),
     placeholder: '000.000.000.000',
     widthPx: 150,
   };
 
   staticGatewayInputConfig: InputConfig = {
     type: 'text',
-    getFormControl: () => getFormControl(this.networkSettingsForm, 'localNetwork.ipAddress.staticGateway'),
+    getFormControl: () => getFormControl(this.networkSettingsForm, 'localNetwork.staticGateway'),
     placeholder: '000.000.000.000',
     widthPx: 150,
   };
 
   staticSubnetMaskInputConfig: InputConfig = {
     type: 'text',
-    getFormControl: () => getFormControl(this.networkSettingsForm, 'localNetwork.ipAddress.staticSubnetMask'),
+    getFormControl: () => getFormControl(this.networkSettingsForm, 'localNetwork.staticSubnetMask'),
     placeholder: '000.000.000.000',
     widthPx: 150,
   };
 
   mDNSInputConfig: InputConfig = {
     type: 'text',
-    getFormControl: () => getFormControl(this.networkSettingsForm, 'localNetwork.ipAddress.mDNS'),
+    getFormControl: () => getFormControl(this.networkSettingsForm, 'localNetwork.mDNS'),
     placeholder: 'wled-123',
     widthPx: 150,
   };
