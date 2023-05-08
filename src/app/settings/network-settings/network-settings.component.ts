@@ -116,7 +116,7 @@ export class NetworkSettingsComponent extends UnsubscriberComponent implements O
   mDNSInputConfig: InputConfig = {
     type: 'text',
     getFormControl: () => getFormControl(this.networkSettingsForm, 'localNetwork.ipAddress.mDNS'),
-    placeholder: 'mDNS',
+    placeholder: 'wled-123',
     widthPx: 150,
   };
 

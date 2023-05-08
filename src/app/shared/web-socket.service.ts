@@ -3,7 +3,6 @@ import { Observable, Subject } from 'rxjs';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { WLEDApiResponse } from './api-types/api-types';
 import { AppStateService } from './app-state/app-state.service';
-import { LiveViewData } from './live-view/live-view.service';
 import { OnlineStatusService } from './online-status.service';
 import { UnsubscriberService } from './unsubscriber/unsubscriber.service';
 
@@ -15,7 +14,7 @@ const STATE_AND_INFO_MESSAGE = 'STATE_AND_INFO_MESSAGE';
 export class WebSocketService extends UnsubscriberService {
   private socket$!: WebSocketSubject<any>;
   private stateAndInfoSocket$!: Observable<WLEDApiResponse>;
-  private liveViewSocket$!: Observable<LiveViewData>;
+  private liveViewSocket$!: Observable<Uint8Array>;
 
   constructor(
     private onlineStatusService: OnlineStatusService,
@@ -58,7 +57,30 @@ export class WebSocketService extends UnsubscriberService {
     // TODO handle dropped connections
     // https://javascript-conference.com/blog/real-time-in-angular-a-journey-into-websocket-and-rxjs/
 
-    this.socket$ = webSocket<any /* TODO type */>(this.getWebSocketUrl(apiBaseUrl));
+    this.socket$ = webSocket<WLEDApiResponse | Uint8Array>({
+      url: this.getWebSocketUrl(apiBaseUrl),
+      binaryType: 'arraybuffer',
+      deserializer: (e) => {
+        if (toString.call(e.data) === '[object ArrayBuffer]') {
+          // response is an int array (live view data)
+          const arr = new Uint8Array(e.data);
+          const isValid = arr[0] === 76;
+          return isValid ? arr : null;
+        } else {
+          // response is a stringified json object
+          let dataAsText = '';
+          try {
+            dataAsText = e.data;
+            return JSON.parse(dataAsText);
+          } catch (err) {
+            console.warn('failed to parse json:', dataAsText);
+            console.warn(err);
+          }
+        }
+
+        return null;
+      },
+    });
 
     this.stateAndInfoSocket$ = this.socket$.multiplex(
       () => ({ subscribe: STATE_AND_INFO_MESSAGE }),
@@ -68,7 +90,7 @@ export class WebSocketService extends UnsubscriberService {
     this.liveViewSocket$ = this.socket$.multiplex(
       () => ({ subscribe: LIVE_VIEW_MESSAGE }),
       () => ({ unsubscribe: LIVE_VIEW_MESSAGE }),
-      message => !!message.leds);
+      message => message instanceof Uint8Array);
   }
 
   private getWebSocketUrl(apiBaseUrl: string) {

@@ -17,4 +17,19 @@ export class LiveViewService {
     }).join(',');
     return `linear-gradient(90deg,${hexList})`;
   }
+
+  // TODO this logic was written to fill the background of a div, need to translate it to work with a canvas (is css background or canvas more performant?)
+  getBackgroundStringFromUint8Array = (arr: Uint8Array) => {
+    const length = arr.length;
+    const initArrIndex = arr[1] === 2 ? 4 : 2;
+    let colors = ''
+
+    for (let i = initArrIndex; i < length; i += 3) {
+      colors += `rgb(${arr[i]},${arr[i + 1]},${arr[i + 2]})`;
+      if (i < length - 3) {
+        colors += ',';
+      }
+    }
+    return `linear-gradient(90deg,${colors})`;
+  }
 }

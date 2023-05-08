@@ -37,32 +37,28 @@ export class TopMenuBarService extends UnsubscriberService {
     this.processingStatus[name] = status;
   }
 
-  // TODO update name to "set"
-  togglePower(isOn: boolean) {
+  setPower(isOn: boolean) {
     this.processToggle(
       TopMenuBarButtonName.POWER,
       this.apiService.appState.power.set(isOn),
     );
   }
 
-  // TODO update name to "set"
-  toggleNightLight(isNightLightActive: boolean) {
+  setNightLight(isNightLightActive: boolean) {
     this.processToggle(
       TopMenuBarButtonName.TIMER,
       this.apiService.appState.nightLight.set(isNightLightActive),
     );
   }
 
-  // TODO update name to "set"
-  toggleSync(shouldSync: boolean, shouldToggleReceiveWithSend: boolean) {
+  setSync(shouldSync: boolean, shouldToggleReceiveWithSend: boolean) {
     this.processToggle(
       TopMenuBarButtonName.SYNC,
       this.apiService.appState.sync.set(shouldSync, shouldToggleReceiveWithSend),
     );
   }
 
-  // TODO update name to "set"
-  toggleLiveView(isLiveViewActive: boolean) {
+  setLiveView(isLiveViewActive: boolean) {
     this.appStateService.setLocalSettings({ isLiveViewActive });
 
     // TODO this was moved from the component's app state subscription, make sure it doesn't cause any bugs by being here

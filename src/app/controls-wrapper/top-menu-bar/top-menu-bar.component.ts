@@ -141,25 +141,25 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
       {
         name: TopMenuBarButtonName.POWER,
         icon: 'power_settings_new',
-        onClick: () => this.topMenuBarService.togglePower(!this.isOn),
+        onClick: () => this.topMenuBarService.setPower(!this.isOn),
         enabled: () => this.isOn,
       },
       {
         name: TopMenuBarButtonName.TIMER,
         icon: 'timer',
-        onClick: () => this.topMenuBarService.toggleNightLight(!this.isNightLightActive),
+        onClick: () => this.topMenuBarService.setNightLight(!this.isNightLightActive),
         enabled: () => this.isNightLightActive,
       },
       {
         name: TopMenuBarButtonName.SYNC,
         icon: 'sync',
-        onClick: () => this.topMenuBarService.toggleSync(!this.isSyncActive, this.shouldToggleReceiveWithSend),
+        onClick: () => this.topMenuBarService.setSync(!this.isSyncActive, this.shouldToggleReceiveWithSend),
         enabled: () => this.isSyncActive,
       },
       {
         name: TopMenuBarButtonName.LIVE,
         icon: 'visibility',
-        onClick: () => this.topMenuBarService.toggleLiveView(!this.isLiveViewActive),
+        onClick: () => this.topMenuBarService.setLiveView(!this.isLiveViewActive),
         enabled: () => this.isLiveViewActive,
       },
     ];
