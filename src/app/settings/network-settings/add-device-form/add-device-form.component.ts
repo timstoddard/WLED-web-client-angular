@@ -7,6 +7,7 @@ import { AppStateService } from '../../../shared/app-state/app-state.service';
 import { WLEDIpAddress } from '../../../shared/app-types/app-types';
 import { FormService } from '../../../shared/form-service';
 import { UnsubscriberComponent } from '../../../shared/unsubscriber/unsubscriber.component';
+import { InputConfig } from 'src/app/shared/text-input/text-input.component';
 
 interface SelectableWLEDIpAddress extends WLEDIpAddress {
   selected: boolean;
@@ -24,6 +25,8 @@ interface IpAddressTestResults {
 export class AddDeviceFormComponent extends UnsubscriberComponent implements OnInit {
   wledIpAddresses!: FormArray;
   ipAddressTestResults!: IpAddressTestResults;
+  deviceNameInputConfigs: { [key: number]: InputConfig } = {};
+  devicePasswordInputConfigs: { [key: number]: InputConfig } = {};
   private selectedWLEDIpAddress!: WLEDIpAddress;
 
   constructor(
@@ -47,6 +50,7 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
       }) => {
         this.selectedWLEDIpAddress = selectedWLEDIpAddress;
         this.updateFormValue(wledIpAddresses);
+        this.generateInputConfigs();
       });
   }
 
@@ -56,6 +60,7 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
 
   addWLEDIpAddress() {
     this.wledIpAddresses.push(this.createWLEDIpAddressGroup());
+    this.generateInputConfigs();
   }
 
   removeWLEDIpAddress(removeIndex: number) {
@@ -78,6 +83,7 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
       }
     }
     this.ipAddressTestResults = updatedTestResults;
+    this.generateInputConfigs();
   }
 
   // TODO show loading animation
@@ -94,15 +100,15 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
     if (wledIpAddress) {
       const ipAddress = (wledIpAddress.value as SelectableWLEDIpAddress).ipv4Address;
       this.testIpAddress(ipAddress, {
-          next: ({ success }) => {
-            this.updateTestResultAtIndex(index, success);
-            this.changeDetectorRef.markForCheck();
-          },
-          error: () => {
-            this.updateTestResultAtIndex(index, false);
-            this.changeDetectorRef.markForCheck();
-          }
-        });
+        next: ({ success }) => {
+          this.updateTestResultAtIndex(index, success);
+          this.changeDetectorRef.markForCheck();
+        },
+        error: () => {
+          this.updateTestResultAtIndex(index, false);
+          this.changeDetectorRef.markForCheck();
+        }
+      });
     }
   }
 
@@ -142,7 +148,7 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
     }
   }
 
-  getFormControl(name: string, index: number) {
+  getFormControlAtIndex(name: string, index: number) {
     return this.wledIpAddresses.at(index).get(name) as FormControl;
   }
 
@@ -208,4 +214,32 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
       .find(({ value }) => value.selected);
     return selected;
   }
+
+  private generateInputConfigs = () => {
+    const deviceNameInputConfigs: { [key: number]: InputConfig } = {};
+    const devicePasswordInputConfigs: { [key: number]: InputConfig } = {};
+
+    const formGroups = this.getFormGroups();
+    for (let i = 0; i < formGroups.length; i++) {
+      deviceNameInputConfigs[i] = this.getDeviceNameInputConfig(i);
+      devicePasswordInputConfigs[i] = this.getDevicePasswordInputConfig(i);
+    }
+
+    this.deviceNameInputConfigs = deviceNameInputConfigs;
+    this.devicePasswordInputConfigs = devicePasswordInputConfigs;
+  }
+
+  private getDeviceNameInputConfig = (i: number): InputConfig => ({
+    type: 'text',
+    getFormControl: () => this.getFormControlAtIndex('name', i),
+    placeholder: 'Name',
+    widthPx: 150,
+  });
+
+  private getDevicePasswordInputConfig = (i: number): InputConfig => ({
+    type: 'text',
+    getFormControl: () => this.getFormControlAtIndex('ipv4Address', i),
+    placeholder: 'Password',
+    widthPx: 150,
+  });
 }

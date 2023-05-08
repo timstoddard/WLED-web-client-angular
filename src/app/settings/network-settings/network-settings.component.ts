@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
-import { FormService, createGetFormControl, getFormControlFn } from '../../shared/form-service';
+import { FormService, createGetFormControl, getFormControl, getFormControlFn } from '../../shared/form-service';
 import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
 import { SelectItem } from '../shared/settings-types';
 import { NetworkSettingsService } from './network-settings.service';
+import { InputConfig } from 'src/app/shared/text-input/text-input.component';
 
 const DEFAULT_ETHERNET_TYPE = 0;
 const DEFAULT_OPEN_AP_OPTION = 0;
@@ -14,6 +15,8 @@ const DEFAULT_OPEN_AP_OPTION = 0;
   styleUrls: ['./network-settings.component.scss']
 })
 export class NetworkSettingsComponent extends UnsubscriberComponent implements OnInit {
+  clientIpAddress = 'not active';
+  wledAccessPointIpAddress = 'not active';
   openAPOptions: SelectItem<number>[] = [
     {
       name: 'No connection after boot',
@@ -67,9 +70,84 @@ export class NetworkSettingsComponent extends UnsubscriberComponent implements O
   hasEthernet: boolean = true; // TODO how to get this?
   getFormControl!: getFormControlFn;
 
+  ssidInputConfig: InputConfig = {
+    type: 'text',
+    getFormControl: () => getFormControl(this.networkSettingsForm, 'localNetwork.ssid'),
+    placeholder: 'Network name',
+    widthPx: 180,
+  };
+
+  // ssidRequirements: FormControlRequirementConfig[] = [
+  //   {
+  //     path: ['localNetwork', 'ssid'],
+  //     errorName: 'maxLength',
+  //     description: 'Max length is 32',
+  //   },
+  // ];
+
+  ssidPasswordInputConfig: InputConfig = {
+    type: 'password',
+    getFormControl: () => getFormControl(this.networkSettingsForm, 'localNetwork.password'),
+    placeholder: 'Password',
+    widthPx: 180,
+  };
+
+  staticIpInputConfig: InputConfig = {
+    type: 'text',
+    getFormControl: () => getFormControl(this.networkSettingsForm, 'localNetwork.ipAddress.staticIp'),
+    placeholder: '000.000.000.000',
+    widthPx: 150,
+  };
+
+  staticGatewayInputConfig: InputConfig = {
+    type: 'text',
+    getFormControl: () => getFormControl(this.networkSettingsForm, 'localNetwork.ipAddress.staticGateway'),
+    placeholder: '000.000.000.000',
+    widthPx: 150,
+  };
+
+  staticSubnetMaskInputConfig: InputConfig = {
+    type: 'text',
+    getFormControl: () => getFormControl(this.networkSettingsForm, 'localNetwork.ipAddress.staticSubnetMask'),
+    placeholder: '000.000.000.000',
+    widthPx: 150,
+  };
+
+  mDNSInputConfig: InputConfig = {
+    type: 'text',
+    getFormControl: () => getFormControl(this.networkSettingsForm, 'localNetwork.ipAddress.mDNS'),
+    placeholder: 'mDNS',
+    widthPx: 150,
+  };
+
+  apSSIDInputConfig: InputConfig = {
+    type: 'text',
+    getFormControl: () => getFormControl(this.networkSettingsForm, 'wledAccessPoint.ssid'),
+    placeholder: 'Network name',
+    widthPx: 150,
+  };
+
+  apPasswordInputConfig: InputConfig = {
+    type: 'password',
+    getFormControl: () => getFormControl(this.networkSettingsForm, 'wledAccessPoint.password'),
+    placeholder: 'Password',
+    widthPx: 150,
+    pattern: '(.{8,63})|()',
+  };
+
+  apWifiChannelInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.networkSettingsForm, 'wledAccessPoint.wifiChannel'),
+    placeholder: '',
+    widthPx: 100,
+    min: 1,
+    max: 13,
+  };
+
   constructor(
     private formService: FormService,
     private networkSettingsService: NetworkSettingsService,
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
     super();
   }
@@ -77,6 +155,21 @@ export class NetworkSettingsComponent extends UnsubscriberComponent implements O
   ngOnInit() {
     this.networkSettingsForm = this.createForm();
     this.getFormControl = createGetFormControl(this.networkSettingsForm);
+
+    this.handleUnsubscribe(
+      this.networkSettingsService.getParsedValues()
+    ).subscribe(({ formValues, metadata }) => {
+      console.log(' >>> WIFI formValues', formValues)
+      console.log(' >>> WIFI metadata', metadata)
+      this.networkSettingsForm.patchValue(formValues);
+      if (metadata['clientIpAddress']) {
+        this.clientIpAddress = metadata['clientIpAddress'] as string;
+      }
+      if (metadata['wledAccessPointIpAddress']) {
+        this.wledAccessPointIpAddress = metadata['wledAccessPointIpAddress'] as string;
+      }
+      this.changeDetectorRef.markForCheck();
+    })
   }
 
   submitForm() {
@@ -86,7 +179,6 @@ export class NetworkSettingsComponent extends UnsubscriberComponent implements O
       wledAccessPoint,
       other,
     } = this.networkSettingsForm.value;
-
 
     // TODO move logic to service class
     const ipAddressRegex = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/;
@@ -135,24 +227,23 @@ export class NetworkSettingsComponent extends UnsubscriberComponent implements O
 
     // TODO get default values from server/api (is this currently possible? existing website has them hardcoded into the html)
 
+    // TODO add validators for IP address controls
     return this.formService.formBuilder.group({
       localNetwork: this.formService.formBuilder.group({
-        ssid: this.formService.formBuilder.control(''),
+        ssid: this.formService.formBuilder.control('', Validators.maxLength(32)),
         // TODO how is password handled server side?
-        password: this.formService.formBuilder.control(''),
-        ipAddress: this.formService.formBuilder.group({
-          // TODO add validators & text mask for IP inputs
-          staticIp: this.formService.formBuilder.control('0.0.0.0', Validators.required),
-          staticGateway: this.formService.formBuilder.control('0.0.0.0', Validators.required),
-          staticSubnetMask: this.formService.formBuilder.control('255.255.255.0', Validators.required),
-          // TODO better default?
-          mDNS: this.formService.formBuilder.control('wled-55a9b0'),
-        }),
+        password: this.formService.formBuilder.control('', Validators.maxLength(63)),
+        // TODO add validators & text mask for IP inputs
+        staticIp: this.formService.formBuilder.control('0.0.0.0', Validators.required),
+        staticGateway: this.formService.formBuilder.control('0.0.0.0', Validators.required),
+        staticSubnetMask: this.formService.formBuilder.control('255.255.255.0', Validators.required),
+        // TODO better default?
+        mDNS: this.formService.formBuilder.control('wled-55a9b0', Validators.maxLength(32)),
       }),
       wledAccessPoint: this.formService.formBuilder.group({
-        ssid: this.formService.formBuilder.control('WLED-AP'),
+        ssid: this.formService.formBuilder.control('WLED-AP', Validators.maxLength(32)),
         // TODO better default? how is asterisk password handled server side?
-        password: this.formService.formBuilder.control('********'),
+        password: this.formService.formBuilder.control('********', Validators.maxLength(63)),
         hideAPName: this.formService.formBuilder.control(false),
         wifiChannel: this.formService.formBuilder.control(1, Validators.required),
         openAP: this.formService.formBuilder.control(DEFAULT_OPEN_AP_OPTION),
@@ -164,35 +255,3 @@ export class NetworkSettingsComponent extends UnsubscriberComponent implements O
     });
   }
 }
-
-/*
-function GetV() {
-  var d=document;
-  d.Sf.CS.value="10010000101";
-  d.Sf.CP.value="*************";
-  d.Sf.I0.value=0;
-  d.Sf.G0.value=0;
-  d.Sf.S0.value=255;
-  d.Sf.I1.value=0;
-  d.Sf.G1.value=0;
-  d.Sf.S1.value=255;
-  d.Sf.I2.value=0;
-  d.Sf.G2.value=0;
-  d.Sf.S2.value=255;
-  d.Sf.I3.value=0;
-  d.Sf.G3.value=0;
-  d.Sf.S3.value=0;
-  d.Sf.CM.value="wled-55a9b0";
-  d.Sf.AB.selectedIndex=0;
-  d.Sf.AS.value="WLED-AP";
-  d.Sf.AH.checked=0;
-  d.Sf.AP.value="********";
-  d.Sf.AC.value=1;
-  d.Sf.WS.checked=1;
-  document.getElementById('ethd').style.display='none';
-
-  // TODO get these from api (is that possible?)
-  d.getElementsByClassName("sip")[0].innerHTML="192.168.100.154";
-  d.getElementsByClassName("sip")[1].innerHTML="4.3.2.1";
-}
-*/

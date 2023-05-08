@@ -1,14 +1,15 @@
+@import 'src/app/shared/scss/mixins';
+
 :host {
   max-width: 100%;
 }
 
 .addDeviceForm {
   &__formGroup {
+    @include flex-center;
     border: 1px solid var(--borderColorAccent);
     border-radius: 4px;
-    display: flex;
     flex-wrap: wrap;
-    justify-content: center;
     margin: 12px 0;
     padding: 4px 8px;
 
@@ -42,6 +43,31 @@
 
     & > * {
       margin: 5px;
+    }
+  }
+
+  &__item {
+    &__buttons {
+      @include flex-center;
+      flex-direction: column;
+
+      & > * {
+        margin: 3px;
+      }
+    }
+  }
+}
+
+@include media-query-max-width(750px) {
+  .addDeviceForm {
+    &__formGroup {
+      flex-direction: column;
+    }
+
+    &__item {
+      &__buttons {
+        flex-direction: row;
+      }
     }
   }
 }

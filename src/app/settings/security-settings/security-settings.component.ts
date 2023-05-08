@@ -28,12 +28,12 @@ export class SecuritySettingsComponent extends UnsubscriberComponent implements 
 
   settingsPinRequirements: FormControlRequirementConfig[] = [
     {
-      path: ['settingsPin'],
+      path: 'settingsPin',
       errorName: 'pattern',
       description: 'Only numbers',
     },
     {
-      path: ['settingsPin'],
+      path: 'settingsPin',
       errorName: 'invalidLength',
       description: 'Length must be 4',
     },
@@ -48,7 +48,7 @@ export class SecuritySettingsComponent extends UnsubscriberComponent implements 
 
   OTAPasswordRequirements: FormControlRequirementConfig[] = [
     {
-      path: ['otaUpdatePassword'],
+      path: 'otaUpdatePassword',
       errorName: 'maxLength',
       description: 'Max length is 32',
     },
@@ -69,8 +69,8 @@ export class SecuritySettingsComponent extends UnsubscriberComponent implements 
     this.handleUnsubscribe(
       this.securitySettingsService.getParsedValues()
     ).subscribe(({ formValues, metadata }) => {
-      console.log(' >>> formValues', formValues)
-      console.log(' >>> metadata', metadata)
+      console.log(' >>> SECURITY formValues', formValues)
+      console.log(' >>> SECURITY metadata', metadata)
       this.securitySettingsForm.patchValue(formValues);
       this.versionNumber = metadata['wledVersion'] as string;
     });

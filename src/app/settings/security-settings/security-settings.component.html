@@ -12,24 +12,19 @@
     Security Settings
   </h1>
 
-  <mat-card class="securitySettingsForm__warningCard">
-    <mat-card-title class="securitySettingsForm__warningCard__title">
-      Warning
-    </mat-card-title>
-    <mat-card-content>
-      <p>
-        This application is served over HTTP, which is <span style="font-weight: bold; text-decoration: underline;">unencrypted and therefore insecure</span>. Proceed with caution: a malicious actor on the same network can steal the information you enter on this page.
-      </p>
-
-      <p>
-        For your settings PIN, do not reuse a PIN you use for your bank, home, etc.
-      </p>
-
-      <p>
-        The OTA update lock must be disabled to update the settings on this page.
-      </p>
-    </mat-card-content>
-  </mat-card>
+  <app-warning-card
+    title="Warning"
+    class="securitySettingsForm__mainWarningCard">
+    <p>
+      This application is served over HTTP, which is <span style="font-weight: bold; text-decoration: underline;">unencrypted and therefore insecure</span>. Proceed with caution: a malicious actor on the same network can steal the information you enter on this page.
+    </p>
+    <p>
+      For your settings PIN, do not reuse a PIN you use for your bank, home, etc.
+    </p>
+    <p>
+      The OTA update lock must be disabled to update the settings on this page.
+    </p>
+  </app-warning-card>
 
   <app-settings-group title="Security">
     <app-text-input
@@ -53,20 +48,18 @@
   </app-settings-group>
 
   <app-settings-group title="Over the Air (OTA) Update Lock">
-    <mat-card class="securitySettingsForm__warningCard">
-      <mat-card-content>
-        <p>
-          Enter the password to enable OTA updates.
-        </p>
-        <p>
-          Recommended: Change the default password the first time OTA is enabled.
-        </p>
-        <p>
-          Recommended: Disable OTA when not in use.
-          This ensures device software cannot be tampered with.
-        </p>
-      </mat-card-content>
-    </mat-card>
+    <app-warning-card>
+      <p>
+        Enter the password to enable OTA updates.
+      </p>
+      <p>
+        Recommended: Change the default password the first time OTA is enabled.
+      </p>
+      <p>
+        Recommended: Disable OTA when not in use.
+        This ensures device software cannot be tampered with.
+      </p>
+    </app-warning-card>
 
     <app-checkbox
       [control]="getFormControl('secureWirelessUpdate')"

@@ -619,6 +619,20 @@ export class ApiService extends UnsubscriberService {
     );
   }
 
+  private getWifiSettings = () => {
+    const offlineDefault = `
+      function GetV(){
+        var d=document;
+        d.Sf.CS.value="wifi network";d.Sf.CP.value="********";d.Sf.I0.value=0;d.Sf.G0.value=0;d.Sf.S0.value=255;d.Sf.I1.value=0;d.Sf.G1.value=0;d.Sf.S1.value=255;d.Sf.I2.value=0;d.Sf.G2.value=0;d.Sf.S2.value=255;d.Sf.I3.value=0;d.Sf.G3.value=0;d.Sf.S3.value=0;d.Sf.CM.value="wled-9518b4";d.Sf.AB.selectedIndex=0;d.Sf.AS.value="WLED-AP";d.Sf.AH.checked=0;d.Sf.AP.value="********";d.Sf.AC.value=1;d.Sf.WS.checked=1;document.getElementById('ethd').style.display='none';d.getElementsByClassName("sip")[0].innerHTML="192.168.100.171";d.getElementsByClassName("sip")[1].innerHTML="4.3.2.1";
+      }
+    `;
+    return this.httpGet(
+      this.createApiUrl(ApiFilePath.WIFI_SETTINGS_JS_PATH),
+      offlineDefault,
+      { responseType: 'text' },
+    );
+  }
+
   /** Submits wifi settings form data to server. */
   private setWifiSettings = (wifiSettings: FormValues) => {
     // TODO does this return WLEDApiResponse type or other type?
@@ -634,8 +648,7 @@ export class ApiService extends UnsubscriberService {
       function GetV(){
         var d=document;
         d.Sf.PIN.value="";d.Sf.NO.checked=0;d.Sf.OW.checked=0;d.Sf.AO.checked=1;
-        d.getElementsByClassName("sip")[0].innerHTML="WLED 0.14.0-b1 (build 2212222)";
-        sd="WLED";
+        d.getElementsByClassName("sip")[0].innerHTML="WLED 0.14.0-b1 (build 2212222)";sd="WLED";
       }
     `;
     return this.httpGet(
@@ -778,7 +791,7 @@ export class ApiService extends UnsubscriberService {
       set: this.setUISettings,
     },
     wifi: {
-      get: null, // TODO
+      get: this.getWifiSettings,
       set: this.setWifiSettings,
     },
     security: {

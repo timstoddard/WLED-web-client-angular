@@ -5,6 +5,7 @@ import { UnsubscriberComponent } from '../../../shared/unsubscriber/unsubscriber
 import { PresetsService } from '../presets.service';
 import { expandFade, expandVerticalPadding, expandText } from '../../../shared/animations';
 import { AppStateService } from '../../../shared/app-state/app-state.service';
+import { timer } from 'rxjs';
 
 @Component({
   selector: 'app-preset-quick-load',
@@ -48,8 +49,19 @@ export class PresetQuickLoadComponent extends UnsubscriberComponent implements O
   }
 
   loadPreset(presetId: number) {
+    // TODO less hacky way of doing this
     this.handleUnsubscribe(
       this.presetsService.loadPreset(presetId))
-      .subscribe(this.postResponseHandler.handleFullJsonResponse());
+      .subscribe(() => {
+        // the issue with this first API call is that the newly selected preset isn't included in the response right away, it is a race condition
+        // so, wait 100 ms then call the API again
+        this.handleUnsubscribe(timer(100))
+          .subscribe(() => {
+            // technically don't need to set the preset again, just need the updated api response
+            this.handleUnsubscribe(
+              this.presetsService.loadPreset(presetId))
+              .subscribe(this.postResponseHandler.handleFullJsonResponse());
+          })
+      });
   }
 }

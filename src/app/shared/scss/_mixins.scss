@@ -168,6 +168,7 @@
 
 @mixin settingsPageContainer {
   align-items: center;
+  background: var(--backgroundColorPrimary);
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -225,6 +226,18 @@ $antWidth: 2px;
 
 @mixin mobile-layout {
   @media (max-width: 740px) {
+    @content;
+  }
+}
+
+@mixin media-query-min-width($minWidth) {
+  @media (min-width: $minWidth) {
+    @content;
+  }
+}
+
+@mixin media-query-max-width($maxWidth) {
+  @media (max-width: $maxWidth) {
     @content;
   }
 }

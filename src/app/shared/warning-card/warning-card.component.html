@@ -1,0 +1,10 @@
+<mat-card class="warningCard">
+  <mat-card-title
+    *ngIf="title"
+    class="warningCard__title">
+    {{ title }}
+  </mat-card-title>
+  <mat-card-content>
+    <ng-content></ng-content>
+  </mat-card-content>
+</mat-card>

@@ -18,140 +18,90 @@
   </app-settings-group>
 
   <app-settings-group
-    title="Connect to Wifi"
+    title="Wifi Connection"
     formGroupName="localNetwork">
-    <i>Leave SSID empty to not connect</i>
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>SSID (Network Name)</mat-label>
-      <input
-        matInput
-        formControlName="ssid"
-        maxlength="32"
-        class="">
-    </mat-form-field>
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Password</mat-label>
-      <!-- TODO type="text" ? -->
-      <input
-        matInput
-        type="password"
-        formControlName="password"
-        maxlength="63"
-        class="">
-    </mat-form-field>
 
-    <div formGroupName="ipAddress">
-      <i>Leave at 0.0.0.0 for DHCP</i>
-      <!-- TODO Add text mask/validation for IP address -->
-      <!-- TODO create IP address input component? -->
-      <mat-form-field
-        appearance="fill"
-        class="">
-        <mat-label>Static IP</mat-label>
-        <input
-          matInput
-          formControlName="staticIp"
-          class="">
-      </mat-form-field>
-      <!-- <input name="I0" type="number" class="s" min="0" max="255" required> .
-        <input name="I1" type="number" class="s" min="0" max="255" required> . <input name="I2" type="number" class="s" min="0" max="255" required> . <input name="I3" type="number" class="s" min="0" max="255" required> -->
-      <!-- TODO Add text mask for IP address -->
-      <mat-form-field
-        appearance="fill"
-        class="">
-        <mat-label>Static gateway</mat-label>
-        <input
-          matInput
-          formControlName="staticGateway"
-          class="">
-      </mat-form-field>
-      <!-- <input name="G0" type="number" class="s" min="0" max="255" required> . <input name="G1" type="number" class="s" min="0" max="255" required> . <input name="G2" type="number" class="s" min="0" max="255" required> .
-        <input name="G3" type="number" class="s" min="0" max="255" required> -->
-      <!-- TODO Add text mask for IP address -->
-      <mat-form-field
-        appearance="fill"
-        class="">
-        <mat-label>Static subnet mask</mat-label>
-        <input
-          matInput
-          formControlName="staticSubnetMask"
-          class="">
-      </mat-form-field>
-      <!-- <input name="S0" type="number" class="s" min="0" max="255" required> . <input name="S1" type="number" class="s" min="0" max="255" required> . <input name="S2" type="number" class="s" min="0" max="255" required> . <input name="S3" type="number" class="s" min="0" max="255" required> -->
-      <div>mDNS address</div>
-      <div>
-        <i>Leave empty for no mDNS</i>
-      </div>
-      http://
-      <mat-form-field
-        appearance="fill"
-        class="">
-        <mat-label>mDNS</mat-label>
-        <input
-          matInput
-          formControlName="mDNS"
-          maxlength="32"
-          class="">
-      </mat-form-field>
-      .local
-      <!-- TODO wire this up -->
-      Client IP: <span class="sip">Not connected</span>
+    <div>
+      Client IP: <span style="font-weight: bold;">{{ clientIpAddress }}</span>
     </div>
+
+    <app-text-input
+      label="Network Name (SSID)"
+      [inputs]="[ssidInputConfig]"
+      description="Leave SSID empty to not connect">
+    </app-text-input>
+    <app-text-input
+      label="Network Password"
+      [inputs]="[ssidPasswordInputConfig]">
+    </app-text-input>
+
+    <!-- TODO Add text mask/validation for IP address -->
+    <!-- TODO create IP address input component? -->
+    <app-text-input
+      label="Static IP"
+      [inputs]="[staticIpInputConfig]"
+      description="Leave at 0.0.0.0 for DHCP">
+    </app-text-input>
+    
+      <!-- TODO Add text mask for IP address -->
+    <app-text-input
+      label="Static gateway"
+      [inputs]="[staticGatewayInputConfig]">
+    </app-text-input>
+    
+      <!-- TODO Add text mask for IP address -->
+    <app-text-input
+      label="Static subnet mask"
+      [inputs]="[staticSubnetMaskInputConfig]">
+    </app-text-input>
+    
+    <app-text-input
+      label="mDNS Address"
+      [inputs]="[mDNSInputConfig]"
+      prefix="http://"
+      suffix=".local"
+      description="Leave empty for no mDNS">
+    </app-text-input>
   </app-settings-group>
 
   <app-settings-group
     title="WLED Access Point"
     formGroupName="wledAccessPoint">
+
     <div>
-      <i>Leave empty for no AP</i>
+      AP IP: <span style="font-weight: bold;">{{ wledAccessPointIpAddress }}</span>
     </div>
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>AP SSID</mat-label>
-      <input
-        matInput
-        formControlName="ssid"
-        maxlength=32
-        class="">
-    </mat-form-field>
+
+    <app-text-input
+      label="AP SSID"
+      [inputs]="[apSSIDInputConfig]"
+      description="Leave empty for no AP">
+    </app-text-input>
+
     <app-checkbox
       [control]="getFormControl('wledAccessPoint.hideAPName')"
       label="Hide AP name">
     </app-checkbox>
-    <div>
-      <i>Leave empty for open</i>
-      <i>Empty or min. 8 characters</i>
-    </div>
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>AP password</mat-label>
-      <input
-        matInput
-        type="password"
-        formControlName="password"
-        maxlength="63"
-        pattern="(.{8,63})|()"
-        class="">
-    </mat-form-field>
+    
+    <app-text-input
+      label="AP password"
+      [inputs]="[apPasswordInputConfig]"
+      description="Leave empty for open network">
+    </app-text-input>
 
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Access Point Wifi channel</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="wifiChannel"
-        min="1"
-        max="13"
-        class="">
-    </mat-form-field>
+    <app-form-control-requirements
+      [form]="networkSettingsForm"
+      [requirements]="[]">
+    </app-form-control-requirements>
+    <!-- TODO set up requirements component -->
+    <div>
+      <p>Minimum length of 8</p>
+    </div>
+
+    <app-text-input
+      label="AP Wifi channel"
+      [inputs]="[apWifiChannelInputConfig]">
+    </app-text-input>
     
     AP opens:
     <select formControlName="openAP">
@@ -161,11 +111,6 @@
         {{ option.name }}
       </option>
     </select>
-    
-    <i>
-      <!-- TODO wire this up -->
-      AP IP: <span class="sip">Not active</span>
-    </i>
   </app-settings-group>
 
   <app-settings-group
@@ -175,10 +120,16 @@
       [control]="getFormControl('advanced.disableWifiSleep')"
       label="Disable Wifi sleep">
     </app-checkbox>
-    <i>
-      Experimental: Can help with connectivity issues.
-      Do not enable if Wifi is working correctly, increases power consumption.
-    </i>
+
+    <app-warning-card>
+      <p>
+        Can help with connectivity issues (experimental feature).
+      </p>
+      <p>
+        This feature increases power consumption. There is no need to enable if wifi is working correctly.
+      </p>
+    </app-warning-card>
+
     <!-- TODO find a way to test this and compare to existing app -->
     <ng-container *ngIf="hasEthernet">
       <div>Ethernet Type</div>

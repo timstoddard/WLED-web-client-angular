@@ -40,15 +40,42 @@ export interface InputConfig {
 export class TextInputComponent {
   @Input() label: string = '';
   @Input() inputs: InputConfig[] = [];
-  // TODO use this
   @Input() @Optional() description: string = '';
   @Input() @Optional() prefix: string = '';
   @Input() @Optional() suffix: string = '';
+  @Input() @Optional() flexDirection: 'column' | 'row' | 'auto' = 'auto';
+  @Input() @Optional() hideValidity = false;
 
   getInputMode({ type, inputMode }: InputConfig) {
     return inputMode
       ? inputMode
       : this.getDefaultInputModeForInputType(type);
+  }
+
+  getValidityState() {
+    const controls = this.inputs
+      .map(({ getFormControl }) => getFormControl())
+      .filter(n => !!n);
+
+    let anyInvalid = false;
+    let anyUntouched = controls.length === 0;
+    if (controls.length > 0) {
+      for (const control of controls) {
+        if (!(control!.touched)) {
+          // mark if any control is untouched
+          anyUntouched = true;
+          break;
+        } else if (control!.invalid) {
+          // mark if any control is invalid
+          anyInvalid = true;
+        }
+      }
+    }
+
+    if (anyUntouched || this.hideValidity) {
+      return 'none';
+    }
+    return anyInvalid ? 'invalid' : 'valid';
   }
 
   /**

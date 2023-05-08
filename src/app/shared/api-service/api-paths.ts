@@ -1,6 +1,7 @@
 export enum ApiFilePath {
   CONFIG_JSON_FILE = 'cfg.json',
   PRESETS_JSON_FILE = 'presets.json',
+  WIFI_SETTINGS_JS_PATH = 'settings/s.js?p=1',
   SECURITY_SETTINGS_JS_PATH = 'settings/s.js?p=6',
 }
 

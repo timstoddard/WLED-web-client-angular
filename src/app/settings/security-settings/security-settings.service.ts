@@ -3,6 +3,8 @@ import { saveAs } from 'file-saver';
 import { BehaviorSubject, timer } from 'rxjs';
 import { ApiService } from 'src/app/shared/api-service/api.service';
 import { UnsubscriberService } from 'src/app/shared/unsubscriber/unsubscriber.service';
+import { ApiResponseParserService, SettingsParsedValues } from '../shared/api-response-parser.service';
+import { SECURITY_PARSE_CONFIGURATIONS } from '../shared/settings-parse-configurations';
 
 // TODO move these to proper types file
 
@@ -33,7 +35,7 @@ export interface WledSecuritySettings {
 }
 
 const convertToBoolean = (n?: BinaryValue) => !!n;
-const convertToString = (n: unknown) => n ? n.toString() : ''
+const convertToString = (n: unknown) => n ? n.toString() : '';
 
 const transformSecuritySettingsToWledSecuritySettings = (settings: SecuritySettings): WledSecuritySettings => {
   const baseOptions: { [key: string]: unknown } = {
@@ -66,23 +68,19 @@ const transformWledSecuritySettingsToSecuritySettings = (settings: Partial<WledS
   }
 };
 
-interface SecuritySettingsParsedValues {
-  formValues: { [key: string]: unknown },
-  metadata: { [key: string]: unknown },
-}
-
 @Injectable({ providedIn: 'root' })
 export class SecuritySettingsService extends UnsubscriberService {
   readonly PRESETS_FILE_NAME = 'wled_presets.json';
   readonly CONFIG_FILE_NAME = 'wled_cfg.json';
   /** Store the values from the parsed js file for the initial form values and view rendering. */
-  private parsedValues = new BehaviorSubject<SecuritySettingsParsedValues>({
+  private parsedValues = new BehaviorSubject<SettingsParsedValues>({
     formValues: {},
     metadata: {},
   });
 
   constructor(
     private apiService: ApiService,
+    private apiResponseParserService: ApiResponseParserService,
   ) {
     super();
 
@@ -90,7 +88,17 @@ export class SecuritySettingsService extends UnsubscriberService {
     timer(LOAD_API_URL_DELAY_MS)
       .subscribe(() => {
         this.handleUnsubscribe(this.apiService.settings.security.get())
-          .subscribe(this.parseJsFile);
+          .subscribe((responseJs) => {
+            const {
+              formValues,
+              metadata,
+            } = this.apiResponseParserService.parseJsFile(responseJs, SECURITY_PARSE_CONFIGURATIONS);
+            console.log('before transform', formValues)
+            this.parsedValues.next({
+              formValues: transformWledSecuritySettingsToSecuritySettings(formValues),
+              metadata,
+            });
+          });
       });
   }
 
@@ -115,74 +123,5 @@ export class SecuritySettingsService extends UnsubscriberService {
       this.apiService.downloadUrl.config(),
       this.CONFIG_FILE_NAME,
     );
-  }
-
-  private parseJsFile = (jsFileText: string) => {
-    /*
-    function GetV(){
-      var d=document;
-      d.Sf.PIN.value="";d.Sf.NO.checked=0;d.Sf.OW.checked=0;d.Sf.AO.checked=1;
-      d.getElementsByClassName("sip")[0].innerHTML="WLED 0.14.0-b1 (build 2212222)";
-      sd="WLED";
-    }
-    */
-    const parseConfigurations = [
-      {
-        pattern: /d.Sf.PIN.value=([^;]*);/,
-        name: 'PIN', // 'settingsPin',
-        isMetadata: false,
-      },
-      {
-        pattern: /d.Sf.NO.checked=([^;]*);/,
-        name: 'NO', // 'secureWirelessUpdate',
-        isMetadata: false,
-      },
-      {
-        pattern: /d.Sf.OW.checked=([^;]*);/,
-        name: 'OW', // 'denyWifiSettingsAccessIfLocked',
-        isMetadata: false,
-      },
-      {
-        pattern: /d.Sf.AO.checked=([^;]*);/,
-        name: 'AO', // 'enableArduinoOTA',
-        isMetadata: false,
-      },
-      {
-        pattern: /d\.getElementsByClassName\("sip"\)\[0\]\.innerHTML=([^;]*);/,
-        name: 'wledVersion',
-        isMetadata: true,
-      },
-      {
-        // TODO what is this used for in original client?
-        pattern: /sd=([^;]*);/,
-        name: 'sd',
-        isMetadata: true,
-      },
-    ];
-
-    const formValues: { [key: string]: unknown } = {};
-    const metadata: { [key: string]: unknown } = {};
-    console.log(jsFileText)
-    for (const config of parseConfigurations) {
-      try {
-        const match = jsFileText.match(config.pattern);
-        if (match && match[1]) {
-          const rawValue = match[1];
-          const parsedValue = JSON.parse(rawValue);
-          console.log(config.name, '= [', parsedValue, ']')
-          const dict = config.isMetadata ? metadata : formValues;
-          dict[config.name] = parsedValue;
-        }
-      } catch (e) {
-        console.warn('WARNING: unable to parse saved security settings from API.')
-        console.warn(e)
-      }
-    }
-
-    console.log('before transform', formValues)
-    this.parsedValues.next({
-      formValues: transformWledSecuritySettingsToSecuritySettings(formValues),
-      metadata,
-    });
   }
 }

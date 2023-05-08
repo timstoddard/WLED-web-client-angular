@@ -13,13 +13,26 @@
   margin: 6px;
   padding: 4px;
 
-  // TODO make this generic (was just for segments)
-  // breakpoint under which the number inputs start to wrap
-  @media screen and (max-width: 670px) {
-    flex-direction: row;
+  &--valid {
+    border-color: var(--themeColorPrimary);
+  }
+
+  &--invalid {
+    border-color: var(--errorColorPrimary);
   }
 
   &__contentWrapper {
+    @include flex-center;
+    flex-direction: row;
+
+    // TODO make this generic (was just for segments)
+    // breakpoint under which the number inputs start to wrap
+    @media screen and (max-width: 670px) {
+      flex-direction: column;
+    }
+  }
+
+  &__inputWrapper {
     @include flex-center;
     flex-wrap: nowrap;
   }
@@ -92,5 +105,16 @@
 
   &__suffix {
     margin-right: 3px;
+  }
+
+  &__description {
+    background: var(--backgroundColorPrimaryOffset);
+    border: 1px solid var(--borderColorAccent);
+    border-radius: 4px;
+    font-size: 14px;
+    font-style: italic;
+    margin: 2px 1px 1px;
+    padding: 1px;
+    width: 100%;
   }
 }

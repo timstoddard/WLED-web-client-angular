@@ -1,17 +1,25 @@
+// TODO switch variables to kebab case
 :root {
   // dark mode is default
   --backgroundColorPrimaryRgb: 20,20,30;
-  --backgroundColorPrimaryOffsetRgb: 35,35,45;
+  --backgroundColorPrimaryOffsetRgb: 32,32,42;
   --backgroundColorAccentRgb: 55,55,60;
   --backgroundColorAccent2Rgb: 80,80,90;
+  
   --borderColorPrimaryRgb: 210,210,210;
-  --borderColorAccentRgb: 128,128,128;
+  --borderColorAccentRgb: 100,100,100;
+  
   --textColorPrimaryRgb: 240,240,240;
   --textColorAccentRgb: 150,150,150;
+  
   --themeColorPrimaryRgb: 80,255,0;
   --themeColorAccentRgb: 50,180,0;
-  --errorColorPrimaryRgb: 197,0,0;
-  --errorColorAccentRgb: 157,0,0;
+
+  --warningColorPrimaryRgb: 255,255,10;
+  --warningColorAccentRgb: 128,128,32;
+  
+  --errorColorPrimaryRgb: 255,2,30;
+  --errorColorAccentRgb: 169,0,0;
 
   --backgroundColorPrimary: rgb(var(--backgroundColorPrimaryRgb));
   --backgroundColorPrimaryOffset: rgb(var(--backgroundColorPrimaryOffsetRgb));
@@ -23,6 +31,8 @@
   --textColorAccent: rgb(var(--textColorAccentRgb));
   --themeColorPrimary: rgb(var(--themeColorPrimaryRgb));
   --themeColorAccent: rgb(var(--themeColorAccentRgb));
+  --warningColorPrimary: rgb(var(--warningColorPrimaryRgb));
+  --warningColorAccent: rgb(var(--warningColorAccentRgb));
   --errorColorPrimary: rgb(var(--errorColorPrimaryRgb));
   --errorColorAccent: rgb(var(--errorColorAccentRgb));
 
@@ -37,6 +47,12 @@
 
   // default app height
   --app-height: 100vh;
+
+  // standard opacity for form controls
+  --form-control-background-opacity-default: 0.1;
+  --form-control-background-opacity-emphasized: 0.3;
+  --form-control-border-opacity-default: 0.55;
+  --form-control-border-opacity-emphasized: 1;
 }
 
 $mainViewEdgeSpacing: 3px var(--controlsEdgeSpacing);

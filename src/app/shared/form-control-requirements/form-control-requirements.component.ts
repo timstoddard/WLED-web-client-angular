@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
-import { AbstractControl, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 
 export interface FormControlRequirementConfig {
-  path: string[];
+  path: string;
   errorName: string;
   description: string;
 }
@@ -18,14 +18,11 @@ export class FormControlRequirementsComponent {
 
   getError(
     form: FormGroup,
-    path: string[],
+    path: string,
     errorName: string,
   ) {
-    let control: AbstractControl = form;
-    for (const subPath of path) {
-      control = form.get(subPath)!;
-    }
-    return control.errors
+    const control = form.get(path);
+    return control?.errors
       ? control.errors[errorName]
       : null;
   }

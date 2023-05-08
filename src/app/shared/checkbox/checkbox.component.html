@@ -1,4 +1,4 @@
-<div
+<label
   [ngClass]="{ 'checkboxContainer--selected': control.value }"
   class="checkboxContainer">
   <mat-checkbox
@@ -9,5 +9,6 @@
       {{ label }}
     </mat-label>
   </mat-checkbox>
-</div>
+</label>
+<!-- TODO better style attached content -->
 <ng-content></ng-content>

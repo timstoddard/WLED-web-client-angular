@@ -1,0 +1,10 @@
+.warningCard {
+  background: rgba(var(--warningColorAccentRgb),0.6);
+  border: 1px solid var(--warningColorPrimary);
+  margin: 0 auto 10px;
+  max-width: 400px;
+
+  &__title {
+    font-weight: bold;
+  }
+}

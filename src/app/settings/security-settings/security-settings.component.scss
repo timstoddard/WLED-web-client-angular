@@ -7,23 +7,16 @@
 .securitySettingsForm {
   @include settingsPageContainer;
 
-  &__warningCard {
-    background: rgba(128,128,32,0.7);
-    border: 1px solid yellow;
-    margin: 0 8px 10px;
-    max-width: 400px;
-
-    &__title {
-      font-weight: bold;
-    }
-  }
-
   &__subGroup {
     background: var(--backgroundColorPrimaryOffset);
     border: 1px solid var(--borderColorPrimary);
     border-radius: 6px;
     padding: 10px;
     margin: 3px
+  }
+
+  &__mainWarningCard {
+    margin: 6px;
   }
 
   &__uploadDownload {

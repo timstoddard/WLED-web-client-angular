@@ -9,6 +9,7 @@ import { FormService, getFormControl } from '../../shared/form-service';
 import { AppState } from '../../shared/app-types/app-types';
 import { OverlayPositionService } from '../../shared/overlay-position.service';
 import { InputConfig } from '../../shared/text-input/text-input.component';
+import { SnackbarService } from 'src/app/shared/snackbar.service';
 
 const MIN_SHOW_BRIGHTNESS_SLIDER_THRESHOLD_PX = 800;
 const MIN_SHOW_PC_MODE_BUTTON_THRESHOLD_PX = 1200; // TODO might need to be bigger
@@ -65,6 +66,7 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
     private changeDetectorRef: ChangeDetectorRef,
     private uiConfigService: UIConfigService,
     private overlayPositionService: OverlayPositionService,
+    private snackbarService: SnackbarService,
   ) {
     super();
   }
@@ -210,18 +212,14 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
     const message = this.isNightLightActive
       ? `Timer active. Your light will turn ${this.nightLightTar > 0 ? 'on' : 'off'} ${this.nightLightMode ? 'over' : 'after'} ${this.nightLightDuration} minutes.`
       : 'Timer deactivated.';
-    // TODO show toast
-    const showToast = (s: string) => alert(s);
-    showToast(message);
+    this.snackbarService.openSnackBar(message);
   }
 
   private handleSyncChange() {
     const message = this.isSyncActive
       ? 'Other lights in the network will now sync to this one.'
       : 'This light and other lights in the network will no longer sync.';
-    // TODO show toast
-    const showToast = (s: string) => alert(s);
-    showToast(message);
+    this.snackbarService.openSnackBar(message);
   }
 
   private togglePcMode(fromB = false) { // TODO "from b" seems to be "called from button"

@@ -1,9 +1,11 @@
-<div>
-  Due to browser limitations, this web app unfortunately cannot perform an mDNS scan for local WLED devices. Please do this through the WLED app or another mDNS scanner, and enter all local WLED IP addresses discovered, below.
-</div>
-<div>
-  This data is saved separately from the rest of the wifi settings.
-</div>
+<app-warning-card>
+  <p>
+    Due to browser limitations, this web app cannot discover local WLED devices. Please use the WLED app to discover all available WLED instances. Then, enter all local WLED IP addresses discovered, below.
+  </p>
+  <p>
+    These IP addresses are only saved in the browser. If you clear the website data you will have to re-add these.
+  </p>
+</app-warning-card>
 
 <div>
   <div
@@ -12,29 +14,25 @@
     class="addDeviceForm__formGroup">
 
     <app-checkbox
-      [control]="getFormControl('selected', i)"
+      [control]="getFormControlAtIndex('selected', i)"
       label="Selected">
     </app-checkbox>
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Name</mat-label>
-      <input
-        matInput
-        formControlName="name"
-        class="">
-    </mat-form-field>
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>IPV4 Address</mat-label>
-      <input
-        matInput
-        formControlName="ipv4Address"
-        class="">
-    </mat-form-field>
 
-    <div [ngSwitch]="ipAddressTestResults[i]">
+    <app-text-input
+      label="Name"
+      [inputs]="[deviceNameInputConfigs[i]]"
+      flexDirection="column">
+    </app-text-input>
+
+    <app-text-input
+      label="IPv4 Address"
+      [inputs]="[devicePasswordInputConfigs[i]]"
+      flexDirection="column">
+    </app-text-input>
+
+    <div
+      [ngSwitch]="ipAddressTestResults[i]"
+      class="addDeviceForm__item__buttons">
       <ng-container *ngSwitchCase="true">
         <div class="addDeviceForm__testSuccess"></div>
         <button
@@ -64,9 +62,7 @@
           Test
         </button>
       </ng-container>
-    </div>
 
-    <div>
       <button
         (click)="removeWLEDIpAddress(i)"
         mat-raised-button
