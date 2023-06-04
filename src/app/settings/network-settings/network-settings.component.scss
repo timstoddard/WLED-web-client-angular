@@ -1,9 +1,5 @@
 @import 'src/app/shared/scss/mixins';
 
-:host {
-  @include overrideMatTextInputStyles(--backgroundColorAccent);
-}
-
 .networkSettingsForm {
   @include settingsPageContainer;
 }

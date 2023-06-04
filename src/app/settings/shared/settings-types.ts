@@ -1,4 +1,4 @@
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, timer } from "rxjs";
 import { SettingsParsedValues } from "./api-response-parser.service";
 
 // https://stackoverflow.com/questions/70344859/how-to-filter-an-interface-using-conditional-types-in-typescript
@@ -59,9 +59,14 @@ export const getNewParsedValuesSubject = () => {
   });
 }
 
+const LOAD_API_URL_DELAY_MS = 2000;
+/**
+ * Returns a timer to delay before loading settings form values.
+ */
+export const getLoadSettingsDelayTimer = () => timer(LOAD_API_URL_DELAY_MS);
 
 /**
- * Security settigns in app format.
+ * Security settings in app format.
  */
 export interface SecuritySettings {
   settingsPin: string;
@@ -91,7 +96,7 @@ export interface WledSecuritySettings {
 }
 
 /**
- * Network settigns in app format.
+ * Network settings in app format.
  */
 export interface NetworkSettings {
   localNetwork: {
@@ -117,48 +122,311 @@ export interface NetworkSettings {
  * Network settings in WLED backend format.
  */
 export interface WledNetworkSettings {
-  /** localNetworkSSID */
+  /** localNetwork.ssid */
   CS: string;
-  /** localNetworkPassword */
+  /** localNetwork.password */
   CP: string;
-  /** localNetworkStaticIp (block 1/4) */
+  /** localNetwork.staticIp (block 1/4) */
   I0: number;
-  /** localNetworkStaticIp (block 2/4) */
+  /** localNetwork.staticIp (block 2/4) */
   I1: number;
-  /** localNetworkStaticIp (block 3/4) */
+  /** localNetwork.staticIp (block 3/4) */
   I2: number;
-  /** localNetworkStaticIp (block 4/4) */
+  /** localNetwork.staticIp (block 4/4) */
   I3: number;
-  /** localNetworkStaticGateway (block 1/4) */
+  /** localNetwork.staticGateway (block 1/4) */
   G0: number;
-  /** localNetworkStaticGateway (block 2/4) */
+  /** localNetwork.staticGateway (block 2/4) */
   G1: number;
-  /** localNetworkStaticGateway (block 3/4) */
+  /** localNetwork.staticGateway (block 3/4) */
   G2: number;
-  /** localNetworkStaticGateway (block 4/4) */
+  /** localNetwork.staticGateway (block 4/4) */
   G3: number;
-  /** localNetworkStaticSubnetMask (block 1/4) */
+  /** localNetwork.staticSubnetMask (block 1/4) */
   S0: number;
-  /** localNetworkStaticSubnetMask (block 2/4) */
+  /** localNetwork.staticSubnetMask (block 2/4) */
   S1: number;
-  /** localNetworkStaticSubnetMask (block 3/4) */
+  /** localNetwork.staticSubnetMask (block 3/4) */
   S2: number;
-  /** localNetworkStaticSubnetMask (block 4/4) */
+  /** localNetwork.staticSubnetMask (block 4/4) */
   S3: number;
-  /** localNetworkMDNS */
+  /** localNetwork.mDNS */
   CM: string;
-  /** wledAccessPointSSID */
+  /** wledAccessPoint.ssid */
   AS: string;
-  /** wledAccessPointPassword */
+  /** wledAccessPoint.password */
   AP: string;
-  /** wledAccessPointHideAPName */
+  /** wledAccessPoint.hideAPName */
   AH?: BinaryValue;
-  /** wledAccessPointWifiChannel */
+  /** wledAccessPoint.wifiChannel */
   AC: number;
-  /** wledAccessPointOpenAP */
+  /** wledAccessPoint.openAP */
   AB: number;
   /** disableWifiSleep */
   WS?: BinaryValue;
   /** ethernetType. Not included in response for WIFI controllers. */
   ETH?: number;
+}
+
+/**
+ * Time settings in app format.
+ */
+export interface TimeSettings {
+  ntpServer: {
+    enabled: boolean;
+    url: string;
+  };
+  use24HourFormat: boolean;
+  timeZone: number;
+  utcOffset: number;
+  latitude: number;
+  longitude: number;
+  analogClockOverlay: {
+    enabled: boolean;
+    firstLed: number;
+    lastLed: number;
+    hour12Led: number;
+    show5MinuteMarks: boolean;
+    secondsAsTrail: number;
+  };
+  countdown: {
+    enabled: boolean;
+    year: number;
+    month: number;
+    day: number;
+    hour: number;
+    minute: number;
+    second: number;
+  };
+  presets: {
+    alexaOn: number;
+    alexaOff: number;
+    countdownEnd: number;
+    timedLightEnd: number;
+  };
+  buttonActions: {
+    /** TODO add button actions */
+  };
+  timeControlledPresets: TimeControlledPreset[];
+}
+
+/**
+ * Preset that is turned on at specific dates and times.
+ */
+interface TimeControlledPreset {
+  enabled: boolean;
+  hour: number;
+  minute: number;
+  preset: number;
+  days: {
+    sunday: boolean;
+    monday: boolean;
+    tuesday: boolean;
+    wednesday: boolean;
+    thursday: boolean;
+    friday: boolean;
+    saturday: boolean;
+  };
+  startDate: {
+    month: number;
+    day: number;
+  };
+  endDate: {
+    month: number;
+    day: number;
+  };
+}
+
+/**
+ * Time settings in WLED backend format.
+ */
+export interface WledTimeSettings {
+  /** ntpServer.enabled */
+  NT: BinaryValue;
+  /** ntpServer.url */
+  NS: string;
+  /** use24HourFormat */
+  CF: BinaryValue;
+  /** timeZone */
+  TZ: number;
+  /** utcOffset */
+  UO: number;
+  /** latitude */
+  LN: number;
+  /** longitude */
+  LT: number;
+  /** analogClockOverlay.enabled */
+  OL: BinaryValue;
+  /** analogClockOverlay.firstLed */
+  O1: number;
+  /** analogClockOverlay.lastLed */
+  O2: number;
+  /** analogClockOverlay.hour12Led */
+  OM: number;
+  /** analogClockOverlay.show5MinuteMarks */
+  OS: BinaryValue;
+  /** analogClockOverlay.secondsAsTrail */
+  O5: number;
+  /** countdown.enabled */
+  CE: boolean;
+  /** countdown.year */
+  CY: number;
+  /** countdown.month */
+  CI: number;
+  /** countdown.day */
+  CD: number;
+  /** countdown.hour */
+  CH: number;
+  /** countdown.minute */
+  CM: number;
+  /** countdown.second */
+  CS: number;
+  /** presets.alexaOn */
+  A0: number;
+  /** presets.alexaOff */
+  A1: number;
+  /** presets.countdownEnd */
+  MC: number;
+  /** presets.timedLightEnd */
+  MN: number;
+  /** timeControlledPresets.0.hour */
+  H0: number;
+  /** timeControlledPresets.0.minute */
+  N0: number;
+  /** timeControlledPresets.0.preset */
+  T0: number;
+  /** timeControlledPresets.0.enabled */
+  W0: BinaryValue;
+  /** timeControlledPresets.0.startDate.month */
+  M0: number;
+  /** timeControlledPresets.0.endDate.month */
+  P0: number;
+  /** timeControlledPresets.0.startDate.day */
+  D0: number;
+  /** timeControlledPresets.0.endDate.day */
+  E0: number;
+  /** timeControlledPresets.1.hour */
+  H1: number;
+  /** timeControlledPresets.1.minute */
+  N1: number;
+  /** timeControlledPresets.1.preset */
+  T1: number;
+  /** timeControlledPresets.1.enabled */
+  W1: BinaryValue;
+  /** timeControlledPresets.1.startDate.month */
+  M1: number;
+  /** timeControlledPresets.1.endDate.month */
+  P1: number;
+  /** timeControlledPresets.1.startDate.day */
+  D1: number;
+  /** timeControlledPresets.1.endDate.day */
+  E1: number;
+  /** timeControlledPresets.2.hour */
+  H2: number;
+  /** timeControlledPresets.2.minute */
+  N2: number;
+  /** timeControlledPresets.2.preset */
+  T2: number;
+  /** timeControlledPresets.2.enabled */
+  W2: BinaryValue;
+  /** timeControlledPresets.2.startDate.month */
+  M2: number;
+  /** timeControlledPresets.2.endDate.month */
+  P2: number;
+  /** timeControlledPresets.2.startDate.day */
+  D2: number;
+  /** timeControlledPresets.2.endDate.day */
+  E2: number;
+  /** timeControlledPresets.3.hour */
+  H3: number;
+  /** timeControlledPresets.3.minute */
+  N3: number;
+  /** timeControlledPresets.3.preset */
+  T3: number;
+  /** timeControlledPresets.3.enabled */
+  W3: BinaryValue;
+  /** timeControlledPresets.3.startDate.month */
+  M3: number;
+  /** timeControlledPresets.3.endDate.month */
+  P3: number;
+  /** timeControlledPresets.3.startDate.day */
+  D3: number;
+  /** timeControlledPresets.3.endDate.day */
+  E3: number;
+  /** timeControlledPresets.4.hour */
+  H4: number;
+  /** timeControlledPresets.4.minute */
+  N4: number;
+  /** timeControlledPresets.4.preset */
+  T4: number;
+  /** timeControlledPresets.4.enabled */
+  W4: BinaryValue;
+  /** timeControlledPresets.4.startDate.month */
+  M4: number;
+  /** timeControlledPresets.4.endDate.month */
+  P4: number;
+  /** timeControlledPresets.4.startDate.day */
+  D4: number;
+  /** timeControlledPresets.4.endDate.day */
+  E4: number;
+  /** timeControlledPresets.5.hour */
+  H5: number;
+  /** timeControlledPresets.5.minute */
+  N5: number;
+  /** timeControlledPresets.5.preset */
+  T5: number;
+  /** timeControlledPresets.5.enabled */
+  W5: BinaryValue;
+  /** timeControlledPresets.5.startDate.month */
+  M5: number;
+  /** timeControlledPresets.5.endDate.month */
+  P5: number;
+  /** timeControlledPresets.5.startDate.day */
+  D5: number;
+  /** timeControlledPresets.5.endDate.day */
+  E5: number;
+  /** timeControlledPresets.6.hour */
+  H6: number;
+  /** timeControlledPresets.6.minute */
+  N6: number;
+  /** timeControlledPresets.6.preset */
+  T6: number;
+  /** timeControlledPresets.6.enabled */
+  W6: BinaryValue;
+  /** timeControlledPresets.6.startDate.month */
+  M6: number;
+  /** timeControlledPresets.6.endDate.month */
+  P6: number;
+  /** timeControlledPresets.6.startDate.day */
+  D6: number;
+  /** timeControlledPresets.6.endDate.day */
+  E6: number;
+  /** timeControlledPresets.7.hour */
+  H7: number;
+  /** timeControlledPresets.7.minute */
+  N7: number;
+  /** timeControlledPresets.7.preset */
+  T7: number;
+  /** timeControlledPresets.7.enabled */
+  W7: BinaryValue;
+  /** timeControlledPresets.7.startDate.month */
+  M7: number;
+  /** timeControlledPresets.7.endDate.month */
+  P7: number;
+  /** timeControlledPresets.7.startDate.day */
+  D7: number;
+  /** timeControlledPresets.7.endDate.day */
+  E7: number;
+  /** timeControlledPresets.8.minute */
+  N8: number;
+  /** timeControlledPresets.8.preset */
+  T8: number;
+  /** timeControlledPresets.8.enabled */
+  W8: BinaryValue;
+  /** timeControlledPresets.9.minute */
+  N9: number;
+  /** timeControlledPresets.9.preset */
+  T9: number;
+  /** timeControlledPresets.9.enabled */
+  W9: BinaryValue;
 }

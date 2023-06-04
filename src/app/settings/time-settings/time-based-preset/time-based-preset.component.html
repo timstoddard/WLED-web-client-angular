@@ -1,0 +1,77 @@
+<div [formGroup]="timeBasedPresetsForm">
+  <div class="timeBasedPresetForm__mainConfig">
+    <!-- TODO update on/off text to match form value -->
+    <mat-slide-toggle
+    class="timeBasedPresetForm__enabled"
+    [color]="'primary'"
+    [checked]="false">
+    On/off
+    </mat-slide-toggle>
+
+    <app-text-input
+      label="Preset"
+      [inputs]="[presetInputConfig]"
+      flexDirection="column">
+    </app-text-input>
+  
+    <app-text-input
+      label="Hour : Minute"
+      [inputs]="[hourInputConfig, minuteInputConfig]"
+      flexDirection="column">
+    </app-text-input>
+  </div>
+  
+  <div class="timeBasedPresetForm__daysWrapper">
+    <div>
+      Days of the week to run:
+    </div>
+    <ul class="timeBasedPresetForm__days">
+      <li
+        *ngFor="let day of daysOfWeek"
+        class="timeBasedPresetForm__day">
+        <div>
+          {{ day.label }}
+        </div>
+        <div>
+          <app-checkbox [control]="getFormControl(day.formControlName)">
+          </app-checkbox>
+        </div>
+      </li>
+    </ul>
+  </div>
+  
+  <div class="timeBasedPresetForm__dateRange">
+    <div
+      formGroupName="startDate"
+      class="timeBasedPresetForm__dateRange__startDate">
+      <div>Start Date</div>
+      <div class="timeBasedPresetForm__dateRange__startDateControls">
+        <select formControlName="month">
+          <option
+            *ngFor="let option of monthOptions"
+            [value]="option.value">
+            {{ option.name }}
+          </option>
+        </select>
+        <app-text-input [inputs]="[startDateDayInputConfig]">
+        </app-text-input>
+      </div>
+    </div>
+    <div
+      formGroupName="endDate"
+      class="timeBasedPresetForm__dateRange__endDate">
+      <div>End Date</div>
+      <div class="timeBasedPresetForm__dateRange__endDateControls">
+        <select formControlName="month">
+          <option
+            *ngFor="let option of monthOptions"
+            [value]="option.value">
+            {{ option.name }}
+          </option>
+        </select>
+        <app-text-input [inputs]="[endDateDayInputConfig]">
+        </app-text-input>
+      </div>
+    </div>
+  </div>
+</div>

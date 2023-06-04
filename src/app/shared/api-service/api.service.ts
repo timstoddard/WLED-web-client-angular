@@ -18,7 +18,7 @@ import { LiveViewData } from '../live-view/live-view.service';
 import { PostResponseHandler } from '../post-response-handler';
 import { UnsubscriberService } from '../unsubscriber/unsubscriber.service';
 import { ApiFilePath, ApiPath } from './api-paths';
-import { WledNetworkSettings, WledSecuritySettings } from 'src/app/settings/shared/settings-types';
+import { WledNetworkSettings, WledSecuritySettings, WledTimeSettings } from 'src/app/settings/shared/settings-types';
 
 // TODO split into sub classes per app section and use the ApiService to aggregate their usage
 @Injectable({ providedIn: 'root' })
@@ -620,7 +620,7 @@ export class ApiService extends UnsubscriberService {
     );
   }
 
-  /** Submits ui settings form data to server. */
+  /** Submits UI settings form data to server. */
   private setUISettings = (uiSettings: FormValues) => {
     // TODO does this return WLEDApiResponse type or other type?
     return this.httpPost(
@@ -630,6 +630,7 @@ export class ApiService extends UnsubscriberService {
     );
   }
 
+  /** Reads network settings from the server. */
   private getNetworkSettings = () => {
     const offlineDefault = `
       function GetV(){
@@ -654,6 +655,7 @@ export class ApiService extends UnsubscriberService {
     );
   }
 
+  /** Reads security settings from the server. */
   private getSecuritySettings = () => {
     const offlineDefault = `
       function GetV(){
@@ -676,6 +678,31 @@ export class ApiService extends UnsubscriberService {
       this.createApiUrl(ApiPath.SECURITY_SETTINGS_PATH),
       securitySettings,
       'Security settings saved.',
+      { responseType: 'text' },
+    );
+  }
+
+  /** Reads time settings from the server. */
+  private getTimeSettings = () => {
+    const offlineDefault = `
+      function GetV(){
+        var d=document;
+        d.Sf.NT.checked=0;d.Sf.NS.value="0.wled.pool.ntp.org";d.Sf.CF.checked=1;d.Sf.TZ.selectedIndex=0;d.Sf.UO.value=0;d.Sf.LN.value="0.00";d.Sf.LT.value="0.00";d.getElementsByClassName("times")[0].innerHTML="2023-6-4, 07:57:32";d.Sf.OL.checked=0;d.Sf.O1.value=0;d.Sf.O2.value=29;d.Sf.OM.value=0;d.Sf.OS.checked=0;d.Sf.O5.checked=0;d.Sf.CE.checked=0;d.Sf.CY.value=20;d.Sf.CI.value=1;d.Sf.CD.value=1;d.Sf.CH.value=0;d.Sf.CM.value=0;d.Sf.CS.value=0;d.Sf.A0.value=0;d.Sf.A1.value=0;d.Sf.MC.value=0;d.Sf.MN.value=0;addRow(0,0,0,0);addRow(1,0,0,0);addRow(2,0,0,0);addRow(3,0,0,0);d.Sf.H0.value=0;d.Sf.N0.value=0;d.Sf.T0.value=0;d.Sf.W0.value=255;d.Sf.M0.value=1;d.Sf.P0.value=12;d.Sf.D0.value=1;d.Sf.E0.value=31;d.Sf.H1.value=0;d.Sf.N1.value=0;d.Sf.T1.value=0;d.Sf.W1.value=255;d.Sf.M1.value=1;d.Sf.P1.value=12;d.Sf.D1.value=1;d.Sf.E1.value=31;d.Sf.H2.value=0;d.Sf.N2.value=0;d.Sf.T2.value=0;d.Sf.W2.value=255;d.Sf.M2.value=1;d.Sf.P2.value=12;d.Sf.D2.value=1;d.Sf.E2.value=31;d.Sf.H3.value=0;d.Sf.N3.value=0;d.Sf.T3.value=0;d.Sf.W3.value=255;d.Sf.M3.value=1;d.Sf.P3.value=12;d.Sf.D3.value=1;d.Sf.E3.value=31;d.Sf.H4.value=0;d.Sf.N4.value=0;d.Sf.T4.value=0;d.Sf.W4.value=255;d.Sf.M4.value=1;d.Sf.P4.value=12;d.Sf.D4.value=1;d.Sf.E4.value=31;d.Sf.H5.value=0;d.Sf.N5.value=0;d.Sf.T5.value=0;d.Sf.W5.value=255;d.Sf.M5.value=1;d.Sf.P5.value=12;d.Sf.D5.value=1;d.Sf.E5.value=31;d.Sf.H6.value=0;d.Sf.N6.value=0;d.Sf.T6.value=0;d.Sf.W6.value=255;d.Sf.M6.value=1;d.Sf.P6.value=12;d.Sf.D6.value=1;d.Sf.E6.value=31;d.Sf.H7.value=0;d.Sf.N7.value=0;d.Sf.T7.value=0;d.Sf.W7.value=255;d.Sf.M7.value=1;d.Sf.P7.value=12;d.Sf.D7.value=1;d.Sf.E7.value=31;d.Sf.N8.value=0;d.Sf.T8.value=0;d.Sf.W8.value=255;d.Sf.N9.value=0;d.Sf.T9.value=0;d.Sf.W9.value=255;
+      }
+    `;
+    return this.httpGet(
+      this.createApiUrl(ApiFilePath.TIME_SETTINGS_JS_PATH),
+      offlineDefault,
+      { responseType: 'text' },
+    );
+  }
+
+  /** Submits time settings form data to server. */
+  private setTimeSettings = (timeSettings: WledTimeSettings) => {
+    return this.httpPost(
+      this.createApiUrl(ApiPath.TIME_SETTINGS_PATH),
+      timeSettings,
+      'Time settings saved.',
       { responseType: 'text' },
     );
   }
@@ -797,10 +824,6 @@ export class ApiService extends UnsubscriberService {
       get: null, // TODO
       set: this.setLedSettings,
     },
-    ui: {
-      get: null, // TODO
-      set: this.setUISettings,
-    },
     network: {
       get: this.getNetworkSettings,
       set: this.setNetworkSettings,
@@ -808,6 +831,14 @@ export class ApiService extends UnsubscriberService {
     security: {
       get: this.getSecuritySettings,
       set: this.setSecuritySettings,
+    },
+    time: {
+      get: this.getTimeSettings,
+      set: this.setTimeSettings,
+    },
+    ui: {
+      get: null, // TODO
+      set: this.setUISettings,
     },
   };
 

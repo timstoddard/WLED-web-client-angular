@@ -3,6 +3,7 @@ import { FormArray, FormGroup } from '@angular/forms';
 import { FormService, FormValues, createGetFormControl, getFormControlFn } from '../../shared/form-service';
 import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
 import { SelectItem } from '../shared/settings-types';
+import { TimeSettingsService } from './time-settings.service';
 
 enum ScheduledPresetType {
   TIME = 'TIME',
@@ -185,13 +186,24 @@ export class TimeSettingsComponent extends UnsubscriberComponent implements OnIn
   ];
   getFormControl!: getFormControlFn;
 
-  constructor(private formService: FormService) {
+  constructor(
+    private formService: FormService,
+    private timeSettingsService: TimeSettingsService,
+  ) {
     super();
   }
 
   ngOnInit() {
     this.timeSettingsForm = this.createForm();
     this.getFormControl = createGetFormControl(this.timeSettingsForm);
+
+    this.handleUnsubscribe(
+      this.timeSettingsService.getParsedValues()
+    ).subscribe(({ formValues, metadata }) => {
+      console.log(' >>> TIME formValues', formValues)
+      console.log(' >>> TIME metadata', metadata)
+      this.timeSettingsForm.patchValue(formValues);
+    });
   }
 
   submitForm() {

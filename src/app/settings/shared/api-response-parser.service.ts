@@ -1,10 +1,5 @@
 import { Injectable } from '@angular/core';
-
-export interface ParseConfiguration {
-  pattern: RegExp;
-  name: string;
-  isMetadata: boolean;
-}
+import { ParseConfiguration } from './settings-parse-configurations';
 
 export interface SettingsParsedValues {
   formValues: { [key: string]: unknown };
@@ -24,17 +19,27 @@ export class ApiResponseParserService {
     for (const config of parseConfigurations) {
       try {
         const match = jsFileText.match(config.pattern);
-        if (match && match[1]) {
-          const rawValue = match[1];
-          const parsedValue = JSON.parse(rawValue);
-          const dict = config.isMetadata ? metadata : formValues;
-          dict[config.name] = parsedValue;
-          console.log(config.name, '= [', parsedValue, ']')
+        if (match) {
+          if (config.isMetadata) {
+            // all metadata matches should have 1 group
+            // and name attribute is required
+            const parsedValue = JSON.parse(match[1]);
+            metadata[config.name] = parsedValue;
+            console.log(config.name, '= [', parsedValue, ']')  
+          } else {
+            // all non-metadata matches should have 2 groups
+            // first for name, second for value
+            const parsedName = match[1];
+            const parsedValue = JSON.parse(match[2]);
+            formValues[parsedName] = parsedValue;
+            console.log(parsedName, '= [', parsedValue, ']')
+          }
         }
       } catch (e) {
-        console.warn('WARNING: unable to parse saved settings from API response.')
-        console.warn(jsFileText)
-        console.warn(e)
+        console.error('ERROR: unable to parse saved settings from API response.');
+        console.error(e);
+        console.warn('JS file content:');
+        console.warn(jsFileText);
       }
     }
   

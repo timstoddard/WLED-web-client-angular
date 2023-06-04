@@ -3,10 +3,9 @@ import { ApiService } from '../../shared/api-service/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { WLEDIpAddress } from '../../shared/app-types/app-types';
 import { UnsubscriberService } from 'src/app/shared/unsubscriber/unsubscriber.service';
-import { timer } from 'rxjs';
 import { ApiResponseParserService } from '../shared/api-response-parser.service';
 import { WIFI_PARSE_CONFIGURATIONS } from '../shared/settings-parse-configurations';
-import { NetworkSettings, WledNetworkSettings, getNewParsedValuesSubject } from '../shared/settings-types';
+import { NetworkSettings, WledNetworkSettings, getLoadSettingsDelayTimer, getNewParsedValuesSubject } from '../shared/settings-types';
 import { NetworkSettingsTransformerService } from './network-settings-transformer.service';
 
 // TODO provide in settings services module
@@ -23,8 +22,7 @@ export class NetworkSettingsService extends UnsubscriberService {
   ) {
     super();
 
-    const LOAD_API_URL_DELAY_MS = 2000;
-    this.handleUnsubscribe(timer(LOAD_API_URL_DELAY_MS))
+    this.handleUnsubscribe(getLoadSettingsDelayTimer())
       .subscribe(() => {
         this.handleUnsubscribe(this.apiService.settings.network.get())
           .subscribe((responseJs) => {

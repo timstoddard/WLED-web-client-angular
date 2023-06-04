@@ -1,7 +1,8 @@
 @import 'src/app/shared/scss/mixins';
 
 :host {
-  margin: 5px 3px;
+  @include flex-center;
+  margin: 6px;
 }
 
 .checkboxContainer {
@@ -18,7 +19,6 @@
   cursor: pointer;
   display: flex;
   padding: 4px 10px;
-  margin: 6px;
 
   &:hover {
     background: rgba(

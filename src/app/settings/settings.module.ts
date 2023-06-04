@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { AddDeviceFormComponent } from './network-settings/add-device-form/add-device-form.component';
 import { DmxSettingsComponent } from './dmx-settings/dmx-settings.component';
@@ -25,6 +26,7 @@ import { SettingsHeaderComponent } from './shared/settings-header/settings-heade
 import { SettingsRoutingModule } from './settings-routing.module';
 import { SharedComponentsModule } from '../shared/shared-components.module';
 import { SyncSettingsComponent } from './sync-settings/sync-settings.component';
+import { TimeBasedPresetComponent } from './time-settings/time-based-preset/time-based-preset.component';
 import { TimeSettingsComponent } from './time-settings/time-settings.component';
 import { UISettingsComponent } from './ui-settings/ui-settings.component';
 import { UserModSettingsComponent } from './user-mod-settings/user-mod-settings.component';
@@ -42,6 +44,7 @@ const COMPONENTS = [
   SettingsGroupComponent,
   SettingsHeaderComponent,
   SyncSettingsComponent,
+  TimeBasedPresetComponent,
   TimeSettingsComponent,
   UISettingsComponent,
   UserModSettingsComponent,
@@ -61,6 +64,7 @@ const COMPONENTS = [
     MatInputModule,
     MatOptionModule,
     MatSidenavModule,
+    MatSlideToggleModule,
     MatToolbarModule,
     ReactiveFormsModule,
     SettingsRoutingModule,

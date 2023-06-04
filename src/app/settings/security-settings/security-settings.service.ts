@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { saveAs } from 'file-saver';
-import { timer } from 'rxjs';
 import { ApiService } from 'src/app/shared/api-service/api.service';
 import { UnsubscriberService } from 'src/app/shared/unsubscriber/unsubscriber.service';
 import { ApiResponseParserService } from '../shared/api-response-parser.service';
 import { SECURITY_PARSE_CONFIGURATIONS } from '../shared/settings-parse-configurations';
-import { SecuritySettings, getNewParsedValuesSubject } from '../shared/settings-types';
+import { SecuritySettings, getLoadSettingsDelayTimer, getNewParsedValuesSubject } from '../shared/settings-types';
 import { SecuritySettingsTransformerService } from './security-settings-transformer.service';
 
 @Injectable({ providedIn: 'root' })
@@ -21,8 +20,7 @@ export class SecuritySettingsService extends UnsubscriberService {
   ) {
     super();
 
-    const LOAD_API_URL_DELAY_MS = 2000;
-    this.handleUnsubscribe(timer(LOAD_API_URL_DELAY_MS))
+    this.handleUnsubscribe(getLoadSettingsDelayTimer())
       .subscribe(() => {
         this.handleUnsubscribe(this.apiService.settings.security.get())
           .subscribe((responseJs) => {
