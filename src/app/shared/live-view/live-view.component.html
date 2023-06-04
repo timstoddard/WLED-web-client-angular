@@ -1,9 +1,8 @@
-<!-- <canvas #liveView></canvas> -->
-
-<!-- TODO make this a canvas (?) -->
-<iframe
+<div
   *ngIf="isLive"
-  [src]="getIframeUrl()"
   class="liveView"
-  [ngStyle]="getIframeStyle()">
-</iframe>
+  [ngStyle]="getBackgroundStyle()">
+</div>
+<div class="liveView__fps">
+  FPS: {{ fps }}
+</div>

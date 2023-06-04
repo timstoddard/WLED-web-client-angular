@@ -1,5 +1,6 @@
 :host {
   display: flex;
+  position: relative;
   width: 100%;
 }
 
@@ -10,4 +11,14 @@
   border-top: 1px solid var(--borderColorAccent);
   height: 12px;
   width: 100%;
+
+  &__fps {
+    background: rgba(0,0,0,0.7);
+    border-radius: 2px;
+    bottom: 0;
+    font-size: 12px;
+    padding: 0 3px;
+    position: absolute;
+    right: 0;
+  }
 }

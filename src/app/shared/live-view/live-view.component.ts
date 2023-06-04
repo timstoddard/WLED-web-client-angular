@@ -1,11 +1,10 @@
-import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { timer } from 'rxjs';
 import { ApiService } from '../api-service/api.service';
 import { WebSocketService } from '../web-socket.service';
 import { AppStateService } from '../app-state/app-state.service';
 import { UnsubscriberComponent } from '../unsubscriber/unsubscriber.component';
-import { DomSanitizer } from '@angular/platform-browser';
 import { LiveViewService } from './live-view.service';
-import { timer } from 'rxjs';
 
 // TODO better change detection (?) so this component doesnt cause perf issues
 
@@ -16,16 +15,14 @@ import { timer } from 'rxjs';
   providers: [LiveViewService],
 })
 export class LiveViewComponent extends UnsubscriberComponent implements OnInit {
-  @ViewChild('liveView') liveViewCanvas!: ElementRef<HTMLCanvasElement>;
-  isLive: boolean = true;
-  private updateTimeout!: number;
-  private backgroundString: string = '';
+  isLive = true;
+  fps = 0;
+  private backgroundString = '';
 
   constructor(
     private appStateService: AppStateService,
     private apiService: ApiService,
     private webSocketService: WebSocketService,
-    private sanitizer: DomSanitizer,
     private liveViewService: LiveViewService,
     private changeDetectorRef: ChangeDetectorRef,
   ) {
@@ -47,17 +44,27 @@ export class LiveViewComponent extends UnsubscriberComponent implements OnInit {
       });
   }
 
-  getIframeUrl() {
-    // TODO what url to use here?
-    // const url = this.isLive
-    //   ? `${this.apiService.BASE_URL}/liveview`
-    //   : 'about:blank';
-    const url = '';
-    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  getBackgroundStyle() {
+    return {
+      background: this.backgroundString,
+    };
   }
 
-  getIframeStyle() {
-    return { background: this.backgroundString };
+  /**
+   * Updates canvas to show live LED view. Uses web sockets.
+   */
+  private updateWithWebSocket() {
+    this.handleUnsubscribe(
+      this.webSocketService.getLiveViewSocket())
+      .subscribe((leds) => {
+        this.fps = this.liveViewService.updateRunningAvgFps();
+
+        // update background
+        this.backgroundString = this.liveViewService.getBackgroundStringFromUint8Array(leds);
+
+        // force update the UI
+        this.changeDetectorRef.markForCheck();
+      });
   }
 
   /**
@@ -77,31 +84,8 @@ export class LiveViewComponent extends UnsubscriberComponent implements OnInit {
 
     const LIVE_VIEW_WS_FPS = 1; // 10; // TODO add setting in UI
     const timeoutMs = 1000 / LIVE_VIEW_WS_FPS;
-    // TODO this works without interval??
+    // TODO does this work without interval??
     this.handleUnsubscribe(timer(timeoutMs))
       .subscribe(this.update);
-  }
-
-  /**
-   * Updates canvas to show live LED view. Uses web sockets.
-   */
-  private updateWithWebSocket() {
-    this.handleUnsubscribe(
-      this.webSocketService.getLiveViewSocket())
-      .subscribe((arr) => {
-        this.backgroundString = this.liveViewService.getBackgroundStringFromUint8Array(arr);
-        this.changeDetectorRef.markForCheck();
-      });
-  }
-
-  // TODO should use request animation frame?
-  private getLiveJson(leds: string[]) {
-    try {
-      requestAnimationFrame(() => {
-        this.backgroundString = this.liveViewService.getBackgroundString(leds);
-      });
-    } catch (e) {
-      console.error('Websocket error [Live preview]:', e);
-    }
   }
 }
