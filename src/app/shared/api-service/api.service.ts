@@ -17,8 +17,8 @@ import { FormValues } from '../form-service';
 import { LiveViewData } from '../live-view/live-view.service';
 import { PostResponseHandler } from '../post-response-handler';
 import { UnsubscriberService } from '../unsubscriber/unsubscriber.service';
-import { WledSecuritySettings } from '../../settings/security-settings/security-settings.service';
 import { ApiFilePath, ApiPath } from './api-paths';
+import { WledNetworkSettings, WledSecuritySettings } from 'src/app/settings/shared/settings-types';
 
 // TODO split into sub classes per app section and use the ApiService to aggregate their usage
 @Injectable({ providedIn: 'root' })
@@ -630,7 +630,7 @@ export class ApiService extends UnsubscriberService {
     );
   }
 
-  private getWifiSettings = () => {
+  private getNetworkSettings = () => {
     const offlineDefault = `
       function GetV(){
         var d=document;
@@ -645,7 +645,7 @@ export class ApiService extends UnsubscriberService {
   }
 
   /** Submits wifi settings form data to server. */
-  private setWifiSettings = (wifiSettings: FormValues) => {
+  private setNetworkSettings = (wifiSettings: Partial<WledNetworkSettings>) => {
     // TODO does this return WLEDApiResponse type or other type?
     return this.httpPost(
       this.createApiUrl(ApiPath.WIFI_SETTINGS_PATH),
@@ -801,9 +801,9 @@ export class ApiService extends UnsubscriberService {
       get: null, // TODO
       set: this.setUISettings,
     },
-    wifi: {
-      get: this.getWifiSettings,
-      set: this.setWifiSettings,
+    network: {
+      get: this.getNetworkSettings,
+      set: this.setNetworkSettings,
     },
     security: {
       get: this.getSecuritySettings,

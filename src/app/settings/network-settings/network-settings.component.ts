@@ -218,7 +218,7 @@ export class NetworkSettingsComponent extends UnsubscriberComponent implements O
 
     console.log(formValue);
     this.handleUnsubscribe(
-      this.networkSettingsService.setWifiSettings(formValue));
+      this.networkSettingsService.setNetworkSettings(formValue));
     // TODO redirect
   }
 

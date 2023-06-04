@@ -1,6 +1,7 @@
 .warningCard {
-  background: rgba(var(--warningColorAccentRgb),0.6);
+  background: rgba(var(--warningColorAccentRgb),0.7);
   border: 1px solid var(--warningColorPrimary);
+  color: var(--textColorPrimary);
   margin: 0 auto 10px;
   max-width: 400px;
 
