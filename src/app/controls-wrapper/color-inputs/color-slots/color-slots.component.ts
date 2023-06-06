@@ -38,6 +38,7 @@ export class ColorSlotsComponent implements OnInit {
 
     this.colorSlotsService.selectSlot(slot);
 
+    // TODO only open modal if palette is selected & has a color, or is not selected & doesn't have a color
     if (!hasOpenDialog && shouldOpenDialog) {
       const dialogRef = this.dialog.open(ColorInputsComponent);
       this.colorSlotsService.setIsColorInputDialogOpen(true);

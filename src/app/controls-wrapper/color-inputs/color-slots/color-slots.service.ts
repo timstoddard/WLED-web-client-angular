@@ -119,7 +119,7 @@ export class ColorSlotsService extends UnsubscriberService {
   }
 
   getIsColorInputDialogOpen() {
-    return this.isColorInputDialogOpen
+    return this.isColorInputDialogOpen;
   }
 
   setIsColorInputDialogOpen(isColorInputDialogOpen: boolean) {

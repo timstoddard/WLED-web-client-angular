@@ -446,6 +446,7 @@ export class TimeSettingsComponent extends UnsubscriberComponent implements OnIn
       buttonActions: {
         // TODO
       },
+      // TODO generated and add proper default with all 10 rows
       scheduledPresets: [
         {
           hour: 0,
