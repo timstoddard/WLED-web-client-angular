@@ -1,0 +1,122 @@
+<div
+  *ngIf="isEditing; else readOnlyTemplate"
+  [formGroup]="scheduledPresetForm">
+  <div class="timeBasedPreset__mainConfig">
+    <mat-slide-toggle
+      formControlName="enabled"
+      [color]="'primary'"
+      [checked]="false"
+      class="timeBasedPreset__enabled">
+      {{ getFormControl('enabled') ? 'On' : 'Off' }}
+    </mat-slide-toggle>
+
+    <app-text-input
+      label="Preset"
+      [inputs]="[presetIdInputConfig]"
+      flexDirection="column">
+    </app-text-input>
+
+    <ng-container *ngIf="!getFormControl('type'); else justHour">
+      <app-text-input
+        label="Hour : Minute"
+        [inputs]="[hourInputConfig, minuteInputConfig]"
+        flexDirection="column">
+      </app-text-input>
+    </ng-container>
+    <ng-template #justHour>
+      <app-text-input
+        label="Minute"
+        [inputs]="[minuteInputConfig]"
+        flexDirection="column">
+      </app-text-input>
+    </ng-template>
+  </div>
+  
+  <div class="timeBasedPreset__daysWrapper">
+    <div>
+      Days of the week to run:
+    </div>
+    <ul class="timeBasedPreset__days">
+      <li
+        *ngFor="let day of daysOfWeek"
+        class="timeBasedPreset__day">
+        <div>
+          {{ day.label }}
+        </div>
+        <div>
+          <app-checkbox [control]="getFormControl(day.formControlName)">
+          </app-checkbox>
+        </div>
+      </li>
+    </ul>
+  </div>
+  
+  <div
+    *ngIf="!getFormControl('type')"
+    class="timeBasedPreset__dateRange">
+    <div
+      formGroupName="startDate"
+      class="timeBasedPreset__dateRange__startDate">
+      <div>Start Date</div>
+      <div class="timeBasedPreset__dateRange__startDateControls">
+        <select formControlName="month">
+          <option
+            *ngFor="let option of monthOptions"
+            [value]="option.value">
+            {{ option.name }}
+          </option>
+        </select>
+        <app-text-input [inputs]="[startDateDayInputConfig]">
+        </app-text-input>
+      </div>
+    </div>
+    <div
+      formGroupName="endDate"
+      class="timeBasedPreset__dateRange__endDate">
+      <div>End Date</div>
+      <div class="timeBasedPreset__dateRange__endDateControls">
+        <select formControlName="month">
+          <option
+            *ngFor="let option of monthOptions"
+            [value]="option.value">
+            {{ option.name }}
+          </option>
+        </select>
+        <app-text-input [inputs]="[endDateDayInputConfig]">
+        </app-text-input>
+      </div>
+    </div>
+  </div>
+
+  <!-- TODO better placement/style/icon for this -->
+  <button
+    (click)="minimize($event)"
+    mat-raised-button
+    color="primary">
+    Minimize
+  </button>
+</div>
+
+<ng-template #readOnlyTemplate>
+  <div class="timeBasedPreset__readOnlyTemplate">
+    <div>
+      [{{ getFormControl('enabled').value ? 'ON' : 'OFF' }}]
+    </div>
+    <div>
+      Preset {{ getFormControl('presetId').value }}
+    </div>
+    <div>
+      {{ formatTime() }}
+    </div>
+    <div *ngIf="!getFormControl('type')">
+      {{ formatDateRange() }}
+    </div>
+    <div class="timeBasedPreset__readOnlyTemplate__days">
+      <div
+        *ngFor="let day of getDayValues()"
+        [ngClass]="'timeBasedPreset__readOnlyTemplate__day--' + (day.enabled ? 'enabled' : 'disabled')">
+        {{ day.label }}
+      </div>
+    </div>
+  </div>
+</ng-template>

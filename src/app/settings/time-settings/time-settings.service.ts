@@ -25,7 +25,6 @@ export class TimeSettingsService extends UnsubscriberService {
               formValues,
               metadata,
             } = this.apiResponseParserService.parseJsFile(responseJs, TIME_PARSE_CONFIGURATIONS);
-            console.log('before transform', formValues)
             this.parsedValues.next({
               formValues: this.timeSettingsTransformerService
                 .transformWledTimeSettingsToTimeSettings(formValues),

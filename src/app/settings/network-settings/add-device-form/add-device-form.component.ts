@@ -165,7 +165,7 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
   }
 
   private createForm() {
-    return this.formService.formBuilder.array([
+    return this.formService.createFormArray([
       this.createWLEDIpAddressGroup(),
     ]);
   }

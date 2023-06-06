@@ -38,7 +38,7 @@ export class NetworkSettingsTransformerService {
       wifiChannel: settings.AC!,
       openAP: settings.AB!,
     },
-    disableWifiSleep: convertToBoolean(settings.AH),
+    disableWifiSleep: convertToBoolean(settings.WS),
     ethernetType: settings.ETH,
   })
 

@@ -30,8 +30,6 @@ export class NetworkSettingsService extends UnsubscriberService {
               formValues,
               metadata,
             } = this.apiResponseParserService.parseJsFile(responseJs, WIFI_PARSE_CONFIGURATIONS);
-            console.log('before transform', formValues)
-            console.log('before transform', metadata)
             this.parsedValues.next({
               formValues: this.networkSettingsTransformerService
                 .transformWledNetworkSettingsToNetworkSettings(formValues as unknown as WledNetworkSettings),

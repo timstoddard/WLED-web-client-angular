@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
-import { FormService, FormValues, createGetFormControl, getFormControlFn } from '../../shared/form-service';
+import { FormService, FormValues, createGetFormArray, createGetFormControl, getFormArrayFn, getFormControl, getFormControlFn } from '../../shared/form-service';
 import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
-import { SelectItem } from '../shared/settings-types';
+import { ScheduledPreset, SelectItem, TimeSettings } from '../shared/settings-types';
 import { TimeSettingsService } from './time-settings.service';
+import { InputConfig } from 'src/app/shared/text-input/text-input.component';
 
 enum ScheduledPresetType {
   TIME = 'TIME',
@@ -18,6 +19,8 @@ enum ScheduledPresetType {
 })
 export class TimeSettingsComponent extends UnsubscriberComponent implements OnInit {
   timeSettingsForm!: FormGroup;
+  getFormControl!: getFormControlFn;
+  getFormArray!: getFormArrayFn;
 
   // TODO move select option lists like this into shared
   // file `select-option-lists.ts`.
@@ -113,6 +116,10 @@ export class TimeSettingsComponent extends UnsubscriberComponent implements OnIn
       name: 'MX-CST/CDT',
       value: 21,
     },
+    {
+      name: 'PKT (Pakistan)',
+      value: 22,
+    },
   ];
 
   clockOverlayOptions: SelectItem<string>[] = [
@@ -154,55 +161,202 @@ export class TimeSettingsComponent extends UnsubscriberComponent implements OnIn
     'Days',
   ];
 
-  weekdays = [
+  weekdays: SelectItem<string>[] = [
     {
-      name: 'sunday',
-      abbreviated: 'Sun',
+      name: 'Sun',
+      value: 'sunday',
     },
     {
-      name: 'monday',
-      abbreviated: 'Mon',
+      name: 'Mon',
+      value: 'monday',
     },
     {
-      name: 'tuesday',
-      abbreviated: 'Tue',
+      name: 'Tue',
+      value: 'tuesday',
     },
     {
-      name: 'wednesday',
-      abbreviated: 'Wed',
+      name: 'Wed',
+      value: 'wednesday',
     },
     {
-      name: 'thursday',
-      abbreviated: 'Thu',
+      name: 'Thu',
+      value: 'thursday',
     },
     {
-      name: 'friday',
-      abbreviated: 'Fri',
+      name: 'Fri',
+      value: 'friday',
     },
     {
-      name: 'saturday',
-      abbreviated: 'Sat',
+      name: 'Sat',
+      value: 'saturday',
     },
   ];
-  getFormControl!: getFormControlFn;
+
+  ntpServerUrlInputConfig: InputConfig = {
+    type: 'text',
+    getFormControl: () => getFormControl(this.timeSettingsForm, 'ntpServer.url'),
+    placeholder: '0.wled.pool.ntp.org',
+    widthPx: 200,
+  };
+
+  utcOffsetInputConfig: InputConfig = {
+    type: 'text',
+    getFormControl: () => getFormControl(this.timeSettingsForm, 'utcOffsetSeconds'),
+    placeholder: '0',
+    widthPx: 100,
+  };
+
+  latitudeInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.timeSettingsForm, 'coordinates.latitude'),
+    placeholder: '0',
+    widthPx: 100,
+  };
+
+  longitudeInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.timeSettingsForm, 'coordinates.longitude'),
+    placeholder: '0',
+    widthPx: 100,
+  };
+
+  firstLedInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.timeSettingsForm, 'analogClockOverlay.firstLed'),
+    placeholder: '0',
+    widthPx: 80,
+  };
+
+  lastLedInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.timeSettingsForm, 'analogClockOverlay.lastLed'),
+    placeholder: '0',
+    widthPx: 80,
+  };
+
+  middleLedInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.timeSettingsForm, 'analogClockOverlay.middleLed'),
+    placeholder: '0',
+    widthPx: 80,
+  };
+
+  countdownYearInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.timeSettingsForm, 'countdown.year'),
+    placeholder: '2023',
+    widthPx: 80,
+  };
+
+  countdownMonthInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.timeSettingsForm, 'countdown.month'),
+    placeholder: '0',
+    widthPx: 50,
+    min: 1,
+    max: 12,
+  };
+
+  countdownDayInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.timeSettingsForm, 'countdown.day'),
+    placeholder: '0',
+    widthPx: 50,
+    min: 1,
+    max: 31,
+  };
+
+  countdownHourInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.timeSettingsForm, 'countdown.hour'),
+    placeholder: '0',
+    widthPx: 50,
+    min: 0,
+    max: 23,
+  };
+
+  countdownMinuteInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.timeSettingsForm, 'countdown.minute'),
+    placeholder: '0',
+    widthPx: 50,
+    min: 0,
+    max: 59,
+  };
+
+  countdownSecondInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.timeSettingsForm, 'countdown.second'),
+    placeholder: '0',
+    widthPx: 50,
+    min: 0,
+    max: 59,
+  };
+
+  alexaOnInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.timeSettingsForm, 'presets.alexaOn'),
+    placeholder: '0',
+    widthPx: 100,
+  };
+
+  alexaOffInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.timeSettingsForm, 'presets.alexaOff'),
+    placeholder: '0',
+    widthPx: 100,
+  };
+
+  countdownEndInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.timeSettingsForm, 'presets.countdownEnd'),
+    placeholder: '0',
+    widthPx: 100,
+  };
+
+  timerEndInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.timeSettingsForm, 'presets.timerEnd'),
+    placeholder: '0',
+    widthPx: 100,
+  };
+
+  pageLoadLocalTime: string;
 
   constructor(
     private formService: FormService,
     private timeSettingsService: TimeSettingsService,
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
     super();
+    this.pageLoadLocalTime = 'loading.';
   }
 
   ngOnInit() {
     this.timeSettingsForm = this.createForm();
     this.getFormControl = createGetFormControl(this.timeSettingsForm);
+    this.getFormArray = createGetFormArray(this.timeSettingsForm);
 
     this.handleUnsubscribe(
       this.timeSettingsService.getParsedValues()
     ).subscribe(({ formValues, metadata }) => {
       console.log(' >>> TIME formValues', formValues)
       console.log(' >>> TIME metadata', metadata)
+      if (metadata['pageLoadLocalTime']) {
+        this.pageLoadLocalTime = new Date(metadata['pageLoadLocalTime'] as string).toString();
+      }
+
+      // update form value
       this.timeSettingsForm.patchValue(formValues);
+
+      // update scheduled presets
+      const scheduledPresets = formValues['scheduledPresets'] as ScheduledPreset[];
+      const scheduledPresetsControl = this.formService.createFormArray(scheduledPresets);
+      this.timeSettingsForm.removeControl('scheduledPresets')
+      this.timeSettingsForm.addControl('scheduledPresets', scheduledPresetsControl);
+      console.log('new scheduledPresets', scheduledPresets)
+
+      this.changeDetectorRef.markForCheck();
     });
   }
 
@@ -240,118 +394,84 @@ export class TimeSettingsComponent extends UnsubscriberComponent implements OnIn
   }
 
   private createForm() {
-    return this.formService.createFormGroup(this.getDefaultFormValues(), {
-      scheduledPresets: this.createScheduledPresetsForm(),
-    });
+    return this.formService.createFormGroup(this.getDefaultFormValues());
   }
 
   private getDefaultFormValues(): FormValues {
-    return {
-      ntp: {
-        enable: false,
-        ntpServer: '0.wled.pool.ntp.org',
+    const MS_IN_HOUR = 60 * 60 * 1000;
+    const now = new Date();
+    now.setMinutes(0);
+    now.setSeconds(0);
+    now.setTime(now.getTime() + (1 * MS_IN_HOUR));
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    const day = now.getDate();
+    const hour = now.getHours();
+
+    const values: TimeSettings = {
+      ntpServer: {
+        enabled: false,
+        url: '0.wled.pool.ntp.org',
       },
-      use24HourTime: true,
+      use24HourFormat: true,
       timeZone: 0,
       utcOffsetSeconds: 0,
-      geoCoordinates: {
+      coordinates: {
         latitude: 0,
         longitude: 0,
       },
-      clock: {
-        overlay: '',
-        isCountdown: false,
-        countdownEnd: {
-          year: 2022,
-          month: 1,
-          day: 1,
-          hour: 0,
-          minute: 0,
-          second: 0,
-        },
+      analogClockOverlay: {
+        enabled: false,
+        firstLed: 0,
+        lastLed: 29, // TODO aribtrary constant
+        middleLed: 0,
+        show5MinuteMarks: false,
+        showSeconds: false,
       },
-      macroPresets: {
+      countdown: {
+        enabled: false,
+        year,
+        month,
+        day,
+        hour,
+        minute: 0,
+        second: 0,
+      },
+      presets: {
         alexaOn: 0,
         alexaOff: 0,
-        buttonShortPress: 0,
-        buttonLongPress: 0,
-        buttonDoublePress: 0,
         countdownEnd: 0,
         timerEnd: 0,
       },
-    };
-  }
-
-  private createScheduledPresetsForm() {
-    return this.formService.formBuilder.array([
-      this.createScheduledPresetFormGroup(),
-      this.createScheduledPresetFormGroup(),
-      this.createScheduledPresetFormGroup(),
-      this.createScheduledPresetFormGroup(),
-      this.createScheduledPresetFormGroup(ScheduledPresetType.SUNRISE),
-      this.createScheduledPresetFormGroup(ScheduledPresetType.SUNSET),
-    ]);
-  }
-
-  private createScheduledPresetFormGroup(type = ScheduledPresetType.TIME) {
-    const days: { [key: string]: boolean } = {}
-    for (const day of this.weekdays) {
-      days[day.name] = true;
-    }
-    let customValues: FormValues = {}
-    switch (type) {
-      case ScheduledPresetType.TIME:
-        customValues = {
+      buttonActions: {
+        // TODO
+      },
+      scheduledPresets: [
+        {
           hour: 0,
           minute: 0,
-        };
-        break;
-      case ScheduledPresetType.SUNRISE:
-        customValues = {
-          sunrise: true,
-        };
-        break;
-      case ScheduledPresetType.SUNSET:
-        customValues = {
-          sunset: true,
-        };
-        break;
-      }
-      const defaultValues: FormValues = {
-        enabled: true,
-        type,
-        presetId: 0,
-        days,
-        ...customValues,
-      };
-    const formGroup = this.formService.createFormGroup(defaultValues);
-
-    this.getValueChanges<boolean>(formGroup, 'enabled')
-      .subscribe(value => {
-        this.toggleRowEnabled(formGroup);
-      });
-    // initialize disabled status for this row
-    this.toggleRowEnabled(formGroup);
-    
-    return formGroup;
-  }
-
-  private toggleRowEnabled(rowGroup: FormGroup) {
-    if (rowGroup) {
-      const isEnabled = rowGroup.get('enabled')!.value;
-      if (isEnabled) {
-        // enable all
-        rowGroup.get('hour')?.enable({ emitEvent: false });
-        rowGroup.get('minute')?.enable({ emitEvent: false });
-        rowGroup.get('presetId')!.enable({ emitEvent: false });
-        rowGroup.get('days')!.enable({ emitEvent: false });
-      } else {
-        // disable all
-        rowGroup.get('hour')?.enable({ emitEvent: false });
-        rowGroup.get('minute')?.enable({ emitEvent: false });
-        rowGroup.get('presetId')!.disable({ emitEvent: false });
-        rowGroup.get('days')!.disable({ emitEvent: false });
-      }
-    }
+          presetId: 0,
+          enabled: false,
+          days: {
+            sunday: true,
+            monday: true,
+            tuesday: true,
+            wednesday: true,
+            thursday: true,
+            friday: true,
+            saturday: true,
+          },
+          startDate: {
+            month: 0,
+            day: 0,
+          },
+          endDate: {
+            month: 0,
+            day: 0,
+          },
+        }
+      ],
+    };
+    return values as unknown as FormValues;
   }
 }

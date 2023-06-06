@@ -26,7 +26,7 @@ import { SettingsHeaderComponent } from './shared/settings-header/settings-heade
 import { SettingsRoutingModule } from './settings-routing.module';
 import { SharedComponentsModule } from '../shared/shared-components.module';
 import { SyncSettingsComponent } from './sync-settings/sync-settings.component';
-import { TimeBasedPresetComponent } from './time-settings/time-based-preset/time-based-preset.component';
+import { ScheduledPresetComponent } from './time-settings/scheduled-preset/scheduled-preset.component';
 import { TimeSettingsComponent } from './time-settings/time-settings.component';
 import { UISettingsComponent } from './ui-settings/ui-settings.component';
 import { UserModSettingsComponent } from './user-mod-settings/user-mod-settings.component';
@@ -44,7 +44,7 @@ const COMPONENTS = [
   SettingsGroupComponent,
   SettingsHeaderComponent,
   SyncSettingsComponent,
-  TimeBasedPresetComponent,
+  ScheduledPresetComponent,
   TimeSettingsComponent,
   UISettingsComponent,
   UserModSettingsComponent,

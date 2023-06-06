@@ -1,0 +1,87 @@
+@import 'src/app/shared/scss/mixins';
+
+:host {
+  border: 1px solid var(--borderColorAccent);
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--backgroundColorAccent);
+  }
+}
+
+:host-context(.isEditing) {
+  cursor: initial;
+
+  &:hover {
+    background-color: initial;
+  }
+}
+
+.timeBasedPreset {
+  &__enabled {
+    //
+  }
+
+  &__mainConfig {
+    @include flex-center;
+  }
+
+  &__daysWrapper {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__days {
+    display: flex;
+  }
+
+  &__day {
+    @include flex-center;
+    flex-direction: column;
+  }
+
+  &__dateRange {
+    @include flex-center;
+
+    &__startDate,
+    &__endDate {
+      margin: 2px 6px;
+
+      &Controls {
+        @include flex-center;
+      }
+    }
+  }
+
+  &__readOnlyTemplate {
+    display: flex;
+    flex-wrap: wrap;
+
+    & > * {
+      margin: 2px 8px;
+    }
+
+    &__days {
+      @include flex-center;
+
+      & > * {
+        margin: 0 2px;
+      }
+    }
+
+    &__day {
+      &--enabled {
+        font-weight: bold;
+        text-shadow: 0.5px 0.5px 2px var(--themeColorPrimary);
+      }
+
+      &--disabled {
+        color: var(--backgroundColorAccent);
+        opacity: 0.5;
+        text-shadow: 1px 1px 1px var(--backgroundColorPrimary);
+      }
+    }
+  }
+}

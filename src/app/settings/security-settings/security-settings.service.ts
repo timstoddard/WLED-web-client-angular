@@ -28,7 +28,6 @@ export class SecuritySettingsService extends UnsubscriberService {
               formValues,
               metadata,
             } = this.apiResponseParserService.parseJsFile(responseJs, SECURITY_PARSE_CONFIGURATIONS);
-            console.log('before transform', formValues)
             this.parsedValues.next({
               formValues: this.securitySettingsTransformerService
                 .transformWledSecuritySettingsToSecuritySettings(formValues),

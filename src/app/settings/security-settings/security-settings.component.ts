@@ -6,6 +6,7 @@ import { SecuritySettingsService } from './security-settings.service';
 import { InputConfig } from 'src/app/shared/text-input/text-input.component';
 import { FormControlRequirementConfig } from 'src/app/shared/form-control-requirements/form-control-requirements.component';
 import { SnackbarService } from 'src/app/shared/snackbar.service';
+import { SecuritySettings } from '../shared/settings-types';
 
 @Component({
   selector: 'app-security-settings',
@@ -142,7 +143,7 @@ export class SecuritySettingsComponent extends UnsubscriberComponent implements 
   }
 
   private getDefaultFormValues(): FormValues {
-    return {
+    const values: SecuritySettings =  {
       settingsPin: '',
       secureWirelessUpdate: false,
       otaUpdatePassword: '', // not included in server response
@@ -150,5 +151,6 @@ export class SecuritySettingsComponent extends UnsubscriberComponent implements 
       triggerFactoryReset: false, // not included in server response
       enableArduinoOTA: true,
     };
+    return values as unknown as FormValues;
   }
 }

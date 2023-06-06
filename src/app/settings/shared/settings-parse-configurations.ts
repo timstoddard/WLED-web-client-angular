@@ -81,11 +81,11 @@ export const WIFI_PARSE_CONFIGURATIONS: ParseConfiguration[] = [
   formValue(/d.Sf.(ETH).selectedIndex=([^;]*);/),
   metadata(
     'clientIpAddress',
-    /d.getElementsByClassName\("sip"\)\[0\].innerHTML=([^;]*);/,
+    /d\.getElementsByClassName\("sip"\)\[0\]\.innerHTML=([^;]*);/,
   ),
   metadata(
     'wledAccessPointIpAddress',
-    /d.getElementsByClassName\("sip"\)\[1\].innerHTML=([^;]*);/,
+    /d\.getElementsByClassName\("sip"\)\[1\]\.innerHTML=([^;]*);/,
   ),
 ];
 
@@ -207,7 +207,7 @@ export const TIME_PARSE_CONFIGURATIONS: ParseConfiguration[] = [
   formValue(/d.Sf.(LT).value=([^;]*);/),
   metadata(
     'pageLoadLocalTime',
-    /d.getElementsByClassName("times")[0].innerHTML=([^;]*);/,
+    /d\.getElementsByClassName\("times"\)\[0\]\.innerHTML=([^;]*);/,
   ),
   formValue(/d.Sf.(OL).checked=([^;]*);/),
   formValue(/d.Sf.(O1).value=([^;]*);/),

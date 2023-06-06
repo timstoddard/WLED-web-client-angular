@@ -12,110 +12,104 @@
     Time Settings
   </h1>
 
-  <!-- TODO move to below section -->
-  <app-time-based-preset></app-time-based-preset>
-
   <app-settings-group title="Time">
     <div
-      formGroupName="ntp"
+      formGroupName="ntpServer"
       class="timeSettingsForm__ntp">
       <app-checkbox
-        [control]="getFormControl('ntp.enable')"
+        [control]="getFormControl('ntpServer.enabled')"
         label="Sync time from NTP server">
       </app-checkbox>
   
-      <mat-form-field
-        appearance="fill"
-        class="">
-        <mat-label>NTP Server</mat-label>
-        <input
-          matInput
-          formControlName="ntpServer"
-          class="">
-      </mat-form-field>
+      <app-text-input
+        label="Server URL"
+        [inputs]="[ntpServerUrlInputConfig]">
+      </app-text-input>
     </div>
   
     <app-checkbox
-      [control]="getFormControl('use24HourTime')"
+      [control]="getFormControl('use24HourFormat')"
       label="Use 24H Format">
     </app-checkbox>
   
-    Time Zone:
-    <select formControlName="timeZone">
-      <option
-        *ngFor="let option of timeZoneOptions"
-        [value]="option.value">
-        {{ option.name }}
-      </option>
-    </select>
-  
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>UTC Offset (seconds)</mat-label>
-      <input
-        type="number"
-        matInput
-        formControlName="utcOffsetSeconds"
-        class="">
-        <div>
-          <!-- TODO make this an info/detail comp -->
-          Max 18 hours.
-        </div>
-    </mat-form-field>
+    <div>
+      Time Zone:
+      <select formControlName="timeZone">
+        <option
+          *ngFor="let option of timeZoneOptions"
+          [value]="option.value">
+          {{ option.name }}
+        </option>
+      </select>
+    </div>
+
+    <app-text-input
+      label="UTC Offset"
+      [inputs]="[utcOffsetInputConfig]"
+      description="In seconds; max. 18 hours">
+    </app-text-input>
   
     <div>
-      Current local time is: <span>TODO</span>
+      Current local time is: <span>{{ pageLoadLocalTime }}</span>
     </div>
   
-    <div formGroupName="geoCoordinates">
-      <mat-form-field
-        appearance="fill"
-        class="">
-        <!-- TODO add "N" help label -->
-        <mat-label>Latitude</mat-label>
-        <input
-          type="number"
-          matInput
-          formControlName="latitude"
-          class="">
-      </mat-form-field>
-      
-      <mat-form-field
-        appearance="fill"
-        class="">
-        <!-- TODO add "E" help label -->
-        <mat-label>Longitude</mat-label>
-        <input
-          type="number"
-          matInput
-          formControlName="longitude"
-          class="">
-      </mat-form-field>
+    <div>
+      <!-- TODO add "N" dropdown -->
+      <app-text-input
+        label="Latitude"
+        [inputs]="[latitudeInputConfig]">
+      </app-text-input>
+
+      <!-- TODO add "E" dropdown -->
+      <app-text-input
+        label="Longitude"
+        [inputs]="[longitudeInputConfig]">
+      </app-text-input>
     </div>
   </app-settings-group>
 
   <app-settings-group
-    title="Clock"
-    formGroupName="clock"
+    title="Analog Clock Overlay"
+    formGroupName="analogClockOverlay"
     class="timeSettingsForm__clock">
-    Clock Overlay:
-    <select formControlName="overlay">
-      <option
-        *ngFor="let option of clockOverlayOptions"
-        [value]="option.value">
-        {{ option.name }}
-      </option>
-    </select>
 
+    <!-- TODO make this a slider -->
     <app-checkbox
-      [control]="getFormControl('clock.isCountdown')"
-      label="Enable Countdown Mode">
+      [control]="getFormControl('analogClockOverlay.enabled')"
+      label="Enable">
     </app-checkbox>
 
-    <div
-      *ngIf="timeSettingsForm.get('clock')!.get('isCountdown')!.value"
-      formGroupName="countdownEnd">
+    <app-text-input
+      label="First/Last LEDs"
+      [inputs]="[firstLedInputConfig, lastLedInputConfig]">
+    </app-text-input>
+
+    <app-text-input
+      label="Middle LED (12 hour mark)"
+      [inputs]="[middleLedInputConfig]">
+    </app-text-input>
+
+    <app-checkbox
+      [control]="getFormControl('analogClockOverlay.show5MinuteMarks')"
+      label="Show 5-minute marks">
+    </app-checkbox>
+
+    <app-checkbox
+      [control]="getFormControl('analogClockOverlay.showSeconds')"
+      label="Show seconds (as trail)">
+    </app-checkbox>
+  </app-settings-group>
+
+  <app-settings-group
+    title="Countdown"
+    class="timeSettingsForm__countdown">
+    <!-- TODO make this a slider -->
+    <app-checkbox
+      [control]="getFormControl('countdown.enabled')"
+      label="Enable">
+    </app-checkbox>
+
+    <div>
       <h3>
         Countdown End
       </h3>
@@ -123,71 +117,29 @@
       <!-- TODO better datepicker!! -->
       <!-- TODO allow transform of epoch ms to datetime -->
 
-      <mat-form-field
-        appearance="fill"
-        class="">
-        <mat-label>Year</mat-label>
-        <input
-          matInput
-          formControlName="year"
-          class="">
-      </mat-form-field>
+      <app-text-input
+        label="Year / Month / Day"
+        [inputs]="[
+          countdownYearInputConfig,
+          countdownMonthInputConfig,
+          countdownDayInputConfig,
+        ]">
+      </app-text-input>
 
-      <mat-form-field
-        appearance="fill"
-        class="">
-        <mat-label>Month</mat-label>
-        <input
-          matInput
-          formControlName="month"
-          class="">
-      </mat-form-field>
-
-      <mat-form-field
-        appearance="fill"
-        class="">
-        <mat-label>Day</mat-label>
-        <input
-          matInput
-          formControlName="day"
-          class="">
-      </mat-form-field>
-
-      <mat-form-field
-        appearance="fill"
-        class="">
-        <mat-label>Hour</mat-label>
-        <input
-          matInput
-          formControlName="hour"
-          class="">
-      </mat-form-field>
-
-      <mat-form-field
-        appearance="fill"
-        class="">
-        <mat-label>Minute</mat-label>
-        <input
-          matInput
-          formControlName="minute"
-          class="">
-      </mat-form-field>
-
-      <mat-form-field
-        appearance="fill"
-        class="">
-        <mat-label>Second</mat-label>
-        <input
-          matInput
-          formControlName="second"
-          class="">
-      </mat-form-field>
+      <app-text-input
+        label="Hour / Minute / Second"
+        [inputs]="[
+          countdownHourInputConfig,
+          countdownMinuteInputConfig,
+          countdownSecondInputConfig,
+        ]">
+      </app-text-input>
     </div>
   </app-settings-group>
 
   <app-settings-group
     title="Macro Presets"
-    formGroupName="macroPresets"
+    formGroupName="presets"
     class="timeSettingsForm__macros">
     <div>
       Macros have moved!
@@ -196,169 +148,32 @@
       Presets now also can be used as macros to save both JSON and HTTP API commands.
     </div>
     <div>
-      Just enter the preset id below! Use 0 for the default action instead of a preset.
+      Just enter the preset ID below! Use 0 for the default action instead of a preset.
     </div>
 
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Alexa ON Preset</mat-label>
-      <input
-        matInput
-        formControlName="alexaOn"
-        class="">
-    </mat-form-field>
+    <app-text-input
+      label="Alexa On/Off"
+      [inputs]="[alexaOnInputConfig, alexaOffInputConfig]">
+    </app-text-input>
 
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Alexa OFF Preset</mat-label>
-      <input
-        matInput
-        formControlName="alexaOff"
-        class="">
-    </mat-form-field>
+    <app-text-input
+      label="Countdown End"
+      [inputs]="[countdownEndInputConfig]">
+    </app-text-input>
 
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Button SHORT PRESS</mat-label>
-      <input
-        matInput
-        formControlName="buttonShortPress"
-        class="">
-    </mat-form-field>
-
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Button LONG PRESS</mat-label>
-      <input
-        matInput
-        formControlName="buttonLongPress"
-        class="">
-    </mat-form-field>
-
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Button DOUBLE PRESS</mat-label>
-      <input
-        matInput
-        formControlName="buttonDoublePress"
-        class="">
-    </mat-form-field>
-
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Countdown End</mat-label>
-      <input
-        matInput
-        formControlName="countdownEnd"
-        class="">
-    </mat-form-field>
-
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Timer End</mat-label>
-      <input
-        matInput
-        formControlName="timerEnd"
-        class="">
-    </mat-form-field>
+    <app-text-input
+      label="Timer End"
+      [inputs]="[timerEndInputConfig]">
+    </app-text-input>
   </app-settings-group>
 
   <app-settings-group
     title="Scheduled Presets"
     class="timeSettingsForm__scheduledPresets">
-    <table
-      formArrayName="scheduledPresets"
-      class="timeSettingsForm__table">
-      <tr>
-        <th
-          *ngFor="let header of scheduledPresetsHeaders"
-          class="timeSettingsForm__tableHeader">
-          {{ header }}
-        </th>
-      </tr>
-
-      <tr
-        *ngFor="let scheduledPreset of scheduledPresets.controls; let i = index"
-        [formGroupName]="i"
-        class="timeSettingsForm__tableRow">
-        <td>
-          <app-checkbox
-            [control]="getFormControl('scheduledPresets.' + i + '.enabled')"
-            label="">
-          </app-checkbox>
-        </td>
-        <!-- TODO better time picker!! -->
-        <td [ngSwitch]="scheduledPreset.get('type')!.value">
-          <ng-container *ngSwitchCase="'TIME'">
-            <mat-form-field
-              appearance="fill"
-              class="timeSettingsForm__scheduledHour">
-              <mat-label>Hour</mat-label>
-              <input
-                type="number"
-                matInput
-                formControlName="hour"
-                class="">
-            </mat-form-field>
-            <mat-form-field
-              appearance="fill"
-              class="timeSettingsForm__scheduledMinute">
-              <mat-label>Minute</mat-label>
-              <input
-                type="number"
-                matInput
-                formControlName="minute"
-                class="">
-            </mat-form-field>
-          </ng-container>
-
-          <div *ngSwitchCase="'SUNRISE'">
-            Sunrise
-          </div>
-
-          <div *ngSwitchCase="'SUNSET'">
-            Sunset
-          </div>
-
-          <div *ngSwitchDefault>
-            Error...
-          </div>
-        </td>
-
-        <td>
-          <mat-form-field
-            appearance="fill"
-            class="timeSettingsForm__presetId">
-            <mat-label>Preset ID</mat-label>
-            <input
-              type="number"
-              matInput
-              formControlName="presetId"
-              class="">
-          </mat-form-field>
-        </td>
-
-        <td>
-          <!-- TODO needs better contrast for checked buttons -->
-          <mat-button-toggle-group
-            multiple>
-            <mat-button-toggle
-              *ngFor="let day of weekdays"
-              (click)="toggleDayByIndex(day.name, i)"
-              [checked]="getDaysByIndex(i)[day.name]">
-              {{ day.abbreviated }}
-            </mat-button-toggle>
-          </mat-button-toggle-group>
-        </td>
-      </tr>
-    </table>
+    <app-scheduled-preset
+      *ngFor="let scheduledPreset of getFormArray('scheduledPresets').value"
+      [scheduledPreset]="scheduledPreset">
+    </app-scheduled-preset>
   </app-settings-group>
   
   <app-settings-footer (save)="submitForm()"></app-settings-footer>

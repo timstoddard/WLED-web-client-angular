@@ -418,7 +418,7 @@ export class LedSettingsComponent extends UnsubscriberComponent implements OnIni
 
   private createForm() {
     const formGroup = this.formService.createFormGroup(this.getDefaultFormValues(), {
-      ledOutputs: this.formService.formBuilder.array([
+      ledOutputs: this.formService.createFormArray([
         this.createLedOutputFormGroup(),
         this.createLedOutputFormGroup(),
       ]),

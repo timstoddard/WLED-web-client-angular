@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 export const getFormControl = (
   formGroup: FormGroup,
@@ -9,6 +9,7 @@ export const getFormControl = (
 }
 
 export type getFormControlFn = (name: string) => FormControl;
+export type getFormArrayFn = (name: string) => FormArray;
 
 /**
  * Simplifies the process of creating a function to return a specific form control
@@ -18,6 +19,17 @@ export type getFormControlFn = (name: string) => FormControl;
 export const createGetFormControl = (formGroup: FormGroup): getFormControlFn => {
   return (name: string) => {
     return formGroup.get(name) as FormControl;
+  }
+}
+
+/**
+ * Simplifies the process of creating a function to return a specific form array
+ * @param formGroup form group to get the form array from
+ * @returns 
+ */
+export const createGetFormArray = (formGroup: FormGroup): getFormArrayFn => {
+  return (name: string) => {
+    return formGroup.get(name) as FormArray;
   }
 }
 
@@ -70,11 +82,19 @@ export class FormService {
       // add controls for all the default values
       for (const key in values) {
         const value = values[key];
-        const valueIsObject = typeof value === 'object' && value !== null;
-        const control = valueIsObject
-          ? this.createFormGroup(value as FormValues)
-          : this.createFormControl(value);
-        formGroup.setControl(key, control);
+        let control: AbstractControl;
+        if (value !== null && value !== undefined) {
+          if (typeof value === 'object') {
+            if (Array.isArray(value)) {
+              control = this.createFormArray(value);
+            } else {
+              control = this.createFormGroup(value as FormValues);
+            }
+          } else {
+            control = this.createFormControl(value);
+          }
+          formGroup.setControl(key, control);
+        }
       }
     }
     if (additionalControls) {
@@ -85,6 +105,10 @@ export class FormService {
       }
     }
     return formGroup;
+  }
+
+  createFormArray(value: Array<unknown> = []): FormArray {
+    return this._formBuilder.array(value);
   }
 
   get formBuilder() {

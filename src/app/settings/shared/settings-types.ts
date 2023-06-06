@@ -1,5 +1,5 @@
-import { BehaviorSubject, timer } from "rxjs";
-import { SettingsParsedValues } from "./api-response-parser.service";
+import { BehaviorSubject, timer } from 'rxjs';
+import { SettingsParsedValues } from './api-response-parser.service';
 
 // https://stackoverflow.com/questions/70344859/how-to-filter-an-interface-using-conditional-types-in-typescript
 type PickKeysByValueType<T, TYPE> = {
@@ -10,10 +10,10 @@ type PickKeysByNotValueType<T, TYPE> = {
   [K in keyof T]: T[K] extends TYPE ? never : K
 }[keyof T];
 
-export type PickBooleans<T> = Pick<T, PickKeysByValueType<T, boolean>>;
-export type PickNonBooleans<T> = Pick<T, PickKeysByNotValueType<T, boolean>>;
+export type BinaryValue = 0 | 1 | 'on';
 
-export type BinaryValue = 0 | 1;
+export type PickBooleans<T> = Pick<T, PickKeysByValueType<T, boolean>>;
+export type PickNonBooleans<T> = Pick<T, PickKeysByNotValueType<T, BinaryValue>>;
 
 export interface SelectItem<T> {
   name: string;
@@ -31,7 +31,7 @@ export const convertToString = (n: unknown) => {
 };
 
 /**
- * The backend logic uses "has arg" instead of "arg value" for boolean (checkbox) form controls. So, any booleans with value false are simply removed.
+ * The backend logic uses 'has arg' instead of 'arg value' for boolean (checkbox) form controls. So, any booleans with value false are simply removed.
  * @param baseOptions 
  * @param booleanOptions 
  * @returns 
@@ -84,15 +84,15 @@ export interface WledSecuritySettings {
   /** settingsPin */
   PIN: string;
   /** secureWirelessUpdate */
-  NO?: BinaryValue;
+  NO: BinaryValue;
   /** otaUpdatePassword */
   OP: string;
   /** denyWifiSettingsAccessIfLocked */
-  OW?: BinaryValue;
+  OW: BinaryValue;
   /** triggerFactoryReset */
-  RS?: BinaryValue;
+  RS: BinaryValue;
   /** enableArduinoOTA */
-  AO?: BinaryValue;
+  AO: BinaryValue;
 }
 
 /**
@@ -157,13 +157,13 @@ export interface WledNetworkSettings {
   /** wledAccessPoint.password */
   AP: string;
   /** wledAccessPoint.hideAPName */
-  AH?: BinaryValue;
+  AH: BinaryValue;
   /** wledAccessPoint.wifiChannel */
   AC: number;
   /** wledAccessPoint.openAP */
   AB: number;
   /** disableWifiSleep */
-  WS?: BinaryValue;
+  WS: BinaryValue;
   /** ethernetType. Not included in response for WIFI controllers. */
   ETH?: number;
 }
@@ -178,16 +178,18 @@ export interface TimeSettings {
   };
   use24HourFormat: boolean;
   timeZone: number;
-  utcOffset: number;
-  latitude: number;
-  longitude: number;
+  utcOffsetSeconds: number;
+  coordinates: {
+    longitude: number;
+    latitude: number;
+  };
   analogClockOverlay: {
     enabled: boolean;
     firstLed: number;
     lastLed: number;
-    hour12Led: number;
+    middleLed: number;
     show5MinuteMarks: boolean;
-    secondsAsTrail: number;
+    showSeconds: boolean;
   };
   countdown: {
     enabled: boolean;
@@ -202,22 +204,18 @@ export interface TimeSettings {
     alexaOn: number;
     alexaOff: number;
     countdownEnd: number;
-    timedLightEnd: number;
+    timerEnd: number;
   };
   buttonActions: {
     /** TODO add button actions */
   };
-  timeControlledPresets: TimeControlledPreset[];
+  scheduledPresets: ScheduledPreset[];
 }
 
-/**
- * Preset that is turned on at specific dates and times.
- */
-interface TimeControlledPreset {
+interface ScheduledPresetBase {
   enabled: boolean;
-  hour: number;
+  presetId: number;
   minute: number;
-  preset: number;
   days: {
     sunday: boolean;
     monday: boolean;
@@ -227,6 +225,13 @@ interface TimeControlledPreset {
     friday: boolean;
     saturday: boolean;
   };
+}
+
+/**
+ * Preset that is turned on at specific dates and times.
+ */
+export interface DateTimeScheduledPreset extends ScheduledPresetBase {
+  hour: number;
   startDate: {
     month: number;
     day: number;
@@ -236,6 +241,18 @@ interface TimeControlledPreset {
     day: number;
   };
 }
+
+/**
+ * Preset that is turned on at sunrise or sunset.
+ */
+export interface SunriseSunsetScheduledPreset extends ScheduledPresetBase {
+  type: 'sunset' | 'sunrise';
+}
+
+/**
+ * Preset that is turned on according to a schedule.
+ */
+export type ScheduledPreset = DateTimeScheduledPreset | SunriseSunsetScheduledPreset;
 
 /**
  * Time settings in WLED backend format.
@@ -249,12 +266,12 @@ export interface WledTimeSettings {
   CF: BinaryValue;
   /** timeZone */
   TZ: number;
-  /** utcOffset */
+  /** utcOffsetSeconds */
   UO: number;
-  /** latitude */
-  LN: number;
   /** longitude */
-  LT: number;
+  LN: string;
+  /** latitude */
+  LT: string;
   /** analogClockOverlay.enabled */
   OL: BinaryValue;
   /** analogClockOverlay.firstLed */
@@ -263,12 +280,12 @@ export interface WledTimeSettings {
   O2: number;
   /** analogClockOverlay.hour12Led */
   OM: number;
-  /** analogClockOverlay.show5MinuteMarks */
+  /** analogClockOverlay.showSeconds */
   OS: BinaryValue;
-  /** analogClockOverlay.secondsAsTrail */
-  O5: number;
+  /** analogClockOverlay.show5MinuteMarks */
+  O5: BinaryValue;
   /** countdown.enabled */
-  CE: boolean;
+  CE: BinaryValue;
   /** countdown.year */
   CY: number;
   /** countdown.month */

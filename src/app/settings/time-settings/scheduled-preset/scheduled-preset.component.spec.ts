@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TimeBasedPresetComponent } from './time-based-preset.component';
+import { ScheduledPresetComponent } from './scheduled-preset.component';
 
 describe('TimeBasedPresetComponent', () => {
-  let component: TimeBasedPresetComponent;
-  let fixture: ComponentFixture<TimeBasedPresetComponent>;
+  let component: ScheduledPresetComponent;
+  let fixture: ComponentFixture<ScheduledPresetComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TimeBasedPresetComponent ]
+      declarations: [ ScheduledPresetComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(TimeBasedPresetComponent);
+    fixture = TestBed.createComponent(ScheduledPresetComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
