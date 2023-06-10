@@ -1,3 +1,4 @@
+@use 'sass:list';
 @use 'sass:math';
 
 @import 'src/app/shared/scss/rainbow';
@@ -255,12 +256,57 @@ $antWidth: 2px;
   justify-content: center;
 }
 
-@mixin standard-box-shadow() {
-  box-shadow: inset 0 0 10px -1px rgba(var(--borderColorPrimaryRgb), 0.8);
+@mixin standard-box-shadow-inset() {
+  @include standard-box-shadow-inset-empty-sides();
+}
+
+@mixin standard-box-shadow-inset-empty-sides(
+  $includeTop: true,
+  $includeRight: true,
+  $includeBottom: true,
+  $includeLeft: true,
+) {
+  $positionScalar: 6px;
+  $blurRadius: 6px;
+  $spreadRadius: -6px;
+  $transforms: ();
+  $boxShadowList: ();
+
+  @if $includeTop == true {
+    $transforms: list.append($transforms, (0 1), $separator: comma)
+  }
+  @if $includeRight == true {
+    $transforms: list.append($transforms, (-1 0), $separator: comma)
+  }
+  @if $includeBottom == true {
+    $transforms: list.append($transforms, (0 -1), $separator: comma)
+  }
+  @if $includeLeft == true {
+    $transforms: list.append($transforms, (1 0), $separator: comma)
+  }
+
+  @each $transform in $transforms {
+    $horizontalDelta: list.nth($transform, 1);
+    $verticalDelta: list.nth($transform, 2);
+    $boxShadowList: list.append(
+      $boxShadowList,
+      (
+        inset
+        #{$horizontalDelta * $positionScalar}
+        #{$verticalDelta * $positionScalar}
+        $blurRadius
+        $spreadRadius
+        var(--borderColorPrimary)
+      ),
+      $separator: comma,
+    );
+  }
+
+  box-shadow: $boxShadowList;
 }
 
 @mixin view-container-base {
-  @include standard-box-shadow();
+  @include standard-box-shadow-inset();
   border: 1px solid var(--borderColorPrimary);
   border-radius: 6px;
 }
