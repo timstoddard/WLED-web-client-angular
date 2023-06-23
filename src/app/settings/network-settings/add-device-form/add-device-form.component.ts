@@ -8,6 +8,8 @@ import { WLEDIpAddress } from '../../../shared/app-types/app-types';
 import { FormService } from '../../../shared/form-service';
 import { UnsubscriberComponent } from '../../../shared/unsubscriber/unsubscriber.component';
 import { InputConfig } from 'src/app/shared/text-input/text-input.component';
+import { LocalStorageService } from 'src/app/shared/local-storage.service';
+import { SnackbarService } from 'src/app/shared/snackbar.service';
 
 interface SelectableWLEDIpAddress extends WLEDIpAddress {
   selected: boolean;
@@ -35,6 +37,8 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
     // TODO put in service class?
     private apiService: ApiService,
     private changeDetectorRef: ChangeDetectorRef,
+    private localStorageService: LocalStorageService,
+    private snackbarService: SnackbarService,
   ) {
     super();
   }
@@ -126,19 +130,20 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
       this.testIpAddress(selectedWLEDIpAddress.ipv4Address, {
         next: ({ success }) => {
           if (success) {
+            this.localStorageService.updateAndSaveClientConfig({
+              selectedWLEDIpAddress,
+              wledIpAddresses: newIpAddresses,
+            });
             this.appStateService.setLocalSettings({
               selectedWLEDIpAddress,
               wledIpAddresses: newIpAddresses,
             });
-            // TODO show messages in component/in snackbar instead of alerts
-            alert('Selected device saved!');
+            this.snackbarService.openSnackBar('WLED devices saved.');
           } else {
-            alert('Network connection failed. Please select a different IP address.');
+            this.handleFailedNetworkConnection();
           }
         },
-        error: () => {
-          alert('Network connection failed. Please select a different IP address.');
-        },
+        error: this.handleFailedNetworkConnection,
       })
     } else {
       this.appStateService.setLocalSettings({
@@ -182,6 +187,17 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
       ipv4Address: values.ipv4Address,
     });
     formGroup.get('ipv4Address')!.addValidators(Validators.pattern(IP_ADDRESS_REGEX));
+    // when one is selected, unselect all others
+    this.getValueChanges<boolean>(formGroup, 'selected')
+      .subscribe((isSelected: boolean) => {
+        if (isSelected) {
+          for (const wledIpAddressControl of this.wledIpAddresses.controls) {
+            if (wledIpAddressControl !== formGroup) {
+              wledIpAddressControl.patchValue({ selected: false }, { emitEvent: false });
+            }
+          }
+        }
+      });
     return formGroup;
   }
 
@@ -194,26 +210,19 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
         selected,
         ...ipAddress,
       });
-      // when one is selected, unselect all others
-      this.getValueChanges(newFormGroup, 'selected')
-        .subscribe((isSelected) => {
-          if (isSelected) {
-            for (const formGroup of this.wledIpAddresses.controls) {
-              if (formGroup !== newFormGroup) {
-                formGroup.patchValue({ selected: false }, { emitEvent: false });
-              }
-            }
-          }
-        });
       this.wledIpAddresses.push(newFormGroup);
     }
   }
 
-  private getSelected() {
+  private getSelected = () => {
     const selected = this.wledIpAddresses.controls
       .find(({ value }) => value.selected);
     return selected;
   }
+
+  private handleFailedNetworkConnection = () => {
+    this.snackbarService.openSnackBar('Network connection failed. Please try a different IP address.');
+  };
 
   private generateInputConfigs = () => {
     const deviceNameInputConfigs: { [key: number]: InputConfig } = {};

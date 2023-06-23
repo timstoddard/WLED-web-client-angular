@@ -10,6 +10,7 @@ import { AppSegment, AppWLEDState } from '../app-types/app-state';
 import { AppState } from '../app-types/app-types';
 import { ClientOnlyFieldsService, ClientOnlySegmentFieldsMap } from '../client-only-fields.service';
 import { DEFAULT_APP_STATE } from './app-state-defaults';
+import { LocalStorageService } from '../local-storage.service';
 
 @Injectable({ providedIn: 'root' })
 export class AppStateService {
@@ -18,10 +19,18 @@ export class AppStateService {
   constructor(
     private apiTypeMapper: ApiTypeMapper,
     private clientOnlyFieldsService: ClientOnlyFieldsService,
+    private localStorageService: LocalStorageService,
   ) {
+    const clientConfig = this.localStorageService.updateAndSaveClientConfig({});
+    const defaultStateWithSavedSettings = Object.assign({}, 
+      DEFAULT_APP_STATE,
+      {
+        localSettings: clientConfig,
+      },
+    );
     this.appStateStore = new Store({
       name: 'WLED App State',
-      ...createState(withProps<AppState>(DEFAULT_APP_STATE)),
+      ...createState(withProps<AppState>(defaultStateWithSavedSettings)),
     });
   }
 

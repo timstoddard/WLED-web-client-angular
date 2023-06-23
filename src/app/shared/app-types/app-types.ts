@@ -13,7 +13,7 @@ export interface AppState {
   /** List of palette names. */
   palettes: string[];
   /** Client-only global app settings. */
-  localSettings: AppLocalSettings;
+  localSettings: AppClientConfig; // TODO rename field to clientConfig
   /** List of all discovered WLED nodes. */
   nodes: AppNode[];
   /** User-configured presets. */
@@ -21,7 +21,7 @@ export interface AppState {
 }
 
 /** Client-only global app settings. */
-export interface AppLocalSettings {
+export interface AppClientConfig {
   /** `true` if live view is active. */
   isLiveViewActive: boolean;
   // TODO can this be a string? (pros/cons)

@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { AppClientConfig } from './app-types/app-types';
+import { DEFAULT_APP_STATE } from './app-state/app-state-defaults';
 
 export class LocalStorageKey {
   static readonly PALETTES_DATA = 'PALETTES_DATA';
@@ -42,5 +44,43 @@ export class LocalStorageService {
    */
   clear() {
     localStorage.clear();
+  }
+
+  updateAndSaveClientConfig = (
+    newClientConfig: Partial<AppClientConfig>,
+  ) => {
+    const clientConfig = this.updateAndSaveLocalStorageItem<AppClientConfig>(
+      {
+        ...newClientConfig,
+        // don't save this as true, live view should be off by default
+        isLiveViewActive: false,
+      },
+      'clientConfig',
+      DEFAULT_APP_STATE.localSettings,
+    );
+    return clientConfig;
+  }
+  
+  /**
+   * Coalesces an object with the default value, the local storage value (if any), and the new values.
+   * Saves the combined value to local storage before returning it.
+   * Call with `newValues=null` to get the value saved in local storage.
+   * @param newValues 
+   * @param localStorageKey 
+   * @param defaultValue 
+   * @returns 
+   */
+  private updateAndSaveLocalStorageItem = <T>(
+    newValues: Partial<T>,
+    localStorageKey: string,
+    defaultValue: unknown,
+  ) => {
+    const localSettings = Object.assign({},
+      defaultValue,
+      this.get(localStorageKey, {}),
+      newValues,
+    );
+    this.set(localStorageKey, localSettings);
+    return localSettings;
   }
 }

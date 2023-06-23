@@ -1,4 +1,4 @@
-import { AppLocalSettings, AppState, WLEDIpAddress } from '../app-types/app-types';
+import { AppClientConfig, AppState, WLEDIpAddress } from '../app-types/app-types';
 import { environment } from 'src/environments/environment';
 import { AppWLEDState } from '../app-types/app-state';
 import { AppInfo } from '../app-types/app-info';
@@ -116,7 +116,7 @@ const DEFAULT_INFO: AppInfo = {
   ipAddress: '',
 };
 
-const DEFAULT_LOCAL_SETTINGS: AppLocalSettings = {
+const DEFAULT_CLIENT_CONFIG: AppClientConfig = {
   isLiveViewActive: false,
   selectedWLEDIpAddress: DEFAULT_SELECTED_WLED_IP_ADDRESS,
   wledIpAddresses: DEFAULT_WLED_IP_ADDRESSES,
@@ -128,7 +128,7 @@ export const DEFAULT_APP_STATE: AppState = {
   info: DEFAULT_INFO,
   palettes: [],
   effects: [],
-  localSettings: DEFAULT_LOCAL_SETTINGS,
+  localSettings: DEFAULT_CLIENT_CONFIG,
   nodes: [],
   presets: [],
 };
