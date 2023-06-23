@@ -17,6 +17,7 @@ import { LiveViewService } from './live-view.service';
 export class LiveViewComponent extends UnsubscriberComponent implements OnInit {
   isLive = true;
   fps = 0;
+  showFps = false;
   private backgroundString = '';
 
   constructor(

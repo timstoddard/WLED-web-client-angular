@@ -1,8 +1,11 @@
 <div
   *ngIf="isLive"
   class="liveView"
+  (click)="showFps = !showFps"
   [ngStyle]="getBackgroundStyle()">
 </div>
-<div class="liveView__fps">
+<div
+  *ngIf="showFps"
+  class="liveView__fps">
   FPS: {{ fps }}
 </div>

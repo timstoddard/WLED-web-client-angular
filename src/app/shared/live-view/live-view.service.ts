@@ -67,9 +67,11 @@ export class LiveViewService {
       this.fpsSum -= removedFps;
     }
 
-    // recalculate average fps
-    const avgFps = Math.floor(this.fpsSum / this.fpsList.length);
-    this.runningAvgFps = avgFps;
+    if (this.fpsList.length > 0) {
+      // recalculate average fps
+      const avgFps = Math.floor(this.fpsSum / this.fpsList.length);
+      this.runningAvgFps = avgFps;
+    }
 
     return this.runningAvgFps;
   }
