@@ -1,5 +1,4 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
 import { ApiService } from '../../../shared/api-service/api.service';
 import { NO_DEVICE_IP_SELECTED } from '../../../shared/app-state/app-state-defaults';
 import { AppStateService } from '../../../shared/app-state/app-state.service';
@@ -8,7 +7,11 @@ import { OverlayPositionService } from '../../../shared/overlay-position.service
 import { UnsubscriberComponent } from '../../../shared/unsubscriber/unsubscriber.component';
 import { SnackbarService } from 'src/app/shared/snackbar.service';
 
-type ConnectionStatus = 'connected' | 'disconnected' | 'loading';
+enum ConnectionStatus {
+  CONNECTED = 'CONNECTED',
+  DISCONNECTED = 'DISCONNECTED',
+  LOADING = 'LOADING',
+}
 
 @Component({
   selector: 'app-device-selector',
@@ -19,8 +22,7 @@ export class DeviceSelectorComponent extends UnsubscriberComponent implements On
   @Input() selectClass: string = '';
   wledIpAddresses!: WLEDIpAddress[];
   selectedWLEDIpAddress!: WLEDIpAddress;
-  connectionStatus!: ConnectionStatus | null;
-  testIpAddressSubscription: Subscription | null = null;
+  connectionStatus!: ConnectionStatus;
   showList!: boolean;
 
   constructor(
@@ -36,7 +38,7 @@ export class DeviceSelectorComponent extends UnsubscriberComponent implements On
   ngOnInit() {
     this.wledIpAddresses = [];
     this.selectedWLEDIpAddress = NO_DEVICE_IP_SELECTED;
-    this.connectionStatus = null;
+    this.connectionStatus = ConnectionStatus.DISCONNECTED;
     this.showList = false;
 
     this.appStateService.getLocalSettings(this.ngUnsubscribe)
@@ -50,16 +52,14 @@ export class DeviceSelectorComponent extends UnsubscriberComponent implements On
   }
 
   ngAfterViewInit() {
-    // connect to first device in ip addresses list
-    // TODO make the chosen device configurable
+    // TODO get connected/disconnected status from API service using an observable
+    // (what about loading animation?)
+
     const DEVICE_CONNECT_TIMEOUT_MS = 500;
     setTimeout(() => {
       if (this.wledIpAddresses.length >= 1) {
-        const firstDevice = this.wledIpAddresses[0];
-        this.setSelectedDevice(firstDevice);
-
-        const message = `Connecting to device: ${firstDevice.name} (${firstDevice.ipv4Address})`;
-        this.snackbarService.openSnackBar(message);
+        // trigger connecting animation on load
+        this.setSelectedDevice(this.selectedWLEDIpAddress);
       }
     }, DEVICE_CONNECT_TIMEOUT_MS);
   }
@@ -78,33 +78,37 @@ export class DeviceSelectorComponent extends UnsubscriberComponent implements On
   }
 
   setSelectedDevice = (wledIpAddress: WLEDIpAddress) => {
+    // prevent connecting to a new device if one is already connecting
+    if (this.connectionStatus === ConnectionStatus.LOADING) {
+      this.snackbarService.openSnackBar('Already connecting to a device.');
+      return;
+    }
+
     console.log('selecting wledIpAddress:', wledIpAddress);
     this.appStateService.setLocalSettings({
       selectedWLEDIpAddress: wledIpAddress,
     });
 
-    // cancel any existing http call
-    if (this.testIpAddressSubscription) {
-      this.testIpAddressSubscription.unsubscribe();
-      this.testIpAddressSubscription = null;
-    }
-
     if (wledIpAddress.ipv4Address === NO_DEVICE_IP_SELECTED.ipv4Address) {
-      this.handleTestIpAddressResponse(null, true);
+      // simple case - no device selected
+      this.handleTestIpAddressResponse(ConnectionStatus.DISCONNECTED, true);
+      this.snackbarService.openSnackBar('Disconnected from WLED');
     } else {
-      this.connectionStatus = 'loading';
-      const testIpAddress = this.apiService.testIpAddressAsBaseUrl(wledIpAddress.ipv4Address);
-      this.testIpAddressSubscription = this.handleUnsubscribe(testIpAddress)
-        .subscribe({
-          next: (result) => {
-            this.handleTestIpAddressResponse(
-              result.success ? 'connected' : 'disconnected',
-              result.success);
-          },
-          error: () => {
-            this.handleTestIpAddressResponse('disconnected');
-          }
-        });
+      // attempt to connect to the selected device's IP address
+      this.connectionStatus = ConnectionStatus.LOADING;
+      this.openDeviceConnectSnackbar('Connecting to device', wledIpAddress);
+
+      this.apiService.testIpAddressAsBaseUrl(
+        wledIpAddress.ipv4Address,
+        () => {
+          this.handleTestIpAddressResponse(ConnectionStatus.CONNECTED, true);
+          this.openDeviceConnectSnackbar('Connected to device', wledIpAddress);
+        },
+        () => {
+          this.handleTestIpAddressResponse(ConnectionStatus.DISCONNECTED);
+          this.openDeviceConnectSnackbar('Failed to connect to device', wledIpAddress);
+        },
+      );
     }
   }
 
@@ -113,15 +117,20 @@ export class DeviceSelectorComponent extends UnsubscriberComponent implements On
     this.showList = false;
   }
 
-  getModifierClass() {
+  getContainerModifierClass() {
     const statusToClassMap = {
-      'connected': 'deviceSelector__main--connected',
-      'disconnected': 'deviceSelector__main--disconnected',
-      'loading': 'deviceSelector__main--loading',
+      [ConnectionStatus.CONNECTED]: 'deviceSelector__main--connected',
+      [ConnectionStatus.DISCONNECTED]: 'deviceSelector__main--disconnected',
+      [ConnectionStatus.LOADING]: 'deviceSelector__main--loading',
     };
-    return this.connectionStatus !== null
-      ? statusToClassMap[this.connectionStatus]
-      : '';
+    return statusToClassMap[this.connectionStatus];
+  }
+
+  getListItemModifierClass(wledIpAddress: WLEDIpAddress) {
+    return {
+      'deviceSelector__listItem--connected': this.isSelectedWledIpAddress(wledIpAddress) && this.connectionStatus !== ConnectionStatus.DISCONNECTED,
+      'deviceSelector__listItem--connectionError': this.isSelectedWledIpAddress(wledIpAddress) && this.connectionStatus === ConnectionStatus.DISCONNECTED,
+    };
   }
 
   getOverlayPositions() {
@@ -129,15 +138,33 @@ export class DeviceSelectorComponent extends UnsubscriberComponent implements On
     return [centerPosition];
   }
 
+  private isSelectedWledIpAddress(wledIpAddress: WLEDIpAddress) {
+    let isSelected = false;
+
+    if (this.selectedWLEDIpAddress) {
+      isSelected = wledIpAddress.name === this.selectedWLEDIpAddress.name &&
+        wledIpAddress.ipv4Address === this.selectedWLEDIpAddress.ipv4Address;
+    }
+
+    return isSelected;
+  }
+
   private handleTestIpAddressResponse(
-    connectionStatus: ConnectionStatus | null,
+    connectionStatus: ConnectionStatus,
     forceCloseList = false,
   ) {
-    this.testIpAddressSubscription = null;
     this.connectionStatus = connectionStatus;
     if (forceCloseList) {
       this.showList = false;
     }
     this.changeDetectorRef.markForCheck();
+  }
+
+  private openDeviceConnectSnackbar = (
+    status: string,
+    wledIpAddress: WLEDIpAddress,
+  ) => {
+    const message = `${status}: ${wledIpAddress.name} (${wledIpAddress.ipv4Address})`;
+    this.snackbarService.openSnackBar(message);
   }
 }

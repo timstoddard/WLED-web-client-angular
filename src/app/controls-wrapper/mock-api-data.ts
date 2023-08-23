@@ -4,11 +4,13 @@ import { WLEDApiResponse } from '../shared/api-types/api-types';
 import { LiveViewData } from '../shared/live-view/live-view.service';
 import { PalettesApiData } from './palettes/palettes.service';
 
+// TODO create 2 mock datas: 1 for new user (so the app can load), 1 for development (this current file)
+
 export const MOCK_API_RESPONSE: WLEDApiResponse = {
   state: {
     on: true,
-    bri: 100,
-    transition: 3,
+    bri: 128,
+    transition: 5,
     ps: -1,
     pl: -1,
     nl: {
@@ -38,7 +40,7 @@ export const MOCK_API_RESPONSE: WLEDApiResponse = {
           [0, 0, 0],
           [0, 0, 0]
         ],
-        fx: 26,
+        fx: 0,
         sx: 128,
         ix: 128,
         pal: 0,
@@ -66,7 +68,7 @@ export const MOCK_API_RESPONSE: WLEDApiResponse = {
           [0, 0, 0],
           [0, 0, 0]
         ],
-        fx: 26,
+        fx: 0,
         sx: 128,
         ix: 128,
         pal: 0,
@@ -94,7 +96,7 @@ export const MOCK_API_RESPONSE: WLEDApiResponse = {
           [0, 0, 0],
           [0, 0, 0]
         ],
-        fx: 26,
+        fx: 0,
         sx: 128,
         ix: 128,
         pal: 0,
@@ -122,7 +124,7 @@ export const MOCK_API_RESPONSE: WLEDApiResponse = {
           [0, 0, 0],
           [0, 0, 0]
         ],
-        fx: 26,
+        fx: 0,
         sx: 128,
         ix: 128,
         pal: 0,

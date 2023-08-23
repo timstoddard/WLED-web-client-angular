@@ -2,11 +2,13 @@ import { Injectable } from '@angular/core';
 import { AppClientConfig } from './app-types/app-types';
 import { DEFAULT_APP_STATE } from './app-state/app-state-defaults';
 
-export class LocalStorageKey {
-  static readonly PALETTES_DATA = 'PALETTES_DATA';
-  static readonly SAVED_PRESETS = 'SAVED_PRESETS';
-  static readonly SHOW_DEV_NAV_BAR = 'SHOW_DEV_NAV_BAR';
-  static readonly UI_CONFIG = 'UI_CONFIG';
+export enum LocalStorageKey {
+  PALETTES_DATA = 'PALETTES_DATA',
+  SAVED_PRESETS = 'SAVED_PRESETS',
+  SHOW_DEV_NAV_BAR = 'SHOW_DEV_NAV_BAR',
+  // TODO combine UI_CONFIG & CLIENT_CONFIG if it makes sense to do so
+  UI_CONFIG = 'UI_CONFIG', // not saved in backend; copied settings from WLED app
+  CLIENT_CONFIG = 'CLIENT_CONFIG', // not saved in backend, new settings for this app
 }
 
 @Injectable({ providedIn: 'root' })
@@ -50,33 +52,33 @@ export class LocalStorageService {
     newClientConfig: Partial<AppClientConfig>,
   ) => {
     const clientConfig = this.updateAndSaveLocalStorageItem<AppClientConfig>(
+      LocalStorageKey.CLIENT_CONFIG,
       {
         ...newClientConfig,
         // don't save this as true, live view should be off by default
         isLiveViewActive: false,
       },
-      'clientConfig',
       DEFAULT_APP_STATE.localSettings,
     );
     return clientConfig;
   }
-  
+
   /**
    * Coalesces an object with the default value, the local storage value (if any), and the new values.
    * Saves the combined value to local storage before returning it.
    * Call with `newValues=null` to get the value saved in local storage.
    * @param newValues 
    * @param localStorageKey 
-   * @param defaultValue 
+   * @param defaultValueMap 
    * @returns 
    */
   private updateAndSaveLocalStorageItem = <T>(
-    newValues: Partial<T>,
-    localStorageKey: string,
-    defaultValue: unknown,
+    localStorageKey: LocalStorageKey,
+    newValues: Partial<T> = {},
+    defaultValueMap: { [key: string]: any } = {},
   ) => {
     const localSettings = Object.assign({},
-      defaultValue,
+      defaultValueMap,
       this.get(localStorageKey, {}),
       newValues,
     );

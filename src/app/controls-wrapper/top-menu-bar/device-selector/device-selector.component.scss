@@ -95,6 +95,23 @@
         border-bottom: 1px solid var(--borderColorPrimary);
       }
 
+      &--connected {
+        background: var(--backgroundColorAccent);
+
+        & > * {
+          color: var(--themeColorPrimary);
+          font-weight: bold;
+        }
+      }
+
+      &--connectionError {
+        background: var(--backgroundColorAccent);
+
+        & > * {
+          color: var(--errorColorPrimary);
+        }
+      }
+
       &__link {
         color: inherit;
         text-decoration: none;

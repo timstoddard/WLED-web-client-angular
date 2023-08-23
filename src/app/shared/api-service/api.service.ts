@@ -38,13 +38,18 @@ export class ApiService extends UnsubscriberService {
     this.appStateService.getLocalSettings(this.ngUnsubscribe)
       .subscribe(({ selectedWLEDIpAddress }) => {
         const { ipv4Address } = selectedWLEDIpAddress;
-        this.setBaseUrl(ipv4Address);
-        this.refreshAppState(true);
-        console.log(
-          'API BASE URL:',
-          this.getBaseUrl()
-            ? this.createApiUrl('')
-            : 'n/a',
+
+        // test API IP address before actually loading app (in case the selected IP address does not connect)
+        this.testIpAddressAsBaseUrl(
+          ipv4Address,
+          () => {
+            this.setBaseUrl(ipv4Address);
+            this.refreshAppState(true);
+          },
+          () => {
+            this.setBaseUrl(NO_DEVICE_IP_SELECTED.ipv4Address);
+            this.refreshAppState(true);
+          },
         );
       });
   }
@@ -55,6 +60,7 @@ export class ApiService extends UnsubscriberService {
 
   private setBaseUrl = (baseUrl: string) => {
     this.baseUrl = baseUrl;
+    console.log('API BASE URL:', this.baseUrl ? this.createApiUrl('') : 'n/a');
   }
 
   isBaseUrlUnset = () => {
@@ -143,7 +149,19 @@ export class ApiService extends UnsubscriberService {
     );
   }
 
-  testIpAddressAsBaseUrl = (ipAddress: string) => {
+  /**
+   * Tests a given IP address by attempting to load the full json data. If json data is returned
+   * and correctly formed, the onSuccess function will be called. Otherwise, the test fails and
+   * the onFailure function will be called.
+   * @param ipAddress ip address to test
+   * @param onSuccess function to be called on success
+   * @param onFailure function to be called on failure
+   */
+  testIpAddressAsBaseUrl = (
+    ipAddress: string,
+    onSuccess: () => void,
+    onFailure: () => void,
+  ) => {
     const TIMEOUT_MS = 3000;
     const FAILED = 'FAILED';
     const url = `http://${ipAddress}/${ApiPath.ALL_JSON_PATH}`;
@@ -152,7 +170,7 @@ export class ApiService extends UnsubscriberService {
       && result.info
       && result.palettes
       && result.effects
-    return this.http.get<WLEDApiResponse>(url)
+    const testResult = this.http.get<WLEDApiResponse>(url)
       .pipe(
         timeout({
           first: TIMEOUT_MS,
@@ -172,15 +190,26 @@ export class ApiService extends UnsubscriberService {
           return { success };
         })
       );
+    this.handleUnsubscribe(testResult)
+      .subscribe({
+        next: ({ success }) => {
+          if (success) {
+            onSuccess();
+          } else {
+            onFailure();
+          }
+        },
+        error: () => {
+          onFailure();
+        }
+      });
   }
 
   /** Reload all app data from the backend. */
   private refreshAppState = (includePresets = false) => {
     const apiResponse = forkJoin({
       json: this.getJson(),
-      presets: includePresets
-        ? this.getPresets()
-        : of(undefined),
+      presets: includePresets ? this.getPresets() : of(undefined),
     });
 
     this.handleUnsubscribe(apiResponse)

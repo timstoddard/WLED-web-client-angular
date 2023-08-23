@@ -40,6 +40,6 @@
 
 @include mobile-layout {
   :host {
-    --controlsEdgeSpacing: 0;
+    --controlsEdgeSpacing: 2px;
   }
 }

@@ -117,6 +117,7 @@ export class AppStateService {
         ...localSettings,
       },
     }));
+    this.localStorageService.updateAndSaveClientConfig(localSettings);
   }
   setNodes = (nodes: AppState['nodes']) => {
     this.appStateStore.update((appState) => ({

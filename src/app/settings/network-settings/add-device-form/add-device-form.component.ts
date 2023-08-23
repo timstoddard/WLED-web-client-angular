@@ -1,6 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Observer } from 'rxjs';
 import { ApiService } from '../../../shared/api-service/api.service';
 import { NO_DEVICE_IP_SELECTED } from '../../../shared/app-state/app-state-defaults';
 import { AppStateService } from '../../../shared/app-state/app-state.service';
@@ -8,7 +7,6 @@ import { WLEDIpAddress } from '../../../shared/app-types/app-types';
 import { FormService } from '../../../shared/form-service';
 import { UnsubscriberComponent } from '../../../shared/unsubscriber/unsubscriber.component';
 import { InputConfig } from 'src/app/shared/text-input/text-input.component';
-import { LocalStorageService } from 'src/app/shared/local-storage.service';
 import { SnackbarService } from 'src/app/shared/snackbar.service';
 
 interface SelectableWLEDIpAddress extends WLEDIpAddress {
@@ -37,7 +35,6 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
     // TODO put in service class?
     private apiService: ApiService,
     private changeDetectorRef: ChangeDetectorRef,
-    private localStorageService: LocalStorageService,
     private snackbarService: SnackbarService,
   ) {
     super();
@@ -91,7 +88,7 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
   }
 
   // TODO show loading animation
-  // TODO should allow multiple tests at once?
+  // TODO should allow multiple tests at once? (is it possible?)
   testWLEDIpAddress(index: number) {
     // remove current index result, if it exists
     this.ipAddressTestResults = {
@@ -103,16 +100,17 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
     const wledIpAddress = this.wledIpAddresses.at(index);
     if (wledIpAddress) {
       const ipAddress = (wledIpAddress.value as SelectableWLEDIpAddress).ipv4Address;
-      this.testIpAddress(ipAddress, {
-        next: ({ success }) => {
-          this.updateTestResultAtIndex(index, success);
+      this.apiService.testIpAddressAsBaseUrl(
+        ipAddress,
+        () => {
+          this.updateTestResultAtIndex(index, true);
           this.changeDetectorRef.markForCheck();
         },
-        error: () => {
+        () => {
           this.updateTestResultAtIndex(index, false);
           this.changeDetectorRef.markForCheck();
-        }
-      });
+        },
+      );
     }
   }
 
@@ -127,24 +125,16 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
     if (selected) {
       // test IP address before saving it blindly
       const selectedWLEDIpAddress = selected.value as WLEDIpAddress;
-      this.testIpAddress(selectedWLEDIpAddress.ipv4Address, {
-        next: ({ success }) => {
-          if (success) {
-            this.localStorageService.updateAndSaveClientConfig({
-              selectedWLEDIpAddress,
-              wledIpAddresses: newIpAddresses,
-            });
-            this.appStateService.setLocalSettings({
-              selectedWLEDIpAddress,
-              wledIpAddresses: newIpAddresses,
-            });
-            this.snackbarService.openSnackBar('WLED devices saved.');
-          } else {
-            this.handleFailedNetworkConnection();
-          }
+      this.apiService.testIpAddressAsBaseUrl(
+        selectedWLEDIpAddress.ipv4Address,
+        () => {
+          this.appStateService.setLocalSettings({
+            selectedWLEDIpAddress,
+            wledIpAddresses: newIpAddresses,
+          });
         },
-        error: this.handleFailedNetworkConnection,
-      })
+        this.handleFailedNetworkConnection,
+      );
     } else {
       this.appStateService.setLocalSettings({
         selectedWLEDIpAddress: NO_DEVICE_IP_SELECTED,
@@ -155,11 +145,6 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
 
   getFormControlAtIndex(name: string, index: number) {
     return this.wledIpAddresses.at(index).get(name) as FormControl;
-  }
-
-  private testIpAddress(ipAddress: string, observer: Partial<Observer<{ success: boolean }>>) {
-    this.handleUnsubscribe(this.apiService.testIpAddressAsBaseUrl(ipAddress))
-      .subscribe(observer);
   }
 
   private updateTestResultAtIndex = (index: number, testResult: boolean) => {
@@ -187,6 +172,7 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
       ipv4Address: values.ipv4Address,
     });
     formGroup.get('ipv4Address')!.addValidators(Validators.pattern(IP_ADDRESS_REGEX));
+
     // when one is selected, unselect all others
     this.getValueChanges<boolean>(formGroup, 'selected')
       .subscribe((isSelected: boolean) => {
@@ -198,6 +184,9 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
           }
         }
       });
+
+    // TODO add validator to check for duplicate names or IP addresses
+
     return formGroup;
   }
 

@@ -2,7 +2,7 @@
   cdkOverlayOrigin
   #trigger="cdkOverlayOrigin"
   (click)="showList = !showList"
-  [ngClass]="getModifierClass()"
+  [ngClass]="getContainerModifierClass()"
   class="deviceSelector__main">
   <div class="deviceSelector__selectedName">
     {{ getSelectedDeviceName() }}
@@ -25,6 +25,7 @@
       <div
         *ngFor="let wledIpAddress of getWledIpAddressesForDropdown()"
         (click)="setSelectedDevice(wledIpAddress)"
+        [ngClass]="getListItemModifierClass(wledIpAddress)"
         class="deviceSelector__listItem">
         <div class="deviceSelector__listItem__name">
           {{ wledIpAddress.name }}
