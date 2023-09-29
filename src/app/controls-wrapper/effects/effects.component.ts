@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormService } from '../../shared/form-service';
-import { PostResponseHandler } from '../../shared/post-response-handler';
+import { ApiResponseHandler } from '../../shared/api-response-handler';
 import { UIConfigService } from '../../shared/ui-config.service';
 import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
 import { EffectsService } from './effects.service';
@@ -24,7 +24,7 @@ export class EffectsComponent extends UnsubscriberComponent implements OnInit {
     private effectsService: EffectsService,
     private formSerivce: FormService,
     private uiConfigService: UIConfigService,
-    private postResponseHandler: PostResponseHandler,
+    private apiResponseHandler: ApiResponseHandler,
   ) {
     super();
   }
@@ -73,20 +73,20 @@ export class EffectsComponent extends UnsubscriberComponent implements OnInit {
     const result = this.effectsService.setEffect(effectId);
     if (result) {
       this.handleUnsubscribe(result)
-        .subscribe(this.postResponseHandler.handleFullJsonResponse());
+        .subscribe(this.apiResponseHandler.handleFullJsonResponse());
     }
   }
 
   private setSpeed(effectId: number) {
     this.handleUnsubscribe(
       this.effectsService.setSpeed(effectId))
-      .subscribe(this.postResponseHandler.handleStateResponse());
+      .subscribe(this.apiResponseHandler.handleStateResponse());
   }
 
   private setIntensity(effectId: number) {
     this.handleUnsubscribe(
       this.effectsService.setIntensity(effectId))
-      .subscribe(this.postResponseHandler.handleStateResponse());
+      .subscribe(this.apiResponseHandler.handleStateResponse());
   }
 
   private createForm() {

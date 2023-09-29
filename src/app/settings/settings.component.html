@@ -10,9 +10,10 @@
           *ngFor="let link of links"
           class="settings__linkWrapper">
           <a
-            [routerLink]="['./', link.path]"
             (click)="onLinkClick(drawer, $event)"
+            [routerLink]="['./', link.path]"
             routerLinkActive="settings__link--active"
+            queryParamsHandling="merge"
             class="settings__link">
             {{ link.name }}
           </a>
@@ -34,6 +35,7 @@
         </button>
         <a
           routerLink="/controls/settings"
+          queryParamsHandling="merge"
           class="settings__title">
           WLED Settings
         </a>
@@ -51,6 +53,7 @@
             <a
               [routerLink]="['./', link.path]"
               routerLinkActive="settings__link--active"
+              queryParamsHandling="merge"
               class="settings__link">
               {{ link.name }}
             </a>

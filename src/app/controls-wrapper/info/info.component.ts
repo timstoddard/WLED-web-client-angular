@@ -53,7 +53,7 @@ export class InfoComponent extends UnsubscriberComponent implements OnInit {
   }
 
   refresh() {
-    this.infoService.refreshAppState();
+    this.infoService.refreshInfo();
   }
 
   doRestart() {

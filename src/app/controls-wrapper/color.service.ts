@@ -4,7 +4,7 @@ import iro from '@jaames/iro';
 import { Subject } from 'rxjs';
 import { ApiService } from '../shared/api-service/api.service';
 import { AppStateService } from '../shared/app-state/app-state.service';
-import { PostResponseHandler } from '../shared/post-response-handler';
+import { ApiResponseHandler } from '../shared/api-response-handler';
 import { UnsubscriberService } from '../shared/unsubscriber/unsubscriber.service';
 
 export interface CurrentColor {
@@ -27,7 +27,7 @@ export class ColorService extends UnsubscriberService {
   constructor(
     private appStateService: AppStateService,
     private apiService: ApiService,
-    private postResponseHandler: PostResponseHandler,
+    private apiResponseHandler: ApiResponseHandler,
   ) {
     super();
 
@@ -107,7 +107,7 @@ export class ColorService extends UnsubscriberService {
     const result = this.apiService.appState.whiteBalance.set(whiteBalance);
     if (result) {
       this.handleUnsubscribe(result)
-        .subscribe(this.postResponseHandler.handleFullJsonResponse());
+        .subscribe(this.apiResponseHandler.handleFullJsonResponse());
     }
   }
 
@@ -156,7 +156,7 @@ export class ColorService extends UnsubscriberService {
         this.whiteChannel,
         this.selectedSlot)
     )
-      .subscribe(this.postResponseHandler.handleFullJsonResponse());
+      .subscribe(this.apiResponseHandler.handleFullJsonResponse());
   }
 
   // TODO evaluate combinbing ColorService & ColorSlotsService

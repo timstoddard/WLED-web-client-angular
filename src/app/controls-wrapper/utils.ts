@@ -70,3 +70,7 @@ export const findRouteData = (key: string, route: ActivatedRoute | null): unknow
 export const formatPlural = (type: string, count: number) => {
   return `${count} ${type}${count !== 1 ? 's' : ''}`;
 }
+
+/** Workaround for angular http method options responseType bug. */
+export const responseTypeAsJsonHack = (responseType?: string) =>
+  responseType ? responseType as 'json' : 'json';

@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { AppSegment } from '../../../shared/app-types/app-state';
 import { FormService, getFormControl, createGetFormControl, getFormControlFn } from '../../../shared/form-service';
-import { PostResponseHandler } from '../../../shared/post-response-handler';
+import { ApiResponseHandler } from '../../../shared/api-response-handler';
 import { CustomInput } from '../../../shared/text-input/text-input.component';
 import { UIConfigService } from '../../../shared/ui-config.service';
 import { UnsubscriberComponent } from '../../../shared/unsubscriber/unsubscriber.component';
@@ -93,7 +93,7 @@ export class SegmentFormComponent extends UnsubscriberComponent implements OnIni
     private segmentsService: SegmentsService,
     private formService: FormService,
     private uiConfigService: UIConfigService,
-    private postResponseHandler: PostResponseHandler,
+    private apiResponseHandler: ApiResponseHandler,
   ) {
     super();
   }
@@ -128,14 +128,14 @@ export class SegmentFormComponent extends UnsubscriberComponent implements OnIni
     };
     this.handleUnsubscribe(
       this.segmentsService.updateSegment(options))
-      .subscribe(this.postResponseHandler.handleFullJsonResponse());
+      .subscribe(this.apiResponseHandler.handleFullJsonResponse());
   }
 
   deleteSegment() {
     try {
       this.handleUnsubscribe(
         this.segmentsService.deleteSegment(this.segment.id)!)
-        .subscribe(this.postResponseHandler.handleFullJsonResponse());
+        .subscribe(this.apiResponseHandler.handleFullJsonResponse());
     } catch (e) { // delete failed, segments length is < 2
       // TODO show form error instead of toast (?)
       // showToast('You need to have multiple segments to delete one!');
@@ -170,25 +170,25 @@ export class SegmentFormComponent extends UnsubscriberComponent implements OnIni
   private toggleOn(isOn: boolean) {
     this.handleUnsubscribe(
       this.segmentsService.setSegmentOn(this.segment.id, isOn))
-      .subscribe(this.postResponseHandler.handleFullJsonResponse());
+      .subscribe(this.apiResponseHandler.handleFullJsonResponse());
   }
 
   private setBrightness(brightness: number) {
     this.handleUnsubscribe(
       this.segmentsService.setSegmentBrightness(this.segment.id, brightness))
-      .subscribe(this.postResponseHandler.handleFullJsonResponse());
+      .subscribe(this.apiResponseHandler.handleFullJsonResponse());
   }
 
   private toggleReverse(isReverse: boolean) {
     this.handleUnsubscribe(
       this.segmentsService.setSegmentReverse(this.segment.id, isReverse))
-      .subscribe(this.postResponseHandler.handleStateResponse());
+      .subscribe(this.apiResponseHandler.handleStateResponse());
   }
 
   private toggleMirror(isMirror: boolean) {
     this.handleUnsubscribe(
       this.segmentsService.setSegmentMirror(this.segment.id, isMirror))
-      .subscribe(this.postResponseHandler.handleStateResponse());
+      .subscribe(this.apiResponseHandler.handleStateResponse());
   }
 
   /** Validator: `stop` must be greater than `start`.  */

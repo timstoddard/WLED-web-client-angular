@@ -14,6 +14,7 @@ export class ControlsService extends UnsubscriberService {
   }
 
   private subscribeToAppStateChanges() {
+    // TODO verify websocket response and functionality
     this.handleUnsubscribe(this.webSocketService.getStateInfoSocket())
       .subscribe(response => {
         if (response && Object.keys(response).length > 0) {

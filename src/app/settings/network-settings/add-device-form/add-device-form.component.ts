@@ -1,6 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ApiService } from '../../../shared/api-service/api.service';
 import { NO_DEVICE_IP_SELECTED } from '../../../shared/app-state/app-state-defaults';
 import { AppStateService } from '../../../shared/app-state/app-state.service';
 import { WLEDIpAddress } from '../../../shared/app-types/app-types';
@@ -8,6 +7,7 @@ import { FormService } from '../../../shared/form-service';
 import { UnsubscriberComponent } from '../../../shared/unsubscriber/unsubscriber.component';
 import { InputConfig } from 'src/app/shared/text-input/text-input.component';
 import { SnackbarService } from 'src/app/shared/snackbar.service';
+import { SelectedDeviceService } from 'src/app/shared/selected-device.service';
 
 interface SelectableWLEDIpAddress extends WLEDIpAddress {
   selected: boolean;
@@ -32,10 +32,9 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
   constructor(
     private appStateService: AppStateService,
     private formService: FormService,
-    // TODO put in service class?
-    private apiService: ApiService,
     private changeDetectorRef: ChangeDetectorRef,
     private snackbarService: SnackbarService,
+    private selectedDeviceService: SelectedDeviceService,
   ) {
     super();
   }
@@ -68,7 +67,7 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
     this.wledIpAddresses.removeAt(removeIndex);
 
     // if the removed was current selected, update current selected to first in list
-    if (!this.getSelected()) {
+    if (!this.getSelectedIpAddress()) {
       this.wledIpAddresses.at(0)?.patchValue({ selected: true });
     }
 
@@ -99,34 +98,30 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
     // test the provided IP address
     const wledIpAddress = this.wledIpAddresses.at(index);
     if (wledIpAddress) {
-      const ipAddress = (wledIpAddress.value as SelectableWLEDIpAddress).ipv4Address;
-      this.apiService.testIpAddressAsBaseUrl(
-        ipAddress,
-        () => {
-          this.updateTestResultAtIndex(index, true);
-          this.changeDetectorRef.markForCheck();
-        },
-        () => {
-          this.updateTestResultAtIndex(index, false);
-          this.changeDetectorRef.markForCheck();
-        },
+      const wledIpAddressValue = wledIpAddress.value as SelectableWLEDIpAddress;
+      this.selectedDeviceService.testConnectToDeviceIpAddress(
+        wledIpAddressValue,
+        false,
+        () => this.updateTestResultAtIndex(index, true),
+        () => this.updateTestResultAtIndex(index, false),
       );
     }
   }
 
   saveWLEDIpAddresses() {
     if (!this.wledIpAddresses.valid) {
-      alert('Please fix the error(s).');
+      alert('Please fix the IP address validation error(s).');
       return;
     }
 
     const newIpAddresses = this.wledIpAddresses.value as WLEDIpAddress[];
-    const selected = this.getSelected();
+    const selected = this.getSelectedIpAddress();
     if (selected) {
-      // test IP address before saving it blindly
+      // test IP address to make sure it works before saving
       const selectedWLEDIpAddress = selected.value as WLEDIpAddress;
-      this.apiService.testIpAddressAsBaseUrl(
-        selectedWLEDIpAddress.ipv4Address,
+      this.selectedDeviceService.testConnectToDeviceIpAddress(
+        selectedWLEDIpAddress,
+        true,
         () => {
           this.appStateService.setLocalSettings({
             selectedWLEDIpAddress,
@@ -152,6 +147,7 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
       ...this.ipAddressTestResults,
       [index]: testResult,
     };
+    this.changeDetectorRef.markForCheck();
   }
 
   private createForm() {
@@ -203,7 +199,7 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
     }
   }
 
-  private getSelected = () => {
+  private getSelectedIpAddress = () => {
     const selected = this.wledIpAddresses.controls
       .find(({ value }) => value.selected);
     return selected;

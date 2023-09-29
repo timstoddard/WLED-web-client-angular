@@ -1,13 +1,17 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { ApiService } from './api-service/api.service';
+import { SnackbarService } from './snackbar.service';
+import { SelectedDeviceService } from './selected-device.service';
 
 @Injectable({ providedIn: 'root' })
 export class OnlineStatusService {
   // TODO what will use this?
   private onlineStatus$: Subject<boolean>;
 
-  constructor(private apiService: ApiService) {
+  constructor(
+    private selectedDeviceService: SelectedDeviceService,
+    private snackbarService: SnackbarService,
+  ) {
     this.onlineStatus$ = new BehaviorSubject(this.getIsOffline());
     window.addEventListener('online', this.handleOnline);
     window.addEventListener('offline', this.handleOffline);
@@ -32,17 +36,18 @@ export class OnlineStatusService {
    */
   getIsOffline() {
     const isOffline = !window.navigator.onLine
-      || this.apiService.isBaseUrlUnset()
+      || this.selectedDeviceService.isNoDeviceSelected()
     return isOffline;
   }
 
   private handleOnline = () => {
     this.onlineStatus$.next(true);
-    alert('Network connection restored.')
+    this.snackbarService.openSnackBar('Network connection restored.');
   }
 
   private handleOffline = () => {
     this.onlineStatus$.next(false);
-    alert('Network connection terminated.')
+    this.snackbarService.openSnackBar('Network connection terminated.');
+    alert()
   }
 }

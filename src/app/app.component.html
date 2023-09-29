@@ -14,4 +14,17 @@
   </span>
 </nav>
 
-<router-outlet></router-outlet>
+<router-outlet #appOutlet="outlet"></router-outlet>
+
+<div *ngIf="!appOutlet.isActivated">
+  <div class="loadingAnimation__text">
+    Connecting to WLED device...
+  </div>
+  <div class="loadingAnimation">
+    <div class="loadingAnimation__dot loadingAnimation__dot--five"></div>
+    <div class="loadingAnimation__dot loadingAnimation__dot--four"></div>
+    <div class="loadingAnimation__dot loadingAnimation__dot--three"></div>
+    <div class="loadingAnimation__dot loadingAnimation__dot--two"></div>
+    <div class="loadingAnimation__dot loadingAnimation__dot--one"></div>
+  </div>
+</div>

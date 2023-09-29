@@ -10,6 +10,33 @@ import { ControlsComponent } from './controls/controls.component';
 import { InfoComponent } from './info/info.component';
 import { PresetsResolver } from './presets/presets.resolver';
 
+const childRoutes = [
+  {
+    path: '',
+    component: ControlsComponent,
+    data: { title: 'WLED Controls' },
+  },
+  {
+    path: 'segments',
+    component: SegmentsComponent,
+    data: { title: 'Segments' },
+  },
+  {
+    path: 'presets',
+    component: PresetsComponent,
+    data: { title: 'Presets' },
+  },
+  {
+    path: 'info',
+    component: InfoComponent,
+    data: { title: 'Info' },
+  },
+  {
+    path: 'settings',
+    loadChildren: () => import('../settings/settings.module').then(m => m.SettingsModule),
+  },
+];
+
 // TODO page titles should match existing web app (?)
 const routes: RouteWithPageTitle[] = [
   {
@@ -21,32 +48,8 @@ const routes: RouteWithPageTitle[] = [
       presets: PresetsResolver,
       palettesData: PalettesDataResolver,
     },
-    children: [
-      {
-        path: '',
-        component: ControlsComponent,
-        data: { title: 'WLED Controls' },
-      },
-      {
-        path: 'segments',
-        component: SegmentsComponent,
-        data: { title: 'Segments' },
-      },
-      {
-        path: 'presets',
-        component: PresetsComponent,
-        data: { title: 'Presets' },
-      },
-      {
-        path: 'info',
-        component: InfoComponent,
-        data: { title: 'Info' },
-      },
-      {
-        path: 'settings',
-        loadChildren: () => import('../settings/settings.module').then(m => m.SettingsModule),
-      },
-    ]
+    children: childRoutes,
+    runGuardsAndResolvers: 'pathParamsOrQueryParamsChange',
   },
 ];
 

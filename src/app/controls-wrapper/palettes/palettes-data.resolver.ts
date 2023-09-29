@@ -5,28 +5,35 @@ import { ApiService } from '../../shared/api-service/api.service';
 import { OnlineStatusService } from '../../shared/online-status.service';
 import { MOCK_PALETTES_DATA } from '../mock-api-data';
 import { PalettesApiData } from './palettes.service';
+import { SelectedDeviceService } from 'src/app/shared/selected-device.service';
 
 @Injectable()
 export class PalettesDataResolver implements Resolve<PalettesApiData[]> {
   constructor(
     private apiService: ApiService,
     private onlineStatusService: OnlineStatusService,
+    private selectedDeviceService: SelectedDeviceService,
   ) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    const ipAddress = route.queryParamMap.get('ip') as string;
+    if (ipAddress && this.selectedDeviceService.isNoDeviceSelected()) {
+      return this.getAllPages(ipAddress);
+    }
+
     return this.onlineStatusService.getIsOffline()
       ? of(MOCK_PALETTES_DATA)
       : this.getAllPages();
   }
 
-  private getAllPages() {
+  private getAllPages(ipAddress?: string) {
     // TODO can merge all response objects together instead of returning an array?
 
     // const PALETTES_PER_PAGE = 8;
     const LAST_PALETTE_DATA_PAGE = 9; // 9 pages (for now), zero indexed
     const apiCalls = [];
     for (let page = 0; page < LAST_PALETTE_DATA_PAGE; page++) {
-      apiCalls.push(this.apiService.appState.palette.getData(page));
+      apiCalls.push(this.apiService.appState.palette.getData(page, ipAddress));
     }
     return forkJoin(apiCalls);
   }

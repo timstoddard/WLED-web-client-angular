@@ -3,6 +3,7 @@
   [routerLink]="button.routerLink"
   routerLinkActive="bottomMenuBar__button--selected"
   [routerLinkActiveOptions]="{ exact: button.routerLinkActiveExactMatch }"
+  queryParamsHandling="merge"
   class="bottomMenuBar__button">
   <span class="bottomMenuBar__button__icon material-symbols-outlined">
     {{ button.icon }}

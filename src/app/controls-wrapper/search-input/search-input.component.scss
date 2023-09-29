@@ -84,4 +84,8 @@
       border: 1px solid var(--borderColorPrimary);
     }
   }
+
+  ::ng-deep &__listBackdrop {
+    background: rgba(0,0,0,0.3);
+  }
 }

@@ -1,6 +1,6 @@
 import { Component, HostBinding, Input, OnInit } from '@angular/core';
 import { AppPreset } from '../../../shared/app-types/app-presets';
-import { PostResponseHandler } from '../../../shared/post-response-handler';
+import { ApiResponseHandler } from '../../../shared/api-response-handler';
 import { UnsubscriberComponent } from '../../../shared/unsubscriber/unsubscriber.component';
 import { PresetsService } from '../presets.service';
 import { expandFade, expandVerticalPadding, expandText } from '../../../shared/animations';
@@ -35,7 +35,7 @@ export class PresetQuickLoadComponent extends UnsubscriberComponent implements O
 
   constructor(
     private presetsService: PresetsService,
-    private postResponseHandler: PostResponseHandler,
+    private apiResponseHandler: ApiResponseHandler,
     private appStateService: AppStateService,
   ) {
     super();
@@ -60,7 +60,7 @@ export class PresetQuickLoadComponent extends UnsubscriberComponent implements O
             // technically don't need to set the preset again, just need the updated api response
             this.handleUnsubscribe(
               this.presetsService.loadPreset(presetId))
-              .subscribe(this.postResponseHandler.handleFullJsonResponse());
+              .subscribe(this.apiResponseHandler.handleFullJsonResponse());
           })
       });
   }

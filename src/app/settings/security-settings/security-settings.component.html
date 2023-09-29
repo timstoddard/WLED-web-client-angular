@@ -92,6 +92,7 @@
     <a
       *ngIf="getFormControl('enableArduinoOTA').value"
       [routerLink]="['/', 'update']"
+      queryParamsHandling="merge"
       mat-raised-button
       color="accent">
       Manual OTA Update

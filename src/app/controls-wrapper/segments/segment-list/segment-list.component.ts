@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { FormService } from '../../../shared/form-service';
-import { PostResponseHandler } from '../../../shared/post-response-handler';
+import { ApiResponseHandler } from '../../../shared/api-response-handler';
 import { UnsubscriberComponent } from '../../../shared/unsubscriber/unsubscriber.component';
 import { SegmentsService } from '../segments.service';
 import { expandFade } from '../../../shared/animations';
@@ -20,7 +20,7 @@ export class SegmentListComponent extends UnsubscriberComponent implements OnIni
   constructor(
     private segmentsService: SegmentsService,
     private formService: FormService,
-    private postResponseHandler: PostResponseHandler,
+    private apiResponseHandler: ApiResponseHandler,
   ) {
     super();
   }
@@ -33,7 +33,7 @@ export class SegmentListComponent extends UnsubscriberComponent implements OnIni
     event.stopPropagation();
     this.handleUnsubscribe(
       this.segmentsService.selectOnlySegment(segmentId))
-      .subscribe(this.postResponseHandler.handleFullJsonResponse());
+      .subscribe(this.apiResponseHandler.handleFullJsonResponse());
   }
 
   toggleExpanded(segmentId: number) {
@@ -52,7 +52,7 @@ export class SegmentListComponent extends UnsubscriberComponent implements OnIni
   private toggleSelected(segmentId: number, isSelected: boolean) {
     this.handleUnsubscribe(
       this.segmentsService.selectSegment(segmentId, isSelected))
-      .subscribe(this.postResponseHandler.handleStateResponse());
+      .subscribe(this.apiResponseHandler.handleStateResponse());
   }
 
   private createForm() {

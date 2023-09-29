@@ -19,7 +19,10 @@
   [cdkConnectedOverlayOrigin]="trigger"
   [cdkConnectedOverlayOpen]="showList"
   [cdkConnectedOverlayPositions]="getOverlayPositions()"
-  [cdkConnectedOverlayFlexibleDimensions]="true">
+  [cdkConnectedOverlayFlexibleDimensions]="true"
+  [cdkConnectedOverlayHasBackdrop]="true"
+  [cdkConnectedOverlayBackdropClass]="'deviceSelector__listBackdrop'"
+  (backdropClick)="showList = false">
   <app-overlay-container [isOpen]="showList">
     <div class="deviceSelector__list">
       <div
@@ -36,8 +39,9 @@
       </div>
       <div class="deviceSelector__listItem">
         <a
-          [routerLink]="['/', 'controls', 'settings', 'network']"
           (click)="handleAddLinkClick($event)"
+          [routerLink]="['/', 'controls', 'settings', 'network']"
+          queryParamsHandling="merge"
           class="deviceSelector__listItem__link">
           Add New
         </a>

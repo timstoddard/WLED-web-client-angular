@@ -37,3 +37,57 @@
     margin-left: 10px;    
   }
 }
+
+/* IMPORTANT: Any changes to this loading animation should */
+/* also be applied to the loading animation in index.html */
+
+@keyframes rotate_circle {
+  from {
+    transform:
+      rotate(0deg)
+      translate(0, -50px)
+      rotate(0deg);
+  }
+  to {
+    transform:
+      rotate(360deg)
+      translate(0, -50px) 
+      rotate(-360deg);
+  }
+}
+
+.loadingAnimation {
+  &__text {
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  &__dot {
+    animation: rotate_circle 1.2s infinite cubic-bezier(0.8, 0.2, 0.2, 0.8);
+    color: #11ff00;
+    font-size: 50px;
+    left: calc(50%);
+    position: absolute;
+    top: calc(50% - 50px);
+
+    &::after {
+      content: ".";
+    }
+
+    &--one {
+      animation-delay: 0s;
+    }
+    &--two {
+      animation-delay: 100ms;
+    }
+    &--three {
+      animation-delay: 200ms;
+    }
+    &--four {
+      animation-delay: 300ms;
+    }
+    &--five {
+      animation-delay: 400ms;
+    }
+  }
+}

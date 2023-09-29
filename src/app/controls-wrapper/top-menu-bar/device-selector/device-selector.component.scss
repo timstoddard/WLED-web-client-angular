@@ -44,7 +44,7 @@
       }
     }
 
-    &--loading {
+    &--connecting {
       @include marchingAntsBorder(1.2s);
       border-color: var(--backgroundColorPrimary);
 
@@ -62,6 +62,10 @@
   &__openIcon {
     @include flex-center;
     margin-left: 2px;
+  }
+
+  ::ng-deep &__listBackdrop {
+    background: rgba(0,0,0,0.3);
   }
 
   &__list {
@@ -101,6 +105,14 @@
         & > * {
           color: var(--themeColorPrimary);
           font-weight: bold;
+        }
+      }
+
+      &--loading {
+        background: var(--backgroundColorAccent);
+
+        & > * {
+          color: var(--themeColorAccent);
         }
       }
 

@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, forkJoin, map, of, timeout } from 'rxjs';
+import { catchError, map, of } from 'rxjs';
 import { ALL_PALETTES_DATA, MOCK_API_PRESETS, MOCK_API_RESPONSE, MOCK_LIVE_DATA, MOCK_NODES_RESPONSE } from '../../controls-wrapper/mock-api-data';
 import { PalettesApiData } from '../../controls-wrapper/palettes/palettes.service';
 import { WLEDInfo } from '../api-types/api-info';
@@ -9,96 +9,80 @@ import { WLEDPresets } from '../api-types/api-presets';
 import { WLEDSegment, WLEDState, WLEDUdpState } from '../api-types/api-state';
 import { WLEDApiResponse } from '../api-types/api-types';
 import { SavePresetRequest, WLEDSegmentPostRequest } from '../api-types/post-requests';
-import { NO_DEVICE_IP_SELECTED } from '../app-state/app-state-defaults';
-import { AppStateService } from '../app-state/app-state.service';
 import { AppPreset } from '../app-types/app-presets';
 import { AppWLEDState } from '../app-types/app-state';
 import { FormValues } from '../form-service';
 import { LiveViewData } from '../live-view/live-view.service';
-import { PostResponseHandler } from '../post-response-handler';
 import { UnsubscriberService } from '../unsubscriber/unsubscriber.service';
 import { ApiFilePath, ApiPath } from './api-paths';
 import { WledNetworkSettings, WledSecuritySettings, WledTimeSettings } from 'src/app/settings/shared/settings-types';
+import { HTTP_GET_FAILED, SelectedDeviceService } from '../selected-device.service';
+import { responseTypeAsJsonHack } from 'src/app/controls-wrapper/utils';
 
 // TODO split into sub classes per app section and use the ApiService to aggregate their usage
 @Injectable({ providedIn: 'root' })
 export class ApiService extends UnsubscriberService {
-  private baseUrl = '';
-
   constructor(
     private http: HttpClient,
-    private appStateService: AppStateService,
-    private postResponseHandler: PostResponseHandler,
+    private selectedDeviceService: SelectedDeviceService,
   ) {
     super();
-    this.init();
-  }
-
-  private init = () => {
-    this.appStateService.getLocalSettings(this.ngUnsubscribe)
-      .subscribe(({ selectedWLEDIpAddress }) => {
-        const { ipv4Address } = selectedWLEDIpAddress;
-
-        // test API IP address before actually loading app (in case the selected IP address does not connect)
-        this.testIpAddressAsBaseUrl(
-          ipv4Address,
-          () => {
-            this.setBaseUrl(ipv4Address);
-            this.refreshAppState(true);
-          },
-          () => {
-            this.setBaseUrl(NO_DEVICE_IP_SELECTED.ipv4Address);
-            this.refreshAppState(true);
-          },
-        );
-      });
   }
 
   getBaseUrl = () => {
-    return this.baseUrl;
+    return this.selectedDeviceService.getIpAddress();
   }
 
-  private setBaseUrl = (baseUrl: string) => {
-    this.baseUrl = baseUrl;
-    console.log('API BASE URL:', this.baseUrl ? this.createApiUrl('') : 'n/a');
-  }
-
-  isBaseUrlUnset = () => {
-    return this.getBaseUrl() === NO_DEVICE_IP_SELECTED.ipv4Address;
-  }
-
-  private createApiUrl = (path: string) => {
-    return `http://${this.getBaseUrl()}/${path}`;
+  /**
+   * Allows for optional base url, to force API path on first page load using IP address from query param.
+   * @param path 
+   * @param optionalBaseUrl 
+   * @returns 
+   */
+  private createApiUrl = (path: ApiPath | ApiFilePath, optionalBaseUrl?: string) => {
+    return optionalBaseUrl
+      ? `http://${optionalBaseUrl}/${path}`
+      : `http://${this.getBaseUrl()}/${path}`;
   }
 
   private httpGet = <T>(
-    url: string,
+    apiPath: ApiPath | ApiFilePath,
     offlineDefault: T,
     options: {
       // subset of options for http.get()
       params?: HttpParams,
       responseType?: 'json' | 'text' | 'blob',
     } = {},
+    optionalBaseUrl?: string,
   ) => {
-    const parsedOptions = {
-      ...options,
-      responseType: responseTypeAsJsonHack(options.responseType),
-    }
-    if (this.isBaseUrlUnset()) {
+    const url = this.createApiUrl(apiPath, optionalBaseUrl);
+    if (
+      !optionalBaseUrl
+      && this.selectedDeviceService.isNoDeviceSelected()
+    ) {
       // return fake data
       return of(offlineDefault);
     } else {
-      return this.http.get<T>(url, parsedOptions)
-        .pipe(catchError(e => {
-          // if response can't be loaded, return fake data
-          console.warn(`Calling http.get('${url}') failed:`, e);
-          return of(offlineDefault);
-        }));
+      return this.selectedDeviceService.loadUrlWithTimeout<T>(url, options)
+        .pipe(
+          map(result => {
+            if (result === HTTP_GET_FAILED) {
+              console.warn(`HTTP GET '${url}' failed.`);
+              return offlineDefault;
+            }
+            return result;
+          }),
+          catchError(e => {
+            // if response can't be loaded, return fake data
+            console.warn(`HTTP GET '${url}' failed:`, e);
+            return of(offlineDefault);
+          }),
+        );
     }
   }
 
   private httpPost = <T = WLEDApiResponse | WLEDState>(
-    url: string,
+    apiPath: ApiPath | ApiFilePath,
     body: { [key: string]: unknown } | FormData | {},
     offlineDefault: T,
     options: {
@@ -107,15 +91,17 @@ export class ApiService extends UnsubscriberService {
       responseType?: 'json' | 'text',
     } = {},
   ) => {
+    const url = this.createApiUrl(apiPath);
     const parsedOptions = {
       ...options,
       responseType: responseTypeAsJsonHack(options.responseType),
     }
-    if (this.isBaseUrlUnset()) {
+    if (this.selectedDeviceService.isNoDeviceSelected()) {
       console.log('MOCK POST:', url, body);
       return of(offlineDefault);
     } else {
       console.log('REAL POST:', url, body);
+      // TODO add timeout like in httpGet()
       return this.http.post<T>(url, body, parsedOptions)
         .pipe(catchError(e => {
           // if response can't be loaded, return fake data
@@ -135,7 +121,7 @@ export class ApiService extends UnsubscriberService {
 
   private httpPostStateAndInfo = (data: { [key: string]: unknown }) => {
     return this.httpPost<WLEDApiResponse>(
-      this.createApiUrl(ApiPath.STATE_INFO_PATH),
+      ApiPath.STATE_INFO_PATH,
       this.createBody(data),
       MOCK_API_RESPONSE,
     );
@@ -143,96 +129,26 @@ export class ApiService extends UnsubscriberService {
 
   private httpPostState = (data: { [key: string]: unknown }) => {
     return this.httpPost<WLEDState>(
-      this.createApiUrl(ApiPath.STATE_PATH),
+      ApiPath.STATE_PATH,
       this.createBody(data),
       MOCK_API_RESPONSE.state,
     );
   }
 
-  /**
-   * Tests a given IP address by attempting to load the full json data. If json data is returned
-   * and correctly formed, the onSuccess function will be called. Otherwise, the test fails and
-   * the onFailure function will be called.
-   * @param ipAddress ip address to test
-   * @param onSuccess function to be called on success
-   * @param onFailure function to be called on failure
-   */
-  testIpAddressAsBaseUrl = (
-    ipAddress: string,
-    onSuccess: () => void,
-    onFailure: () => void,
-  ) => {
-    const TIMEOUT_MS = 3000;
-    const FAILED = 'FAILED';
-    const url = `http://${ipAddress}/${ApiPath.ALL_JSON_PATH}`;
-    const isValidResponse = (result: WLEDApiResponse) =>
-      result.state
-      && result.info
-      && result.palettes
-      && result.effects
-    const testResult = this.http.get<WLEDApiResponse>(url)
-      .pipe(
-        timeout({
-          first: TIMEOUT_MS,
-          with: () => of<typeof FAILED>(FAILED),
-        }),
-        map(result => {
-          let success = false;
-
-          if (result === FAILED) {
-            // it didn't work
-            success = false;
-          } else if (isValidResponse(result)) {
-            // it worked
-            success = true;
-          }
-
-          return { success };
-        })
-      );
-    this.handleUnsubscribe(testResult)
-      .subscribe({
-        next: ({ success }) => {
-          if (success) {
-            onSuccess();
-          } else {
-            onFailure();
-          }
-        },
-        error: () => {
-          onFailure();
-        }
-      });
-  }
-
-  /** Reload all app data from the backend. */
-  private refreshAppState = (includePresets = false) => {
-    const apiResponse = forkJoin({
-      json: this.getJson(),
-      presets: includePresets ? this.getPresets() : of(undefined),
-    });
-
-    this.handleUnsubscribe(apiResponse)
-      .subscribe(({
-        json,
-        presets,
-      }) => {
-       this.postResponseHandler.handleFullJsonResponse()(json, presets);
-      });
-  }
-
   /** Returns an object containing the state, info, effects, and palettes. */
-  private getJson = () => { // TODO rename
+  private getJson = (baseApiUrl?: string) => { // TODO rename
     return this.httpGet<WLEDApiResponse>(
-      this.createApiUrl(ApiPath.ALL_JSON_PATH),
+      ApiPath.ALL_JSON_PATH,
       MOCK_API_RESPONSE,
+      {},
+      baseApiUrl,
     );
   }
 
   /** Contains the current state of the light. All values may be modified by the client. */
   private getState = () => {
     return this.httpGet<WLEDState>(
-      this.createApiUrl(ApiPath.STATE_PATH),
+      ApiPath.STATE_PATH,
       MOCK_API_RESPONSE.state,
     );
   }
@@ -240,7 +156,7 @@ export class ApiService extends UnsubscriberService {
   /** Contains general information about the device. All values are read-only. */
   private getInfo = () => {
     return this.httpGet<WLEDInfo>(
-      this.createApiUrl(ApiPath.INFO_PATH),
+      ApiPath.INFO_PATH,
       MOCK_API_RESPONSE.info,
     );
   }
@@ -248,7 +164,7 @@ export class ApiService extends UnsubscriberService {
   /** Contains an array of the effect mode names. */
   private getEffects = () => {
     return this.httpGet<string[]>(
-      this.createApiUrl(ApiPath.EFFECTS_PATH),
+      ApiPath.EFFECTS_PATH,
       MOCK_API_RESPONSE.effects,
     );
   }
@@ -256,26 +172,27 @@ export class ApiService extends UnsubscriberService {
   /** Contains an array of the palette names. */
   private getPalettes = () => {
     return this.httpGet<string[]>(
-      this.createApiUrl(ApiPath.PALETTES_PATH),
+      ApiPath.PALETTES_PATH,
       MOCK_API_RESPONSE.palettes,
     );
   }
 
   /** Gets palettes data, 8 palettes per page. */
-  private getPalettesData = (page: number) => {
+  private getPalettesData = (page: number, baseApiUrl?: string) => {
     const params = new HttpParams()
       .set('page', page);
     return this.httpGet<PalettesApiData>(
-      this.createApiUrl(ApiPath.PALETTES_DATA_PATH),
+      ApiPath.PALETTES_DATA_PATH,
       ALL_PALETTES_DATA,
       { params },
+      baseApiUrl,
     );
   }
 
   /** Gets live data for all LEDs. */
   private getLiveData = () => {
     return this.httpGet<LiveViewData>(
-      this.createApiUrl(ApiPath.LIVE_PATH),
+      ApiPath.LIVE_PATH,
       MOCK_LIVE_DATA,
       { responseType: 'text' },
     );
@@ -284,17 +201,19 @@ export class ApiService extends UnsubscriberService {
   /** Gets all detected external WLED nodes. */
   private getNodes = () => {
     return this.httpGet<WLEDNodesResponse>(
-      this.createApiUrl(ApiPath.NODES_PATH),
+      ApiPath.NODES_PATH,
       MOCK_NODES_RESPONSE,
     );
   }
 
   /** Returns dict of saved presets. */
-  private getPresets = () => {
+  private getPresets = (baseApiUrl?: string) => {
     // TODO don't load this when calling a disconnected wled instance
     return this.httpGet<WLEDPresets>(
-      this.createApiUrl(ApiFilePath.PRESETS_JSON_FILE),
+      ApiFilePath.PRESETS_JSON_FILE,
       MOCK_API_PRESETS,
+      {},
+      baseApiUrl,
     );
   }
 
@@ -643,7 +562,7 @@ export class ApiService extends UnsubscriberService {
   private setLedSettings = (ledSettings: FormValues) => {
     // TODO does this return WLEDApiResponse type or other type?
     return this.httpPost(
-      this.createApiUrl(ApiPath.LED_SETTINGS_PATH),
+      ApiPath.LED_SETTINGS_PATH,
       ledSettings,
       MOCK_API_RESPONSE,
     );
@@ -653,7 +572,7 @@ export class ApiService extends UnsubscriberService {
   private setUISettings = (uiSettings: FormValues) => {
     // TODO does this return WLEDApiResponse type or other type?
     return this.httpPost(
-      this.createApiUrl(ApiPath.UI_SETTINGS_PATH),
+      ApiPath.UI_SETTINGS_PATH,
       uiSettings,
       MOCK_API_RESPONSE,
     );
@@ -668,7 +587,7 @@ export class ApiService extends UnsubscriberService {
       }
     `;
     return this.httpGet(
-      this.createApiUrl(ApiFilePath.WIFI_SETTINGS_JS_PATH),
+      ApiFilePath.WIFI_SETTINGS_JS_PATH,
       offlineDefault,
       { responseType: 'text' },
     );
@@ -678,7 +597,7 @@ export class ApiService extends UnsubscriberService {
   private setNetworkSettings = (wifiSettings: Partial<WledNetworkSettings>) => {
     // TODO does this return WLEDApiResponse type or other type?
     return this.httpPost(
-      this.createApiUrl(ApiPath.WIFI_SETTINGS_PATH),
+      ApiPath.WIFI_SETTINGS_PATH,
       wifiSettings,
       MOCK_API_RESPONSE,
     );
@@ -694,7 +613,7 @@ export class ApiService extends UnsubscriberService {
       }
     `;
     return this.httpGet(
-      this.createApiUrl(ApiFilePath.SECURITY_SETTINGS_JS_PATH),
+      ApiFilePath.SECURITY_SETTINGS_JS_PATH,
       offlineDefault,
       { responseType: 'text' },
     );
@@ -704,7 +623,7 @@ export class ApiService extends UnsubscriberService {
   private setSecuritySettings = (securitySettings: WledSecuritySettings) => {
     // TODO this post doesn't work!!
     return this.httpPost(
-      this.createApiUrl(ApiPath.SECURITY_SETTINGS_PATH),
+      ApiPath.SECURITY_SETTINGS_PATH,
       securitySettings,
       'Security settings saved.',
       { responseType: 'text' },
@@ -720,7 +639,7 @@ export class ApiService extends UnsubscriberService {
       }
     `;
     return this.httpGet(
-      this.createApiUrl(ApiFilePath.TIME_SETTINGS_JS_PATH),
+      ApiFilePath.TIME_SETTINGS_JS_PATH,
       offlineDefault,
       { responseType: 'text' },
     );
@@ -729,7 +648,7 @@ export class ApiService extends UnsubscriberService {
   /** Submits time settings form data to server. */
   private setTimeSettings = (timeSettings: WledTimeSettings) => {
     return this.httpPost(
-      this.createApiUrl(ApiPath.TIME_SETTINGS_PATH),
+      ApiPath.TIME_SETTINGS_PATH,
       timeSettings,
       'Time settings saved.',
       { responseType: 'text' },
@@ -746,7 +665,7 @@ export class ApiService extends UnsubscriberService {
     const formData = new FormData();
     formData.append('file', file, name);
     return this.httpPost(
-      this.createApiUrl(ApiPath.FILE_UPLOAD_PATH),
+      ApiPath.FILE_UPLOAD_PATH,
       formData,
       MOCK_API_RESPONSE,
       { responseType: 'text' },
@@ -754,11 +673,12 @@ export class ApiService extends UnsubscriberService {
   }
 
   private downloadExternalFile = (url: string) => {
-    return this.httpGet(
-      url,
-      {},
-      { responseType: 'blob' },
-    );
+    // TODO implement this (maybe use angular http.get directly)
+    // return this.httpGet(
+    //   url,
+    //   {},
+    //   { responseType: 'blob' },
+    // );
   }
 
   private getDownloadPresetsUrl = () => {
@@ -770,7 +690,6 @@ export class ApiService extends UnsubscriberService {
   }
 
   appState = {
-    refresh: this.refreshAppState,
     brightness: {
       set: this.setBrightness,
     },
@@ -884,7 +803,3 @@ export class ApiService extends UnsubscriberService {
     config: this.getDownloadConfigUrl,
   };
 }
-
-/** Workaround for angular http method options responseType bug. */
-const responseTypeAsJsonHack = (responseType?: string) =>
-  responseType ? responseType as 'json' : 'json'

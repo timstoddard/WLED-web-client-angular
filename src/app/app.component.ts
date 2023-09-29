@@ -72,19 +72,14 @@ export class AppComponent extends UnsubscriberComponent {
 
     this.showDevNavBar = false;
 
+    // TODO maybe use title service instead
+    // https://angular.io/api/platform-browser/Title
     this.pageTitleService.updateOnRouteChange(this.ngUnsubscribe);
     this.showDevNavBar = this.localStorageService.get(LocalStorageKey.SHOW_DEV_NAV_BAR, false);
   }
 
-  // TODO control hiding loading animation from the router
   ngAfterViewInit() {
     this.hideLoadingAnimation();
-  }
-
-  hideLoadingAnimation() {
-    const loader = document.querySelector('.pre-js-loader') as HTMLDivElement;
-    loader.style.opacity = '0';
-    loader.style.visibility = 'false';
   }
 
   hideDevNavBar() {
@@ -92,6 +87,19 @@ export class AppComponent extends UnsubscriberComponent {
     this.localStorageService.set(LocalStorageKey.SHOW_DEV_NAV_BAR, false);
   }
 
+  /**
+   * Hides the loading animation in index.html when the app loads.
+   * However, there is a subsequent loading animation in AppComponent
+   * that is visually the same, for while the app connects to the
+   * selected WLED device.
+   */
+  private hideLoadingAnimation() {
+    const loader = document.querySelector('.pre-js-loader') as HTMLDivElement;
+    loader.style.opacity = '0';
+    loader.style.visibility = 'false';
+  }
+
+  // TODO move to index.html
   private addMetaTags() {
     const tags: MetaDefinition[] = [
       {

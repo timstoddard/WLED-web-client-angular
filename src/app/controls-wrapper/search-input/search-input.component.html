@@ -64,7 +64,10 @@
   [cdkConnectedOverlayOrigin]="trigger"
   [cdkConnectedOverlayOpen]="isContextMenuOpen"
   [cdkConnectedOverlayPositions]="getOverlayPositions()"
-  [cdkConnectedOverlayFlexibleDimensions]="true">
+  [cdkConnectedOverlayFlexibleDimensions]="true"
+  [cdkConnectedOverlayHasBackdrop]="true"
+  [cdkConnectedOverlayBackdropClass]="'searchInput__listBackdrop'"
+  (backdropClick)="isContextMenuOpen = false">
   <!-- TODO why does the leave animation fail for this context menu -->
   <!-- see https://github.com/angular/components/issues/10481#issuecomment-374328441 -->
   <app-overlay-container [isOpen]="isContextMenuOpen">

@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AppStateService } from '../../../shared/app-state/app-state.service';
 import { FormService } from '../../../shared/form-service';
-import { PostResponseHandler } from '../../../shared/post-response-handler';
+import { ApiResponseHandler } from '../../../shared/api-response-handler';
 import { UIConfigService } from '../../../shared/ui-config.service';
 import { UnsubscriberComponent } from '../../../shared/unsubscriber/unsubscriber.component';
 import { formatPlural } from '../../utils';
@@ -28,7 +28,7 @@ export class NewSegmentComponent extends UnsubscriberComponent implements OnInit
     private formService: FormService,
     private segmentsService: SegmentsService,
     private uiConfigService: UIConfigService,
-    private postResponseHandler: PostResponseHandler,
+    private apiResponseHandler: ApiResponseHandler,
     private appStateService: AppStateService,
   ) {
     super();
@@ -93,7 +93,7 @@ export class NewSegmentComponent extends UnsubscriberComponent implements OnInit
       this.segmentsService.updateSegment(options))
       .subscribe((response) => {
         this.submit.emit();
-        this.postResponseHandler.handleFullJsonResponse()(response);
+        this.apiResponseHandler.handleFullJsonResponse()(response);
       });
   }
 
