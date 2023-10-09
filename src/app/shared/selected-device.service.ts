@@ -5,12 +5,12 @@ import { WLEDApiResponse } from './api-types/api-types';
 import { map, of, timeout } from 'rxjs';
 import { ApiPath } from './api-service/api-paths';
 import { AppStateService } from './app-state/app-state.service';
-import { ApiResponseHandler } from './api-response-handler';
 import { SnackbarService } from './snackbar.service';
 import { WLEDIpAddress } from './app-types/app-types';
 import { NO_DEVICE_IP_SELECTED } from './app-state/app-state-defaults';
 import { Router } from '@angular/router';
 import { responseTypeAsJsonHack } from '../controls-wrapper/utils';
+import { WLEDState } from './api-types/api-state';
 
 export enum ConnectionStatus {
   CONNECTED = 'CONNECTED',
@@ -36,7 +36,6 @@ export class SelectedDeviceService extends UnsubscriberService {
   constructor(
     private http: HttpClient,
     private appStateService: AppStateService,
-    private apiResponseHandler: ApiResponseHandler,
     private snackbarService: SnackbarService,
     private router: Router,
   ) {
@@ -156,7 +155,7 @@ export class SelectedDeviceService extends UnsubscriberService {
           if (result === HTTP_GET_FAILED) {
             // it didn't work
             success = false;
-          } else if (this.apiResponseHandler.isValidResponse(result)) {
+          } else if (this.isValidFullJsonResponse(result)) {
             // it worked
             success = true;
           }
@@ -214,4 +213,19 @@ export class SelectedDeviceService extends UnsubscriberService {
       : status;
     this.snackbarService.openSnackBar(message);
   }
+
+  isValidFullJsonResponse = (result: WLEDApiResponse) =>
+    result.state
+    && result.info
+    && result.palettes
+    && result.effects;
+
+  isValidStateInfoResponse = (result: WLEDApiResponse) =>
+    result.state
+    && result.info;
+
+  isValidStateResponse = (result: WLEDState) =>
+    typeof result.bri === 'number'
+    && typeof result.on === 'boolean'
+    && Array.isArray(result.seg);
 }

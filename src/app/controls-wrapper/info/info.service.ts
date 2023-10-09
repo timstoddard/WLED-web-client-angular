@@ -17,8 +17,8 @@ export class InfoService extends UnsubscriberService {
   }
 
   refreshInfo() {
-    // TODO wire up this data to app state
-    this.apiService.appState.info.get();
+    this.handleUnsubscribe(this.apiService.appState.info.get())
+      .subscribe((info) => this.appStateService.setInfo(info));
   }
 
   fetchNodes() {

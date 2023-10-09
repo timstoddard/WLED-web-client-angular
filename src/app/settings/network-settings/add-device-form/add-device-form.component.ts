@@ -26,7 +26,7 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
   wledIpAddresses!: FormArray;
   ipAddressTestResults!: IpAddressTestResults;
   deviceNameInputConfigs: { [key: number]: InputConfig } = {};
-  devicePasswordInputConfigs: { [key: number]: InputConfig } = {};
+  deviceIpAddressInputConfigs: { [key: number]: InputConfig } = {};
   private selectedWLEDIpAddress!: WLEDIpAddress;
 
   constructor(
@@ -211,16 +211,16 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
 
   private generateInputConfigs = () => {
     const deviceNameInputConfigs: { [key: number]: InputConfig } = {};
-    const devicePasswordInputConfigs: { [key: number]: InputConfig } = {};
+    const deviceIpAddressInputConfigs: { [key: number]: InputConfig } = {};
 
     const formGroups = this.getFormGroups();
     for (let i = 0; i < formGroups.length; i++) {
       deviceNameInputConfigs[i] = this.getDeviceNameInputConfig(i);
-      devicePasswordInputConfigs[i] = this.getDevicePasswordInputConfig(i);
+      deviceIpAddressInputConfigs[i] = this.getDeviceIpAddressInputConfigs(i);
     }
 
     this.deviceNameInputConfigs = deviceNameInputConfigs;
-    this.devicePasswordInputConfigs = devicePasswordInputConfigs;
+    this.deviceIpAddressInputConfigs = deviceIpAddressInputConfigs;
   }
 
   private getDeviceNameInputConfig = (i: number): InputConfig => ({
@@ -230,10 +230,10 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
     widthPx: 150,
   });
 
-  private getDevicePasswordInputConfig = (i: number): InputConfig => ({
+  private getDeviceIpAddressInputConfigs = (i: number): InputConfig => ({
     type: 'text',
     getFormControl: () => this.getFormControlAtIndex('ipv4Address', i),
-    placeholder: 'Password',
+    placeholder: '0.0.0.0',
     widthPx: 150,
   });
 }

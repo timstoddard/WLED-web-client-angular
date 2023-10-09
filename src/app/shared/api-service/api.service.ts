@@ -18,13 +18,19 @@ import { ApiFilePath, ApiPath } from './api-paths';
 import { WledNetworkSettings, WledSecuritySettings, WledTimeSettings } from 'src/app/settings/shared/settings-types';
 import { HTTP_GET_FAILED, SelectedDeviceService } from '../selected-device.service';
 import { responseTypeAsJsonHack } from 'src/app/controls-wrapper/utils';
+import { AppStateService } from '../app-state/app-state.service';
+import { ApiTypeMapper } from '../api-type-mapper';
+import { SnackbarService } from '../snackbar.service';
 
 // TODO split into sub classes per app section and use the ApiService to aggregate their usage
 @Injectable({ providedIn: 'root' })
 export class ApiService extends UnsubscriberService {
   constructor(
     private http: HttpClient,
+    private apiTypeMapper: ApiTypeMapper,
+    private appStateService: AppStateService,
     private selectedDeviceService: SelectedDeviceService,
+    private snackbarService: SnackbarService,
   ) {
     super();
   }
@@ -124,7 +130,16 @@ export class ApiService extends UnsubscriberService {
       ApiPath.STATE_INFO_PATH,
       this.createBody(data),
       MOCK_API_RESPONSE,
-    );
+    ).pipe(map((response: WLEDApiResponse) => {
+      this.appStateService.setAll(response);
+      console.log('POST response [state/info]', response);
+      
+      if (!this.selectedDeviceService.isValidStateInfoResponse(response)) {
+        this.snackbarService.openSnackBar('[ERROR] Received invalid JSON API response.');
+      }
+
+      return response;
+    }));
   }
 
   private httpPostState = (data: { [key: string]: unknown }) => {
@@ -132,7 +147,17 @@ export class ApiService extends UnsubscriberService {
       ApiPath.STATE_PATH,
       this.createBody(data),
       MOCK_API_RESPONSE.state,
-    );
+    ).pipe(map((response: WLEDState) => {
+      const newState = this.apiTypeMapper.mapWLEDStateToAppWLEDState(response);
+      this.appStateService.updateState(newState);
+      console.log('POST response [state]', response);
+
+      if (!this.selectedDeviceService.isValidStateResponse(response)) {
+        this.snackbarService.openSnackBar('[ERROR] Received invalid JSON API response.');
+      }
+
+      return response;
+    }));
   }
 
   /** Returns an object containing the state, info, effects, and palettes. */
@@ -165,7 +190,7 @@ export class ApiService extends UnsubscriberService {
   private getEffects = () => {
     return this.httpGet<string[]>(
       ApiPath.EFFECTS_PATH,
-      MOCK_API_RESPONSE.effects,
+      MOCK_API_RESPONSE.effects!,
     );
   }
 
@@ -173,7 +198,7 @@ export class ApiService extends UnsubscriberService {
   private getPalettes = () => {
     return this.httpGet<string[]>(
       ApiPath.PALETTES_PATH,
-      MOCK_API_RESPONSE.palettes,
+      MOCK_API_RESPONSE.palettes!,
     );
   }
 
@@ -293,6 +318,7 @@ export class ApiService extends UnsubscriberService {
     });
   }
 
+  // TODO this should be used somewhere
   /** Sets the live view override setting. */
   private setLiveViewOverride = (liveViewOverride: number) => {
     this.httpPostStateAndInfo({

@@ -12,6 +12,7 @@ import { ClientOnlyFieldsService, ClientOnlySegmentFieldsMap } from '../client-o
 import { DEFAULT_APP_STATE } from './app-state-defaults';
 import { LocalStorageService } from '../local-storage.service';
 import { UnsubscriberService } from '../unsubscriber/unsubscriber.service';
+import { WLEDInfo } from '../api-types/api-info';
 
 @Injectable({ providedIn: 'root' })
 export class AppStateService extends UnsubscriberService {
@@ -40,6 +41,13 @@ export class AppStateService extends UnsubscriberService {
   setAll = (response: WLEDApiResponse, presets?: WLEDPresets) => {
     this.appStateStore.update((state) =>
       this.apiTypeMapper.mapWLEDApiResponseToAppState(state, response, presets));
+  }
+
+  setInfo = (response: WLEDInfo) => {
+    this.appStateStore.update((state) => ({
+      ...state,
+      info: this.apiTypeMapper.mapWLEDInfoToAppInfo(response),
+    }));
   }
 
   /** Updates nodes data using API response. */

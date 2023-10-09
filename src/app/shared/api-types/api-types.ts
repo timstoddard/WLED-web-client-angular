@@ -11,7 +11,7 @@ export interface WLEDApiResponse {
   readonly info: WLEDInfo;
   // TODO add effect metadata https://kno.wled.ge/interfaces/json-api/#effect-metadata
   /** List of effect names. */
-  effects: string[];
+  effects?: string[];
   /** List of palette names. */
-  palettes: string[];
+  palettes?: string[];
 }

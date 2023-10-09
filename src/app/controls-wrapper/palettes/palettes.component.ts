@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { FormService } from '../../shared/form-service';
-import { ApiResponseHandler } from '../../shared/api-response-handler';
 import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
 import { PalettesService } from './palettes.service';
 
@@ -20,7 +19,6 @@ export class PalettesComponent extends UnsubscriberComponent implements OnInit {
   constructor(
     private palettesService: PalettesService,
     private formSerivce: FormService,
-    private apiResponseHandler: ApiResponseHandler,
   ) {
     super();
   }
@@ -51,7 +49,7 @@ export class PalettesComponent extends UnsubscriberComponent implements OnInit {
     const result = this.palettesService.setPalette(paletteId);
     if (result) {
       this.handleUnsubscribe(result)
-        .subscribe(this.apiResponseHandler.handleFullJsonResponse());
+        .subscribe();
     }
   }
 

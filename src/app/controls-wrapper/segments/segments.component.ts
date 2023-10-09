@@ -3,7 +3,6 @@ import { UIConfigService } from '../../shared/ui-config.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
 import { SegmentsService } from './segments.service';
-import { ApiResponseHandler } from '../../shared/api-response-handler';
 
 @Component({
   selector: 'app-segments',
@@ -23,7 +22,6 @@ export class SegmentsComponent extends UnsubscriberComponent implements OnInit {
     private segmentsService: SegmentsService,
     private appStateService: AppStateService,
     private uiConfigService: UIConfigService,
-    private apiResponseHandler: ApiResponseHandler,
   ) {
     super();
   }
@@ -87,7 +85,7 @@ export class SegmentsComponent extends UnsubscriberComponent implements OnInit {
   selectAllSegments() {
     this.handleUnsubscribe(
       this.segmentsService.selectAllSegments())
-      .subscribe(this.apiResponseHandler.handleFullJsonResponse());
+      .subscribe();
   }
 
   setShowNewSegmentForm(showNewSegmentForm: boolean) {
@@ -108,7 +106,7 @@ export class SegmentsComponent extends UnsubscriberComponent implements OnInit {
       this.confirmedResetSegments = false;
       this.handleUnsubscribe(
         this.segmentsService.resetSegments())
-        .subscribe(this.apiResponseHandler.handleFullJsonResponse());
+        .subscribe();
     }
   }
 
