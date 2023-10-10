@@ -318,3 +318,7 @@ $antWidth: 2px;
   padding: 10px 6px;
   text-align: center;
 }
+
+@mixin overlay-backdrop {
+  background: rgba(0,0,0,0.3);
+}

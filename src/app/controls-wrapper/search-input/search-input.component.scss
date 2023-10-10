@@ -85,7 +85,7 @@
     }
   }
 
-  ::ng-deep &__listBackdrop {
-    background: rgba(0,0,0,0.3);
+  ::ng-deep &__overlayBackdrop {
+    @include overlay-backdrop;
   }
 }

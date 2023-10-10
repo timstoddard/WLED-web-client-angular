@@ -44,7 +44,10 @@
       [cdkConnectedOverlayOrigin]="trigger"
       [cdkConnectedOverlayOpen]="isSettingsOpen"
       [cdkConnectedOverlayPositions]="getOverlayPositions()"
-      [cdkConnectedOverlayFlexibleDimensions]="true">
+      [cdkConnectedOverlayFlexibleDimensions]="true"
+      [cdkConnectedOverlayHasBackdrop]="true"
+  [cdkConnectedOverlayBackdropClass]="'topMenuBar__overlayBackdrop'"
+      (backdropClick)="isSettingsOpen = false">
       <app-overlay-container
         [isOpen]="isSettingsOpen"
         [hasTopBorderRadius]="true">

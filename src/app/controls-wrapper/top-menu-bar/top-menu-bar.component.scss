@@ -133,6 +133,10 @@ $defaultSpacing: 5px;
     margin-right: #{$defaultSpacing * 2};
   }
 
+  ::ng-deep &__overlayBackdrop {
+    @include overlay-backdrop;
+  }
+
   // mobile layout
   @include mobile-layout {
     &__buttonsWrapper {
