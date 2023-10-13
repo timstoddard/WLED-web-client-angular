@@ -1,13 +1,11 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { fade } from '../../shared/animations';
 import { FormService } from '../../shared/form-service';
 import { OverlayPositionService } from '../../shared/overlay-position.service';
 import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
 
-// TODO use in palettes & effects services
-interface SearchableItem {
+export interface SearchableItem {
   id: number;
   name: string;
 }
@@ -16,7 +14,6 @@ interface SearchableItem {
   selector: 'app-search-input',
   templateUrl: './search-input.component.html',
   styleUrls: ['./search-input.component.scss'],
-  animations: [fade()],
 })
 export class SearchInputComponent extends UnsubscriberComponent implements OnInit {
   /** Header title. */
@@ -43,10 +40,6 @@ export class SearchInputComponent extends UnsubscriberComponent implements OnIni
     this.isContextMenuOpen = false;
   }
 
-  hasSelectedItem = ({ id, name }: SearchableItem) => {
-    return id != -1 && name != '';
-  }
-
   onChange = () => {
     this.searchValueChanges.emit(this.searchText.value);
   }
@@ -54,7 +47,7 @@ export class SearchInputComponent extends UnsubscriberComponent implements OnIni
   cancelSearch = () => {
     this.searchText.reset('');
     this.searchValueChanges.emit(this.searchText.value);
-    this.searchInputElement.nativeElement.focus();
+    this.focusSearchInput();
   }
 
   onKeyDown(event: KeyboardEvent) {
@@ -71,10 +64,7 @@ export class SearchInputComponent extends UnsubscriberComponent implements OnIni
   toggleSearchInput() {
     this.showInput = !this.showInput;
     if (this.showInput) {
-      // TODO possible to do this without timeout?
-      setTimeout(() => {
-        this.searchInputElement.nativeElement.focus();
-      })
+      setTimeout(() => this.focusSearchInput());
     }
   }
 
@@ -94,5 +84,13 @@ export class SearchInputComponent extends UnsubscriberComponent implements OnIni
       .subscribe(() => this.onChange());
 
     return control;
+  }
+
+  private focusSearchInput() {
+    try {
+      this.searchInputElement.nativeElement.focus();
+    } catch (e) {
+      console.warn(`Unable to focus search input: ${e}`)
+    }
   }
 }

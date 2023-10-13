@@ -26,8 +26,7 @@ export class UnsubscriberComponent extends Unsubscriber implements OnDestroy {
       control = form.get(controlName)!;
     }
     if (!control) {
-      console.log('Could not find control with name:', controlName);
-      throw 'Could not find form control!';
+      throw `Could not find control with name: ${controlName}`;
     }
     return this.handleUnsubscribe<T>(control.valueChanges);
   }

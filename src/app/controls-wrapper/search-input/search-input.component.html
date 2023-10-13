@@ -11,45 +11,44 @@
   </span>
   
   <div class="searchInput__header">
-    <!-- TODO display to left of title/subtitle for desktop -->
-    <!-- and show instead of title/subtitle for mobile -->
-    <!-- also: should still display "more" button on mobile when input visible? -->
-    <input
+    <div
       *ngIf="showInput; else showTitle"
-      #searchInput
-      [formControl]="searchText"
-      (keydown)="onKeyDown($event)"
-      placeholder="Search"
-      class="searchInput__input">
-    <!-- TODO add mat icon suffix to normal input? -->
-    <!-- <mat-icon matSuffix>
-        <i
+      class="searchInput__inputWrapper">
+      <input
+        #searchInput
+        [formControl]="searchText"
+        (keydown)="onKeyDown($event)"
+        placeholder="Search"
+        class="searchInput__input">
+      <div class="searchInput__clearInputWrapper">
+        <span
           *ngIf="searchText.value?.length > 0"
-          [innerHTML]="'&#xe38f;'"
           (click)="cancelSearch()"
-          class="searchInput__icon">
-        </i>
-      </mat-icon> -->
+          class="searchInput__clearInput material-symbols-outlined">
+          close
+        </span>
+      </div>
+    </div>
   
     <ng-template #showTitle>
       <h3 class="searchInput__title">
         {{ headerText }}
       </h3>
-      <div
-        *ngIf="selectedItem$ | async as selectedItem; else noneSelected"
-        [ngClass]="{'searchInput__selectedName--hasValue': hasSelectedItem(selectedItem)}"
-        class="searchInput__selectedName">
-        {{ selectedItem.name }}
-      </div>
-  
-      <ng-template #noneSelected>
-        <div class="searchInput__selectedName">
-          None selected
+      <ng-container *ngIf="selectedItem$ | async as selectedItem">
+        <div
+          *ngIf="selectedItem && selectedItem.name; else noneSelected"
+          class="searchInput__selectedName searchInput__selectedName--hasSelected">
+          {{ selectedItem.name }}
         </div>
-      </ng-template>
+        <ng-template #noneSelected>
+          <div class="searchInput__selectedName searchInput__selectedName--noneSelected">
+            None Selected
+          </div>
+        </ng-template>
+      </ng-container>
     </ng-template>
   </div>
-  
+
   <span
     (click)="toggleContextMenu()"
     [ngClass]="{ 'searchInput__icon--selected': isContextMenuOpen }"
@@ -58,7 +57,6 @@
   </span>
 </div>
 
-<!-- TODO reposition overlay when header height changes (first item is selected) -->
 <ng-template
   cdkConnectedOverlay
   [cdkConnectedOverlayOrigin]="trigger"
@@ -68,8 +66,6 @@
   [cdkConnectedOverlayHasBackdrop]="true"
   [cdkConnectedOverlayBackdropClass]="'searchInput__overlayBackdrop'"
   (backdropClick)="isContextMenuOpen = false">
-  <!-- TODO why does the leave animation fail for this context menu -->
-  <!-- see https://github.com/angular/components/issues/10481#issuecomment-374328441 -->
   <app-overlay-container [isOpen]="isContextMenuOpen">
     <ng-content></ng-content>
   </app-overlay-container>

@@ -28,7 +28,6 @@ export class EffectsComponent extends UnsubscriberComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.setEffect(NO_EFFECT_SELECTED);
     this.effectsForm = this.createForm();
 
     this.handleUnsubscribe(this.effectsService.getSelectedEffect$())

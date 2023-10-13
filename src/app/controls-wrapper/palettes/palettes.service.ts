@@ -6,6 +6,7 @@ import { AppStateService } from '../../shared/app-state/app-state.service';
 import { UnsubscriberService } from '../../shared/unsubscriber/unsubscriber.service';
 import { ColorSlotsService } from '../color-inputs/color-slots/color-slots.service';
 import { compareNames, findRouteData } from '../utils';
+import { SearchableItem } from '../search-input/search-input.component';
 
 // TODO do these types belong here?
 export type PaletteColor = Array<number[] | 'r' | 'c1' | 'c2' | 'c3'>;
@@ -23,15 +24,11 @@ interface PaletteBackgrounds {
   [id: number]: string;
 }
 
-export interface PaletteWithBackground {
-  id: number;
-  name: string;
-  background: string;
+export interface PaletteWithoutBackground extends SearchableItem {
 }
 
-export interface PaletteWithoutBackground {
-  id: number;
-  name: string;
+export interface PaletteWithBackground extends SearchableItem {
+  background: string;
 }
 
 const NONE_SELECTED = -1;

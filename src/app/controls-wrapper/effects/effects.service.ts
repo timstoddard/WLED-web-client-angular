@@ -4,10 +4,9 @@ import { ApiService } from '../../shared/api-service/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { UnsubscriberService } from '../../shared/unsubscriber/unsubscriber.service';
 import { compareNames } from '../utils';
+import { SearchableItem } from '../search-input/search-input.component';
 
-export interface Effect {
-  id: number;
-  name: string;
+export interface Effect extends SearchableItem {
 }
 
 export interface EffectMetadata {

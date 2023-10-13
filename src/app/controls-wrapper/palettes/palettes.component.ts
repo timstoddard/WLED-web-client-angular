@@ -24,7 +24,6 @@ export class PalettesComponent extends UnsubscriberComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.setPalette(NO_PALETTE_SELECTED);
     this.selectedPalette = this.createFormControl();
 
     this.handleUnsubscribe(this.palettesService.getSelectedPalette$())
