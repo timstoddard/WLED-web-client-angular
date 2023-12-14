@@ -120,6 +120,7 @@ const DEFAULT_CLIENT_CONFIG: AppClientConfig = {
   isLiveViewActive: false,
   selectedWLEDIpAddress: DEFAULT_SELECTED_WLED_IP_ADDRESS,
   wledIpAddresses: DEFAULT_WLED_IP_ADDRESSES,
+  isPcMode: false,
 };
 
 /** State of the app before hydration. Everything is turned off. */

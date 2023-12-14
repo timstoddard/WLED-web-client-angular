@@ -5,7 +5,8 @@ import { Subject, throttleTime } from 'rxjs';
 import { UnsubscriberComponent } from '../../../shared/unsubscriber/unsubscriber.component';
 
 // TODO make this a setting
-const THROTTLE_MAX_FPS = 60;
+// increasing this value makes the slider drag UX "choppy"
+const API_THROTTLE_MAX_FPS = 4;
 
 @Component({
   selector: 'app-color-slider',
@@ -36,15 +37,29 @@ export class ColorSliderComponent extends UnsubscriberComponent implements OnIni
   ngAfterViewInit() {
     this.checkMinMaxInputs();
 
-    this.handleUnsubscribe(this.sliderInput$)
-      .pipe(throttleTime(1000 / THROTTLE_MAX_FPS))
-      .subscribe(({ value }) => {
-        this.control.patchValue(value);
-      });
+    this.patchValueWhileDragging();
   }
 
   getFormControl() {
     return this.control as FormControl;
+  }
+
+  updateFormControl(newValue: MatSliderChange) {
+    this.sliderInput$.next(newValue);
+  }
+
+  /**
+   * The control value normally only updates when the slider is released.
+   * This subject is set up to emit while the slider is being dragged.
+   * The value patching is throttled so as not to overwhelm any API calls
+   * that are wired up to the control.
+   */
+  private patchValueWhileDragging() {
+    this.handleUnsubscribe(this.sliderInput$)
+      .pipe(throttleTime(1000 / API_THROTTLE_MAX_FPS))
+      .subscribe(({ value }) => {
+        this.control.patchValue(value);
+      });
   }
 
   private checkMinMaxInputs() {
@@ -58,28 +73,5 @@ export class ColorSliderComponent extends UnsubscriberComponent implements OnIni
         `Required 'max' input missing from slider. See element:`,
         this.slider.nativeElement);
     }
-  }
-
-  updateFormControl(changeEvent: MatSliderChange) {
-    this.sliderInput$.next(changeEvent);
-  }
-
-  // TODO find slider library that can handle gradient slider trails
-  /**
-   * Updates the colored in background to the left of the slider button.
-   * Updates the 'sliderdisplay' background div of a slider for a visual indication of slider position.
-   * @param event 
-   * @returns 
-   */
-  private updateSliderTrail = () => {
-    let percent = this.control.value / this.max * 100;
-
-    const backgroundGradient = `
-      linear-gradient(
-        90deg,
-        var(--bg) ${percent}%,
-        var(--c-4) ${percent}%
-      )`;
-    this.sliderDisplay.nativeElement.style.background = backgroundGradient;
   }
 }

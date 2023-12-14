@@ -8,7 +8,7 @@ import { WebSocketService } from '../../shared/web-socket.service';
 
 export class TopMenuBarButtonName {
   static readonly POWER = 'Power';
-  static readonly TIMER = 'Timer'; // TODO rename references to nightlight to timer
+  static readonly NIGHTLIGHT = 'Nightlight';
   static readonly SYNC = 'Sync';
   static readonly LIVE = 'Live';
   static readonly PC_MODE = 'PC Mode';
@@ -44,7 +44,7 @@ export class TopMenuBarService extends UnsubscriberService {
 
   setNightLight(isNightLightActive: boolean) {
     this.processToggle(
-      TopMenuBarButtonName.TIMER,
+      TopMenuBarButtonName.NIGHTLIGHT,
       this.apiService.appState.nightLight.set(isNightLightActive),
     );
   }
@@ -59,9 +59,12 @@ export class TopMenuBarService extends UnsubscriberService {
   setLiveView(isLiveViewActive: boolean) {
     this.appStateService.setLocalSettings({ isLiveViewActive });
 
-    // TODO this was moved from the component's app state subscription, make sure it doesn't cause any bugs by being here
-    // update backend with current setting (no json api setting for this)
+    // toggle live mode on/off (no json api setting for this)
     this.webSocketService.sendMessage({ lv: isLiveViewActive });
+  }
+
+  setPcMode(isPcMode: boolean) {
+    this.appStateService.setLocalSettings({ isPcMode });
   }
 
   setBrightness(brightness: number) {

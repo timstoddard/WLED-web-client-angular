@@ -340,7 +340,7 @@ export class ApiService extends UnsubscriberService {
     });
   }
 
-  /** Toggles the night light timer on/off. */
+  /** Toggles the night light on/off. */
   private setNightLightActive = (isNightLightActive: boolean) => {
     return this.httpPostStateAndInfo({
       nl: {
@@ -349,7 +349,7 @@ export class ApiService extends UnsubscriberService {
     });
   }
 
-  /** Toggles the night light timer on/off. */
+  /** Toggles the sync setting on/off. */
   private setSync = (shouldSync: boolean, shouldToggleReceiveWithSend: boolean) => {
     const udpn: Partial<WLEDUdpState> = {
       send: shouldSync,

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostBinding, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { WLEDPresets } from '../shared/api-types/api-presets';
 import { WLEDApiResponse } from '../shared/api-types/api-types';
@@ -9,22 +9,25 @@ import { UnsubscriberComponent } from '../shared/unsubscriber/unsubscriber.compo
 import { ControlsService } from './controls.service';
 import { generateApiUrl } from './json.service';
 
+enum SecondaryOutletType {
+  SETTINGS = 'settings',
+}
+
 @Component({
   selector: 'app-controls-wrapper',
   templateUrl: './controls-wrapper.component.html',
   styleUrls: ['./controls-wrapper.component.scss'],
 })
 export class ControlsWrapperComponent extends UnsubscriberComponent implements OnInit {
+  @HostBinding('class.isPcMode')
+  isPcMode: boolean;
+
+  secondaryOutlet: SecondaryOutletType;
   private useCustomCss!: boolean;
   private enableHolidays!: boolean;
   private backgroundUrl!: string;
   private backgroundOpacity!: number;
   private holidayConfig = this.getDefaultHolidayConfig();
-
-  // probably should be moved to a shared/different location
-  // private sliderContainer!: HTMLElement; // sliding UI
-  // private iSlide = 0; // related to sliding UI
-  // private lastinfo = {};
 
   constructor(
     private controlsService: ControlsService,
@@ -34,6 +37,9 @@ export class ControlsWrapperComponent extends UnsubscriberComponent implements O
     private uiConfigService: UIConfigService,
   ) {
     super();
+
+    this.isPcMode = false;
+    this.secondaryOutlet = SecondaryOutletType.SETTINGS;
   }
 
   ngOnInit() {
@@ -47,6 +53,11 @@ export class ControlsWrapperComponent extends UnsubscriberComponent implements O
         // needed because only this response include palettes/effects lists
         this.appStateService.setAll(apiJson, presets);
       });
+
+    this.appStateService.getLocalSettings(this.ngUnsubscribe)
+      .subscribe((localSettings) => {
+        this.isPcMode = localSettings.isPcMode;
+      })
 
     this.uiConfigService.getUIConfig(this.ngUnsubscribe)
       .subscribe((uiConfig) => {
@@ -244,34 +255,8 @@ const updateUI = () => {
 // private maxSeg = 0
 // private ledCount = 0
 
-// safely removed
-// private d = document;
-
-// moved to top menu component
-// private isOn = false
-// private nlA = false
-// private nlDur = 60
-// private nlTar = 0;
-// private nlMode = false;
-// private syncSend = false
-// private syncTglRecv = true
-// private isLv = false
-// private isInfo = false
-// private isNodes = false
-// private appWidth: number = 0;
-// private pcMode = false
-// private pcModeA = false
-// private x0 = null;
-// private lastw = 0;
-// private locked = false;
-// private scrollS = 0;
-// private N = 4;
-
 // moved to info component
 // private hc = 0;
-
-// moved to toast comp
-// private toastTimeout;
 
 // moved to presets comp
 // private pJson = {};

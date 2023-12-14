@@ -29,6 +29,8 @@ export interface AppClientConfig {
   selectedWLEDIpAddress: WLEDIpAddress;
   /** User-configured list of WLED instances. */
   wledIpAddresses: WLEDIpAddress[];
+  /** Setting to toggle PC mode on/off. */
+  isPcMode: boolean;
 }
 
 /** Represents a singular WLED instance. */

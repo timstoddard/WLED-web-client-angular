@@ -19,16 +19,70 @@
     </div>
   </div>
 
-  <!-- TODO force close settings if window is resized and more button disappears -->
+  <ng-container *ngIf="showPcModeButton && buttonValues.isPcMode">
+    <!-- PC mode button: info -->
+    <div
+      cdkOverlayOrigin
+      #infoOverlayTrigger="cdkOverlayOrigin"
+      class="topMenuBar__buttonWrapper">
+      <button
+        (click)="openInfoOverlay()"
+        class="topMenuBar__button">
+        <span class="topMenuBar__button__icon material-symbols-outlined">
+          info
+        </span>
+      </button>
+      <div
+        *ngIf="showLabels"
+        class="topMenuBar__button__text">
+        Info
+      </div>
+      <!-- TODO center this on the screen -->
+      <ng-template
+        cdkConnectedOverlay
+        [cdkConnectedOverlayOrigin]="infoOverlayTrigger"
+        [cdkConnectedOverlayOpen]="isInfoOverlayOpen"
+        [cdkConnectedOverlayPositions]="getInfoOverlayPositions()"
+        [cdkConnectedOverlayFlexibleDimensions]="true"
+        [cdkConnectedOverlayHasBackdrop]="true"
+    [cdkConnectedOverlayBackdropClass]="'topMenuBar__overlayBackdrop'"
+        (backdropClick)="isInfoOverlayOpen = false">
+        <app-overlay-container
+          [isOpen]="isInfoOverlayOpen"
+          [hasTopBorderRadius]="true">
+          <div>
+            <app-info></app-info>
+          </div>
+        </app-overlay-container>
+      </ng-template>
+    </div>
+  
+    <!-- PC mode button: settings -->
+    <div class="topMenuBar__buttonWrapper">
+      <a
+        [routerLink]="['/', 'controls', 'settings']"
+        class="topMenuBar__button topMenuBar__button--settingsButton">
+        <span class="topMenuBar__button__icon material-symbols-outlined">
+          settings
+        </span>
+      </a>
+      <div
+        *ngIf="showLabels"
+        class="topMenuBar__button__text">
+        Settings
+      </div>
+    </div>
+  </ng-container>
+
   <div
+    cdkOverlayOrigin
+    #settingsOverlayTrigger="cdkOverlayOrigin"
     class="
       topMenuBar__buttonWrapper
       topMenuBar__moreButton">
     <button
-      cdkOverlayOrigin
-      #trigger="cdkOverlayOrigin"
       (click)="toggleSettingsOpen()"
-      [ngClass]="{ 'topMenuBar__button--enabled': isSettingsOpen }"
+      [ngClass]="{ 'topMenuBar__button--enabled': isSettingsOverlayOpen }"
       class="topMenuBar__button">
       <span class="topMenuBar__button__icon material-symbols-outlined">
         more_vert
@@ -41,15 +95,15 @@
     </div>
     <ng-template
       cdkConnectedOverlay
-      [cdkConnectedOverlayOrigin]="trigger"
-      [cdkConnectedOverlayOpen]="isSettingsOpen"
-      [cdkConnectedOverlayPositions]="getOverlayPositions()"
+      [cdkConnectedOverlayOrigin]="settingsOverlayTrigger"
+      [cdkConnectedOverlayOpen]="isSettingsOverlayOpen"
+      [cdkConnectedOverlayPositions]="getSettingsOverlayPositions()"
       [cdkConnectedOverlayFlexibleDimensions]="true"
       [cdkConnectedOverlayHasBackdrop]="true"
   [cdkConnectedOverlayBackdropClass]="'topMenuBar__overlayBackdrop'"
-      (backdropClick)="isSettingsOpen = false">
+      (backdropClick)="isSettingsOverlayOpen = false">
       <app-overlay-container
-        [isOpen]="isSettingsOpen"
+        [isOpen]="isSettingsOverlayOpen"
         [hasTopBorderRadius]="true">
         <div>
           <ng-container *ngTemplateOutlet="topMenuBarSettings"></ng-container>
@@ -70,7 +124,7 @@
 
 <div class="topMenuBar__liveViewWrapper">
   <app-live-view
-    *ngIf="isLiveViewActive"
+    *ngIf="buttonValues.isLiveViewActive"
     class="topMenuBar__liveView">
 </app-live-view>
 </div>
@@ -86,12 +140,6 @@
     labelClass="topMenuBar__slider__label"
     sliderClass="topMenuBar__slider__input"
     class="topMenuBar__slider">
-    <!-- TODO another button should toggle light/dark mode? -->
-    <span
-      (click)="toggleTheme()"
-      class="material-symbols-outlined">
-      brightness_5
-    </span>
   </app-color-slider>
 
   <div class="topMenuBar__transitionInputWrapper">

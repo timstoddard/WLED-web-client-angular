@@ -1,6 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { Unsubscriber } from './unsubscriber';
+import { distinctUntilChanged } from 'rxjs';
 
 @Component({ template: '' })
 export class UnsubscriberComponent extends Unsubscriber implements OnDestroy {
@@ -28,6 +29,8 @@ export class UnsubscriberComponent extends Unsubscriber implements OnDestroy {
     if (!control) {
       throw `Could not find control with name: ${controlName}`;
     }
-    return this.handleUnsubscribe<T>(control.valueChanges);
+    // TODO verify that distinctUntilChanged doesn't cause any regressions
+    return this.handleUnsubscribe<T>(control.valueChanges)
+      .pipe(distinctUntilChanged());
   }
 }

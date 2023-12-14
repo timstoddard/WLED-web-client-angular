@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DeviceSelectorComponent } from './device-selector.component';
 
+// TODO add real tests!
 describe('DeviceSelectorComponent', () => {
   let component: DeviceSelectorComponent;
   let fixture: ComponentFixture<DeviceSelectorComponent>;

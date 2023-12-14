@@ -71,6 +71,7 @@ export class UISettingsComponent extends UnsubscriberComponent implements OnInit
       holidaysFile,
     } = this.uiSettingsForm.value;
 
+    // TODO add section for nightlight settings
     const uiConfig: AppUIConfig = {
       theme: {
         base: isDarkMode ? 'dark' : 'light',

@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { UIConfigService } from '../../shared/ui-config.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
-import { MenuBarButton, setCssColor } from '../utils';
+import { MenuBarButton } from '../utils';
 import { TopMenuBarButtonName, TopMenuBarService } from './top-menu-bar.service';
 import { FormService, getFormControl } from '../../shared/form-service';
 import { AppState } from '../../shared/app-types/app-types';
@@ -12,7 +12,15 @@ import { InputConfig } from '../../shared/text-input/text-input.component';
 import { SnackbarService } from 'src/app/shared/snackbar.service';
 
 const MIN_SHOW_BRIGHTNESS_SLIDER_THRESHOLD_PX = 800;
-const MIN_SHOW_PC_MODE_BUTTON_THRESHOLD_PX = 1200; // TODO might need to be bigger
+const MIN_SHOW_PC_MODE_BUTTON_THRESHOLD_PX = 1250;
+
+interface TopMenuBarButtonValues {
+  isOn: boolean;
+  isNightLightActive: boolean;
+  isSyncActive: boolean;
+  isLiveViewActive: boolean;
+  isPcMode: boolean;
+}
 
 @Component({
   selector: 'app-top-menu-bar',
@@ -23,10 +31,10 @@ const MIN_SHOW_PC_MODE_BUTTON_THRESHOLD_PX = 1200; // TODO might need to be bigg
 export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit {
   buttons: MenuBarButton[] = [];
   topMenuBarForm!: FormGroup;
-  isSettingsOpen: boolean = false;
+  isSettingsOverlayOpen: boolean = false;
+  isInfoOverlayOpen: boolean = false;
   showToggleSettingsButton: boolean = false;
   showPcModeButton: boolean = false;
-  isDarkMode!: boolean;
   showLabels!: boolean;
   transitionInput: InputConfig = {
     type: 'number',
@@ -38,26 +46,19 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
     step: 0.1,
   };
 
-  // TODO convert to object/array
-  // button controls
-  private isOn = false;
-  private isNightLightActive = false;
-  private nightLightDuration = 60;
-  private nightLightTar = 0; // TODO better name
-  private nightLightMode = false;
-  private isSyncActive = false;
-  private shouldToggleReceiveWithSend = true;
-  isLiveViewActive = false;
+  buttonValues: TopMenuBarButtonValues = {
+    isOn: false,
+    isNightLightActive: false,
+    isSyncActive: false,
+    isLiveViewActive: false,
+    isPcMode: false,
+  };
 
-  // other vars (some are for sliding ui)
-  private appWidth: number = 0;
-  private isPcMode = false;
-  private pcModeA = false;
-  private x0 = null;
-  private lastw = 0;
-  private locked = false;
-  private scrollS = 0;
-  private N = 4;
+  // extra config, configured through settings
+  private nightLightDuration = 60;
+  private nightLightTargetBrightness = 0;
+  private nightLightMode = false;
+  private shouldToggleReceiveWithSend = true;
 
   constructor(
     private formService: FormService,
@@ -81,45 +82,44 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
 
     this.uiConfigService.getUIConfig(this.ngUnsubscribe)
       .subscribe((uiConfig) => {
-        this.isDarkMode = uiConfig.theme.base === 'dark';
         this.showLabels = uiConfig.showLabels;
       });
-
-    // TODO slider stuff could be extracted into its own component/service
-    // TODO re-implement sliding UI
-    /*this.sliderContainer.addEventListener('mousedown', this.lock, false);
-    this.sliderContainer.addEventListener('touchstart', this.lock, false);
-
-    this.sliderContainer.addEventListener('mouseout', this.move, false);
-    this.sliderContainer.addEventListener('mouseup', this.move, false);
-    this.sliderContainer.addEventListener('touchend', this.move, false);//*/
-
-    // TODO update sliding UI
-    // this.sliderContainer = document.querySelector('.container')!;
-    // this.sliderContainer.style.setProperty('--n', `${this.N}`);
   }
 
   getProcessingStatus(name: string) {
     return this.topMenuBarService.getProcessingStatus(name);
   }
 
-  // TODO evaluate if needed
   onResize() {
     const appWidth = document.documentElement.clientWidth;
-    this.showToggleSettingsButton = appWidth >= MIN_SHOW_BRIGHTNESS_SLIDER_THRESHOLD_PX;
+    this.showToggleSettingsButton = appWidth < MIN_SHOW_BRIGHTNESS_SLIDER_THRESHOLD_PX;
+    const previousShowPcModeButton = this.showPcModeButton;
     this.showPcModeButton = appWidth >= MIN_SHOW_PC_MODE_BUTTON_THRESHOLD_PX;
+    if (this.showPcModeButton != previousShowPcModeButton) {
+      // if viewport width transitioning across pc mode threshold, auto toggle pc mode
+      this.topMenuBarService.setPcMode(this.showPcModeButton);
+    }
+    this.buttons = this.getButtons();
 
     // if settings overlay is open & app width changed from under brightness slider threshold to over, then force close the overlay
-    if (this.isSettingsOpen && this.showToggleSettingsButton) {
-      this.isSettingsOpen = false;
+    if (this.isSettingsOverlayOpen && this.showToggleSettingsButton) {
+      this.isSettingsOverlayOpen = false;
+    }
+
+    if (this.isInfoOverlayOpen && !this.showPcModeButton) {
+      this.isInfoOverlayOpen = false;
     }
   }
 
   toggleSettingsOpen() {
-    this.isSettingsOpen = !this.isSettingsOpen;
+    this.isSettingsOverlayOpen = !this.isSettingsOverlayOpen;
   }
 
-  getOverlayPositions() {
+  openInfoOverlay() {
+    this.isInfoOverlayOpen = !this.isInfoOverlayOpen;
+  }
+
+  getSettingsOverlayPositions() {
     const offsetXPx = 0;
     const offsetYPx = 4;
     const centerPosition = this.overlayPositionService.centerBottomPosition(offsetXPx, offsetYPx);
@@ -127,13 +127,9 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
     return [centerPosition, rightPosition];
   }
 
-  /**
-   * Toggles between light and dark mode.
-   * @param config 
-   */
-  toggleTheme() {
-    const newBase = this.isDarkMode ? 'light' : 'dark';
-    this.uiConfigService.setThemeBase(newBase);
+  getInfoOverlayPositions() {
+    const centerPosition = this.overlayPositionService.centerBottomPosition();
+    return [centerPosition];
   }
 
   private getButtons() {
@@ -141,61 +137,63 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
       {
         name: TopMenuBarButtonName.POWER,
         icon: 'power_settings_new',
-        onClick: () => this.topMenuBarService.setPower(!this.isOn),
-        enabled: () => this.isOn,
+        onClick: () => this.topMenuBarService.setPower(!this.buttonValues.isOn),
+        enabled: () => this.buttonValues.isOn,
       },
       {
-        name: TopMenuBarButtonName.TIMER,
-        icon: 'timer',
-        onClick: () => this.topMenuBarService.setNightLight(!this.isNightLightActive),
-        enabled: () => this.isNightLightActive,
+        name: TopMenuBarButtonName.NIGHTLIGHT,
+        icon: 'nightlight',
+        onClick: () => this.topMenuBarService.setNightLight(!this.buttonValues.isNightLightActive),
+        enabled: () => this.buttonValues.isNightLightActive,
       },
       {
         name: TopMenuBarButtonName.SYNC,
         icon: 'sync',
-        onClick: () => this.topMenuBarService.setSync(!this.isSyncActive, this.shouldToggleReceiveWithSend),
-        enabled: () => this.isSyncActive,
+        onClick: () => this.topMenuBarService.setSync(!this.buttonValues.isSyncActive, this.shouldToggleReceiveWithSend),
+        enabled: () => this.buttonValues.isSyncActive,
       },
       {
         name: TopMenuBarButtonName.LIVE,
         icon: 'visibility',
-        onClick: () => this.topMenuBarService.setLiveView(!this.isLiveViewActive),
-        enabled: () => this.isLiveViewActive,
+        onClick: () => this.topMenuBarService.setLiveView(!this.buttonValues.isLiveViewActive),
+        enabled: () => this.buttonValues.isLiveViewActive,
       },
     ];
+
     if (this.showPcModeButton) {
       buttons.push({
-        name: 'PC Mode',
+        name: TopMenuBarButtonName.PC_MODE,
         icon: 'computer',
-        onClick: () => this.togglePcMode(true),
-        enabled: () => this.isPcMode,
+        onClick: () => this.topMenuBarService.setPcMode(!this.buttonValues.isPcMode),
+        enabled: () => this.buttonValues.isPcMode,
       });
     }
+
     return buttons;
   }
 
   private handleAppStateUpdate = ({ state, info, localSettings }: AppState) => {
     // power
-    this.isOn = state.on;
+    this.buttonValues.isOn = state.on;
 
-    // timer/nightlight
-    let oldIsNightLightActive = this.isNightLightActive;
-    this.isNightLightActive = state.nightLight.on;
-    if (this.isNightLightActive !== oldIsNightLightActive) {
+    // nightlight
+    let oldIsNightLightActive = this.buttonValues.isNightLightActive;
+    this.buttonValues.isNightLightActive = state.nightLight.on;
+    if (this.buttonValues.isNightLightActive !== oldIsNightLightActive) {
       this.handleNightLightChange();
     }
 
     // sync
-    let oldIsSyncActive = this.isSyncActive;
-    this.isSyncActive = state.udp.shouldSend;
-    if (this.isSyncActive !== oldIsSyncActive) {
+    let oldIsSyncActive = this.buttonValues.isSyncActive;
+    this.buttonValues.isSyncActive = state.udp.shouldSend;
+    if (this.buttonValues.isSyncActive !== oldIsSyncActive) {
       this.handleSyncChange();
     }
-    // TODO add toggle button for receive in UI?
     this.shouldToggleReceiveWithSend = info.shouldToggleReceiveWithSend;
 
-    // live view
-    this.isLiveViewActive = localSettings.isLiveViewActive;
+    // local settings
+    this.buttonValues.isLiveViewActive = localSettings.isLiveViewActive;
+    this.buttonValues.isPcMode = localSettings.isPcMode;
 
     // brightness
     this.topMenuBarForm.get('brightness')!
@@ -209,61 +207,17 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
   }
 
   private handleNightLightChange() {
-    const message = this.isNightLightActive
-      ? `Timer active. Your light will turn ${this.nightLightTar > 0 ? 'on' : 'off'} ${this.nightLightMode ? 'over' : 'after'} ${this.nightLightDuration} minutes.`
-      : 'Timer deactivated.';
+    const message = this.buttonValues.isNightLightActive
+      ? `Nightlight active. Your light will turn ${this.nightLightTargetBrightness > 0 ? 'on over' : 'off after'} ${this.nightLightDuration} minutes.`
+      : 'Nightlight deactivated.';
     this.snackbarService.openSnackBar(message);
   }
 
   private handleSyncChange() {
-    const message = this.isSyncActive
+    const message = this.buttonValues.isSyncActive
       ? 'Other lights in the network will now sync to this one.'
       : 'This light and other lights in the network will no longer sync.';
     this.snackbarService.openSnackBar(message);
-  }
-
-  private togglePcMode(fromB = false) { // TODO "from b" seems to be "called from button"
-    if (fromB) {
-      this.pcModeA = !this.pcModeA;
-      this.isPcMode = this.pcModeA;
-    }
-
-    // TODO if app width is small & pc mode is off, don't toggle
-    /*if (this.appWidth < 1250 && !this.isPcMode) {
-      return;
-    }//*/
-
-    // TODO if not from button & app width hasn't crossed small/large threshold, don't toggle
-    /*if (!fromB && ((this.appWidth < 1250 && this.lastw < 1250) || (this.appWidth >= 1250 && this.lastw >= 1250))) {
-      return;
-    }//*/
-    // this.openTab(0, true);
-
-    // TODO if app width is small, force non pc mode
-    /*if (this.appWidth < 1250) {
-      this.isPcMode = false;
-    }
-    else if (this.pcModeA && !fromB) {
-      // TODO what is pc mode "A"?
-      this.isPcMode = this.pcModeA;
-    }//*/
-
-    // TODO select tab
-    // this.updateTablinks(0);
-
-    // TODO update pc mode button (active or not)
-    // document.getElementById('buttonPcm')!.className = this.pcMode ? 'active' : '';
-    
-    // TODO show/hide bottom tab buttons, per some condition
-    // document.getElementById('bot')!.style.height = (this.pcMode && !this.cfg.comp.pcmbot) ? '0' : 'auto';
-    // TODO update "bottom bar height" in css, related to above line
-    // setCssColor('--bh', document.getElementById('bot')!.clientHeight + 'px');
-
-    // TODO update slider container width
-    // this.sliderContainer.style.width = this.pcMode ? '100%' : '400%';
-    
-    // TODO save current app width
-    // this.lastw = this.appWidth;
   }
 
   private createForm() {
@@ -276,90 +230,10 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
 
     this.getValueChanges<number>(form, 'brightness')
       .subscribe((brightness: number) => this.topMenuBarService.setBrightness(brightness));
+
     this.getValueChanges<number>(form, 'transitionTime')
       .subscribe((seconds: number) => this.topMenuBarService.setTransitionDuration(seconds));
 
     return form;
   }
-
-
-
-
-
-
-
-
-
-
-
-  /**
-   * Slides and unlocks slider container on mouseup/touchend.
-   * @param e 
-   * @returns 
-   */
-  private move(e: MouseEvent | TouchEvent) {
-    // TODO re-implement sliding UI
-    /*if (!this.locked || this.pcMode) {
-      return;
-    }
-    const clientX = unify(e).clientX;
-    const dx = clientX - this.x0;
-    const s = Math.sign(dx);
-    let f = +(s * dx / this.appWidth).toFixed(2);
-
-    if ((clientX !== 0) &&
-      (this.iSlide > 0 || s < 0) && (this.iSlide < this.N - 1 || s > 0) &&
-      f > 0.12 &&
-      document.getElementsByClassName('tabcontent')[this.iSlide].scrollTop === this.scrollS) {
-      this.sliderContainer.style.setProperty('--i', this.iSlide -= s);
-      f = 1 - f;
-      // TODO select tab
-      // updateTablinks(this.iSlide);
-    }
-    this.sliderContainer.style.setProperty('--f', f);
-    this.sliderContainer.classList.toggle('smooth', !(this.locked = false));
-    this.x0 = null;//*/
-  }
-
-  /**
-   * Locks slider container on mousedown/touchstart.
-   */
-  private lock(e: MouseEvent | TouchEvent) {
-    // TODO re-implement sliding UI
-    /*if (this.pcMode) {
-      return;
-    }
-
-    const hasIroClass = (classList: string[]) => {
-      for (let i = 0; i < classList.length; i++) {
-        const element = classList[i];
-        if (element.startsWith('Iro')) {
-          return true;
-        }
-      }
-
-      return false;
-    }
-    const { classList } = e.target;
-    const { classList: parentClassList } = e.target.parentElement;
-
-    if (
-      classList.contains('noslide') ||
-      hasIroClass(classList) ||
-      hasIroClass(parentClassList)
-    ) {
-      return;
-    }
-
-    this.x0 = unify(e).clientX;
-    this.scrollS = document.getElementsByClassName('tabcontent')[this.iSlide].scrollTop;
-
-    this.sliderContainer.classList.toggle('smooth', !(this.locked = true));
-    //*/
-  }
 }
-
-const unify = (e: TouchEvent /* TODO correct type? also mouse event? */) => e.changedTouches
-  ? e.changedTouches[0]
-  : e;
-//

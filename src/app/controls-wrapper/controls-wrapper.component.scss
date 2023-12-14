@@ -1,15 +1,24 @@
 :host {
   display: grid;
-  grid-template-columns: auto;
+  grid-template-columns: 1fr;
   grid-template-rows: auto 1fr auto;
   height: 100vh;
   height: var(--app-height);
 }
 
+:host-context(.isPcMode) {
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: auto 1fr;
+}
+
 .controlsWrapper {
   &__topMenu {
-    grid-area: 1 / 1 / 2 / 2;
+    grid-area: 1 / 1 / 2 / 3;
     padding-bottom: 2px;
+
+    &--isPcMode {
+      grid-area: 1 / 1 / 2 / 4;
+    }
   }
 
   &__routerOutlet + ::ng-deep * {
@@ -17,7 +26,23 @@
     overflow-y: auto; // needed to set grid height
   }
 
+  &__secondaryOutlet {
+    &__segments {
+      grid-area: 2 / 2 / 3 / 3;
+      overflow-y: auto; // needed to set grid height
+    }
+    
+    &__palettes {
+      grid-area: 2 / 3 / 3 / 4;
+      overflow-y: auto; // needed to set grid height
+    }
+  }
+
   &__bottomMenu {
-    grid-area: 3 / 1 / 4 / 2;
+    grid-area: 3 / 1 / 4 / 3;
+
+    &--isPcMode {
+      display: none;
+    }
   }
 }
