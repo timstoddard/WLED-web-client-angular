@@ -3,6 +3,7 @@ import { ColorService } from './color.service';
 import { ColorSlotsService } from './color-inputs/color-slots/color-slots.service';
 import { ControlsResolver } from './controls.resolver';
 import { ControlsService } from './controls.service';
+import { EffectsDataResolver } from './effects/effects.resolver';
 import { EffectsService } from './effects/effects.service';
 import { InfoService } from './info/info.service';
 import { PalettesDataResolver } from './palettes/palettes-data.resolver';
@@ -19,6 +20,7 @@ import { TopMenuBarService } from './top-menu-bar/top-menu-bar.service';
     ColorSlotsService,
     ControlsResolver,
     ControlsService,
+    EffectsDataResolver,
     EffectsService,
     InfoService,
     PalettesDataResolver,

@@ -4,11 +4,11 @@ import { forkJoin, of } from 'rxjs';
 import { ApiService } from '../../shared/api-service/api.service';
 import { OnlineStatusService } from '../../shared/online-status.service';
 import { MOCK_PALETTES_DATA } from '../mock-api-data';
-import { PalettesApiData } from './palettes.service';
 import { SelectedDeviceService } from 'src/app/shared/selected-device.service';
+import { WLEDPalettesData } from 'src/app/shared/api-types/api-palettes';
 
 @Injectable()
-export class PalettesDataResolver implements Resolve<PalettesApiData[]> {
+export class PalettesDataResolver implements Resolve<WLEDPalettesData[]> {
   constructor(
     private apiService: ApiService,
     private onlineStatusService: OnlineStatusService,

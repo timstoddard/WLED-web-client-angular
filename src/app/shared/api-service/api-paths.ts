@@ -13,6 +13,7 @@ export enum ApiPath {
   STATE_PATH = 'json/state',
   INFO_PATH = 'json/info',
   EFFECTS_PATH = 'json/eff',
+  EFFECTS_DATA_PATH = 'json/fxdata',
   PALETTES_PATH = 'json/pal',
   PALETTES_DATA_PATH = 'json/palx',
   LIVE_PATH = 'json/live',

@@ -1,3 +1,4 @@
+import { AppEffect } from './app-effects';
 import { AppInfo } from './app-info';
 import { AppNode } from './app-nodes';
 import { AppPreset } from './app-presets';
@@ -9,7 +10,7 @@ export interface AppState {
   /** Read-only info about WLED and its configuration. */
   info: AppInfo;
   /** List of effect names. */
-  effects: string[];
+  effects: AppEffect[];
   /** List of palette names. */
   palettes: string[];
   /** Client-only global app settings. */

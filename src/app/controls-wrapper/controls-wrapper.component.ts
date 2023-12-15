@@ -47,11 +47,12 @@ export class ControlsWrapperComponent extends UnsubscriberComponent implements O
       .subscribe(routeData => {
         const apiJson = routeData['data'] as WLEDApiResponse;
         const presets = routeData['presets'] as WLEDPresets;
+        const effectsData = routeData['effectsData'] as string[];
         for (const key of ['state', 'info']) {
           console.log(key, apiJson[key as keyof WLEDApiResponse]);
         }
         // needed because only this response include palettes/effects lists
-        this.appStateService.setAll(apiJson, presets);
+        this.appStateService.setAll(apiJson, effectsData, presets);
       });
 
     this.appStateService.getLocalSettings(this.ngUnsubscribe)

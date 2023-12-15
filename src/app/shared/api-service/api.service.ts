@@ -1,10 +1,10 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, of } from 'rxjs';
-import { ALL_PALETTES_DATA, MOCK_API_PRESETS, MOCK_API_RESPONSE, MOCK_LIVE_DATA, MOCK_NODES_RESPONSE } from '../../controls-wrapper/mock-api-data';
-import { PalettesApiData } from '../../controls-wrapper/palettes/palettes.service';
+import { ALL_PALETTES_DATA, MOCK_API_PRESETS, MOCK_API_RESPONSE, MOCK_EFFECTS_DATA_RESPONSE, MOCK_LIVE_DATA, MOCK_NODES_RESPONSE } from '../../controls-wrapper/mock-api-data';
 import { WLEDInfo } from '../api-types/api-info';
 import { WLEDNodesResponse } from '../api-types/api-nodes';
+import { WLEDPalettesData } from '../api-types/api-palettes';
 import { WLEDPresets } from '../api-types/api-presets';
 import { WLEDSegment, WLEDState, WLEDUdpState } from '../api-types/api-state';
 import { WLEDApiResponse } from '../api-types/api-types';
@@ -194,6 +194,16 @@ export class ApiService extends UnsubscriberService {
     );
   }
 
+  /** Contains configurations for the effects. */
+  private getEffectData = (baseApiUrl?: string) => {
+    return this.httpGet<string[]>(
+      ApiPath.EFFECTS_DATA_PATH,
+      MOCK_EFFECTS_DATA_RESPONSE,
+      {},
+      baseApiUrl,
+    );
+  }
+
   /** Contains an array of the palette names. */
   private getPalettes = () => {
     return this.httpGet<string[]>(
@@ -206,7 +216,7 @@ export class ApiService extends UnsubscriberService {
   private getPalettesData = (page: number, baseApiUrl?: string) => {
     const params = new HttpParams()
       .set('page', page);
-    return this.httpGet<PalettesApiData>(
+    return this.httpGet<WLEDPalettesData>(
       ApiPath.PALETTES_DATA_PATH,
       ALL_PALETTES_DATA,
       { params },
@@ -723,7 +733,8 @@ export class ApiService extends UnsubscriberService {
       set: this.setColor,
     },
     effect: {
-      getAll: this.getEffects,
+      getNames: this.getEffects,
+      getData: this.getEffectData,
       set: this.setEffect,
     },
     intensity: {

@@ -1,3 +1,4 @@
+<!-- TODO add filter by effect controls (palette, volume, frequency) -->
 <app-search-input
   (searchValueChanges)="filterList($event)"
   [selectedItem$]="getSelectedEffect()"
@@ -32,6 +33,7 @@
   </div>
 </app-search-input>
 
+<!-- TODO don't show 2d effects if not supported -->
 <div class="effects__list__container">
   <div
     [formGroup]="effectsForm"
@@ -45,8 +47,10 @@
         formControlName="selectedEffect"
         [value]="effect.id"
         class="effects__radioButton__input">
-      <span class="effects__radioButton__text">
-        {{ effect.name }}
+      <span
+        [innerHtml]="formatName(effect)"
+        class="effects__radioButton__text">
+        <!-- {{ effect.name }} -->
       </span>
     </label>
   </div>

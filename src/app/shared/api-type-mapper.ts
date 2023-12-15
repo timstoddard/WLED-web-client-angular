@@ -2,14 +2,16 @@ import { Injectable } from '@angular/core';
 import { WLEDFileSystemInfo, WLEDInfo, WLEDLedInfo, WLEDWifiInfo } from './api-types/api-info';
 import { WLEDNodesResponse } from './api-types/api-nodes';
 import { WLEDPreset, WLEDPresets } from './api-types/api-presets';
-import { WLEDNightLightState, WLEDSegment, WLEDState, WLEDUdpState } from './api-types/api-state';
 import { WLEDApiResponse } from './api-types/api-types';
-import { AppFileSystemInfo, AppInfo, AppLedInfo, AppWifiInfo } from './app-types/app-info';
+import { AppEffect } from './app-types/app-effects';
 import { AppNode } from './app-types/app-nodes';
 import { AppPreset } from './app-types/app-presets';
-import { AppNightLightState, AppSegment, AppUdpState, AppWLEDState } from './app-types/app-state';
 import { AppState } from './app-types/app-types';
+import { WLEDNightLightState, WLEDSegment, WLEDState, WLEDUdpState } from './api-types/api-state';
+import { AppFileSystemInfo, AppInfo, AppLedInfo, AppWifiInfo } from './app-types/app-info';
+import { AppNightLightState, AppSegment, AppUdpState, AppWLEDState } from './app-types/app-state';
 import { ClientOnlyFieldsService, createDefaultSegmentFields } from './client-only-fields.service';
+import { compareNames } from '../controls-wrapper/utils';
 
 @Injectable({ providedIn: 'root' })
 export class ApiTypeMapper {
@@ -20,14 +22,15 @@ export class ApiTypeMapper {
   mapWLEDApiResponseToAppState = (
     existingState: AppState,
     { state, info, palettes, effects }: WLEDApiResponse,
+    effectsData?: string[],
     presets?: WLEDPresets,
   ): AppState => ({
     ...existingState,
     state: this.mapWLEDStateToAppWLEDState(state),
     info: this.mapWLEDInfoToAppInfo(info),
     palettes: palettes ?? existingState.palettes,
-    effects: effects
-      ? this.filterWLEDEffects(effects)
+    effects: (effects && effectsData)
+      ? this.mapWLEDEffectsToAppEffects(effects, effectsData)
       : existingState.effects,
     presets: presets
       ? this.mapWLEDPresetsToAppPresets(presets)
@@ -62,6 +65,64 @@ export class ApiTypeMapper {
     shouldSend: udp.send,
     shouldReceive: udp.recv,
   });
+
+  mapWLEDEffectsToAppEffects = (effects: string[], effectsData: string[]): AppEffect[] => {
+    const isNumeric = (n: string) => !isNaN(parseFloat(n));
+    const appEffects: AppEffect[] = [];
+
+    effects.shift(); // temporarily remove solid
+    const effectsFormatted = effects.map((n: string, i: number) => ({
+      id: i + 1,
+      name: n,
+    }));
+    effectsFormatted.sort(compareNames);
+    effectsFormatted.unshift({
+      id: 0,
+      name: 'Solid',
+    });
+
+    if (effectsFormatted.length !== effectsData.length) {
+      alert('Received effects (length N) and effects data (length N). Expected lengths to be equal. Effect controls may not work properly.')
+    }
+
+    for (const { id, name } of effectsFormatted) {
+      if (!name.includes('RSVD')) {
+        const effectData = (effectsData[id].length === 0)
+          ? ';;!;1'
+          : effectsData[id];
+
+        const effectParameters = (effectData === '')
+          ? []
+          : effectData.split(';');
+
+        const paletteData = (effectParameters.length < 3 || effectParameters[2] === '')
+          ? []
+          : effectParameters[2].split(',');
+
+        let flags = (effectParameters.length < 4 || effectParameters[3] === '')
+          ? '1'
+          : effectParameters[3];
+
+        // solid has no flags
+        if (id == 0) {
+          flags = '';
+        }
+
+        appEffects.push({
+          id,
+          name,
+          usesPalette: (paletteData.length > 0 && (paletteData[0] !== '' && !isNumeric(paletteData[0]))),
+          usesVolume: flags.includes('v'),
+          usesFrequency: flags.includes('f'),
+          is0D: flags.includes('0'),
+          is1D: flags.includes('1'),
+          is2D: flags.includes('2'),
+        });
+      }
+    }
+
+    return appEffects;
+  }
 
   mapWLEDSegmentsToAppSegments = (segments: WLEDSegment[]): AppSegment[] => {
     const {
@@ -138,10 +199,6 @@ export class ApiTypeMapper {
     macAddress: info.mac,
     ipAddress: info.ip,
   });
-
-  filterWLEDEffects = (effects: string[]) => effects
-    // filter unsupported effects https://kno.wled.ge/interfaces/json-api/
-    .filter(effect => !['RSVD', '-'].includes(effect))
 
   mapWLEDLedInfoToAppLedInfo = (ledInfo: WLEDLedInfo): AppLedInfo => ({
     totalLeds: ledInfo.count,

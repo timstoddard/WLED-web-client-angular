@@ -3,11 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { ApiService } from '../../shared/api-service/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { UnsubscriberService } from '../../shared/unsubscriber/unsubscriber.service';
-import { compareNames } from '../utils';
-import { SearchableItem } from '../search-input/search-input.component';
-
-export interface Effect extends SearchableItem {
-}
+import { AppEffect } from 'src/app/shared/app-types/app-effects';
 
 export interface EffectMetadata {
   speed: number;
@@ -18,9 +14,9 @@ const NONE_SELECTED = -1;
 
 @Injectable()
 export class EffectsService extends UnsubscriberService {
-  private sortedEffects!: Effect[];
-  private filteredEffects$: BehaviorSubject<Effect[]>;
-  private selectedEffect$: BehaviorSubject<Effect>;
+  private effects!: AppEffect[];
+  private filteredEffects$: BehaviorSubject<AppEffect[]>;
+  private selectedEffect$: BehaviorSubject<AppEffect>;
   private selectedEffectMetadata$: BehaviorSubject<EffectMetadata>;
   private filterTextLowercase!: string;
 
@@ -30,10 +26,16 @@ export class EffectsService extends UnsubscriberService {
   ) {
     super();
 
-    this.filteredEffects$ = new BehaviorSubject<Effect[]>([]);
-    this.selectedEffect$ = new BehaviorSubject({
+    this.filteredEffects$ = new BehaviorSubject<AppEffect[]>([]);
+    this.selectedEffect$ = new BehaviorSubject<AppEffect>({
       id: NONE_SELECTED,
       name: this.getEffectName(NONE_SELECTED),
+      usesPalette: false,
+      usesVolume: false,
+      usesFrequency: false,
+      is0D: false,
+      is1D: false,
+      is2D: false,
     });
     this.selectedEffectMetadata$ = new BehaviorSubject({
       speed: 0,
@@ -43,7 +45,7 @@ export class EffectsService extends UnsubscriberService {
     this.appStateService.getEffects(this.ngUnsubscribe)
       .subscribe(effects => {
         // TODO use api mapper to sort in app state service
-        this.sortedEffects = this.sortEffects(effects);
+        this.effects = effects;
         this.triggerUIRefresh();
       });
 
@@ -60,10 +62,10 @@ export class EffectsService extends UnsubscriberService {
   }
 
   setEffect(effectId: number, shouldCallApi = true) {
-    this.selectedEffect$.next({
-      id: effectId,
-      name: this.getEffectName(effectId),
-    });
+    const selectedEffect = this.getEffectById(effectId);
+    if (selectedEffect) {
+      this.selectedEffect$.next(selectedEffect);
+    }
 
     return (shouldCallApi && effectId !== NONE_SELECTED)
       ? this.apiService.appState.effect.set(effectId)
@@ -97,28 +99,21 @@ export class EffectsService extends UnsubscriberService {
    */
   filterEffects(filterText = '') {
     this.filterTextLowercase = filterText.toLowerCase();
-    const filteredEffects = this.sortedEffects
+    const filteredEffects = this.effects
       .filter((effect) => effect.name.toLowerCase().includes(this.filterTextLowercase));
     this.filteredEffects$.next(filteredEffects);
   }
 
-  private sortEffects(effectNames: string[]) {
-    const createEffect = (id: number, name: string): Effect => ({
-      id,
-      name,
-    });
-    const sortedEffects = effectNames.slice(1) // remove 'Solid' before sorting
-      .map((name, i) => createEffect(i + 1, name));
-    sortedEffects.sort(compareNames);
-    sortedEffects.unshift(createEffect(0, 'Solid'));
-    return sortedEffects;
+  private getEffectById(effectId: number) {
+    const effect = this.effects
+      .find(((effect) => effect.id === effectId));
+    return effect;
   }
 
   private getEffectName(effectId: number) {
     let effectName = '';
     if (effectId !== NONE_SELECTED) {
-      const selectedEffect = this.sortedEffects
-        .find(((effect) => effect.id === effectId));
+      const selectedEffect = this.getEffectById(effectId);
       if (selectedEffect) {
         effectName = selectedEffect.name;
       }

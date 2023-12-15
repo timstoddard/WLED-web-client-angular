@@ -9,6 +9,7 @@ import { PresetsComponent } from './presets/presets.component';
 import { ControlsComponent } from './controls/controls.component';
 import { InfoComponent } from './info/info.component';
 import { PresetsResolver } from './presets/presets.resolver';
+import { EffectsDataResolver } from './effects/effects.resolver';
 
 const childRoutes = [
   {
@@ -45,6 +46,7 @@ const routes: RouteWithPageTitle[] = [
     data: { title: 'WLED Controls' },
     resolve: {
       data: ControlsResolver,
+      effectsData: EffectsDataResolver,
       presets: PresetsResolver,
       palettesData: PalettesDataResolver,
     },

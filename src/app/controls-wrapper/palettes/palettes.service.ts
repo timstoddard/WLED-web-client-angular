@@ -6,38 +6,20 @@ import { AppStateService } from '../../shared/app-state/app-state.service';
 import { UnsubscriberService } from '../../shared/unsubscriber/unsubscriber.service';
 import { ColorSlotsService } from '../color-inputs/color-slots/color-slots.service';
 import { compareNames, findRouteData } from '../utils';
-import { SearchableItem } from '../search-input/search-input.component';
-
-// TODO do these types belong here?
-export type PaletteColor = Array<number[] | 'r' | 'c1' | 'c2' | 'c3'>;
-
-export interface PaletteColors {
-  [key: number]: PaletteColor;
-}
-
-export interface PalettesApiData {
-  p: PaletteColors;
-  m: number;
-}
+import { AppPaletteWithBackground, AppPaletteWithoutBackground } from 'src/app/shared/app-types/app-palettes';
+import { WLEDPaletteColor, WLEDPaletteColors, WLEDPalettesData } from 'src/app/shared/api-types/api-palettes';
 
 interface PaletteBackgrounds {
   [id: number]: string;
-}
-
-export interface PaletteWithoutBackground extends SearchableItem {
-}
-
-export interface PaletteWithBackground extends SearchableItem {
-  background: string;
 }
 
 const NONE_SELECTED = -1;
 
 @Injectable()
 export class PalettesService extends UnsubscriberService {
-  private sortedPalettes!: PaletteWithBackground[];
-  private filteredPalettes$: BehaviorSubject<PaletteWithBackground[]>;
-  private selectedPalette$: BehaviorSubject<PaletteWithoutBackground>;
+  private sortedPalettes!: AppPaletteWithBackground[];
+  private filteredPalettes$: BehaviorSubject<AppPaletteWithBackground[]>;
+  private selectedPalette$: BehaviorSubject<AppPaletteWithoutBackground>;
   private backgrounds: PaletteBackgrounds = {};
   private filterTextLowercase!: string;
 
@@ -51,7 +33,7 @@ export class PalettesService extends UnsubscriberService {
 
     this.backgrounds = this.generatePaletteBackgrounds();
 
-    this.filteredPalettes$ = new BehaviorSubject<PaletteWithBackground[]>([]);
+    this.filteredPalettes$ = new BehaviorSubject<AppPaletteWithBackground[]>([]);
     this.selectedPalette$ = new BehaviorSubject({
       id: NONE_SELECTED,
       name: this.getPaletteName(NONE_SELECTED),
@@ -121,7 +103,7 @@ export class PalettesService extends UnsubscriberService {
 
   /** Sorts the palettes based on their names and joins with background data. */
   private sortPalettes(paletteNames: string[]) {
-    const createPalette = (id: number, name: string): PaletteWithBackground => ({
+    const createPalette = (id: number, name: string): AppPaletteWithBackground => ({
       id,
       name,
       background: '',
@@ -148,8 +130,8 @@ export class PalettesService extends UnsubscriberService {
   // TODO this logic should be done (once) in palettes data resolver
   private getPalettesData() {
     // TODO get from app state?
-    const palettesData = findRouteData('palettesData', this.route) as PalettesApiData[];
-    let allPalettesData: PaletteColors = {};
+    const palettesData = findRouteData('palettesData', this.route) as WLEDPalettesData[];
+    let allPalettesData: WLEDPaletteColors = {};
     for (const paletteData of palettesData) {
       allPalettesData = { ...allPalettesData, ...paletteData.p };
     }
@@ -171,7 +153,7 @@ export class PalettesService extends UnsubscriberService {
     this.backgrounds[paletteId] = background;
   }
 
-  private generatePaletteBackgroundCss(paletteColor: PaletteColor) {
+  private generatePaletteBackgroundCss(paletteColor: WLEDPaletteColor) {
     if (!paletteColor || paletteColor.length === 0) {
       return '';
     }

@@ -38,9 +38,9 @@ export class AppStateService extends UnsubscriberService {
   }
 
   /** Set all app state fields using the api response data. */
-  setAll = (response: WLEDApiResponse, presets?: WLEDPresets) => {
+  setAll = (response: WLEDApiResponse, effectsData?: string[], presets?: WLEDPresets) => {
     this.appStateStore.update((state) =>
-      this.apiTypeMapper.mapWLEDApiResponseToAppState(state, response, presets));
+      this.apiTypeMapper.mapWLEDApiResponseToAppState(state, response, effectsData, presets));
   }
 
   setInfo = (response: WLEDInfo) => {

@@ -13,7 +13,7 @@ export interface MenuBarButton {
 // used for sorting effect/palette lists
 interface HasName { name: string; }
 export const compareNames = (a: HasName, b: HasName) =>
-  a.name < b.name ? -1 : 1;
+  (a.name).localeCompare(b.name);
 
 // TODO is there a more generic/imported version of this on npm (or in angular)
 export const isObject = (item: any) =>
