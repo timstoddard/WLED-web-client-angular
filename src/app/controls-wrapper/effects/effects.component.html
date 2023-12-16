@@ -30,6 +30,7 @@
         local_fire_department
       </span>
     </app-color-slider>
+    <app-effects-filter></app-effects-filter>
   </div>
 </app-search-input>
 
@@ -47,11 +48,31 @@
         formControlName="selectedEffect"
         [value]="effect.id"
         class="effects__radioButton__input">
-      <span
-        [innerHtml]="formatName(effect)"
-        class="effects__radioButton__text">
-        <!-- {{ effect.name }} -->
+      <span class="effects__radioButton__text">
+        {{ effect.name }}
       </span>
+      <div class="effects__radioButton__leftSideBadgeWrapper">
+        <div
+          *ngIf="effect.usesPalette"
+          class="effects__radioButton__badge effects__radioButton__badge--palettes">
+          {{ '&#x1F3A8;' }}
+        </div>
+        <div
+          *ngIf="effect.usesVolume"
+          class="effects__radioButton__badge effects__radioButton__badge--volume">
+          {{ '&#9834;' }}
+        </div>
+        <div
+          *ngIf="effect.usesFrequency"
+          class="effects__radioButton__badge effects__radioButton__badge--frequency">
+          {{ '&#9835;' }}
+        </div>
+      </div>
+      <div class="effects__radioButton__rightSideBadgeWrapper">
+        <div class="effects__radioButton__badge effects__radioButton__badge--dimension">
+          {{ getNumericDimension(effect) }}
+        </div>
+      </div>
     </label>
   </div>
 </div>

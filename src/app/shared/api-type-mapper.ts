@@ -3,7 +3,7 @@ import { WLEDFileSystemInfo, WLEDInfo, WLEDLedInfo, WLEDWifiInfo } from './api-t
 import { WLEDNodesResponse } from './api-types/api-nodes';
 import { WLEDPreset, WLEDPresets } from './api-types/api-presets';
 import { WLEDApiResponse } from './api-types/api-types';
-import { AppEffect } from './app-types/app-effects';
+import { AppEffect, EffectDimension } from './app-types/app-effects';
 import { AppNode } from './app-types/app-nodes';
 import { AppPreset } from './app-types/app-presets';
 import { AppState } from './app-types/app-types';
@@ -114,9 +114,7 @@ export class ApiTypeMapper {
           usesPalette: (paletteData.length > 0 && (paletteData[0] !== '' && !isNumeric(paletteData[0]))),
           usesVolume: flags.includes('v'),
           usesFrequency: flags.includes('f'),
-          is0D: flags.includes('0'),
-          is1D: flags.includes('1'),
-          is2D: flags.includes('2'),
+          dimension: this.getEffectDimension(flags),
         });
       }
     }
@@ -299,5 +297,21 @@ export class ApiTypeMapper {
       ids,
       nextId: lowestUnusedId,
     };
+  }
+
+  private getEffectDimension(flags: string) {
+    let dimension = EffectDimension.ZERO;
+    const flagToDimensionMap: { [key: string]: EffectDimension } = {
+      '0': EffectDimension.ZERO,
+      '1': EffectDimension.ONE,
+      '2': EffectDimension.TWO,
+    }
+    for (const flag in flagToDimensionMap) {
+      if (flags.includes(flag)) {
+        dimension = flagToDimensionMap[flag];
+        break;
+      }
+    }
+    return dimension;
   }
 }

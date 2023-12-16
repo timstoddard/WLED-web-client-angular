@@ -3,12 +3,30 @@ import { BehaviorSubject } from 'rxjs';
 import { ApiService } from '../../shared/api-service/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { UnsubscriberService } from '../../shared/unsubscriber/unsubscriber.service';
-import { AppEffect } from 'src/app/shared/app-types/app-effects';
+import { AppEffect, EffectDimension } from 'src/app/shared/app-types/app-effects';
 
 export interface EffectMetadata {
   speed: number;
   intensity: number;
 }
+
+export interface EffectFilters {
+  showPalettesEffects: boolean;
+  showVolumeEffects: boolean;
+  showFrequencyEffects: boolean;
+  show0DEffects: boolean;
+  show1DEffects: boolean;
+  show2DEffects: boolean;
+}
+
+export const DEFAULT_EFFECT_FILTERS: EffectFilters = {
+  showPalettesEffects: false,
+  showVolumeEffects: false,
+  showFrequencyEffects: false,
+  show0DEffects: false,
+  show1DEffects: false,
+  show2DEffects: false,
+};
 
 const NONE_SELECTED = -1;
 
@@ -19,6 +37,7 @@ export class EffectsService extends UnsubscriberService {
   private selectedEffect$: BehaviorSubject<AppEffect>;
   private selectedEffectMetadata$: BehaviorSubject<EffectMetadata>;
   private filterTextLowercase!: string;
+  private currentEffectFilters!: EffectFilters;
 
   constructor(
     private apiService: ApiService,
@@ -33,14 +52,15 @@ export class EffectsService extends UnsubscriberService {
       usesPalette: false,
       usesVolume: false,
       usesFrequency: false,
-      is0D: false,
-      is1D: false,
-      is2D: false,
+      dimension: EffectDimension.ZERO,
     });
     this.selectedEffectMetadata$ = new BehaviorSubject({
       speed: 0,
       intensity: 0,
     });
+
+    this.filterTextLowercase = '';
+    this.currentEffectFilters = DEFAULT_EFFECT_FILTERS;
 
     this.appStateService.getEffects(this.ngUnsubscribe)
       .subscribe(effects => {
@@ -94,13 +114,28 @@ export class EffectsService extends UnsubscriberService {
 
   /**
    * Returns a list of all effects whose names contain `filterText` (case insensitive). When no `filterText` is provided or it is an empty string, all effects are returned.
+   * Also checks that effect meets the current effect filters.
    * @param filterText 
+   * @param effectFilters
    * @returns 
    */
-  filterEffects(filterText = '') {
-    this.filterTextLowercase = filterText.toLowerCase();
+  filterEffects(
+    filterText?: string,
+    effectFilters?: EffectFilters,
+  ) {
+    if (filterText !== undefined) {
+      this.filterTextLowercase = filterText.toLowerCase();
+    }
+    if (effectFilters) {
+      this.currentEffectFilters = effectFilters;
+    }
+
     const filteredEffects = this.effects
-      .filter((effect) => effect.name.toLowerCase().includes(this.filterTextLowercase));
+      .filter((effect) => {
+        const nameMatches = effect.name.toLowerCase().includes(this.filterTextLowercase);
+        const meetFilterCondition = this.getEffectFilterCondition(effect);
+        return nameMatches && meetFilterCondition;
+      });
     this.filteredEffects$.next(filteredEffects);
   }
 
@@ -124,5 +159,42 @@ export class EffectsService extends UnsubscriberService {
   /** Triggers a UI refresh. */
   private triggerUIRefresh() {
     this.filterEffects(this.filterTextLowercase);
+  }
+
+  private getEffectFilterCondition(effect: AppEffect) {
+    const effectFilterValues = [
+      {
+        conditionallyShow: this.currentEffectFilters.showPalettesEffects,
+        conditionValue: effect.usesPalette,
+      },
+      {
+        conditionallyShow: this.currentEffectFilters.showVolumeEffects,
+        conditionValue: effect.usesVolume,
+      },
+      {
+        conditionallyShow: this.currentEffectFilters.showFrequencyEffects,
+        conditionValue: effect.usesFrequency,
+      },
+      {
+        conditionallyShow: this.currentEffectFilters.show0DEffects,
+        conditionValue: effect.dimension === EffectDimension.ZERO,
+      },
+      {
+        conditionallyShow: this.currentEffectFilters.show1DEffects,
+        conditionValue: effect.dimension === EffectDimension.ONE,
+      },
+      {
+        conditionallyShow: this.currentEffectFilters.show2DEffects,
+        conditionValue: effect.dimension === EffectDimension.TWO,
+      },
+    ];
+
+    let filterCondition = true;
+    for (const { conditionallyShow, conditionValue } of effectFilterValues) {
+      if (conditionallyShow) {
+        filterCondition = filterCondition && conditionValue;
+      }
+    }
+    return filterCondition;
   }
 }

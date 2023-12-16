@@ -4,7 +4,7 @@ import { FormService } from '../../shared/form-service';
 import { UIConfigService } from '../../shared/ui-config.service';
 import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
 import { EffectsService } from './effects.service';
-import { AppEffect } from 'src/app/shared/app-types/app-effects';
+import { AppEffect, EffectDimension } from 'src/app/shared/app-types/app-effects';
 
 const NO_EFFECT_SELECTED = -1;
 // TODO get these from api response
@@ -67,18 +67,17 @@ export class EffectsComponent extends UnsubscriberComponent implements OnInit {
     this.uiConfigService.setShowLabels(!this.showLabels);
   }
 
-  // TODO add css badges or similar instead of modifying the html of the name
-  formatName(effect: AppEffect) {
-    let name = effect.name;
-
-    name += effect.usesPalette ? '&#x1F3A8;' : '';
-    name += effect.usesVolume ? '&#9834;' : '';
-    name += effect.usesFrequency ? '&#9835;' : '';
-    name += effect.is0D ? '&#8226;' : '';
-    name += effect.is1D ? '&#8942;' : '';
-    name += effect.is2D ? '&#9638;' : '';
-
-    return name;
+  getNumericDimension(effect: AppEffect) {
+    switch (effect.dimension) {
+      case EffectDimension.ZERO:
+        return 0;
+      case EffectDimension.ONE:
+        return 1;
+      case EffectDimension.TWO:
+        return 2;
+      default:
+        return '';
+    }
   }
 
   private setEffect(effectId: number) {
@@ -119,4 +118,29 @@ export class EffectsComponent extends UnsubscriberComponent implements OnInit {
 
     return form;
   }
+
+  // TODO remove probably
+  /*formatName(effect: AppEffect) {
+    let name = effect.name;
+
+    name += effect.usesPalette ? '&#x1F3A8;' : '';
+    name += effect.usesVolume ? '&#9834;' : '';
+    name += effect.usesFrequency ? '&#9835;' : '';
+
+    switch (effect.dimension) {
+      case EffectDimension.ZERO:
+        name += '&#8226;';
+        break;
+      case EffectDimension.ONE:
+        name += '&#8942;';
+        break;
+      case EffectDimension.TWO:
+        name += '&#9638;';
+        break;
+      default:
+        break;
+    }
+
+    return name;
+  }*/
 }

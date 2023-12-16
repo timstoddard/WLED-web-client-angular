@@ -42,6 +42,7 @@
 
     background: $normalBackgroundColor;
     color: $normalTextColor;
+    position: relative;
 
     &:hover {
       background: $hoverBackgroundColor;
@@ -51,6 +52,39 @@
     &--selected {
       background: $selectedBackgroundColor;
       color: $selectedTextColor;
+    }
+
+    &__leftSideBadgeWrapper,
+    &__rightSideBadgeWrapper {
+      display: flex;
+      position: absolute;
+      top: 0;
+    }
+
+    &__leftSideBadgeWrapper {
+      left: 0;
+    }
+
+    &__rightSideBadgeWrapper {
+      right: 0;
+    }
+
+    &__badge {
+      border-radius: 3px;
+      font-size: 12px;
+      margin: 2px;
+
+      &--palettes {
+      }
+
+      &--volume {
+      }
+
+      &--frequency {
+      }
+
+      &--dimension {
+      }
     }
   }
 }

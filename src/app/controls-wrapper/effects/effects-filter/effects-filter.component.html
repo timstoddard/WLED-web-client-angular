@@ -1,0 +1,6 @@
+<!-- TODO add select all/none buttons -->
+<app-checkbox
+  *ngFor="let filter of formConfig"
+  [control]="getFormControl(filter.name)"
+  [label]="filter.label">
+</app-checkbox>

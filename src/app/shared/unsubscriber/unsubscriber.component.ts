@@ -10,21 +10,25 @@ export class UnsubscriberComponent extends Unsubscriber implements OnDestroy {
     this.ngUnsubscribe.complete();
   }
 
-  getValueChanges<T>(form: FormGroup, controlName: string | string[]) {
+  getValueChanges<T>(form: FormGroup, controlName?: string | string[]) {
     let control: AbstractControl | null;
-    if (Array.isArray(controlName)) {
-      // find a nested control
-      control = form;
-      for (const key of controlName) {
-        if (control) {
-          control = control.get(key);
-        } else {
-          break;
+    if (controlName) {
+      if (Array.isArray(controlName)) {
+        // find a nested control
+        control = form;
+        for (const key of controlName) {
+          if (control) {
+            control = control.get(key);
+          } else {
+            break;
+          }
         }
+      } else {
+        // find a top-level control
+        control = form.get(controlName);
       }
     } else {
-      // find a top-level control
-      control = form.get(controlName)!;
+      control = form;
     }
     if (!control) {
       throw `Could not find control with name: ${controlName}`;
