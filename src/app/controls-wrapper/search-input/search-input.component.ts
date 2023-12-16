@@ -73,7 +73,7 @@ export class SearchInputComponent extends UnsubscriberComponent implements OnIni
   }
 
   getOverlayPositions() {
-    const rightPosition = this.overlayPositionService.centerBottomPosition();
+    const rightPosition = this.overlayPositionService.rightBottomPosition();
     return [rightPosition];
   }
 

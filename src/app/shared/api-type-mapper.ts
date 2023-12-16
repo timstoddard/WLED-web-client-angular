@@ -12,6 +12,7 @@ import { AppFileSystemInfo, AppInfo, AppLedInfo, AppWifiInfo } from './app-types
 import { AppNightLightState, AppSegment, AppUdpState, AppWLEDState } from './app-types/app-state';
 import { ClientOnlyFieldsService, createDefaultSegmentFields } from './client-only-fields.service';
 import { compareNames } from '../controls-wrapper/utils';
+import { DEFAULT_EFFECT_DATA } from '../controls-wrapper/effects/effects.service';
 
 @Injectable({ providedIn: 'root' })
 export class ApiTypeMapper {
@@ -70,7 +71,8 @@ export class ApiTypeMapper {
     const isNumeric = (n: string) => !isNaN(parseFloat(n));
     const appEffects: AppEffect[] = [];
 
-    effects.shift(); // temporarily remove solid
+    // sort without Solid, so it will be first
+    effects.shift();
     const effectsFormatted = effects.map((n: string, i: number) => ({
       id: i + 1,
       name: n,
@@ -81,6 +83,10 @@ export class ApiTypeMapper {
       name: 'Solid',
     });
 
+    // add default value for Solid
+    effectsData.shift();
+    effectsData.unshift(';!;');
+
     if (effectsFormatted.length !== effectsData.length) {
       alert('Received effects (length N) and effects data (length N). Expected lengths to be equal. Effect controls may not work properly.')
     }
@@ -88,7 +94,7 @@ export class ApiTypeMapper {
     for (const { id, name } of effectsFormatted) {
       if (!name.includes('RSVD')) {
         const effectData = (effectsData[id].length === 0)
-          ? ';;!;1'
+          ? DEFAULT_EFFECT_DATA
           : effectsData[id];
 
         const effectParameters = (effectData === '')
@@ -115,6 +121,8 @@ export class ApiTypeMapper {
           usesVolume: flags.includes('v'),
           usesFrequency: flags.includes('f'),
           dimension: this.getEffectDimension(flags),
+          parameters: effectParameters,
+          effectDataString: effectData,
         });
       }
     }

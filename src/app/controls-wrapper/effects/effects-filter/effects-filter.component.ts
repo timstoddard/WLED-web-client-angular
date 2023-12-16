@@ -16,27 +16,27 @@ export class EffectsFilterComponent extends UnsubscriberComponent {
   formConfig = [
     {
       name: 'showPalettesEffects',
-      label: 'Palette Effects',
+      label: 'Palette Effects &#x1F3A8;',
     },
     {
       name: 'showVolumeEffects',
-      label: 'Volume Effects',
+      label: 'Volume Effects &#9834;',
     },
     {
       name: 'showFrequencyEffects',
-      label: 'Frequency Effects',
+      label: 'Frequency Effects &#9835;',
     },
     {
       name: 'show0DEffects',
-      label: '0D Effects',
+      label: '0D Effects &#8226;',
     },
     {
       name: 'show1DEffects',
-      label: '1D Effects',
+      label: '1D Effects &#8942;',
     },
     {
       name: 'show2DEffects',
-      label: '2D Effects',
+      label: '2D Effects &#9638;',
     },
   ];
 
@@ -53,8 +53,16 @@ export class EffectsFilterComponent extends UnsubscriberComponent {
 
     this.getValueChanges(this.effectsFilterForm)
       .subscribe((effectFilters) => {
-        this.effectsService.filterEffects('', effectFilters as EffectFilters);
+        this.effectsService.filterEffectsByFilters(effectFilters as EffectFilters);
       });
+  }
+
+  unselectAllFilters() {
+    const effectFilters = this.effectsFilterForm.value as EffectFilters;
+    for (const filterName in effectFilters) {
+      effectFilters[filterName as keyof EffectFilters] = false;
+    }
+    this.effectsFilterForm.patchValue(effectFilters);
   }
 
   private createForm() {

@@ -5,31 +5,49 @@
   headerText="Effects"
   label="Search effects"
   class="effects__searchInput">
-  <div class="effects__sliders">
-    <app-color-slider
-      [control]="effectsForm.get('speed')!"
-      [min]="0"
-      [max]="255"
-      label="Speed"
-      sliderClass="effects__slider">
-      <!-- TODO icons should! be built into the slider component -->
-      <span class="material-symbols-outlined">
-        speed
-      </span>
-    </app-color-slider>
-    <app-color-slider
-      [control]="effectsForm.get('intensity')!"
-      [min]="0"
-      [max]="255"
-      label="Intensity"
-      sliderClass="effects__slider">
-      <!-- TODO another button should toggle labels -->
-      <!-- (click)="toggleLabels()" -->
-      <span
-        class="material-symbols-outlined">
-        local_fire_department
-      </span>
-    </app-color-slider>
+  <div class="effects__form">
+    <div class="effects__sliders">
+      <app-color-slider
+        [control]="effectsForm.get('speed')!"
+        [min]="0"
+        [max]="255"
+        label="Speed"
+        sliderClass="effects__slider">
+        <!-- TODO icons should! be built into the slider component -->
+        <span class="material-symbols-outlined">
+          speed
+        </span>
+      </app-color-slider>
+      <app-color-slider
+        [control]="effectsForm.get('intensity')!"
+        [min]="0"
+        [max]="255"
+        label="Intensity"
+        sliderClass="effects__slider">
+        <!-- TODO another button should toggle labels -->
+        <!-- (click)="toggleLabels()" -->
+        <span
+          class="material-symbols-outlined">
+          local_fire_department
+        </span>
+      </app-color-slider>
+
+      <hr>
+
+      <!-- TODO get dynamic sliders working -->
+      <app-color-slider
+        *ngFor="let sliderLabel of sliderLabels"
+        [control]="effectsForm.get('speed')!"
+        [min]="0"
+        [max]="255"
+        [label]="sliderLabel"
+        sliderClass="effects__slider">
+        <span style="font-style:italic">(does not work yet)</span>
+        <!-- <span class="material-symbols-outlined">
+          speed
+        </span> -->
+      </app-color-slider>
+    </div>
     <app-effects-filter></app-effects-filter>
   </div>
 </app-search-input>
@@ -48,29 +66,33 @@
         formControlName="selectedEffect"
         [value]="effect.id"
         class="effects__radioButton__input">
-      <span class="effects__radioButton__text">
-        {{ effect.name }}
-      </span>
-      <div class="effects__radioButton__leftSideBadgeWrapper">
+      <div
+        [innerHtml]="getHtmlFormattedEffectName(effect)"
+        class="effects__radioButton__text">
+      </div>
+      <div class="effects__radioButton__badgeWrapper">
         <div
           *ngIf="effect.usesPalette"
-          class="effects__radioButton__badge effects__radioButton__badge--palettes">
+          class="effects__radioButton__badge effects__radioButton__badge--palettes"
+          [ngClass]="{ 'effects__radioButton__badge--selected': getEffectFilters().showPalettesEffects }">
           {{ '&#x1F3A8;' }}
         </div>
         <div
           *ngIf="effect.usesVolume"
-          class="effects__radioButton__badge effects__radioButton__badge--volume">
+          class="effects__radioButton__badge effects__radioButton__badge--volume"
+          [ngClass]="{ 'effects__radioButton__badge--selected': getEffectFilters().showVolumeEffects }">
           {{ '&#9834;' }}
         </div>
         <div
           *ngIf="effect.usesFrequency"
-          class="effects__radioButton__badge effects__radioButton__badge--frequency">
+          class="effects__radioButton__badge effects__radioButton__badge--frequency"
+          [ngClass]="{ 'effects__radioButton__badge--selected': getEffectFilters().showFrequencyEffects }">
           {{ '&#9835;' }}
         </div>
-      </div>
-      <div class="effects__radioButton__rightSideBadgeWrapper">
-        <div class="effects__radioButton__badge effects__radioButton__badge--dimension">
-          {{ getNumericDimension(effect) }}
+        <div
+          class="effects__radioButton__badge effects__radioButton__badge--dimension"
+          [ngClass]="{ 'effects__radioButton__badge--selected': isEffectDimensionSelected(effect) }">
+          {{ getNumericDimension(effect) }}D
         </div>
       </div>
     </label>

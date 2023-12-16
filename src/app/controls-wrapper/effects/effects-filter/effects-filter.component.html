@@ -1,6 +1,14 @@
-<!-- TODO add select all/none buttons -->
 <app-checkbox
   *ngFor="let filter of formConfig"
   [control]="getFormControl(filter.name)"
   [label]="filter.label">
 </app-checkbox>
+<div class="effectsFilter__buttonWrapper">
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="unselectAllFilters()"
+    class="">
+    Unselect All
+  </button>
+</div>

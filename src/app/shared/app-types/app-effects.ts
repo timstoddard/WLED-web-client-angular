@@ -24,4 +24,8 @@ export interface AppEffect extends SearchableItem {
    * - 2D
    */
   dimension: EffectDimension;
+  /** Effect parameters */
+  parameters: string[];
+  /** Raw effect data string from API. */
+  effectDataString: string;
 }

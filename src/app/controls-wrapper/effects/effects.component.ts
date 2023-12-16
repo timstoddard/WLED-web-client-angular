@@ -18,6 +18,7 @@ const DEFAULT_EFFECT_INTENSITY = 128;
 })
 export class EffectsComponent extends UnsubscriberComponent implements OnInit {
   effectsForm!: FormGroup;
+  sliderLabels!: string[];
   private showLabels!: boolean;
 
   constructor(
@@ -30,11 +31,17 @@ export class EffectsComponent extends UnsubscriberComponent implements OnInit {
 
   ngOnInit() {
     this.effectsForm = this.createForm();
+    this.sliderLabels = [];
 
     this.handleUnsubscribe(this.effectsService.getSelectedEffect$())
       .subscribe(({ id }) => {
         this.effectsForm.get('selectedEffect')!
           .patchValue(id, { emitEvent: false });
+
+        const selectedEffect = this.effectsService.getEffectById(id);
+        if (selectedEffect) {
+          this.sliderLabels = this.effectsService.getSelectedEffectSliderLabels(selectedEffect);
+        }
       });
 
     this.handleUnsubscribe(this.effectsService.getSelectedEffectMetadata$())
@@ -60,11 +67,29 @@ export class EffectsComponent extends UnsubscriberComponent implements OnInit {
   }
 
   filterList(filterText: string) {
-    this.effectsService.filterEffects(filterText);
+    this.effectsService.filterEffectsByText(filterText);
   }
 
   toggleLabels() {
     this.uiConfigService.setShowLabels(!this.showLabels);
+  }
+
+  getEffectFilters() {
+    return this.effectsService.getEffectFilters();
+  }
+
+  isEffectDimensionSelected(effect: AppEffect) {
+    const effectFilters = this.getEffectFilters();
+    switch (effect.dimension) {
+      case EffectDimension.ZERO:
+        return effectFilters.show0DEffects;
+      case EffectDimension.ONE:
+        return effectFilters.show1DEffects;
+      case EffectDimension.TWO:
+        return effectFilters.show2DEffects;
+      default:
+        return false;
+    }
   }
 
   getNumericDimension(effect: AppEffect) {
@@ -80,11 +105,20 @@ export class EffectsComponent extends UnsubscriberComponent implements OnInit {
     }
   }
 
+  getHtmlFormattedEffectName(effect: AppEffect) {
+    return this.effectsService.getHtmlFormattedEffectName(effect);
+  }
+
   private setEffect(effectId: number) {
     const result = this.effectsService.setEffect(effectId);
     if (result) {
       this.handleUnsubscribe(result)
         .subscribe();
+
+      const selectedEffect = this.effectsService.getEffectById(effectId);
+      if (selectedEffect) {
+        this.effectsService.getSelectedEffectSliderLabels(selectedEffect);
+      }
     }
   }
 
@@ -118,29 +152,4 @@ export class EffectsComponent extends UnsubscriberComponent implements OnInit {
 
     return form;
   }
-
-  // TODO remove probably
-  /*formatName(effect: AppEffect) {
-    let name = effect.name;
-
-    name += effect.usesPalette ? '&#x1F3A8;' : '';
-    name += effect.usesVolume ? '&#9834;' : '';
-    name += effect.usesFrequency ? '&#9835;' : '';
-
-    switch (effect.dimension) {
-      case EffectDimension.ZERO:
-        name += '&#8226;';
-        break;
-      case EffectDimension.ONE:
-        name += '&#8942;';
-        break;
-      case EffectDimension.TWO:
-        name += '&#9638;';
-        break;
-      default:
-        break;
-    }
-
-    return name;
-  }*/
 }

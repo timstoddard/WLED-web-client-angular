@@ -1,5 +1,17 @@
 @import 'src/app/shared/scss/mixins';
 
+::ng-deep .effectNameHighlight {
+  &--highEmphasis {
+    border: 1px solid var(--themeColorPrimary);
+    border-radius: 3px;
+  }
+
+  &--lowEmphasis {
+    text-decoration: underline;
+    text-decoration-color: var(--themeColorPrimary);
+  }
+}
+
 :host {
   display: grid;
   grid-template-columns: 100%;
@@ -11,11 +23,14 @@
     grid-area: 1 / 1 / 2 / 2;
   }
 
-  &__sliders {
+  &__form {
     display: flex;
     flex-wrap: wrap;
     grid-area: 2 / 1 / 3 / 2;
     justify-content: space-evenly;
+  }
+
+  &__sliders {
   }
 
   @at-root ::ng-deep &__slider {
@@ -42,7 +57,10 @@
 
     background: $normalBackgroundColor;
     color: $normalTextColor;
-    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto;
+    max-width: 100%;
 
     &:hover {
       background: $hoverBackgroundColor;
@@ -54,25 +72,37 @@
       color: $selectedTextColor;
     }
 
-    &__leftSideBadgeWrapper,
-    &__rightSideBadgeWrapper {
+    &__text {
+      hyphens: auto;
+      max-width: 100%;
+      min-width: 100%;
+      overflow-wrap: break-word;
+      white-space: normal;
+      word-wrap: break-word;
+    }
+
+    &__badgeWrapper {
       display: flex;
-      position: absolute;
-      top: 0;
-    }
-
-    &__leftSideBadgeWrapper {
-      left: 0;
-    }
-
-    &__rightSideBadgeWrapper {
-      right: 0;
+      margin: 2px 0 2px 4px;
     }
 
     &__badge {
-      border-radius: 3px;
-      font-size: 12px;
-      margin: 2px;
+      @include flex-center;
+      @include forceHeight(18px);
+      @include forceWidth(18px);
+      background: var(--backgroundColorPrimary);
+      border: 1px solid var(--borderColorAccent);
+      border-radius: 50%;
+      color: var(--textColorPrimary);
+      font-size: 11px;
+
+      &:not(:last-of-type) {
+        margin-right: 3px;
+      }
+
+      &--selected {
+        border-color: var(--themeColorPrimary);
+      }
 
       &--palettes {
       }

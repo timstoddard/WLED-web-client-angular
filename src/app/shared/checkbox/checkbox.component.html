@@ -5,8 +5,8 @@
     [formControl]="control"
     (click)="click.emit()"
     class="">
-    <mat-label>
-      {{ label }}
+    <mat-label [innerHtml]="label">
+      <!-- {{ label }} -->
     </mat-label>
   </mat-checkbox>
 </label>
