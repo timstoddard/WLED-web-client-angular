@@ -24,7 +24,7 @@ export interface WLEDPreset {
 export interface WLEDPlaylists { [key: number]: WLEDPlaylist }
 
 export interface WLEDPlaylist {
-  /** Preset IDs in this playlist */
+  /** Array of preset IDs to be applied in order. */
   ps: number[];
   /** Array of times each preset should be kept, in tenths of a second. If only one integer is supplied, all presets will be kept for that time. Defaults to 10 seconds if not provided. */
   dur?: number[] | number;

@@ -145,8 +145,8 @@ export class SegmentFormComponent extends UnsubscriberComponent implements OnIni
   }
 
   private updateLedCountLabel(segment: AppSegment) {
-    const { start, stop } = segment;
-    const length = stop - (this.useSegmentLength ? 0 : start);
+    const { startColumn, stopColumn } = segment;
+    const length = stopColumn - (this.useSegmentLength ? 0 : startColumn);
     const spacing = segment.space;
     const grouping = segment.group >= 0
       ? segment.group
@@ -210,17 +210,18 @@ export class SegmentFormComponent extends UnsubscriberComponent implements OnIni
   }
 
   private createForm() {
+    // TODO add new fields to form
     const form = this.formService.createFormGroup({
       name: this.segment.name,
       isOn: this.segment.isOn,
       brightness: this.segment.brightness,
-      start: this.segment.start,
-      stop: this.segment.stop,
+      start: this.segment.startColumn,
+      stop: this.segment.stopColumn,
       offset: this.segment.startOffset,
       grouping: this.segment.group,
       spacing: this.segment.space,
-      isReverse: this.segment.isReversed,
-      isMirror: this.segment.isMirrored,
+      isReverse: this.segment.isHorizontallyReversed,
+      isMirror: this.segment.isHorizonallyMirrored,
     });
 
     // add validators

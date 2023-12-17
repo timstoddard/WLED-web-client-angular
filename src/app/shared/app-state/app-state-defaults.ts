@@ -66,6 +66,8 @@ const DEFAULT_WLED_STATE: AppWLEDState = {
   udp: {
     shouldSend: false,
     shouldReceive: false,
+    sendGroup: 1,
+    receiveGroup: 1,
   },
   liveViewOverride: 0,
   mainSegmentId: 0,

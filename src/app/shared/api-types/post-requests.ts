@@ -3,21 +3,41 @@ import { WLEDSegment, WLEDState } from './api-state';
 
 // TODO use these in API service
 
-export interface WLEDStatePostRequest extends WLEDState {
-  /** [0-255] Similar to transition, but applies to just the current API call. */
+type WLEDStateFiltered = Omit<
+  WLEDState,
+  'ps'
+>;
+export interface WLEDStatePostRequest extends WLEDStateFiltered {
+  /** [0 - 255] Similar to transition, but applies to just the current API call. */
   tt?: number;
-  /** [1-16] Save current light config to specified preset slot. */
+  /**
+   * [-1 - 250] Selected preset ID.
+   * 
+   * Special values:
+   * - `X~Y~`: iterate through presets X to Y (eg, `1~17~`)
+   * - `X~Y~r`: select random preset between presets X and Y, inclusive (eg, `4~10~r`)
+   */
+  ps?: number | string;
+  /** [1 - 250] Save current light config (state) to specified preset slot. */
   psave?: number;
+  /** Preset ID to delete. */
+  pdel?: number;
+  /** If set to true in a JSON POST command, the response will contain the full JSON state object. */
+  v?: boolean;
   /** If `true`, device will reboot immediately. */
   rb?: boolean;
   /** If set to `true`, enters realtime mode and blanks the LEDs. The realtime timeout option does not have an effect when this command is used, WLED will stay in realtime mode until the state (color/effect/segments, excluding brightness) is changed. It is expected that `{"live":false}` is sent once live data sending is terminated. */
   live?: true;
   /** Set module time to the specified unix timestamp. */
   time?: number;
-  /** Custom preset playlists. */
+  /** Custom preset playlists ([docs](https://kno.wled.ge/interfaces/json-api/#playlists)). */
   playlist?: WLEDPlaylist;
   /** Sets timebase for effects. */
   tb?: number;
+  /** Load specified ledmap (0 for `ledmap.json`, 1-9 for `ledmap1.json` to `ledmap9.json`). See [mapping](https://kno.wled.ge/advanced/mapping/). */
+  ledmap?: number;
+  /** Remove last custom palette if set to `true`. */
+  rmcpal?: boolean;
 }
 
 type WLEDSegmentFiltered = Omit<

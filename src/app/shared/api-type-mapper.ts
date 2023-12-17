@@ -65,6 +65,8 @@ export class ApiTypeMapper {
   mapWLEDUdpToAppUdp = (udp: WLEDUdpState): AppUdpState => ({
     shouldSend: udp.send,
     shouldReceive: udp.recv,
+    sendGroup: udp.sgrp,
+    receiveGroup: udp.rgrp,
   });
 
   mapWLEDEffectsToAppEffects = (effects: string[], effectsData: string[]): AppEffect[] => {
@@ -151,8 +153,10 @@ export class ApiTypeMapper {
       const appSegment: AppSegment = {
         id,
         isExpanded,
-        start: segment.start,
-        stop: segment.stop,
+        startColumn: segment.start,
+        stopColumn: segment.stop,
+        startRow: 1, // TODO
+        stopRow: 1, // TODO
         length: segment.len,
         group: segment.grp,
         space: segment.spc,
@@ -161,16 +165,30 @@ export class ApiTypeMapper {
         effectId: segment.fx,
         effectSpeed: segment.sx,
         effectIntensity: segment.ix,
+        effectCustom1: segment.c1,
+        effectCustom2: segment.c2,
+        effectCustom3: segment.c3,
+        effectOption1: segment.o1,
+        effectOption2: segment.o2,
+        effectOption3: segment.o3,
         paletteId: segment.pal,
         isSelected: segment.sel,
-        isReversed: segment.rev,
+        isHorizontallyReversed: segment.rev,
+        isVerticallyReversed: segment.rY,
         isOn: segment.on,
         brightness: segment.bri,
-        isMirrored: segment.mi,
+        isHorizonallyMirrored: segment.mi,
+        isVerticallyMirrored: segment.mY,
+        isTransposed: segment.tp,
         colorTemp: segment.cct,
         loxonePrimaryColor: segment.lx,
         loxoneSecondaryColor: segment.ly,
         isFrozen: segment.frz,
+        expandEffect1D: segment.m12,
+        soundSimulationType: segment.si,
+        forceEffectMetadataDefaults: segment.fxdef,
+        setId: segment.set,
+        isRepeated: segment.rpt,
         name: '', // TODO
       };
 

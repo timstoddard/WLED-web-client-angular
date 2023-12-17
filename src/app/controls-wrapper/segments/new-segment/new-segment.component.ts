@@ -48,9 +48,9 @@ export class NewSegmentComponent extends UnsubscriberComponent implements OnInit
       const segments = this.segmentsService.getSegments();
       if (segments.length > 0) {
         const lastSegment = segments[segments.length - 1];
-        const a = lastSegment.stop;
+        const a = lastSegment.stopColumn;
         const b = this.useSegmentLength
-          ? lastSegment.start
+          ? lastSegment.startColumn
           : 0;
         const ledCount = a + b;
         if (ledCount < this.ledCount) {
