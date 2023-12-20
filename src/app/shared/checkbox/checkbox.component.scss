@@ -15,7 +15,6 @@
     var(--form-control-border-opacity-default),
   );
   border-radius: 4px;
-  
   cursor: pointer;
   display: flex;
   padding: 4px 10px;
@@ -51,5 +50,14 @@
         var(--form-control-border-opacity-emphasized),
       );
     }
+  }
+
+  & ::ng-deep .mat-checkbox-label {
+    @include flex-center;
+  }
+
+  & ::ng-deep .material-symbols-outlined {
+    font-size: 20px;
+    margin-left: 6px;
   }
 }

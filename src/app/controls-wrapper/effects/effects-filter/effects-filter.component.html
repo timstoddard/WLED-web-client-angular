@@ -2,6 +2,11 @@
   *ngFor="let filter of formConfig"
   [control]="getFormControl(filter.name)"
   [label]="filter.label">
+  <span
+    checkboxLabelIcon
+    class="material-symbols-outlined">
+    {{ filter.matIconName }}
+  </span>
 </app-checkbox>
 <div class="effectsFilter__buttonWrapper">
   <button

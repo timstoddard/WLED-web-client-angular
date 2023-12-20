@@ -1,4 +1,3 @@
-<!-- TODO add filter by effect controls (palette, volume, frequency) -->
 <app-search-input
   (searchValueChanges)="filterList($event)"
   [selectedItem$]="getSelectedEffect()"
@@ -28,6 +27,7 @@
   <div
     [formGroup]="effectsForm"
     class="effects__list">
+    <!-- TODO move into own component ("effect") -->
     <label
       *ngFor="let effect of getFilteredEffects() | async"
       [ngClass]="{ 'effects__radioButton--selected': effect.id === effectsForm.get('selectedEffect')!.value }"
@@ -46,25 +46,35 @@
           *ngIf="effect.usesVolume"
           class="effects__radioButton__badge effects__radioButton__badge--volume"
           [ngClass]="{ 'effects__radioButton__badge--selected': getEffectFilters().showVolumeEffects }">
-          {{ '&#9834;' }}
+          <span class="material-symbols-outlined">
+            music_note
+          </span>
         </div>
         <div
           *ngIf="effect.usesFrequency"
           class="effects__radioButton__badge effects__radioButton__badge--frequency"
           [ngClass]="{ 'effects__radioButton__badge--selected': getEffectFilters().showFrequencyEffects }">
-          {{ '&#9835;' }}
+          <span class="material-symbols-outlined">
+            graphic_eq
+          </span>
         </div>
         <div
           *ngIf="effect.usesPalette"
           class="effects__radioButton__badge effects__radioButton__badge--palettes"
           [ngClass]="{ 'effects__radioButton__badge--selected': getEffectFilters().showPalettesEffects }">
-          {{ '&#x1F3A8;' }}
+          <span class="material-symbols-outlined">
+            palette
+          </span>
         </div>
         <div
           *ngFor="let dimension of effect.dimensions"
           class="effects__radioButton__badge effects__radioButton__badge--dimension"
           [ngClass]="{ 'effects__radioButton__badge--selected': isDimensionSelected(dimension) }">
-          {{ getNumericDimension(dimension) }}d
+          <!-- TODO are icons or text better for dimension? -->
+          <!-- {{ getNumericDimension(dimension) }}d -->
+          <span class="material-symbols-outlined">
+            {{ getMatIconForDimension(dimension) }}
+          </span>
         </div>
       </div>
     </label>

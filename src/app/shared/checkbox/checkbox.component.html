@@ -5,9 +5,10 @@
     [formControl]="control"
     (click)="click.emit()"
     class="">
-    <mat-label [innerHtml]="label">
-      <!-- {{ label }} -->
+    <mat-label>
+      {{ label }}
     </mat-label>
+    <ng-content select="[checkboxLabelIcon]"></ng-content>
   </mat-checkbox>
 </label>
 <!-- TODO better style attached content -->

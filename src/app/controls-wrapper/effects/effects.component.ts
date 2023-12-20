@@ -75,14 +75,14 @@ export class EffectsComponent extends UnsubscriberComponent implements OnInit {
     }
   }
 
-  getNumericDimension(dimension: EffectDimension) {
+  getMatIconForDimension(dimension: EffectDimension) {
     switch (dimension) {
       case EffectDimension.ZERO:
-        return 0;
+        return 'line_end_circle';
       case EffectDimension.ONE:
-        return 1;
+        return 'conversion_path';
       case EffectDimension.TWO:
-        return 2;
+        return 'apps';
       default:
         return '';
     }

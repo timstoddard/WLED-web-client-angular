@@ -16,27 +16,33 @@ export class EffectsFilterComponent extends UnsubscriberComponent {
   formConfig = [
     {
       name: 'showPalettesEffects',
-      label: 'Palette Effects &#x1F3A8;',
+      label: 'Palette Effects', // &#x1F3A8;
+      matIconName: 'palette',
     },
     {
       name: 'showVolumeEffects',
-      label: 'Volume Effects &#9834;',
+      label: 'Volume Effects', // &#9834;
+      matIconName: 'music_note',
     },
     {
       name: 'showFrequencyEffects',
-      label: 'Frequency Effects &#9835;',
+      label: 'Frequency Effects', // &#9835;
+      matIconName: 'graphic_eq',
     },
     {
       name: 'show0DEffects',
-      label: '0D Effects &#8226;',
+      label: '0-D Effects', // &#8226;
+      matIconName: 'line_end_circle',
     },
     {
       name: 'show1DEffects',
-      label: '1D Effects &#8942;',
+      label: '1-D Effects', // &#8942;
+      matIconName: 'conversion_path',
     },
     {
       name: 'show2DEffects',
-      label: '2D Effects &#9638;',
+      label: '2-D Effects', // &#9638;
+      matIconName: 'apps',
     },
   ];
 

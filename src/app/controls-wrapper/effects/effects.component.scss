@@ -96,20 +96,25 @@
 
     &__badge {
       @include flex-center;
-      @include forceHeight(18px);
-      @include forceWidth(18px);
+      @include forceHeight(20px);
+      @include forceWidth(20px);
       background: var(--backgroundColorPrimary);
       border: 1px solid var(--borderColorAccent);
       border-radius: 50%;
       color: var(--textColorPrimary);
-      font-size: 11px;
+      font-size: 12px;
+
+      & ::ng-deep .material-symbols-outlined {
+        font-size: 15px;
+      }
 
       &:not(:last-of-type) {
-        margin-right: 3px;
+        margin-right: 2px;
       }
 
       &--selected {
         border-color: var(--themeColorPrimary);
+        color: var(--themeColorPrimary);
       }
 
       &--palettes {
