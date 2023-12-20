@@ -20,8 +20,9 @@
         [formControl]="selectedPalette"
         [value]="palette.id"
         class="palettes__radioButton__input">
-      <div class="palettes__radioButton__text">
-        {{ palette.name }}
+      <div
+        [innerHtml]="getHtmlFormattedPaletteName(palette)"
+        class="palettes__radioButton__text">
       </div>
     </label>
   </div>

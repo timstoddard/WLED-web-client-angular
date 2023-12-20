@@ -11,7 +11,8 @@ export class UnsubscriberComponent extends Unsubscriber implements OnDestroy {
   }
 
   getValueChanges<T>(form: FormGroup, controlName?: string | string[]) {
-    let control: AbstractControl | null;
+    let control: AbstractControl | null = form;
+
     if (controlName) {
       if (Array.isArray(controlName)) {
         // find a nested control
@@ -27,12 +28,12 @@ export class UnsubscriberComponent extends Unsubscriber implements OnDestroy {
         // find a top-level control
         control = form.get(controlName);
       }
-    } else {
-      control = form;
     }
+
     if (!control) {
       throw `Could not find control with name: ${controlName}`;
     }
+
     // TODO verify that distinctUntilChanged doesn't cause any regressions
     return this.handleUnsubscribe<T>(control.valueChanges)
       .pipe(distinctUntilChanged());

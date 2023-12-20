@@ -134,3 +134,9 @@ export interface AppSegment {
   /** `true` if the segment is expanded. (client-only property) */
   isExpanded: boolean;
 }
+
+/** Allowed index values for effect custom settings (sliders). */
+export type CustomIndex = 1 | 2 | 3;
+
+/** Allowed index values for effect option settings (checkboxes). */
+export type OptionIndex = 1 | 2 | 3;

@@ -1,15 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { FormService } from '../../shared/form-service';
-import { UIConfigService } from '../../shared/ui-config.service';
+import { distinctUntilChanged } from 'rxjs';
+import { FormService, FormValues } from '../../shared/form-service';
 import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
-import { EffectsService } from './effects.service';
+import { EffectMetadata, EffectsService } from './effects.service';
 import { AppEffect, EffectDimension } from 'src/app/shared/app-types/app-effects';
+import { EffectsControlsComponent } from './effects-controls/effects-controls.component';
+import { CustomIndex, OptionIndex } from 'src/app/shared/app-types/app-state';
 
 const NO_EFFECT_SELECTED = -1;
-// TODO get these from api response
-const DEFAULT_EFFECT_SPEED = 128;
-const DEFAULT_EFFECT_INTENSITY = 128;
 
 @Component({
   selector: 'app-effects',
@@ -17,44 +16,32 @@ const DEFAULT_EFFECT_INTENSITY = 128;
   styleUrls: ['./effects.component.scss'],
 })
 export class EffectsComponent extends UnsubscriberComponent implements OnInit {
+  @ViewChild(EffectsControlsComponent) effectsControlsComponent!: EffectsControlsComponent;
   effectsForm!: FormGroup;
-  sliderLabels!: string[];
-  private showLabels!: boolean;
 
   constructor(
     private effectsService: EffectsService,
-    private formSerivce: FormService,
-    private uiConfigService: UIConfigService,
+    private formService: FormService,
   ) {
     super();
   }
 
   ngOnInit() {
     this.effectsForm = this.createForm();
-    this.sliderLabels = [];
 
+    this.handleUnsubscribe(this.effectsService.getSelectedEffectMetadata$())
+      .subscribe((metadata: EffectMetadata) => {
+        this.effectsForm.patchValue(metadata, { emitEvent: false });
+      });
+  }
+
+  ngAfterViewInit() {
     this.handleUnsubscribe(this.effectsService.getSelectedEffect$())
+      .pipe(distinctUntilChanged())
       .subscribe(({ id }) => {
         this.effectsForm.get('selectedEffect')!
           .patchValue(id, { emitEvent: false });
-
-        const selectedEffect = this.effectsService.getEffectById(id);
-        if (selectedEffect) {
-          this.sliderLabels = this.effectsService.getSelectedEffectSliderLabels(selectedEffect);
-        }
-      });
-
-    this.handleUnsubscribe(this.effectsService.getSelectedEffectMetadata$())
-      .subscribe(({ speed, intensity }) => {
-        this.effectsForm.get('speed')!
-          .patchValue(speed, { emitEvent: false });
-        this.effectsForm.get('intensity')!
-          .patchValue(intensity, { emitEvent: false });
-      });
-
-    this.uiConfigService.getUIConfig(this.ngUnsubscribe)
-      .subscribe((uiConfig) => {
-        this.showLabels = uiConfig.showLabels;
+        this.effectsControlsComponent.updateOptionsAndSliders(id);
       });
   }
 
@@ -70,17 +57,13 @@ export class EffectsComponent extends UnsubscriberComponent implements OnInit {
     this.effectsService.filterEffectsByText(filterText);
   }
 
-  toggleLabels() {
-    this.uiConfigService.setShowLabels(!this.showLabels);
-  }
-
   getEffectFilters() {
     return this.effectsService.getEffectFilters();
   }
 
-  isEffectDimensionSelected(effect: AppEffect) {
+  isDimensionSelected(dimension: EffectDimension) {
     const effectFilters = this.getEffectFilters();
-    switch (effect.dimension) {
+    switch (dimension) {
       case EffectDimension.ZERO:
         return effectFilters.show0DEffects;
       case EffectDimension.ONE:
@@ -92,8 +75,8 @@ export class EffectsComponent extends UnsubscriberComponent implements OnInit {
     }
   }
 
-  getNumericDimension(effect: AppEffect) {
-    switch (effect.dimension) {
+  getNumericDimension(dimension: EffectDimension) {
+    switch (dimension) {
       case EffectDimension.ZERO:
         return 0;
       case EffectDimension.ONE:
@@ -113,33 +96,32 @@ export class EffectsComponent extends UnsubscriberComponent implements OnInit {
     const result = this.effectsService.setEffect(effectId);
     if (result) {
       this.handleUnsubscribe(result)
-        .subscribe();
-
-      const selectedEffect = this.effectsService.getEffectById(effectId);
-      if (selectedEffect) {
-        this.effectsService.getSelectedEffectSliderLabels(selectedEffect);
-      }
+        .subscribe(() => this.effectsControlsComponent.updateOptionsAndSliders(effectId));
     }
   }
 
   private setSpeed(effectId: number) {
-    this.handleUnsubscribe(
-      this.effectsService.setSpeed(effectId))
+    this.handleUnsubscribe(this.effectsService.setSpeed(effectId))
       .subscribe();
   }
 
   private setIntensity(effectId: number) {
-    this.handleUnsubscribe(
-      this.effectsService.setIntensity(effectId))
+    this.handleUnsubscribe(this.effectsService.setIntensity(effectId))
+      .subscribe();
+  }
+
+  private setCustom(index: CustomIndex, value: number) {
+    this.handleUnsubscribe(this.effectsService.setCustom(index, value))
+      .subscribe();
+  }
+
+  private setOption(index: OptionIndex, value: number) {
+    this.handleUnsubscribe(this.effectsService.setOption(index, value))
       .subscribe();
   }
 
   private createForm() {
-    const form = this.formSerivce.createFormGroup({
-      selectedEffect: NO_EFFECT_SELECTED,
-      speed: DEFAULT_EFFECT_SPEED,
-      intensity: DEFAULT_EFFECT_INTENSITY,
-    });
+    const form = this.formService.createFormGroup(this.getDefaultFormValues());
 
     this.getValueChanges<number>(form, 'selectedEffect')
       .subscribe((effectId: number) => this.setEffect(effectId));
@@ -150,6 +132,38 @@ export class EffectsComponent extends UnsubscriberComponent implements OnInit {
     this.getValueChanges<number>(form, 'intensity')
       .subscribe((intensity: number) => this.setIntensity(intensity));
 
+    this.getValueChanges<number>(form, 'custom1')
+      .subscribe((custom1: number) => this.setCustom(1, custom1));
+
+      this.getValueChanges<number>(form, 'custom2')
+      .subscribe((custom2: number) => this.setCustom(2, custom2));
+
+    this.getValueChanges<number>(form, 'custom3')
+      .subscribe((custom3: number) => this.setCustom(3, custom3));
+
+    this.getValueChanges<number>(form, 'option1')
+      .subscribe((option1: number) => this.setOption(1, option1));
+
+    this.getValueChanges<number>(form, 'option2')
+      .subscribe((option2: number) => this.setOption(2, option2));
+
+    this.getValueChanges<number>(form, 'option3')
+      .subscribe((option3: number) => this.setOption(3, option3));
+
     return form;
+  }
+
+  private getDefaultFormValues(): FormValues {
+    return {
+      selectedEffect: NO_EFFECT_SELECTED,
+      speed: 128,
+      intensity: 128,
+      custom1: 0,
+      custom2: 0,
+      custom3: 0,
+      option1: 0,
+      option2: 0,
+      option3: 0,
+    };
   }
 }

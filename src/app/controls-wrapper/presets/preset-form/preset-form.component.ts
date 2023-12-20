@@ -68,7 +68,7 @@ export class PresetFormComponent implements OnInit {
   getFormControl!: getFormControlFn;
 
   constructor(
-    private formSerivce: FormService,
+    private formService: FormService,
     private presetsService: PresetsService,
   ) { }
 
@@ -133,15 +133,15 @@ export class PresetFormComponent implements OnInit {
       apiValue = existingPreset.apiValue;
     }
 
-    const form = this.formSerivce.createFormGroup({
+    const form = this.formService.createFormGroup({
       id,
       name,
       quickLoadLabel,
       useCurrentState: true,
     }, {
-      includeBrightness: this.formSerivce.formBuilder.control(true, this.requiredIfUseCurrentStateEquals(true)),
-      saveSegmentBounds: this.formSerivce.formBuilder.control(true, this.requiredIfUseCurrentStateEquals(true)),
-      apiValue: this.formSerivce.formBuilder.control(apiValue, this.requiredIfUseCurrentStateEquals(false)),
+      includeBrightness: this.formService.formBuilder.control(true, this.requiredIfUseCurrentStateEquals(true)),
+      saveSegmentBounds: this.formService.formBuilder.control(true, this.requiredIfUseCurrentStateEquals(true)),
+      apiValue: this.formService.formBuilder.control(apiValue, this.requiredIfUseCurrentStateEquals(false)),
     });
 
     return form;

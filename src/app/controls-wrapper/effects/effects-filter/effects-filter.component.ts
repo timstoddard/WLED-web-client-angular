@@ -41,7 +41,7 @@ export class EffectsFilterComponent extends UnsubscriberComponent {
   ];
 
   constructor(
-    private formSerivce: FormService,
+    private formService: FormService,
     private effectsService: EffectsService,
   ) {
     super();
@@ -66,8 +66,7 @@ export class EffectsFilterComponent extends UnsubscriberComponent {
   }
 
   private createForm() {
-    // TODO better type instead of unknown
-    const form = this.formSerivce.createFormGroup(DEFAULT_EFFECT_FILTERS as unknown as FormValues);
+    const form = this.formService.createFormGroup(DEFAULT_EFFECT_FILTERS as {} as FormValues);
     return form;
   }
 }

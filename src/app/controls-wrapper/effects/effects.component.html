@@ -6,49 +6,20 @@
   label="Search effects"
   class="effects__searchInput">
   <div class="effects__form">
-    <div class="effects__sliders">
-      <app-color-slider
-        [control]="effectsForm.get('speed')!"
-        [min]="0"
-        [max]="255"
-        label="Speed"
-        sliderClass="effects__slider">
-        <!-- TODO icons should! be built into the slider component -->
-        <span class="material-symbols-outlined">
-          speed
-        </span>
-      </app-color-slider>
-      <app-color-slider
-        [control]="effectsForm.get('intensity')!"
-        [min]="0"
-        [max]="255"
-        label="Intensity"
-        sliderClass="effects__slider">
-        <!-- TODO another button should toggle labels -->
-        <!-- (click)="toggleLabels()" -->
-        <span
-          class="material-symbols-outlined">
-          local_fire_department
-        </span>
-      </app-color-slider>
-
-      <hr>
-
-      <!-- TODO get dynamic sliders working -->
-      <app-color-slider
-        *ngFor="let sliderLabel of sliderLabels"
-        [control]="effectsForm.get('speed')!"
-        [min]="0"
-        [max]="255"
-        [label]="sliderLabel"
-        sliderClass="effects__slider">
-        <span style="font-style:italic">(does not work yet)</span>
-        <!-- <span class="material-symbols-outlined">
-          speed
-        </span> -->
-      </app-color-slider>
+    <div class="effects__form__section">
+      <h2 class="effects__form__sectionTitle">
+        Options
+      </h2>
+      <app-effects-controls
+        [effectsForm]="effectsForm">
+      </app-effects-controls>
     </div>
-    <app-effects-filter></app-effects-filter>
+    <div class="effects__form__section">
+      <h2 class="effects__form__sectionTitle">
+        Filters
+      </h2>
+      <app-effects-filter></app-effects-filter>
+    </div>
   </div>
 </app-search-input>
 
@@ -72,12 +43,6 @@
       </div>
       <div class="effects__radioButton__badgeWrapper">
         <div
-          *ngIf="effect.usesPalette"
-          class="effects__radioButton__badge effects__radioButton__badge--palettes"
-          [ngClass]="{ 'effects__radioButton__badge--selected': getEffectFilters().showPalettesEffects }">
-          {{ '&#x1F3A8;' }}
-        </div>
-        <div
           *ngIf="effect.usesVolume"
           class="effects__radioButton__badge effects__radioButton__badge--volume"
           [ngClass]="{ 'effects__radioButton__badge--selected': getEffectFilters().showVolumeEffects }">
@@ -90,9 +55,16 @@
           {{ '&#9835;' }}
         </div>
         <div
+          *ngIf="effect.usesPalette"
+          class="effects__radioButton__badge effects__radioButton__badge--palettes"
+          [ngClass]="{ 'effects__radioButton__badge--selected': getEffectFilters().showPalettesEffects }">
+          {{ '&#x1F3A8;' }}
+        </div>
+        <div
+          *ngFor="let dimension of effect.dimensions"
           class="effects__radioButton__badge effects__radioButton__badge--dimension"
-          [ngClass]="{ 'effects__radioButton__badge--selected': isEffectDimensionSelected(effect) }">
-          {{ getNumericDimension(effect) }}D
+          [ngClass]="{ 'effects__radioButton__badge--selected': isDimensionSelected(dimension) }">
+          {{ getNumericDimension(dimension) }}d
         </div>
       </div>
     </label>

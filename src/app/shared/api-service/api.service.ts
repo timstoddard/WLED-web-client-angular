@@ -6,11 +6,11 @@ import { WLEDInfo } from '../api-types/api-info';
 import { WLEDNodesResponse } from '../api-types/api-nodes';
 import { WLEDPalettesData } from '../api-types/api-palettes';
 import { WLEDPresets } from '../api-types/api-presets';
-import { WLEDSegment, WLEDState, WLEDUdpState } from '../api-types/api-state';
+import { WLEDNightLightState, WLEDSegment, WLEDState, WLEDUdpState } from '../api-types/api-state';
 import { WLEDApiResponse } from '../api-types/api-types';
 import { SavePresetRequest, WLEDSegmentPostRequest } from '../api-types/post-requests';
 import { AppPreset } from '../app-types/app-presets';
-import { AppWLEDState } from '../app-types/app-state';
+import { AppWLEDState, CustomIndex, OptionIndex } from '../app-types/app-state';
 import { FormValues } from '../form-service';
 import { LiveViewData } from '../live-view/live-view.service';
 import { UnsubscriberService } from '../unsubscriber/unsubscriber.service';
@@ -21,6 +21,20 @@ import { responseTypeAsJsonHack } from 'src/app/controls-wrapper/utils';
 import { AppStateService } from '../app-state/app-state.service';
 import { ApiTypeMapper } from '../api-type-mapper';
 import { SnackbarService } from '../snackbar.service';
+
+// TODO move to post-requests.ts
+interface WLEDStatePostRequest {
+  seg?: Partial<WLEDSegment> | Array<Partial<WLEDSegment>>;
+  bri?: number;
+  lor?: number;
+  transition?: number;
+  on?: boolean;
+  nl?: Partial<WLEDNightLightState>;
+  udpn?: Partial<WLEDUdpState>;
+  ps?: number;
+  v?: boolean;
+  time?: number;
+}
 
 // TODO split into sub classes per app section and use the ApiService to aggregate their usage
 @Injectable({ providedIn: 'root' })
@@ -117,15 +131,15 @@ export class ApiService extends UnsubscriberService {
     }
   }
 
-  private createBody = (data: { [key: string]: unknown }) => {
+  private createBody = (data: WLEDStatePostRequest) => {
     return {
       v: true, // verbose setting to get full API response
       time: Math.floor(Date.now() / 1000),
       ...data,
-    };
+    } as WLEDStatePostRequest;
   }
 
-  private httpPostStateAndInfo = (data: { [key: string]: unknown }) => {
+  private httpPostStateAndInfo = (data: WLEDStatePostRequest) => {
     return this.httpPost<WLEDApiResponse>(
       ApiPath.STATE_INFO_PATH,
       this.createBody(data),
@@ -142,7 +156,7 @@ export class ApiService extends UnsubscriberService {
     }));
   }
 
-  private httpPostState = (data: { [key: string]: unknown }) => {
+  private httpPostState = (data: WLEDStatePostRequest) => {
     return this.httpPost<WLEDState>(
       ApiPath.STATE_PATH,
       this.createBody(data),
@@ -262,11 +276,9 @@ export class ApiService extends UnsubscriberService {
   }
 
   /** Sets current effect by id. */
-  private setEffect = (effectId: number) => {
+  private setEffect = (effectId: number, fields?: Partial<WLEDSegment>) => {
     return this.httpPostStateAndInfo({
-      seg: {
-        fx: effectId,
-      },
+      seg: Object.assign({}, fields, { fx: effectId }),
     });
   }
 
@@ -291,6 +303,36 @@ export class ApiService extends UnsubscriberService {
     return this.httpPostState({
       seg: {
         ix: intensity,
+      },
+    });
+  }
+
+  /** Sets one of the three custom values. */
+  private setCustom = (index: CustomIndex, value: number) => {
+    const indexToNameMap = {
+      1: 'c1',
+      2: 'c2',
+      3: 'c3',
+    };
+    const name = indexToNameMap[index];
+    return this.httpPostState({
+      seg: {
+        [name]: value,
+      },
+    });
+  }
+
+  /** Sets one of the three option values. */
+  private setOption = (index: OptionIndex, value: number) => {
+    const indexToNameMap = {
+      1: 'o1',
+      2: 'o2',
+      3: 'o3',
+    };
+    const name = indexToNameMap[index];
+    return this.httpPostState({
+      seg: {
+        [name]: value,
       },
     });
   }
@@ -470,7 +512,8 @@ export class ApiService extends UnsubscriberService {
 
   /** Resets all segments, creating a single segment that covers the entire length of the LED strip. */
   private resetSegments = (ledCount: number, segmentsLength: number) => {
-    const segments: Partial<WLEDSegmentPostRequest>[] = [];
+    // TODO use type: Partial<WLEDSegmentPostRequest>[]
+    const segments: Partial<WLEDSegment>[] = [];
     segments.push({
       start: 0,
       stop: ledCount,
@@ -526,15 +569,15 @@ export class ApiService extends UnsubscriberService {
 
   /** Sets the name of the specified segment. */
   private setSegmentName = (segmentId: number, name: string) => {
-    // TODO does this api call work? (probably not but test before deleting)
     return this.httpPostState({
       seg: {
         id: segmentId,
-        n: name,
+        // TODO uncomment if segment api can set name
+        // n: name,
       },
     });
   }
-  
+
   private loadPreset = (presetId: number) => {
     return this.httpPostStateAndInfo({
       ps: presetId,
@@ -736,9 +779,10 @@ export class ApiService extends UnsubscriberService {
       getNames: this.getEffects,
       getData: this.getEffectData,
       set: this.setEffect,
-    },
-    intensity: {
-      set: this.setIntensity,
+      setSpeed: this.setSpeed,
+      setIntensity: this.setIntensity,
+      setCustom: this.setCustom,
+      setOption: this.setOption,
     },
     info: {
       get: this.getInfo,
@@ -765,9 +809,6 @@ export class ApiService extends UnsubscriberService {
     },
     power: {
       set: this.setPower,
-    },
-    speed: {
-      set: this.setSpeed,
     },
     state: {
       get: this.getState,

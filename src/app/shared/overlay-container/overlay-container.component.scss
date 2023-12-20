@@ -1,4 +1,6 @@
 :host {
+  overflow: auto; // TODO verify no regressions
+
   > ::ng-deep * {
     background: var(--backgroundColorPrimary);
     border: 2px solid var(--themeColorPrimary);

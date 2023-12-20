@@ -2,8 +2,11 @@
   *ngIf="label"
   [ngClass]="labelClass"
   class="colorSlider__label">
-  <!-- show an icon if one is provided -->
-  <ng-content></ng-content>
+  <span
+    *ngIf="matIconName"
+    class="material-symbols-outlined">
+    {{ matIconName }}
+  </span>
   <span class="colorSlider__label__text">
     {{ label }}
   </span>

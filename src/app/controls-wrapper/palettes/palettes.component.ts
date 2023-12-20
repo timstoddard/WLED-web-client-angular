@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms';
 import { FormService } from '../../shared/form-service';
 import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
 import { PalettesService } from './palettes.service';
+import { AppPalette } from 'src/app/shared/app-types/app-palettes';
 
 const NO_PALETTE_SELECTED = -1;
 
@@ -18,7 +19,7 @@ export class PalettesComponent extends UnsubscriberComponent implements OnInit {
 
   constructor(
     private palettesService: PalettesService,
-    private formSerivce: FormService,
+    private formService: FormService,
   ) {
     super();
   }
@@ -44,6 +45,10 @@ export class PalettesComponent extends UnsubscriberComponent implements OnInit {
     this.palettesService.filterPalettes(filterText);
   }
 
+  getHtmlFormattedPaletteName(palette: AppPalette) {
+    return this.palettesService.getHtmlFormattedPaletteName(palette);
+  }
+
   private setPalette(paletteId: number) {
     const result = this.palettesService.setPalette(paletteId);
     if (result) {
@@ -53,7 +58,7 @@ export class PalettesComponent extends UnsubscriberComponent implements OnInit {
   }
 
   private createFormControl() {
-    const control = this.formSerivce.createFormControl<number>(NO_PALETTE_SELECTED);
+    const control = this.formService.createFormControl<number>(NO_PALETTE_SELECTED);
 
     this.handleUnsubscribe(control.valueChanges)
       .subscribe((paletteId: number) => this.setPalette(paletteId));

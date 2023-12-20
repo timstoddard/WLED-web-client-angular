@@ -3,7 +3,7 @@ import { WLEDFileSystemInfo, WLEDInfo, WLEDLedInfo, WLEDWifiInfo } from './api-t
 import { WLEDNodesResponse } from './api-types/api-nodes';
 import { WLEDPreset, WLEDPresets } from './api-types/api-presets';
 import { WLEDApiResponse } from './api-types/api-types';
-import { AppEffect, EffectDimension } from './app-types/app-effects';
+import { AppEffect } from './app-types/app-effects';
 import { AppNode } from './app-types/app-nodes';
 import { AppPreset } from './app-types/app-presets';
 import { AppState } from './app-types/app-types';
@@ -12,11 +12,14 @@ import { AppFileSystemInfo, AppInfo, AppLedInfo, AppWifiInfo } from './app-types
 import { AppNightLightState, AppSegment, AppUdpState, AppWLEDState } from './app-types/app-state';
 import { ClientOnlyFieldsService, createDefaultSegmentFields } from './client-only-fields.service';
 import { compareNames } from '../controls-wrapper/utils';
-import { DEFAULT_EFFECT_DATA } from '../controls-wrapper/effects/effects.service';
+import { EffectsDataService } from './effects-data.service';
 
 @Injectable({ providedIn: 'root' })
 export class ApiTypeMapper {
-  constructor(private clientOnlyFieldsService: ClientOnlyFieldsService) {
+  constructor(
+    private clientOnlyFieldsService: ClientOnlyFieldsService,
+    private effectsDataService: EffectsDataService,
+  ) {
   }
 
   /** Maps an entire WLED API response into the format expected by this app. */
@@ -70,7 +73,6 @@ export class ApiTypeMapper {
   });
 
   mapWLEDEffectsToAppEffects = (effects: string[], effectsData: string[]): AppEffect[] => {
-    const isNumeric = (n: string) => !isNaN(parseFloat(n));
     const appEffects: AppEffect[] = [];
 
     // sort without Solid, so it will be first
@@ -90,42 +92,13 @@ export class ApiTypeMapper {
     effectsData.unshift(';!;');
 
     if (effectsFormatted.length !== effectsData.length) {
-      alert('Received effects (length N) and effects data (length N). Expected lengths to be equal. Effect controls may not work properly.')
+      alert(`Received effects (length ${effectsFormatted.length}) and effects data (length ${effectsData.length}). Expected lengths to be equal. Effect controls may not work properly.`)
     }
 
     for (const { id, name } of effectsFormatted) {
-      if (!name.includes('RSVD')) {
-        const effectData = (effectsData[id].length === 0)
-          ? DEFAULT_EFFECT_DATA
-          : effectsData[id];
-
-        const effectParameters = (effectData === '')
-          ? []
-          : effectData.split(';');
-
-        const paletteData = (effectParameters.length < 3 || effectParameters[2] === '')
-          ? []
-          : effectParameters[2].split(',');
-
-        let flags = (effectParameters.length < 4 || effectParameters[3] === '')
-          ? '1'
-          : effectParameters[3];
-
-        // solid has no flags
-        if (id == 0) {
-          flags = '';
-        }
-
-        appEffects.push({
-          id,
-          name,
-          usesPalette: (paletteData.length > 0 && (paletteData[0] !== '' && !isNumeric(paletteData[0]))),
-          usesVolume: flags.includes('v'),
-          usesFrequency: flags.includes('f'),
-          dimension: this.getEffectDimension(flags),
-          parameters: effectParameters,
-          effectDataString: effectData,
-        });
+      const parsedEffect = this.effectsDataService.parseEffectData(id, name, effectsData[id]);
+      if (parsedEffect) {
+        appEffects.push(parsedEffect);
       }
     }
 
@@ -323,21 +296,5 @@ export class ApiTypeMapper {
       ids,
       nextId: lowestUnusedId,
     };
-  }
-
-  private getEffectDimension(flags: string) {
-    let dimension = EffectDimension.ZERO;
-    const flagToDimensionMap: { [key: string]: EffectDimension } = {
-      '0': EffectDimension.ZERO,
-      '1': EffectDimension.ONE,
-      '2': EffectDimension.TWO,
-    }
-    for (const flag in flagToDimensionMap) {
-      if (flags.includes(flag)) {
-        dimension = flagToDimensionMap[flag];
-        break;
-      }
-    }
-    return dimension;
   }
 }

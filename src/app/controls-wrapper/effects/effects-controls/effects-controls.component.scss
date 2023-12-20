@@ -1,0 +1,5 @@
+.effectsControls {
+  @at-root ::ng-deep &__slider {
+    margin: -12px 0; // TODO is there a better way to control slider height?
+  }
+}

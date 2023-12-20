@@ -21,6 +21,7 @@ import { ControlsRoutingModule } from './controls-routing.module';
 import { ControlsServicesModule } from './controls-services.module';
 import { DeviceSelectorComponent } from './top-menu-bar/device-selector/device-selector.component';
 import { EffectsComponent } from './effects/effects.component';
+import { EffectsControlsComponent } from './effects/effects-controls/effects-controls.component';
 import { EffectsFilterComponent } from './effects/effects-filter/effects-filter.component';
 import { ExpandIconComponent } from '../shared/expand-icon/expand-icon.component';
 import { HexInputComponent } from './color-inputs/hex-input/hex-input.component';
@@ -66,6 +67,7 @@ const COMPONENTS = [
   ControlsWrapperComponent,
   DeviceSelectorComponent,
   EffectsComponent,
+  EffectsControlsComponent,
   EffectsFilterComponent,
   InfoComponent,
   NewSegmentComponent,

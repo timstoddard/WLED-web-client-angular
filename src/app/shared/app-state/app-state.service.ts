@@ -107,18 +107,18 @@ export class AppStateService extends UnsubscriberService {
     }
     this.clientOnlyFieldsService.updateSegmentIds(clientOnlyFieldsMap);
   }
-  setPalettes = (palettes: AppState['palettes']) => {
-    this.appStateStore.update((appState) => ({
-      ...appState,
-      palettes,
-    }));
-  }
-  setEffects = (effects: AppState['effects']) => {
-    this.appStateStore.update((appState) => ({
-      ...appState,
-      effects,
-    }));
-  }
+  // setPalettes = (palettes: AppState['palettes']) => {
+  //   this.appStateStore.update((appState) => ({
+  //     ...appState,
+  //     palettes,
+  //   }));
+  // }
+  // setEffects = (effects: AppState['effects']) => {
+  //   this.appStateStore.update((appState) => ({
+  //     ...appState,
+  //     effects,
+  //   }));
+  // }
   setLocalSettings = (localSettings: Partial<AppState['localSettings']>) => {
     this.appStateStore.update((appState) => ({
       ...appState,

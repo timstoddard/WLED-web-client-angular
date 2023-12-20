@@ -1,21 +1,24 @@
 @import 'src/app/shared/scss/mixins';
 
+:host {
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: auto auto auto 1fr;
+}
+
 ::ng-deep .effectNameHighlight {
   &--highEmphasis {
-    border: 1px solid var(--themeColorPrimary);
+    background: rgba(var(--themeColorPrimaryRgb), 0.9);
+    border: 1px solid var(--textColorPrimary);
     border-radius: 3px;
+    color: var(--backgroundColorPrimary);
+    padding: 0 1px;
   }
 
   &--lowEmphasis {
     text-decoration: underline;
     text-decoration-color: var(--themeColorPrimary);
   }
-}
-
-:host {
-  display: grid;
-  grid-template-columns: 100%;
-  grid-template-rows: auto auto auto 1fr;
 }
 
 .effects {
@@ -28,13 +31,18 @@
     flex-wrap: wrap;
     grid-area: 2 / 1 / 3 / 2;
     justify-content: space-evenly;
-  }
 
-  &__sliders {
-  }
+    &__section {
+      border: 1px solid var(--borderColorAccent);
+      border-radius: 6px;
+      padding: 6px;
+      margin: 3px;
+    }
 
-  @at-root ::ng-deep &__slider {
-    margin: -12px 0; // TODO is there a better way to control slider height?
+    &__sectionTitle {
+      @include flex-center;
+      margin: 4px 0 10px 0;
+    }
   }
 
   &__list {

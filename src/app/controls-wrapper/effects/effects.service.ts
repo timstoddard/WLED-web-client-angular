@@ -4,11 +4,19 @@ import { ApiService } from '../../shared/api-service/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { UnsubscriberService } from '../../shared/unsubscriber/unsubscriber.service';
 import { AppEffect, EffectDimension } from 'src/app/shared/app-types/app-effects';
-import { DomSanitizer } from '@angular/platform-browser';
+import { HtmlHighlightService } from 'src/app/shared/html-highlight.service';
+import { CustomIndex, OptionIndex } from 'src/app/shared/app-types/app-state';
+import { DEFAULT_EFFECT_DIMENSION } from 'src/app/shared/effects-data.service';
 
 export interface EffectMetadata {
   speed: number;
   intensity: number;
+  custom1: number;
+  custom2: number;
+  custom3: number;
+  option1: boolean;
+  option2: boolean;
+  option3: boolean;
 }
 
 export interface EffectFilters {
@@ -29,7 +37,6 @@ export const DEFAULT_EFFECT_FILTERS: EffectFilters = {
   show2DEffects: false,
 };
 
-export const DEFAULT_EFFECT_DATA = ';;!;1';
 const NONE_SELECTED = -1;
 
 @Injectable()
@@ -45,7 +52,7 @@ export class EffectsService extends UnsubscriberService {
   constructor(
     private apiService: ApiService,
     private appStateService: AppStateService,
-    private sanitizer: DomSanitizer,
+    private htmlHighlightService: HtmlHighlightService,
   ) {
     super();
 
@@ -53,17 +60,25 @@ export class EffectsService extends UnsubscriberService {
     this.selectedEffect$ = new BehaviorSubject<AppEffect>({
       id: NONE_SELECTED,
       name: this.getEffectName(NONE_SELECTED),
+      parameterLabels: [],
+      colorLabels: [],
+      segmentSettings: {},
       usesPalette: false,
       usesVolume: false,
       usesFrequency: false,
-      dimension: EffectDimension.ZERO,
-      parameters: [],
+      dimensions: [DEFAULT_EFFECT_DIMENSION],
       effectDataString: '',
     });
     this.selectedEffectMetadata$ = new BehaviorSubject({
       speed: 0,
       intensity: 0,
-    });
+      custom1: 0,
+      custom2: 0,
+      custom3: 0,
+      option1: false,
+      option2: false,
+      option3: false,
+    } as EffectMetadata);
 
     this.filterTextLowercase = '';
     this.currentEffectFilters = DEFAULT_EFFECT_FILTERS;
@@ -84,6 +99,12 @@ export class EffectsService extends UnsubscriberService {
           this.selectedEffectMetadata$.next({
             speed: segment.effectSpeed,
             intensity: segment.effectIntensity,
+            custom1: segment.effectCustom1,
+            custom2: segment.effectCustom2,
+            custom3: segment.effectCustom3,
+            option1: segment.effectOption1,
+            option2: segment.effectOption2,
+            option3: segment.effectOption3,
           });
         }
       });
@@ -96,16 +117,24 @@ export class EffectsService extends UnsubscriberService {
     }
 
     return (shouldCallApi && effectId !== NONE_SELECTED)
-      ? this.apiService.appState.effect.set(effectId)
+      ? this.apiService.appState.effect.set(effectId, selectedEffect?.segmentSettings)
       : null;
   }
 
   setSpeed(effectId: number) {
-    return this.apiService.appState.speed.set(effectId);
+    return this.apiService.appState.effect.setSpeed(effectId);
   }
 
   setIntensity(effectId: number) {
-    return this.apiService.appState.intensity.set(effectId);
+    return this.apiService.appState.effect.setIntensity(effectId);
+  }
+
+  setCustom(index: CustomIndex, value: number) {
+    return this.apiService.appState.effect.setCustom(index, value);
+  }
+
+  setOption(index: OptionIndex, value: number) {
+    return this.apiService.appState.effect.setOption(index, value);
   }
 
   getSelectedEffect$() {
@@ -145,90 +174,15 @@ export class EffectsService extends UnsubscriberService {
   }
 
   getHtmlFormattedEffectName(effect: AppEffect) {
-    // get manually hyphenated name (hints for CSS)
+    // get manually hyphenated name (hints for CSS); only exists for effects with longer names
     const hyphenatedName = this.nameToHyphenatedNameMap[effect.name];
-
-    // add highlighting, if there is filter text
-    const unhighlightedName = hyphenatedName ?? effect.name;
-    const filterText = this.getFilterText();
-    if (filterText) {
-      const filterTextRegExp = filterText.split('').join('(&shy;)?');
+    return this.htmlHighlightService.highlightHtmlText(
+      hyphenatedName ?? effect.name,
+      this.filterTextLowercase,
       // TODO add UI setting for search highlighting (high or low emphasis)
-      const highlightEmphasis = true ? 'highEmphasis' : 'lowEmphasis';
-      const rawHighlighted = unhighlightedName
-          .replace(
-            new RegExp(`(${filterTextRegExp})`, 'gi'),
-            `<span class="effectNameHighlight--${highlightEmphasis}">$1</span>`,
-          );
-      return this.sanitizer.bypassSecurityTrustHtml(rawHighlighted);
-    } else {
-      return unhighlightedName;
-    }
-  }
-
-  /** TODO finish */
-  getSelectedEffectSliderLabels(effect: AppEffect) {
-    // controls which sliders are shown in the effects settings
-    const sliderToggles = (effect.parameters.length === 0 || effect.parameters[0] === '')
-      ? []
-      : effect.parameters[0].split(',');
-
-    // TODO wire this up to color controls component
-    const colorControlToggles = (effect.parameters.length < 2 || effect.parameters[1] === '')
-      ? []
-      : effect.parameters[1].split(',');
-
-    // TODO wire this up to palettes component
-    const paletteToggles = (effect.parameters.length < 3 || effect.parameters[2] === '')
-      ? []
-      : effect.parameters[2].split(',');
-
-    console.log('sliderToggles', sliderToggles)
-    console.log('colorControlToggles', colorControlToggles)
-    console.log('paletteToggles', paletteToggles)
-
-    // set sliders on/off
-    const maxSliders = 5;
-    const sliderLabels: string[] = [];
-    for (let i = 0; i < maxSliders; i++) {
-      // if (not controlDefined and for AC speed or intensity and for SR all sliders) or slider has a value
-      if (
-        (
-          (effect.effectDataString === DEFAULT_EFFECT_DATA)
-          && i < ((effect.id < 128) ? 2 : maxSliders)
-        )
-        || (sliderToggles.length > i && sliderToggles[i] !== '')
-      ) {
-        let sliderLabel = '';
-        if (sliderToggles.length > i && sliderToggles[i] !== '!') {
-          sliderLabel = sliderToggles[i];
-        } else if (i === 0) {
-          sliderLabel = 'Effect speed';
-        } else if (i === 1) {
-          sliderLabel = 'Effect intensity';
-        } else {
-          sliderLabel = 'Custom' + (i - 1);
-        }
-
-        sliderLabels.push(sliderLabel);
-      }
-    }
-    console.log(sliderLabels)
-    return sliderLabels;
-
-    // TODO wire up this functionality
-    /*if (sliderToggles.length>5) { // up to 3 checkboxes
-      gId('fxopt')!.classList.remove('fade');
-      for (let i = 0; i<3; i++) {
-        if (5+i<sliderToggles.length && sliderToggles[5+i]!=='') {
-          gId('opt'+i)!.classList.remove('hide');
-          gId('optLabel'+i)!.innerHTML = sliderToggles[5+i]=="!" ? 'Option' : sliderToggles[5+i].substr(0,16);
-        } else
-          gId('opt'+i)!.classList.add('hide');
-      }
-    } else {
-      gId('fxopt')!.classList.add('fade');
-    }*/
+      `effectNameHighlight--${true ? 'highEmphasis' : 'lowEmphasis'}`,
+      ['&shy;'],
+    );
   }
 
   /**
@@ -275,15 +229,15 @@ export class EffectsService extends UnsubscriberService {
       },
       {
         conditionallyShow: this.currentEffectFilters.show0DEffects,
-        conditionValue: effect.dimension === EffectDimension.ZERO,
+        conditionValue: effect.dimensions.includes(EffectDimension.ZERO),
       },
       {
         conditionallyShow: this.currentEffectFilters.show1DEffects,
-        conditionValue: effect.dimension === EffectDimension.ONE,
+        conditionValue: effect.dimensions.includes(EffectDimension.ONE),
       },
       {
         conditionallyShow: this.currentEffectFilters.show2DEffects,
-        conditionValue: effect.dimension === EffectDimension.TWO,
+        conditionValue: effect.dimensions.includes(EffectDimension.TWO),
       },
     ];
 

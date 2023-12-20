@@ -21,6 +21,7 @@ export class ColorSliderComponent extends UnsubscriberComponent implements OnIni
   @Input() label: string = '';
   @Input() labelClass: string = '';
   @Input() sliderClass: string = '';
+  @Input() matIconName: string = '';
   @Input() set vertical(isVertical: boolean) {
     this.isVertical = isVertical;
     this.verticalClass = this.isVertical;

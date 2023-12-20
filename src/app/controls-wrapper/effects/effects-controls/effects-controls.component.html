@@ -1,0 +1,19 @@
+<!-- https://kno.wled.ge/interfaces/json-api/#effect-metadata -->
+<div>
+  <app-color-slider
+    *ngFor="let sliderConfig of sliderConfigs"
+    [control]="effectsForm.get(sliderConfig.formControlName)!"
+    [min]="sliderConfig.min"
+    [max]="sliderConfig.max"
+    [label]="sliderConfig.label"
+    sliderClass="effectsControls__slider">
+  </app-color-slider>
+</div>
+
+<div>
+  <app-checkbox
+    *ngFor="let optionConfig of optionConfigs"
+    [control]="getFormControl(optionConfig.formControlName)"
+    [label]="optionConfig.label">
+  </app-checkbox>
+</div>

@@ -18,7 +18,7 @@ export class ColorInputsComponent extends UnsubscriberComponent implements OnIni
 
   constructor(
     private colorService: ColorService,
-    private formSerivce: FormService,
+    private formService: FormService,
     private appStateService: AppStateService,
     private colorSlotsService: ColorSlotsService
   ) {
@@ -114,7 +114,7 @@ export class ColorInputsComponent extends UnsubscriberComponent implements OnIni
    * @returns 
    */
   private createForm() {
-    return this.formSerivce.createFormGroup({
+    return this.formService.createFormGroup({
       rgb: {
         r: 0,
         g: 0,

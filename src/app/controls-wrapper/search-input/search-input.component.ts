@@ -28,7 +28,7 @@ export class SearchInputComponent extends UnsubscriberComponent implements OnIni
   isContextMenuOpen!: boolean;
 
   constructor(
-    private formSerivce: FormService,
+    private formService: FormService,
     private overlayPositionService: OverlayPositionService,
   ) {
     super();
@@ -78,7 +78,7 @@ export class SearchInputComponent extends UnsubscriberComponent implements OnIni
   }
 
   private createFormControl() {
-    const control = this.formSerivce.createFormControl<string>('');
+    const control = this.formService.createFormControl<string>('');
 
     this.handleUnsubscribe(control.valueChanges)
       .subscribe(() => this.onChange());

@@ -6,8 +6,9 @@ import { AppStateService } from '../../shared/app-state/app-state.service';
 import { UnsubscriberService } from '../../shared/unsubscriber/unsubscriber.service';
 import { ColorSlotsService } from '../color-inputs/color-slots/color-slots.service';
 import { compareNames, findRouteData } from '../utils';
-import { AppPaletteWithBackground, AppPaletteWithoutBackground } from 'src/app/shared/app-types/app-palettes';
+import { AppPalette, AppPaletteWithBackground, AppPaletteWithoutBackground } from 'src/app/shared/app-types/app-palettes';
 import { WLEDPaletteColor, WLEDPaletteColors, WLEDPalettesData } from 'src/app/shared/api-types/api-palettes';
+import { HtmlHighlightService } from 'src/app/shared/html-highlight.service';
 
 interface PaletteBackgrounds {
   [id: number]: string;
@@ -28,6 +29,7 @@ export class PalettesService extends UnsubscriberService {
     private appStateService: AppStateService,
     private colorSlotsService: ColorSlotsService,
     private route: ActivatedRoute,
+    private htmlHighlightService: HtmlHighlightService,
   ) {
     super();
 
@@ -99,6 +101,15 @@ export class PalettesService extends UnsubscriberService {
         };
       });
     this.filteredPalettes$.next(filteredPalettes);
+  }
+
+  getHtmlFormattedPaletteName(palette: AppPalette) {
+    return this.htmlHighlightService.highlightHtmlText(
+      palette.name,
+      this.filterTextLowercase,
+      // TODO add UI setting for search highlighting (high or low emphasis)
+      `paletteNameHighlight--${true ? 'highEmphasis' : 'lowEmphasis'}`,
+    );
   }
 
   /** Sorts the palettes based on their names and joins with background data. */
