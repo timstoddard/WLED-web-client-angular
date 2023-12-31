@@ -69,7 +69,7 @@ export class PageTitleService extends UnsubscriberService {
    * @returns the deepest child route
    */
   private getChild(activatedRoute: ActivatedRoute): ActivatedRoute {
-    return activatedRoute && activatedRoute.firstChild
+    return activatedRoute?.firstChild
       ? this.getChild(activatedRoute.firstChild)
       : activatedRoute;
   }

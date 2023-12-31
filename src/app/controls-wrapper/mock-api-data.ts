@@ -29,7 +29,7 @@ export const MOCK_API_RESPONSE: WLEDApiResponse = {
     lor: 0,
     mainseg: 0,
     seg: [
-      {
+{
         id: 0,
         start: 0,
         stop: 268,
@@ -71,7 +71,7 @@ export const MOCK_API_RESPONSE: WLEDApiResponse = {
         fxdef: false, // TODO
         set: 0, // TODO
         rpt: false,
-        // n: 'stove',
+        n: 'stove',
       },
       {
         id: 1,
@@ -115,7 +115,7 @@ export const MOCK_API_RESPONSE: WLEDApiResponse = {
         fxdef: false, // TODO
         set: 0, // TODO
         rpt: false,
-        // n: 'sink',
+        n: 'sink',
       },
       {
         id: 2,
@@ -159,7 +159,7 @@ export const MOCK_API_RESPONSE: WLEDApiResponse = {
         fxdef: false, // TODO
         set: 0, // TODO
         rpt: false,
-        // n: 'window',
+        n: 'window',
       },
       {
         id: 3,
@@ -203,7 +203,7 @@ export const MOCK_API_RESPONSE: WLEDApiResponse = {
         fxdef: false, // TODO
         set: 0, // TODO
         rpt: false,
-        // n: 'couch',
+        n: 'couch',
       },
     ],
   },

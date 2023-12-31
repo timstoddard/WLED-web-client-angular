@@ -129,6 +129,7 @@ export interface AppSegment {
   setId: number;
   /** Flag to repeat current segment settings by creating segments until all available LEDs are included in automatically created segments or maximum segments reached. Will also toggle reverse on every even segment. */
   isRepeated: boolean;
+  // TODO move this to top?
   /** Segment name. (client-only property) */
   name: string;
   /** `true` if the segment is expanded. (client-only property) */

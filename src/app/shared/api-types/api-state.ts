@@ -46,6 +46,8 @@ export interface WLEDUdpState {
 }
 
 export interface WLEDSegment {
+  /** Segment name. */
+  n: string;
   /** [0 - `info.maxseg-1`] Zero-indexed ID of the segment. May be omitted from post request, in that case the ID will be inferred from the order of the segment objects in the `seg` array. */
   id: number;
   /** [0 - `info.leds.count-1`] LED the segment starts at. For 2D set-up it determines column where segment starts, from top-left corner of the matrix. */

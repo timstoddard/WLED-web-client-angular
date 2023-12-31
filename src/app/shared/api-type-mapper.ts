@@ -124,12 +124,13 @@ export class ApiTypeMapper {
       const isExpanded = clientOnlyFields?.isExpanded || false;
 
       const appSegment: AppSegment = {
+        name: segment.n,
         id,
         isExpanded,
         startColumn: segment.start,
         stopColumn: segment.stop,
-        startRow: 1, // TODO
-        stopRow: 1, // TODO
+        startRow: segment.startY,
+        stopRow: segment.stopY,
         length: segment.len,
         group: segment.grp,
         space: segment.spc,
@@ -162,7 +163,6 @@ export class ApiTypeMapper {
         forceEffectMetadataDefaults: segment.fxdef,
         setId: segment.set,
         isRepeated: segment.rpt,
-        name: '', // TODO
       };
 
       return appSegment;

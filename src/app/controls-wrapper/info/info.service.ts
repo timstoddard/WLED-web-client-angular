@@ -29,7 +29,6 @@ export class InfoService extends UnsubscriberService {
       });
   }
 
-  // TODO add unit tests!
   getRuntimeString = (runtimeSeconds: number) => {
     const SECONDS_IN_DAY = 60 * 60 * 24;
     const SECONDS_IN_HOUR = 60 * 60;
@@ -38,17 +37,25 @@ export class InfoService extends UnsubscriberService {
     const hours = Math.floor((runtimeSeconds - (days * SECONDS_IN_DAY)) / SECONDS_IN_HOUR);
     const minutes = Math.floor((runtimeSeconds - (days * SECONDS_IN_DAY) - (hours * SECONDS_IN_HOUR)) / SECONDS_IN_MINUTE);
     const seconds = runtimeSeconds - minutes * 60;
-
     const timeStringParts: string[] = [];
+
+    // only show days if total runtime is in days
     if (days > 0) {
       timeStringParts.push(formatPlural('day', days));
     }
+
+    // only show hours if total runtime is in hours or days
     if (days > 0 || hours > 0) {
       timeStringParts.push(formatPlural('hour', hours));
     }
-    if (days === 0 && runtimeSeconds >= SECONDS_IN_MINUTE) {
+
+    // only show minutes if total runtime is less than a day
+    // and if total runtime is greater than or equal to a minute
+    if (runtimeSeconds < SECONDS_IN_DAY && runtimeSeconds >= SECONDS_IN_MINUTE) {
       timeStringParts.push(formatPlural('min', minutes));
     }
+
+    // only show seconds if total runtime is less than an hour
     if (runtimeSeconds < SECONDS_IN_HOUR) {
       timeStringParts.push(formatPlural('sec', seconds));
     }

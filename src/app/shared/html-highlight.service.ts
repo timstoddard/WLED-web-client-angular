@@ -8,7 +8,6 @@ export class HtmlHighlightService {
   ) {
   }
 
-  // TODO needs unit tests
   highlightHtmlText(
     htmlText: string,
     filterText: string,
@@ -18,13 +17,13 @@ export class HtmlHighlightService {
     let highlightedText: string | SafeHtml = htmlText;
 
     if (filterText) {
-      const regExpStringsToIgnore = `(${htmlStringsToIgnore.join('|')})?`
+      const regExpStringsToIgnore = `(${htmlStringsToIgnore.join('|')})?`;
       const filterTextRegExp = filterText.split('').join(regExpStringsToIgnore);
       const highlighted = htmlText
-          .replace(
-            new RegExp(`(${filterTextRegExp})`, 'gi'),
-            `<span class="${highlightClass}">$1</span>`,
-          );
+        .replace(
+          new RegExp(`(${filterTextRegExp})`, 'gi'),
+          `<span class="${highlightClass}">$1</span>`,
+        );
       highlightedText = this.sanitizer.bypassSecurityTrustHtml(highlighted);
     }
 

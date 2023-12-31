@@ -1,3 +1,4 @@
+import { TestBed } from '@angular/core/testing';
 import { ApiTypeMapper } from './api-type-mapper';
 import { WLEDFileSystemInfo, WLEDInfo, WLEDLedInfo, WLEDWifiInfo } from './api-types/api-info';
 import { WLEDNodesResponse } from './api-types/api-nodes';
@@ -5,11 +6,13 @@ import { WLEDPresets } from './api-types/api-presets';
 import { WLEDNightLightState, WLEDSegment, WLEDState, WLEDUdpState } from './api-types/api-state';
 import { WLEDApiResponse } from './api-types/api-types';
 import { DEFAULT_APP_STATE } from './app-state/app-state-defaults';
+import { AppEffect, EffectDimension } from './app-types/app-effects';
 import { AppFileSystemInfo, AppInfo, AppLedInfo, AppWifiInfo } from './app-types/app-info';
 import { AppNode } from './app-types/app-nodes';
 import { AppNightLightState, AppSegment, AppUdpState, AppWLEDState } from './app-types/app-state';
 import { AppState } from './app-types/app-types';
 import { ClientOnlyFieldsService } from './client-only-fields.service';
+import { EffectsDataService } from './effects-data.service';
 
 /* Set up all mocks for WLED types. */
 
@@ -24,6 +27,8 @@ const MOCK_WLED_NIGHTLIGHT: WLEDNightLightState = {
 const MOCK_WLED_UDP: WLEDUdpState = {
   send: true,
   recv: false,
+  sgrp: 1,
+  rgrp: 1,
 };
 
 const MOCK_WLED_SEGMENTS: WLEDSegment[] = [
@@ -31,6 +36,8 @@ const MOCK_WLED_SEGMENTS: WLEDSegment[] = [
     id: 0,
     start: 0,
     stop: 10,
+    startY: 0,
+    stopY: 0,
     len: 10,
     grp: 1,
     spc: 0,
@@ -43,16 +50,31 @@ const MOCK_WLED_SEGMENTS: WLEDSegment[] = [
     fx: 1,
     sx: 128,
     ix: 128,
+    c1: 0,
+    c2: 0,
+    c3: 0,
+    o1: false,
+    o2: false,
+    o3: false,
     pal: 1,
     sel: true,
     rev: false,
+    rY: false,
     on: true,
     bri: 255,
-    cct: 1,
     mi: false,
+    mY: false,
+    tp: false,
+    cct: 1,
     lx: 0,
     ly: 0,
     frz: false,
+    m12: 0,
+    si: 0,
+    fxdef: false,
+    set: 0,
+    rpt: false,
+    n: 'test',
   },
 ];
 
@@ -125,17 +147,62 @@ const MOCK_PALETTES: string[] = [
   'palette_3',
 ];
 
-const MOCK_EFFECTS: string[] = [
+const MOCK_WLED_EFFECTS: string[] = [
   'effect_1',
   'effect_2',
   'effect_3',
+];
+
+const MOCK_WLED_EFFECTS_DATA: string[] = [
+  '!;!,!;!',
+  '!;;!',
+  '!;!;!',
+];
+
+const MOCK_APP_EFFECTS: AppEffect[] = [
+  {
+    id: 0,
+    name: 'Solid',
+    parameterLabels: [''],
+    colorLabels: ['Fx', '', ''],
+    segmentSettings: {},
+    usesPalette: false,
+    usesVolume: false,
+    usesFrequency: false,
+    dimensions: [EffectDimension.ONE],
+    effectDataString: ';!;',
+  },
+  {
+    id: 1,
+    name: 'effect_2',
+    parameterLabels: ['!'],
+    colorLabels: [],
+    segmentSettings: {},
+    usesPalette: true,
+    usesVolume: false,
+    usesFrequency: false,
+    dimensions: [EffectDimension.ONE],
+    effectDataString: '!;;!',
+  },
+  {
+    id: 2,
+    name: 'effect_3',
+    parameterLabels: ['!'],
+    colorLabels: ['Fx', '', ''],
+    segmentSettings: {},
+    usesPalette: true,
+    usesVolume: false,
+    usesFrequency: false,
+    dimensions: [EffectDimension.ONE],
+    effectDataString: '!;!;!',
+  },
 ];
 
 const MOCK_WLED_API_RESPONSE: WLEDApiResponse = {
   state: MOCK_WLED_STATE,
   info: MOCK_WLED_INFO,
   palettes: MOCK_PALETTES,
-  effects: MOCK_EFFECTS,
+  effects: MOCK_WLED_EFFECTS,
 };
 
 const MOCK_WLED_PRESETS: WLEDPresets = {
@@ -155,13 +222,17 @@ const MOCK_APP_NIGHTLIGHT: AppNightLightState = {
 const MOCK_APP_UDP: AppUdpState = {
   shouldSend: true,
   shouldReceive: false,
+  sendGroup: 1,
+  receiveGroup: 1,
 };
 
 const MOCK_APP_SEGMENTS: AppSegment[] = [
   {
     id: 0,
-    start: 0,
-    stop: 10,
+    startColumn: 0,
+    stopColumn: 10,
+    startRow: 0,
+    stopRow: 0,
     length: 10,
     group: 1,
     space: 0,
@@ -174,17 +245,31 @@ const MOCK_APP_SEGMENTS: AppSegment[] = [
     effectId: 1,
     effectSpeed: 128,
     effectIntensity: 128,
+    effectCustom1: 0,
+    effectCustom2: 0,
+    effectCustom3: 0,
+    effectOption1: false,
+    effectOption2: false,
+    effectOption3: false,
     paletteId: 1,
     isSelected: true,
-    isReversed: false,
+    isHorizontallyReversed: false,
+    isVerticallyReversed: false,
     isOn: true,
     brightness: 255,
-    isMirrored: false,
+    isHorizonallyMirrored: false,
+    isVerticallyMirrored: false,
+    isTransposed: false,
     colorTemp: 1,
     loxonePrimaryColor: 0,
     loxoneSecondaryColor: 0,
     isFrozen: false,
-    name: 'name',
+    expandEffect1D: 0,
+    soundSimulationType: 0,
+    forceEffectMetadataDefaults: false,
+    setId: 0,
+    isRepeated: false,
+    name: 'test',
     isExpanded: false,
   },
 ];
@@ -208,8 +293,8 @@ const MOCK_APP_LED_INFO: AppLedInfo = {
   amps: 8,
   maxAmps: 12,
   maxSegments: 3,
-  lightCapabilities: 0,
-  segmentLightCapabilities: [],
+  lightCapabilities: 4,
+  segmentLightCapabilities: [4],
 };
 
 const MOCK_APP_WIFI_INFO: AppWifiInfo = {
@@ -256,19 +341,28 @@ const EXPECTED_APP_STATE: AppState = {
   state: MOCK_APP_WLED_STATE,
   info: MOCK_APP_INFO,
   palettes: MOCK_PALETTES,
-  effects: MOCK_EFFECTS,
+  effects: MOCK_APP_EFFECTS,
   localSettings: DEFAULT_APP_STATE.localSettings,
   nodes: DEFAULT_APP_STATE.nodes,
   presets: [], // TODO add
 };
 
+// TODO get these unit tests to succeed
 fdescribe('ApiTypeMapper', () => {
   let apiTypeMapper: ApiTypeMapper;
-  let clientOnlyFieldsService: ClientOnlyFieldsService;
 
   beforeEach(() => {
-    clientOnlyFieldsService = new ClientOnlyFieldsService();
-    apiTypeMapper = new ApiTypeMapper(clientOnlyFieldsService);
+    TestBed.configureTestingModule({
+      providers: [
+        ApiTypeMapper,
+        ClientOnlyFieldsService,
+        EffectsDataService,
+        // { provide: StateApiService, useValue: {} },
+        // { provide: AppStateService, useValue: {} },
+        // { provide: ApiTypeMapper, useValue: {} },
+      ],
+    });
+    apiTypeMapper = TestBed.inject(ApiTypeMapper);
   });
 
   it('mapWLEDApiResponseToAppState should work', () => {
@@ -279,6 +373,7 @@ fdescribe('ApiTypeMapper', () => {
     const appState = apiTypeMapper.mapWLEDApiResponseToAppState(
       DEFAULT_APP_STATE,
       MOCK_WLED_API_RESPONSE,
+      MOCK_WLED_EFFECTS_DATA,
       MOCK_WLED_PRESETS,
     );
 

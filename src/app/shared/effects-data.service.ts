@@ -66,7 +66,7 @@ export class EffectsDataService {
    * - 0: Effect works well on a single LED. If flag 0 is present, flags 1/2/3 are omitted (unused)
    * - 1: Effect is optimized for use on 1D LED strips
    * - 2: Effect requires a 2D matrix setup (unless flag 1 is also present)
-   * - 3: Effect requires a 3D cube (unless flags 1 and/or 2 are also present) (unused)
+   * - 3: [UNUSED] Effect requires a 3D cube (unless flags 1 and/or 2 are also present)
    * - v: Effect is audio reactive, reacts to amplitude/volume
    * - f: Effect is audio reactive, reacts to audio frequency distribution
    * 
@@ -100,17 +100,17 @@ export class EffectsDataService {
     }
 
     // Verify: this should be length 3-5
-    const x = effectData.split(';');
-    if (x.length < 3 || x.length > 5) {
-      console.warn(`Invalid effect data provided: ${effectData}, see https://kno.wled.ge/interfaces/json-api/#effect-metadata`);
+    const effectDataFields = effectData.split(';');
+    if (effectDataFields.length < 3 || effectDataFields.length > 5) {
+      console.warn(`Invalid effect data provided for ${name}: ${effectData}, see https://kno.wled.ge/interfaces/json-api/#effect-metadata`);
       return null;
     }
 
-    const parameterLabels = this.getParameterLabels(x[0]);
-    const colorLabels = this.getColorLabels(x[1]);
-    const usesPalette = x[2] === '!';
-    const apiFlags = this.getFlags(id, x[3]);
-    const segmentSettings = this.getSegmentSettings(x[4]);
+    const parameterLabels = this.getParameterLabels(effectDataFields[0]);
+    const colorLabels = this.getColorLabels(effectDataFields[1]);
+    const usesPalette = effectDataFields[2] === '!';
+    const apiFlags = this.getFlags(id, effectDataFields[3]);
+    const segmentSettings = this.getSegmentSettings(effectDataFields[4]);
 
     return {
       id,
