@@ -75,18 +75,31 @@ export class EffectsComponent extends UnsubscriberComponent implements OnInit {
     }
   }
 
-  getMatIconForDimension(dimension: EffectDimension) {
+  getNumericDimension(dimension: EffectDimension) {
     switch (dimension) {
       case EffectDimension.ZERO:
-        return 'line_end_circle';
+        return 0;
       case EffectDimension.ONE:
-        return 'conversion_path';
+        return 1;
       case EffectDimension.TWO:
-        return 'apps';
+        return 2;
       default:
         return '';
     }
   }
+
+  // getMatIconForDimension(dimension: EffectDimension) {
+  //   switch (dimension) {
+  //     case EffectDimension.ZERO:
+  //       return 'line_end_circle';
+  //     case EffectDimension.ONE:
+  //       return 'conversion_path';
+  //     case EffectDimension.TWO:
+  //       return 'apps';
+  //     default:
+  //       return '';
+  //   }
+  // }
 
   getHtmlFormattedEffectName(effect: AppEffect) {
     return this.effectsService.getHtmlFormattedEffectName(effect);

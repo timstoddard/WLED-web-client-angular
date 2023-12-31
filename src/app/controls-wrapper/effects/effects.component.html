@@ -71,10 +71,10 @@
           class="effects__radioButton__badge effects__radioButton__badge--dimension"
           [ngClass]="{ 'effects__radioButton__badge--selected': isDimensionSelected(dimension) }">
           <!-- TODO are icons or text better for dimension? -->
-          <!-- {{ getNumericDimension(dimension) }}d -->
-          <span class="material-symbols-outlined">
+          {{ getNumericDimension(dimension) }}d
+          <!-- <span class="material-symbols-outlined">
             {{ getMatIconForDimension(dimension) }}
-          </span>
+          </span> -->
         </div>
       </div>
     </label>

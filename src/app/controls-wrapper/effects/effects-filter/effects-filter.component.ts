@@ -32,17 +32,17 @@ export class EffectsFilterComponent extends UnsubscriberComponent {
     {
       name: 'show0DEffects',
       label: '0-D Effects', // &#8226;
-      matIconName: 'line_end_circle',
+      // matIconName: 'line_end_circle',
     },
     {
       name: 'show1DEffects',
       label: '1-D Effects', // &#8942;
-      matIconName: 'conversion_path',
+      // matIconName: 'conversion_path',
     },
     {
       name: 'show2DEffects',
       label: '2-D Effects', // &#9638;
-      matIconName: 'apps',
+      // matIconName: 'apps',
     },
   ];
 

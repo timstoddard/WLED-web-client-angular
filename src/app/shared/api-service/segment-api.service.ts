@@ -33,11 +33,9 @@ export class SegmentApiService {
 
   /** Sets the name of the specified segment. */
   setSegmentName = (segmentId: number, name: string) => {
-    return this.apiService.httpPostState({
-      seg: {
-        id: segmentId,
-        n: name,
-      },
+    return this.httpPostSegment({
+      id: segmentId,
+      n: name,
     });
   }
 
@@ -76,7 +74,7 @@ export class SegmentApiService {
       3: 'c3',
     };
     const name = indexToNameMap[index];
-    return this.apiService.httpPostState({
+    return this.httpPostSegment({
       [name]: value,
     });
   }
@@ -89,7 +87,7 @@ export class SegmentApiService {
       3: 'o3',
     };
     const name = indexToNameMap[index];
-    return this.apiService.httpPostState({
+    return this.httpPostSegment({
       [name]: value,
     });
   }
@@ -125,11 +123,9 @@ export class SegmentApiService {
 
   /** Selects the specified segment. */
   selectSegment = (segmentId: number, isSelected: boolean) => {
-    return this.apiService.httpPostState({
-      seg: {
-        id: segmentId,
-        sel: isSelected,
-      },
+    return this.httpPostSegment({
+      id: segmentId,
+      sel: isSelected,
     });
   }
 
@@ -252,11 +248,9 @@ export class SegmentApiService {
 
   /** Toggles the mirror setting of the specified segment. */
   setSegmentMirror = (segmentId: number, isMirror: boolean) => {
-    return this.apiService.httpPostState({
-      seg: {
-        id: segmentId,
-        mi: isMirror,
-      },
+    return this.httpPostSegment({
+      id: segmentId,
+      mi: isMirror,
     });
   }
 

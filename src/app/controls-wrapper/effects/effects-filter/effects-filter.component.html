@@ -3,6 +3,7 @@
   [control]="getFormControl(filter.name)"
   [label]="filter.label">
   <span
+    *ngIf="filter.matIconName"
     checkboxLabelIcon
     class="material-symbols-outlined">
     {{ filter.matIconName }}
