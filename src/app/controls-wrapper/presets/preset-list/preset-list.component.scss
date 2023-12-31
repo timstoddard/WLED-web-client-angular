@@ -1,11 +1,5 @@
 @import 'src/app/shared/scss/mixins';
 
-:host {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-}
-
 .presetList {
   &__buttons {
     @include flex-center;

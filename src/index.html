@@ -31,11 +31,12 @@
 
     .dot {
       animation: rotate_circle 1.2s infinite cubic-bezier(0.8, 0.2, 0.2, 0.8);
-      color: #11ff00;
+      color: var(--themeColorPrimary);
       font-size: 50px;
       left: calc(50%);
       position: absolute;
       top: calc(50% - 50px);
+      transform: translate(0, -50px);
     }
     .dot::after {
       content: ".";

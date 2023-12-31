@@ -95,6 +95,7 @@ export class AppComponent extends UnsubscriberComponent {
    */
   private hideLoadingAnimation() {
     const loader = document.querySelector('.pre-js-loader') as HTMLDivElement;
+    loader.style.display = 'none';
     loader.style.opacity = '0';
     loader.style.visibility = 'false';
   }

@@ -130,8 +130,7 @@
   flex-direction: column;
   margin: 0 auto;
   max-width: 600px;
-  padding: 0;
-  width: 90%;
+  padding: 0 4px;
 }
 
 @mixin listItemBaseStyles() {
@@ -314,6 +313,8 @@ $antWidth: 2px;
 
 @mixin main-view-container {
   @include view-container-base;
+  display: flex;
+  flex-direction: column;
   margin: $mainViewEdgeSpacing;
   overflow-x: hidden;
   padding: 10px 6px;

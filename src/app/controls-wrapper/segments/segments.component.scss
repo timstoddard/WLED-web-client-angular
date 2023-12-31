@@ -2,9 +2,6 @@
 
 :host {
   @include main-view-container;
-  display: flex;
-  flex-direction: column;
-  padding: 10px 20px;
 }
 
 .segments {
@@ -16,11 +13,5 @@
     & > * {
       margin: 5px;
     }
-  }
-
-  &__list {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
   }
 }
