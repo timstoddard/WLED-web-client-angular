@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { WLEDApiResponse } from '../../shared/api-types/api-types';
-import { ApiService } from '../../shared/api-service/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { UnsubscriberService } from '../../shared/unsubscriber/unsubscriber.service';
 import { WebSocketService } from '../../shared/web-socket.service';
+import { StateApiService } from 'src/app/shared/api-service/state-api.service';
 
 export class TopMenuBarButtonName {
   static readonly POWER = 'Power';
@@ -19,7 +19,7 @@ export class TopMenuBarService extends UnsubscriberService {
   private processingStatus!: { [key: string]: boolean };
 
   constructor(
-    private apiService: ApiService,
+    private stateApiService: StateApiService,
     private appStateService: AppStateService,
     private webSocketService: WebSocketService,
   ) {
@@ -38,21 +38,21 @@ export class TopMenuBarService extends UnsubscriberService {
   setPower(isOn: boolean) {
     this.processToggle(
       TopMenuBarButtonName.POWER,
-      this.apiService.appState.power.set(isOn),
+      this.stateApiService.setPower(isOn),
     );
   }
 
   setNightLight(isNightLightActive: boolean) {
     this.processToggle(
       TopMenuBarButtonName.NIGHTLIGHT,
-      this.apiService.appState.nightLight.set(isNightLightActive),
+      this.stateApiService.setNightLightActive(isNightLightActive),
     );
   }
 
   setSync(shouldSync: boolean, shouldToggleReceiveWithSend: boolean) {
     this.processToggle(
       TopMenuBarButtonName.SYNC,
-      this.apiService.appState.sync.set(shouldSync, shouldToggleReceiveWithSend),
+      this.stateApiService.setSync(shouldSync, shouldToggleReceiveWithSend),
     );
   }
 
@@ -68,12 +68,12 @@ export class TopMenuBarService extends UnsubscriberService {
   }
 
   setBrightness(brightness: number) {
-    this.handleUnsubscribe(this.apiService.appState.brightness.set(brightness))
+    this.handleUnsubscribe(this.stateApiService.setBrightness(brightness))
       .subscribe();
   }
 
   setTransitionDuration(seconds: number) {
-    this.handleUnsubscribe(this.apiService.appState.transitionDuration.set(seconds))
+    this.handleUnsubscribe(this.stateApiService.setTransitionDuration(seconds))
       .subscribe();
   }
 

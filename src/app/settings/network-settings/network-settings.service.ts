@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { ApiService } from '../../shared/api-service/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { WLEDIpAddress } from '../../shared/app-types/app-types';
 import { UnsubscriberService } from 'src/app/shared/unsubscriber/unsubscriber.service';
@@ -7,6 +6,7 @@ import { ApiResponseParserService } from '../shared/api-response-parser.service'
 import { WIFI_PARSE_CONFIGURATIONS } from '../shared/settings-parse-configurations';
 import { NetworkSettings, WledNetworkSettings, getLoadSettingsDelayTimer, getNewParsedValuesSubject } from '../shared/settings-types';
 import { NetworkSettingsTransformerService } from './network-settings-transformer.service';
+import { SettingsApiService } from 'src/app/shared/api-service/settings-api.service';
 
 // TODO provide in settings services module
 @Injectable({ providedIn: 'root' })
@@ -15,7 +15,7 @@ export class NetworkSettingsService extends UnsubscriberService {
   private parsedValues = getNewParsedValuesSubject();
 
   constructor(
-    private apiService: ApiService,
+    private settingsApiService: SettingsApiService,
     private apiResponseParserService: ApiResponseParserService,
     private appStateService: AppStateService,
     private networkSettingsTransformerService: NetworkSettingsTransformerService,
@@ -24,7 +24,7 @@ export class NetworkSettingsService extends UnsubscriberService {
 
     this.handleUnsubscribe(getLoadSettingsDelayTimer())
       .subscribe(() => {
-        this.handleUnsubscribe(this.apiService.settings.network.get())
+        this.handleUnsubscribe(this.settingsApiService.getNetworkSettings())
           .subscribe((responseJs) => {
             const {
               formValues,
@@ -46,7 +46,7 @@ export class NetworkSettingsService extends UnsubscriberService {
   setNetworkSettings(settings: NetworkSettings) {
     const wledNetworkSettings = this.networkSettingsTransformerService
       .transformNetworkSettingsToWledNetworkSettings(settings);
-    return this.apiService.settings.network.set(wledNetworkSettings);
+    return this.settingsApiService.setNetworkSettings(wledNetworkSettings);
   }
 
   /**

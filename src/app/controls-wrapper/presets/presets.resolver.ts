@@ -2,15 +2,15 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import { of } from 'rxjs';
 import { WLEDPresets } from '../../shared/api-types/api-presets';
-import { ApiService } from '../../shared/api-service/api.service';
 import { OnlineStatusService } from '../../shared/online-status.service';
 import { MOCK_API_PRESETS } from '../mock-api-data';
 import { SelectedDeviceService } from 'src/app/shared/selected-device.service';
+import { PresetApiService } from 'src/app/shared/api-service/preset-api.service';
 
 @Injectable()
 export class PresetsResolver implements Resolve<WLEDPresets> {
   constructor(
-    private apiService: ApiService,
+    private presetApiService: PresetApiService,
     private onlineStatusService: OnlineStatusService,
     private selectedDeviceService: SelectedDeviceService,
   ) { }
@@ -20,11 +20,11 @@ export class PresetsResolver implements Resolve<WLEDPresets> {
 
     const ipAddress = route.queryParamMap.get('ip') as string;
     if (ipAddress && this.selectedDeviceService.isNoDeviceSelected()) {
-      return this.apiService.preset.getAll(ipAddress);
+      return this.presetApiService.getPresets(ipAddress);
     }
 
     return this.onlineStatusService.getIsOffline()
       ? of(MOCK_API_PRESETS)
-      : this.apiService.preset.getAll()
+      : this.presetApiService.getPresets()
   }
 }

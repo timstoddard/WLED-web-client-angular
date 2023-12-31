@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { saveAs } from 'file-saver';
-import { ApiService } from 'src/app/shared/api-service/api.service';
 import { UnsubscriberService } from 'src/app/shared/unsubscriber/unsubscriber.service';
 import { ApiResponseParserService } from '../shared/api-response-parser.service';
 import { SECURITY_PARSE_CONFIGURATIONS } from '../shared/settings-parse-configurations';
 import { SecuritySettings, getLoadSettingsDelayTimer, getNewParsedValuesSubject } from '../shared/settings-types';
 import { SecuritySettingsTransformerService } from './security-settings-transformer.service';
+import { SettingsApiService } from 'src/app/shared/api-service/settings-api.service';
+import { FileApiService } from 'src/app/shared/api-service/file-api.service';
 
 @Injectable({ providedIn: 'root' })
 export class SecuritySettingsService extends UnsubscriberService {
@@ -14,7 +15,8 @@ export class SecuritySettingsService extends UnsubscriberService {
   private parsedValues = getNewParsedValuesSubject();
 
   constructor(
-    private apiService: ApiService,
+    private settingsApiService: SettingsApiService,
+    private fileApiService: FileApiService,
     private apiResponseParserService: ApiResponseParserService,
     private securitySettingsTransformerService: SecuritySettingsTransformerService,
   ) {
@@ -22,7 +24,7 @@ export class SecuritySettingsService extends UnsubscriberService {
 
     this.handleUnsubscribe(getLoadSettingsDelayTimer())
       .subscribe(() => {
-        this.handleUnsubscribe(this.apiService.settings.security.get())
+        this.handleUnsubscribe(this.settingsApiService.getSecuritySettings())
           .subscribe((responseJs) => {
             const {
               formValues,
@@ -44,19 +46,19 @@ export class SecuritySettingsService extends UnsubscriberService {
   setSecuritySettings(settings: SecuritySettings) {
     const formValues = this.securitySettingsTransformerService
       .transformSecuritySettingsToWledSecuritySettings(settings);
-    return this.apiService.settings.security.set(formValues);
+    return this.settingsApiService.setSecuritySettings(formValues);
   }
 
   downloadPresetsFile() {
     saveAs(
-      this.apiService.downloadUrl.presets(),
+      this.fileApiService.getDownloadPresetsUrl(),
       this.PRESETS_FILE_NAME,
     );
   }
 
   downloadConfigFile() {
     saveAs(
-      this.apiService.downloadUrl.config(),
+      this.fileApiService.getDownloadConfigUrl(),
       this.CONFIG_FILE_NAME,
     );
   }

@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
-import { ApiService } from '../../shared/api-service/api.service';
 import { OnlineStatusService } from '../../shared/online-status.service';
 import { MOCK_PALETTES_DATA } from '../mock-api-data';
 import { SelectedDeviceService } from 'src/app/shared/selected-device.service';
 import { WLEDPalettesData } from 'src/app/shared/api-types/api-palettes';
+import { StateApiService } from 'src/app/shared/api-service/state-api.service';
 
 @Injectable()
 export class PalettesDataResolver implements Resolve<WLEDPalettesData[]> {
   constructor(
-    private apiService: ApiService,
+    private stateApiService: StateApiService,
     private onlineStatusService: OnlineStatusService,
     private selectedDeviceService: SelectedDeviceService,
   ) { }
@@ -33,7 +33,7 @@ export class PalettesDataResolver implements Resolve<WLEDPalettesData[]> {
     const LAST_PALETTE_DATA_PAGE = 9; // 9 pages (for now), zero indexed
     const apiCalls = [];
     for (let page = 0; page < LAST_PALETTE_DATA_PAGE; page++) {
-      apiCalls.push(this.apiService.appState.palette.getData(page, ipAddress));
+      apiCalls.push(this.stateApiService.getPalettesData(page, ipAddress));
     }
     return forkJoin(apiCalls);
   }

@@ -21,11 +21,11 @@ export class ControlsResolver implements Resolve<WLEDApiResponse> {
 
     const ipAddress = route.queryParamMap.get('ip') as string;
     if (ipAddress && this.selectedDeviceService.isNoDeviceSelected()) {
-      return this.apiService.appState.json.get(ipAddress);
+      return this.apiService.getJson(ipAddress);
     }
 
     return this.onlineStatusService.getIsOffline()
       ? of(MOCK_API_RESPONSE)
-      : this.apiService.appState.json.get();
+      : this.apiService.getJson();
   }
 }

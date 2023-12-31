@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { ApiService } from '../../shared/api-service/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { UnsubscriberService } from '../../shared/unsubscriber/unsubscriber.service';
 import { AppEffect, EffectDimension } from 'src/app/shared/app-types/app-effects';
 import { HtmlHighlightService } from 'src/app/shared/html-highlight.service';
 import { CustomIndex, OptionIndex } from 'src/app/shared/app-types/app-state';
 import { DEFAULT_EFFECT_DIMENSION } from 'src/app/shared/effects-data.service';
+import { SegmentApiService } from 'src/app/shared/api-service/segment-api.service';
 
 export interface EffectMetadata {
   speed: number;
@@ -50,7 +50,7 @@ export class EffectsService extends UnsubscriberService {
   private nameToHyphenatedNameMap!: { [key: string]: string };
 
   constructor(
-    private apiService: ApiService,
+    private segmentApiService: SegmentApiService,
     private appStateService: AppStateService,
     private htmlHighlightService: HtmlHighlightService,
   ) {
@@ -117,24 +117,24 @@ export class EffectsService extends UnsubscriberService {
     }
 
     return (shouldCallApi && effectId !== NONE_SELECTED)
-      ? this.apiService.appState.effect.set(effectId, selectedEffect?.segmentSettings)
+      ? this.segmentApiService.setEffect(effectId, selectedEffect?.segmentSettings)
       : null;
   }
 
   setSpeed(effectId: number) {
-    return this.apiService.appState.effect.setSpeed(effectId);
+    return this.segmentApiService.setSpeed(effectId);
   }
 
   setIntensity(effectId: number) {
-    return this.apiService.appState.effect.setIntensity(effectId);
+    return this.segmentApiService.setIntensity(effectId);
   }
 
   setCustom(index: CustomIndex, value: number) {
-    return this.apiService.appState.effect.setCustom(index, value);
+    return this.segmentApiService.setCustom(index, value);
   }
 
   setOption(index: OptionIndex, value: number) {
-    return this.apiService.appState.effect.setOption(index, value);
+    return this.segmentApiService.setOption(index, value);
   }
 
   getSelectedEffect$() {

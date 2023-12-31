@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { ApiTypeMapper } from '../../shared/api-type-mapper';
-import { ApiService } from '../../shared/api-service/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { AppSegment } from '../../shared/app-types/app-state';
 import { UnsubscriberService } from '../../shared/unsubscriber/unsubscriber.service';
+import { SegmentApiService } from 'src/app/shared/api-service/segment-api.service';
 
 @Injectable()
 export class SegmentsService extends UnsubscriberService {
@@ -11,7 +11,7 @@ export class SegmentsService extends UnsubscriberService {
   private ledCount: number;
 
   constructor (
-    private apiService: ApiService,
+    private segmentApiService: SegmentApiService,
     private appStateService: AppStateService,
     private apiTypeMapper: ApiTypeMapper,
   ) {
@@ -45,7 +45,7 @@ export class SegmentsService extends UnsubscriberService {
     const {
       nextId,
     } = this.apiTypeMapper.normalizeIds<AppSegment>(this.segments, 'id');
-    return this.apiService.segment.create({
+    return this.segmentApiService.createSegment({
       segmentId: nextId,
       ...options,
     });
@@ -60,12 +60,12 @@ export class SegmentsService extends UnsubscriberService {
     grouping?: number,
     spacing?: number,
   }) {
-    return this.apiService.segment.update(options);
+    return this.segmentApiService.updateSegment(options);
   }
 
   deleteSegment(segmentId: number) {
     if (this.segments.length > 1) {
-      return this.apiService.segment.delete(segmentId);
+      return this.segmentApiService.deleteSegment(segmentId);
     }
     return null;
     // TODO update client only fields
@@ -100,41 +100,41 @@ export class SegmentsService extends UnsubscriberService {
     if (segment) {
       const newName = name || this.getDefaultName(segmentId);
       // TODO update client only field
-      // return this.apiService.setSegmentName(segmentId, newName);
+      // return this.segmentApiService.setSegmentName(segmentId, newName);
     }
     return null;
   }
 
   setSegmentOn(segmentId: number, isOn: boolean) {
-    return this.apiService.segment.setOn(segmentId, isOn);
+    return this.segmentApiService.setSegmentOn(segmentId, isOn);
   }
 
   setSegmentBrightness(segmentId: number, brightness: number) {
-    return this.apiService.segment.setBrightness(segmentId, brightness);
+    return this.segmentApiService.setSegmentBrightness(segmentId, brightness);
   }
 
   setSegmentReverse(segmentId: number, isReverse: boolean) {
-    return this.apiService.segment.setReverse(segmentId, isReverse);
+    return this.segmentApiService.setSegmentReverse(segmentId, isReverse);
   }
 
   setSegmentMirror(segmentId: number, isMirror: boolean) {
-    return this.apiService.segment.setMirror(segmentId, isMirror);
+    return this.segmentApiService.setSegmentMirror(segmentId, isMirror);
   }
 
   selectSegment(segmentId: number, isSelected: boolean) {
-    return this.apiService.segment.select(segmentId, isSelected);
+    return this.segmentApiService.selectSegment(segmentId, isSelected);
   }
 
   selectOnlySegment(segmentId: number) {
-    return this.apiService.segment.selectOnly(segmentId, this.segments.length);
+    return this.segmentApiService.selectOnlySegment(segmentId, this.segments.length);
   }
 
   selectAllSegments() {
-    return this.apiService.segment.selectAll(this.segments.length);
+    return this.segmentApiService.selectAllSegments(this.segments.length);
   }
 
   resetSegments() {
-    return this.apiService.segment.reset(this.ledCount, this.segments.length);
+    return this.segmentApiService.resetSegments(this.ledCount, this.segments.length);
     // TODO update client only fields
   }
 

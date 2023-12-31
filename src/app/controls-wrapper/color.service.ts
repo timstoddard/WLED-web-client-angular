@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { IroColorValue, RgbColor } from '@irojs/iro-core';
 import iro from '@jaames/iro';
 import { Subject } from 'rxjs';
-import { ApiService } from '../shared/api-service/api.service';
 import { AppStateService } from '../shared/app-state/app-state.service';
 import { UnsubscriberService } from '../shared/unsubscriber/unsubscriber.service';
+import { SegmentApiService } from '../shared/api-service/segment-api.service';
 
 export interface CurrentColor {
   rgb: RgbColor;
@@ -25,7 +25,7 @@ export class ColorService extends UnsubscriberService {
 
   constructor(
     private appStateService: AppStateService,
-    private apiService: ApiService,
+    private segmentApiService: SegmentApiService,
   ) {
     super();
 
@@ -102,7 +102,7 @@ export class ColorService extends UnsubscriberService {
   }
 
   setWhiteBalance = (whiteBalance: number) => {
-    this.handleUnsubscribe(this.apiService.appState.whiteBalance.set(whiteBalance))
+    this.handleUnsubscribe(this.segmentApiService.setWhiteBalance(whiteBalance))
       .subscribe();
   }
 
@@ -144,7 +144,7 @@ export class ColorService extends UnsubscriberService {
     // this.colorPicker.color.setChannel('hsv', 'v', 100);
 
     this.handleUnsubscribe(
-      this.apiService.appState.color.set(
+      this.segmentApiService.setColor(
         rgb.r,
         rgb.g,
         rgb.b,

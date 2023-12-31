@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { ApiTypeMapper } from '../../shared/api-type-mapper';
-import { ApiService } from '../../shared/api-service/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { AppFileSystemInfo, AppInfo, AppLedInfo } from '../../shared/app-types/app-info';
 import { UnsubscriberService } from '../../shared/unsubscriber/unsubscriber.service';
 import { formatPlural } from '../utils';
+import { StateApiService } from 'src/app/shared/api-service/state-api.service';
 
 @Injectable()
 export class InfoService extends UnsubscriberService {
   constructor(
-    private apiService: ApiService,
+    private stateApiService: StateApiService,
     private appStateService: AppStateService,
     private apiTypeMapper: ApiTypeMapper,
   ) {
@@ -17,12 +17,12 @@ export class InfoService extends UnsubscriberService {
   }
 
   refreshInfo() {
-    this.handleUnsubscribe(this.apiService.appState.info.get())
+    this.handleUnsubscribe(this.stateApiService.getInfo())
       .subscribe((info) => this.appStateService.setInfo(info));
   }
 
   fetchNodes() {
-    this.handleUnsubscribe(this.apiService.appState.nodes.get())
+    this.handleUnsubscribe(this.stateApiService.getNodes())
       .subscribe(nodes => {
         const appNodes = this.apiTypeMapper.mapWLEDNodesToAppNodes(nodes);
         this.appStateService.setNodes(appNodes);

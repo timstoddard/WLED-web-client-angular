@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
-import { ApiService } from 'src/app/shared/api-service/api.service';
 import { UnsubscriberService } from 'src/app/shared/unsubscriber/unsubscriber.service';
 import { ApiResponseParserService } from '../shared/api-response-parser.service';
 import { TIME_PARSE_CONFIGURATIONS } from '../shared/settings-parse-configurations';
 import { TimeSettings, getLoadSettingsDelayTimer, getNewParsedValuesSubject } from '../shared/settings-types';
 import { TimeSettingsTransformerService } from './time-settings-transfomer.service';
+import { SettingsApiService } from 'src/app/shared/api-service/settings-api.service';
 
 @Injectable({ providedIn: 'root' })
 export class TimeSettingsService extends UnsubscriberService {
   private parsedValues = getNewParsedValuesSubject();
 
   constructor(
-    private apiService: ApiService,
+    private settingsApiService: SettingsApiService,
     private apiResponseParserService: ApiResponseParserService,
     private timeSettingsTransformerService: TimeSettingsTransformerService,
   ) {
@@ -19,7 +19,7 @@ export class TimeSettingsService extends UnsubscriberService {
 
     this.handleUnsubscribe(getLoadSettingsDelayTimer())
       .subscribe(() => {
-        this.handleUnsubscribe(this.apiService.settings.time.get())
+        this.handleUnsubscribe(this.settingsApiService.getTimeSettings())
           .subscribe((responseJs) => {
             const {
               formValues,
@@ -41,6 +41,6 @@ export class TimeSettingsService extends UnsubscriberService {
   setTimeSettings(settings: TimeSettings) {
     const formValues = this.timeSettingsTransformerService
       .transformTimeSettingsToWledTimeSettings(settings);
-    return this.apiService.settings.time.set(formValues);
+    return this.settingsApiService.setTimeSettings(formValues);
   }
 }

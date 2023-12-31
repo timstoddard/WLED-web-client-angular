@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
-import { ApiService } from '../../shared/api-service/api.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { UnsubscriberService } from '../../shared/unsubscriber/unsubscriber.service';
 import { ColorSlotsService } from '../color-inputs/color-slots/color-slots.service';
@@ -9,6 +8,7 @@ import { compareNames, findRouteData } from '../utils';
 import { AppPalette, AppPaletteWithBackground, AppPaletteWithoutBackground } from 'src/app/shared/app-types/app-palettes';
 import { WLEDPaletteColor, WLEDPaletteColors, WLEDPalettesData } from 'src/app/shared/api-types/api-palettes';
 import { HtmlHighlightService } from 'src/app/shared/html-highlight.service';
+import { SegmentApiService } from 'src/app/shared/api-service/segment-api.service';
 
 interface PaletteBackgrounds {
   [id: number]: string;
@@ -25,7 +25,7 @@ export class PalettesService extends UnsubscriberService {
   private filterTextLowercase!: string;
 
   constructor(
-    private apiService: ApiService,
+    private segmentApiService: SegmentApiService,
     private appStateService: AppStateService,
     private colorSlotsService: ColorSlotsService,
     private route: ActivatedRoute,
@@ -68,7 +68,7 @@ export class PalettesService extends UnsubscriberService {
     });
 
     return (shouldCallApi && paletteId !== NONE_SELECTED)
-      ? this.apiService.appState.palette.set(paletteId)
+      ? this.segmentApiService.setPalette(paletteId)
       : null;
   }
 
