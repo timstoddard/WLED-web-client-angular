@@ -121,7 +121,7 @@ export class SelectedDeviceService extends UnsubscriberService {
     onFailure: () => void = () => {},
   ) => {
     const ipAddress = wledIpAddress.ipv4Address;
-    const url = `http://${ipAddress}/${ApiPath.ALL_JSON_PATH}`;
+    const url = `http://${ipAddress}/${ApiPath.UPTIME}`;
     const testResult = this.loadUrlWithTimeout<WLEDApiResponse>(url);
 
     const successFn = () => {
@@ -155,7 +155,7 @@ export class SelectedDeviceService extends UnsubscriberService {
           if (result === HTTP_GET_FAILED) {
             // it didn't work
             success = false;
-          } else if (this.isValidFullJsonResponse(result)) {
+          } else if ((typeof result === 'number') && (result > 0)) {
             // it worked
             success = true;
           }
@@ -213,12 +213,6 @@ export class SelectedDeviceService extends UnsubscriberService {
       : status;
     this.snackbarService.openSnackBar(message);
   }
-
-  isValidFullJsonResponse = (result: WLEDApiResponse) =>
-    result.state
-    && result.info
-    && result.palettes
-    && result.effects;
 
   isValidStateInfoResponse = (result: WLEDApiResponse) =>
     result.state

@@ -1,4 +1,3 @@
-import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 // TODO move elsewhere
@@ -52,7 +51,7 @@ export const setCssColor = (name: string, color: string) => {
  */
 export const findRouteData = (key: string, route: ActivatedRoute | null): unknown => {
   if (route) {
-    if (route.snapshot.data[key]) {
+        if (route.snapshot.data[key]) {
       return route.snapshot.data[key];
     } else {
       return findRouteData(key, route.parent);

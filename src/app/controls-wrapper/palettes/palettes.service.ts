@@ -9,6 +9,7 @@ import { AppPalette, AppPaletteWithBackground, AppPaletteWithoutBackground } fro
 import { WLEDPaletteColor, WLEDPaletteColors, WLEDPalettesData } from 'src/app/shared/api-types/api-palettes';
 import { HtmlHighlightService } from 'src/app/shared/html-highlight.service';
 import { SegmentApiService } from 'src/app/shared/api-service/segment-api.service';
+import { CombinedResponse } from '../api-data.resolver';
 
 interface PaletteBackgrounds {
   [id: number]: string;
@@ -141,7 +142,7 @@ export class PalettesService extends UnsubscriberService {
   // TODO this logic should be done (once) in palettes data resolver
   private getPalettesData() {
     // TODO get from app state?
-    const palettesData = findRouteData('palettesData', this.route) as WLEDPalettesData[];
+    const palettesData = (findRouteData('data', this.route) as CombinedResponse).palettesData;
     let allPalettesData: WLEDPaletteColors = {};
     for (const paletteData of palettesData) {
       allPalettesData = { ...allPalettesData, ...paletteData.p };

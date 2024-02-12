@@ -1,13 +1,12 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { WLEDPresets } from '../shared/api-types/api-presets';
-import { WLEDApiResponse } from '../shared/api-types/api-types';
 import { AppStateService } from '../shared/app-state/app-state.service';
 import { LocalStorageKey, LocalStorageService } from '../shared/local-storage.service';
 import { AppUIConfig, UIConfigService } from '../shared/ui-config.service';
 import { UnsubscriberComponent } from '../shared/unsubscriber/unsubscriber.component';
 import { ControlsService } from './controls.service';
 import { generateApiUrl } from './json.service';
+import { CombinedResponse } from './api-data.resolver';
 
 enum SecondaryOutletType {
   SETTINGS = 'settings',
@@ -45,14 +44,13 @@ export class ControlsWrapperComponent extends UnsubscriberComponent implements O
   ngOnInit() {
     this.handleUnsubscribe(this.route.data)
       .subscribe(routeData => {
-        const apiJson = routeData['data'] as WLEDApiResponse;
-        const presets = routeData['presets'] as WLEDPresets;
-        const effectsData = routeData['effectsData'] as string[];
+        const apiData = routeData['data'] as CombinedResponse;
+        const { presets, effectsData } = apiData;
         for (const key of ['state', 'info']) {
-          console.log(key, apiJson[key as keyof WLEDApiResponse]);
+          console.log(key, apiData[key as keyof CombinedResponse]);
         }
         // needed because only this response include palettes/effects lists
-        this.appStateService.setAll(apiJson, effectsData, presets);
+        this.appStateService.setAll(apiData, effectsData, presets);
       });
 
     this.appStateService.getLocalSettings(this.ngUnsubscribe)
@@ -140,7 +138,7 @@ export class ControlsWrapperComponent extends UnsubscriberComponent implements O
           this.loadBackground(this.backgroundUrl);
         }); */
     } else {
-      this.loadBackground(this.backgroundUrl);
+      // this.loadBackground(this.backgroundUrl);
     }
     if (this.useCustomCss) {
       this.loadSkinCSS('skinCss');

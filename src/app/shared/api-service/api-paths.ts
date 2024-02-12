@@ -6,6 +6,7 @@ export enum ApiFilePath {
   SECURITY_SETTINGS_JS_PATH = 'settings/s.js?p=6',
 }
 
+// TODO remove "path" from all the enum keys
 export enum ApiPath {
   // json api
   ALL_JSON_PATH = 'json',
@@ -26,4 +27,6 @@ export enum ApiPath {
   WIFI_SETTINGS_PATH = 'settings/wifi',
   // other paths
   FILE_UPLOAD_PATH = 'upload',
+  VERSION = 'version',
+  UPTIME = 'uptime',
 }

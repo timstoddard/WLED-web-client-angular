@@ -1,15 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ControlsWrapperComponent } from './controls-wrapper.component';
-import { ControlsResolver } from './controls.resolver';
+import { ApiDataResolver } from './api-data.resolver';
 import { RouteWithPageTitle } from '../shared/page-title.service';
-import { PalettesDataResolver } from './palettes/palettes-data.resolver';
 import { SegmentsComponent } from './segments/segments.component';
 import { PresetsComponent } from './presets/presets.component';
 import { ControlsComponent } from './controls/controls.component';
 import { InfoComponent } from './info/info.component';
-import { PresetsResolver } from './presets/presets.resolver';
-import { EffectsDataResolver } from './effects/effects.resolver';
 
 const childRoutes = [
   {
@@ -45,10 +42,7 @@ const routes: RouteWithPageTitle[] = [
     component: ControlsWrapperComponent,
     data: { title: 'WLED Controls' },
     resolve: {
-      data: ControlsResolver,
-      effectsData: EffectsDataResolver,
-      presets: PresetsResolver,
-      palettesData: PalettesDataResolver,
+      data: ApiDataResolver,
     },
     children: childRoutes,
     runGuardsAndResolvers: 'pathParamsOrQueryParamsChange',
