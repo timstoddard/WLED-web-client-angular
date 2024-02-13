@@ -139,15 +139,10 @@ export class PalettesService extends UnsubscriberService {
     return paletteName;
   }
 
-  // TODO this logic should be done (once) in palettes data resolver
   private getPalettesData() {
     // TODO get from app state?
-    const palettesData = (findRouteData('data', this.route) as CombinedResponse).palettesData;
-    let allPalettesData: WLEDPaletteColors = {};
-    for (const paletteData of palettesData) {
-      allPalettesData = { ...allPalettesData, ...paletteData.p };
-    }
-    return allPalettesData;
+    const { palettesData } = (findRouteData('data', this.route) as CombinedResponse);
+    return palettesData;
   }
 
   private generatePaletteBackgrounds() {

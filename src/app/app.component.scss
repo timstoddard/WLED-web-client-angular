@@ -1,3 +1,8 @@
+@use 'sass:list';
+
+@import 'src/app/shared/scss/mixins';
+@import 'src/app/shared/scss/rainbow';
+
 @mixin linkStyles() {
   align-items: center;
   border-radius: 4px;
@@ -40,40 +45,82 @@
 
 /* IMPORTANT: Any changes to this loading animation should */
 /* also be applied to the loading animation in index.html */
+/* with the exception of the rainbow text gradient effect */
+
+$dotSize: 6px;
+$dotSpacing: -120px;
+$titleFontSize: 3.2em;
+$subtitleFontSize: 1.5em;
+$textGradientMinOpacity: 0.3;
+$textGradientMaxOpacity: 0.8;
 
 @keyframes rotate_circle {
   from {
     transform:
       rotate(0deg)
-      translate(0, -50px)
+      translate(0, $dotSpacing)
       rotate(0deg);
   }
   to {
     transform:
       rotate(360deg)
-      translate(0, -50px) 
+      translate(0, $dotSpacing)
       rotate(-360deg);
+  }
+}
+
+@keyframes text_gradient_background {
+  0% { opacity: $textGradientMaxOpacity; }
+  16% { opacity: $textGradientMinOpacity; }
+  33% { opacity: $textGradientMaxOpacity; }
+  48% { opacity: $textGradientMinOpacity; }
+  66% { opacity: $textGradientMaxOpacity; }
+  83% { opacity: $textGradientMinOpacity; }
+  100% {
+    background-position: 200% center;
+    opacity: $textGradientMaxOpacity;
   }
 }
 
 .loadingAnimation {
   &__text {
-    margin-top: 10px;
+    @include flex-center;
+    animation: text_gradient_background 6s linear infinite;
+    background-clip: text;
+    background-image: linear-gradient(to right, $rainbowColors, list.nth($rainbowColors, 1));
+    background-size: 200% auto;
+    flex-direction: column;
+    font-family: Arial, Helvetica, sans-serif;
+    height: 100vh;
+    height: var(--app-height);
     text-align: center;
+    -webkit-text-fill-color: transparent;
+
+    &__title,
+    &__subtitle {
+      margin: 0;
+      padding: 0;
+    }
+
+    &__title {
+      font-size: $titleFontSize;
+    }
+
+    &__subtitle {
+      font-size: $subtitleFontSize;
+    }
   }
 
   &__dot {
+    @include forceHeight($dotSize);
+    @include forceWidth($dotSize);
     animation: rotate_circle 1.2s infinite cubic-bezier(0.8, 0.2, 0.2, 0.8);
-    color: var(--themeColorPrimary);
-    font-size: 50px;
-    left: calc(50%);
+    background-color: var(--themeColorPrimary);
+    border-radius: 50%;
+    left: calc(50% - ($dotSize / 2));
     position: absolute;
-    top: calc(50% - 50px);
-    transform: translate(0, -50px);
-
-    &::after {
-      content: ".";
-    }
+    top: calc(50% - ($dotSize / 2));
+    transform: translate(0, $dotSpacing);
 
     &--one {
       animation-delay: 0s;

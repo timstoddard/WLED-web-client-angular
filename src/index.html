@@ -13,33 +13,81 @@
   <style>
     /* IMPORTANT: Any changes to this loading animation should */
     /* also be applied to the loading animation in app component */
+    /* with the exception of the rainbow text gradient effect */
+
+    :root {
+      --loadingAnimation-dotSize: 6px;
+      --loadingAnimation-dotSpacing: -120px;
+      --loadingAnimation-titleFontSize: 3.2em;
+      --loadingAnimation-subtitleFontSize: 1.5em;
+      --loadingAnimation-textGradient-minOpacity: 0.3;
+      --loadingAnimation-textGradient-maxOpacity: 0.8;
+    }
 
     @keyframes rotate_circle {
       from {
         transform:
           rotate(0deg)
-          translate(0, -50px)
+          translate(0, var(--loadingAnimation-dotSpacing))
           rotate(0deg);
       }
       to {
         transform:
           rotate(360deg)
-          translate(0, -50px) 
+          translate(0, var(--loadingAnimation-dotSpacing)) 
           rotate(-360deg);
       }
     }
 
-    .dot {
-      animation: rotate_circle 1.2s infinite cubic-bezier(0.8, 0.2, 0.2, 0.8);
-      color: var(--themeColorPrimary);
-      font-size: 50px;
-      left: calc(50%);
-      position: absolute;
-      top: calc(50% - 50px);
-      transform: translate(0, -50px);
+    @keyframes text_gradient_background {
+      0% { opacity: var(--loadingAnimation-textGradient-maxOpacity); }
+      16.67% { opacity: var(--loadingAnimation-textGradient-minOpacity); }
+      33.33% { opacity: var(--loadingAnimation-textGradient-maxOpacity); }
+      50% { opacity: var(--loadingAnimation-textGradient-minOpacity); }
+      66.67% { opacity: var(--loadingAnimation-textGradient-maxOpacity); }
+      83.33% { opacity: var(--loadingAnimation-textGradient-minOpacity); }
+      100% { opacity: var(--loadingAnimation-textGradient-maxOpacity); }
     }
-    .dot::after {
-      content: ".";
+
+    .loadingAnimation__text {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: text_gradient_background 6s linear infinite;
+      color: var(--textColorAccent);
+      flex-direction: column;
+      font-family: Arial, Helvetica, sans-serif;
+      height: 100vh;
+      height: var(--app-height);
+      text-align: center;
+    }
+
+    .loadingAnimation__text__title,
+    .loadingAnimation__text__subtitle {
+      margin: 0;
+      padding: 0;
+    }
+
+    .loadingAnimation__text__title {
+      font-size: var(--loadingAnimation-titleFontSize);
+    }
+
+    .loadingAnimation__text__subtitle {
+      font-size: var(--loadingAnimation-subtitleFontSize);
+    }
+
+    .dot {
+      max-height: var(--loadingAnimation-dotSize);
+      min-height: var(--loadingAnimation-dotSize);
+      max-width: var(--loadingAnimation-dotSize);
+      min-width: var(--loadingAnimation-dotSize);
+      animation: rotate_circle 1.2s infinite cubic-bezier(0.8, 0.2, 0.2, 0.8);
+      background-color: var(--themeColorPrimary);
+      border-radius: 50%;
+      left: calc(50% - (var(--loadingAnimation-dotSize) / 2));
+      position: absolute;
+      top: calc(50% - (var(--loadingAnimation-dotSize) / 2));
+      transform: translate(0, var(--loadingAnimation-dotSpacing));
     }
 
     .dot.one {
@@ -62,11 +110,22 @@
 <body>
   <app-root></app-root>
   <div class="pre-js-loader">
-    <div class="dot five"></div>
-    <div class="dot four"></div>
-    <div class="dot three"></div>
-    <div class="dot two"></div>
-    <div class="dot one"></div>
+    <div class="loadingAnimation__text">
+      <!-- TODO replace with svg with stylized logo -->
+      <h1 class="loadingAnimation__text__title">
+        WLED
+      </h1>
+      <p class="loadingAnimation__text__subtitle">
+        LOADING...
+      </p>
+    </div>
+    <div class="loadingAnimation">
+      <div class="dot five"></div>
+      <div class="dot four"></div>
+      <div class="dot three"></div>
+      <div class="dot two"></div>
+      <div class="dot one"></div>
+    </div>
   </div>
 </body>
 </html>

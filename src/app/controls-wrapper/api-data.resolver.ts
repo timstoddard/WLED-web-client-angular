@@ -3,19 +3,16 @@ import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/r
 import { Observable, concatMap, map, of } from 'rxjs';
 import { ApiService } from '../shared/api-service/api.service';
 import { WLEDApiResponse } from '../shared/api-types/api-types';
-import { MOCK_API_PRESETS, MOCK_API_RESPONSE, MOCK_EFFECTS_DATA_RESPONSE, MOCK_PALETTES_DATA } from './mock-api-data';
+import { ALL_PALETTES_DATA, MOCK_API_RESPONSE, MOCK_EFFECTS_DATA_RESPONSE } from './mock-api-data';
 import { OnlineStatusService } from '../shared/online-status.service';
 import { SelectedDeviceService } from '../shared/selected-device.service';
 import { StateApiService } from '../shared/api-service/state-api.service';
-import { PresetApiService } from '../shared/api-service/preset-api.service';
-import { WLEDPresets } from '../shared/api-types/api-presets';
-import { WLEDPalettesData } from '../shared/api-types/api-palettes';
+import { WLEDPaletteColors } from '../shared/api-types/api-palettes';
 
 // TODO move this to a type definition file
 export interface CombinedResponse extends WLEDApiResponse {
   effectsData: string[];
-  presets: WLEDPresets;
-  palettesData: WLEDPalettesData[];
+  palettesData: WLEDPaletteColors;
 }
 
 @Injectable()
@@ -25,7 +22,6 @@ export class ApiDataResolver implements Resolve<CombinedResponse> {
     private onlineStatusService: OnlineStatusService,
     private selectedDeviceService: SelectedDeviceService,
     private stateApiService: StateApiService,
-    private presetApiService: PresetApiService,
   ) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
@@ -36,13 +32,14 @@ export class ApiDataResolver implements Resolve<CombinedResponse> {
       return this.getApiData(ipAddress);
     }
 
+    const mockResponse = {
+      ...MOCK_API_RESPONSE,
+      effectsData: MOCK_EFFECTS_DATA_RESPONSE,
+      palettesData: ALL_PALETTES_DATA.p,
+    };
+
     return this.onlineStatusService.getIsOffline()
-      ? of({
-        ...MOCK_API_RESPONSE,
-        effectsData: MOCK_EFFECTS_DATA_RESPONSE,
-        presets: MOCK_API_PRESETS,
-        palettesData: MOCK_PALETTES_DATA,
-      })
+      ? of(mockResponse)
       : this.getApiData(ipAddress);
   }
 
@@ -50,7 +47,6 @@ export class ApiDataResolver implements Resolve<CombinedResponse> {
     let chainedResponse = this.apiService.getJson(ipAddress)
       .pipe(
         concatMap(this.getEffectData(ipAddress)),
-        concatMap(this.getPresets(ipAddress)),
       )
     chainedResponse = this.getAllPages(chainedResponse, ipAddress);
     return chainedResponse as Observable<CombinedResponse>;
@@ -59,21 +55,17 @@ export class ApiDataResolver implements Resolve<CombinedResponse> {
   private getEffectData = <T>(ipAddress?: string) => (n: T) =>
     this.stateApiService.getEffectData(ipAddress).pipe(map(effectsData => ({ ...n, effectsData })));
 
-  private getPresets = <T>(ipAddress?: string) => (n: T) =>
-    this.presetApiService.getPresets(ipAddress).pipe(map(presets => ({ ...n, presets })));
-
   private getAllPages<T>(_obs: Observable<T>, ipAddress?: string) {
     // const PALETTES_PER_PAGE = 8;
     const LAST_PALETTE_DATA_PAGE = 9; // 9 pages (for now), zero indexed
     let obs = _obs.pipe(map(n => ({
       ...n,
-      palettesData: [] as WLEDPalettesData[],
+      palettesData: {} as WLEDPaletteColors,
     })))
     for (let page = 0; page < LAST_PALETTE_DATA_PAGE; page++) {
       obs = obs.pipe(concatMap(n => this.stateApiService.getPalettesData(page, ipAddress).pipe(map(palettesData => ({
         ...n,
-        // TODO merge all response objects together instead of returning an array
-        palettesData: [...n.palettesData, palettesData],
+        palettesData: { ...n.palettesData, ...palettesData.p },
       })))));
     }
     return obs;

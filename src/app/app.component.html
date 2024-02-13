@@ -18,7 +18,13 @@
 
 <div *ngIf="!appOutlet.isActivated">
   <div class="loadingAnimation__text">
-    Connecting to WLED device...
+    <!-- TODO replace with svg with stylized logo -->
+    <h1 class="loadingAnimation__text__title">
+      WLED
+    </h1>
+    <p class="loadingAnimation__text__subtitle">
+      LOADING...
+    </p>
   </div>
   <div class="loadingAnimation">
     <div class="loadingAnimation__dot loadingAnimation__dot--five"></div>

@@ -9,6 +9,7 @@ import { PalettesService } from './palettes/palettes.service';
 import { PresetsService } from './presets/presets.service';
 import { SegmentsService } from './segments/segments.service';
 import { TopMenuBarService } from './top-menu-bar/top-menu-bar.service';
+import { PresetsResolver } from './presets/presets.resolver';
 
 /** This module is used exclusively to provide all the services used by `ControlsWrapperComponent` and its child components. */
 @NgModule({
@@ -21,6 +22,7 @@ import { TopMenuBarService } from './top-menu-bar/top-menu-bar.service';
     InfoService,
     PalettesService,
     PresetsService,
+    PresetsResolver,
     SegmentsService,
     TopMenuBarService,
   ],

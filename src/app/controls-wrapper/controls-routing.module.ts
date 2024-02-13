@@ -7,6 +7,7 @@ import { SegmentsComponent } from './segments/segments.component';
 import { PresetsComponent } from './presets/presets.component';
 import { ControlsComponent } from './controls/controls.component';
 import { InfoComponent } from './info/info.component';
+import { PresetsResolver } from './presets/presets.resolver';
 
 const childRoutes = [
   {
@@ -43,6 +44,7 @@ const routes: RouteWithPageTitle[] = [
     data: { title: 'WLED Controls' },
     resolve: {
       data: ApiDataResolver,
+      presets: PresetsResolver,
     },
     children: childRoutes,
     runGuardsAndResolvers: 'pathParamsOrQueryParamsChange',

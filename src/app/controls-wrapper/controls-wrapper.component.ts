@@ -7,6 +7,7 @@ import { UnsubscriberComponent } from '../shared/unsubscriber/unsubscriber.compo
 import { ControlsService } from './controls.service';
 import { generateApiUrl } from './json.service';
 import { CombinedResponse } from './api-data.resolver';
+import { WLEDPresets } from '../shared/api-types/api-presets';
 
 enum SecondaryOutletType {
   SETTINGS = 'settings',
@@ -45,7 +46,8 @@ export class ControlsWrapperComponent extends UnsubscriberComponent implements O
     this.handleUnsubscribe(this.route.data)
       .subscribe(routeData => {
         const apiData = routeData['data'] as CombinedResponse;
-        const { presets, effectsData } = apiData;
+        const presets = routeData['presets'] as WLEDPresets;
+        const { effectsData } = apiData;
         for (const key of ['state', 'info']) {
           console.log(key, apiData[key as keyof CombinedResponse]);
         }
