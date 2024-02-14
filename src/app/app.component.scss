@@ -51,8 +51,6 @@ $dotSize: 6px;
 $dotSpacing: -120px;
 $titleFontSize: 3.2em;
 $subtitleFontSize: 1.5em;
-$textGradientMinOpacity: 0.3;
-$textGradientMaxOpacity: 0.8;
 
 @keyframes rotate_circle {
   from {
@@ -70,24 +68,20 @@ $textGradientMaxOpacity: 0.8;
 }
 
 @keyframes text_gradient_background {
-  0% { opacity: $textGradientMaxOpacity; }
-  16% { opacity: $textGradientMinOpacity; }
-  33% { opacity: $textGradientMaxOpacity; }
-  48% { opacity: $textGradientMinOpacity; }
-  66% { opacity: $textGradientMaxOpacity; }
-  83% { opacity: $textGradientMinOpacity; }
   100% {
     background-position: 200% center;
-    opacity: $textGradientMaxOpacity;
   }
 }
 
 .loadingAnimation {
   &__text {
     @include flex-center;
-    animation: text_gradient_background 6s linear infinite;
+    animation: text_gradient_background 3s linear infinite;
     background-clip: text;
-    background-image: linear-gradient(to right, $rainbowColors, list.nth($rainbowColors, 1));
+    background-image: linear-gradient(45deg,
+      rgb(255,80,180) 25%,
+      rgb(0,50,255) 50%,
+      rgb(255,80,180) 75%);
     background-size: 200% auto;
     flex-direction: column;
     font-family: Arial, Helvetica, sans-serif;
