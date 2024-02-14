@@ -5,7 +5,7 @@
   class="segment">
   <!-- <div>{{ segmentForm.value | json }}</div> -->
 
-  <div class="segmentForm__row">
+  <div class="segmentForm__row segmentForm__row--wrappedRow">
     <label
       [ngClass]="{ 'segmentForm__powerButton--enabled': segmentForm.get('isOn')!.value }"
       class="segmentForm__button segmentForm__powerButton">
@@ -39,7 +39,7 @@
     </div>
   </div>
 
-  <div class="segmentForm__row segmentForm__row__numberInputs">
+  <div class="segmentForm__row segmentForm__row--column">
     <app-text-input
       *ngFor="let input of inputs"
       [label]="input.label"
@@ -48,7 +48,7 @@
     </app-text-input>
   </div>
 
-  <div class="segmentForm__row">
+  <div class="segmentForm__row segmentForm__row--wrappedRow">
     <button
       mat-raised-button
       color="warn"

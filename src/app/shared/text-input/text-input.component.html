@@ -1,38 +1,48 @@
-<label
+<div
   *ngIf="label; else inputList"
   [ngClass]="'textInput--' + getValidityState()"
   class="textInput">
-  <div
-    class="textInput__contentWrapper"
-    [ngStyle]="{
-      flexDirection: flexDirection
-    }">
-    <div class="textInput__label">
-      {{ label }}
-    </div>
-    <div class="textInput__inputWrapper">
-      <div
-        *ngIf="prefix"
-        class="textInput__prefix">
-        {{ prefix }}
+  <div class="textInput__mainContent">
+    <label
+      class="textInput__labelWrapper"
+      [ngStyle]="{
+        flexDirection: flexDirection
+      }">
+      <div class="textInput__label">
+        {{ label }}
       </div>
-  
-      <div [ngTemplateOutlet]="inputList"></div>
-  
-      <div
-        *ngIf="suffix"
-        class="textInput__suffix">
-        {{ suffix }}
+      <div class="textInput__inputWrapper">
+        <div
+          *ngIf="prefix"
+          class="textInput__prefix">
+          {{ prefix }}
+        </div>
+    
+        <div [ngTemplateOutlet]="inputList"></div>
+    
+        <div
+          *ngIf="suffix"
+          class="textInput__suffix">
+          {{ suffix }}
+        </div>
       </div>
+    </label>
+  
+    <div
+      *ngIf="description"
+      (click)="toggleDescription()"
+      class="textInput__toggleDescription">
+      i
     </div>
   </div>
 
+  <!-- TODO show overlay instead of div for the description -->
   <div
-    *ngIf="description"
+    *ngIf="description && showDescription"
     class="textInput__description">
     {{ description }}
   </div>
-</label>
+</div>
 
 <ng-template #inputList>
   <div class="textInput__inputList">

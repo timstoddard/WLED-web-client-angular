@@ -94,15 +94,15 @@ export class EffectsDataService {
     }
 
     // TODO submit PR to wled github: https://github.com/Aircoookie/WLED/blob/10faaaf531e5f6eb2c00e31cba0f2ecd18ef1fd3/wled00/FX.cpp#L5183
-    // temporary workaround for (id=176, 'Lissajous' 'X frequency,Fade rate,,,Speed;!;!;2;;c3=15')
     if (name === 'Lissajous') {
+      // temporary workaround for (id=176, 'Lissajous' 'X frequency,Fade rate,,,Speed;!;!;2;;c3=15')
       effectData = 'X frequency,Fade rate,,,Speed;!;!;2;c3=15';
     }
 
     // Verify: this should be length 3-5
     const effectDataFields = effectData.split(';');
     if (effectDataFields.length < 3 || effectDataFields.length > 5) {
-      console.warn(`Invalid effect data provided for ${name}: ${effectData}, see https://kno.wled.ge/interfaces/json-api/#effect-metadata`);
+      console.warn(`Invalid effect data provided for ${name}: ${effectData}, length ${effectDataFields.length}, expected length 3-5. See https://kno.wled.ge/interfaces/json-api/#effect-metadata`);
       return null;
     }
 

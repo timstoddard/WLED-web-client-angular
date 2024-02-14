@@ -32,9 +32,11 @@ export class ColorInputsComponent extends UnsubscriberComponent implements OnIni
     // TODO this seems like it really belongs in the color service
     this.appStateService.getSelectedSegment(this.ngUnsubscribe)
       .subscribe(segment => {
-        const colors = segment.colors;
-        const selectedSlot = this.colorSlotsService.getSelectedSlot();
-        this.initialColor = colors[selectedSlot];
+        if (segment) {
+          const colors = segment.colors;
+          const selectedSlot = this.colorSlotsService.getSelectedSlot();
+          this.initialColor = colors[selectedSlot];
+        }
       });
   }
 

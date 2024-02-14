@@ -21,7 +21,7 @@ export class SegmentFormComponent extends UnsubscriberComponent implements OnIni
   inputs: CustomInput[] = [
     {
       label: 'Name',
-      description: 'Segment name.',
+      description: '',
       inputs: [
         {
           type: 'text',
@@ -212,7 +212,7 @@ export class SegmentFormComponent extends UnsubscriberComponent implements OnIni
   private createForm() {
     // TODO add new fields to form
     const form = this.formService.createFormGroup({
-      name: this.segment.name,
+      name: this.segment.name || '',
       isOn: this.segment.isOn,
       brightness: this.segment.brightness,
       start: this.segment.startColumn,

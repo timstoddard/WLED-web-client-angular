@@ -11,9 +11,16 @@
     align-items: center;
     border-top: 1px solid var(--borderColorAccent);
     display: flex;
-    flex-wrap: wrap;
     justify-content: space-evenly;
     padding: 10px;
+
+    &--column {
+      flex-direction: column;
+    }
+
+    &--wrappedRow {
+      flex-wrap: wrap;
+    }
 
     & > * {
       margin: 6px;

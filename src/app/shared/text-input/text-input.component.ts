@@ -45,6 +45,11 @@ export class TextInputComponent {
   @Input() @Optional() suffix: string = '';
   @Input() @Optional() flexDirection: 'column' | 'row' | 'auto' = 'auto';
   @Input() @Optional() hideValidity = false;
+  showDescription!: boolean;
+
+  ngOnInit() {
+    this.showDescription = false;
+  }
 
   getInputMode({ type, inputMode }: InputConfig) {
     return inputMode
@@ -108,6 +113,10 @@ export class TextInputComponent {
     }
 
     return styles;
+  }
+
+  toggleDescription() {
+    this.showDescription = !this.showDescription;
   }
 
   private getDefaultInputModeForInputType(inputType: string) {

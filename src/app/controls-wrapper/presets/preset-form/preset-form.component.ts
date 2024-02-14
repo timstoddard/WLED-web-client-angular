@@ -17,7 +17,7 @@ export class PresetFormComponent implements OnInit {
   inputs: CustomInput[] = [
     {
       label: 'Name',
-      description: 'Preset name.',
+      description: '',
       inputs: [
         {
           type: 'text',
@@ -29,7 +29,7 @@ export class PresetFormComponent implements OnInit {
     },
     {
       label: 'ID',
-      description: 'Preset ID number.',
+      description: '',
       inputs: [
         {
           type: 'number',
@@ -40,8 +40,8 @@ export class PresetFormComponent implements OnInit {
       ],
     },
     {
-      label: 'Label',
-      description: 'Quick load label.',
+      label: 'Quick Load Label',
+      description: 'Max 2 letters',
       inputs: [
         {
           type: 'text',

@@ -77,13 +77,26 @@ export class AppStateService extends UnsubscriberService {
     this.selectFromAppState<AppWLEDState['segments']>((n) => n.state.segments, ngUnsubscribe);
   getSelectedSegment = (ngUnsubscribe: Subject<void>) =>
     this.getWLEDState(ngUnsubscribe)
-      .pipe<AppSegment>(
+      .pipe<AppSegment | null>(
         map(({ segments, mainSegmentId }: AppWLEDState) => {
           // TODO account for segment.id property
           // (if segments are not sorted by id)
-          const segmentId = mainSegmentId ?? 0;
-          const selectedSegment = segments[segmentId];
-          return selectedSegment || null;
+          const mainSegment = segments[mainSegmentId];
+          let selectedSegment = null;
+
+          // main segment isn't always selected
+          if (mainSegment?.isSelected) {
+            selectedSegment = mainSegment;
+          } else {
+            for (const segment of segments) {
+              if (segment.isSelected) {
+                selectedSegment = segment;
+                break;
+              }
+            }
+          }
+
+          return selectedSegment;
         }),
       );
   getPalettes = (ngUnsubscribe: Subject<void>) =>
