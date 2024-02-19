@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged } from 'rxjs';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { UnsubscriberService } from '../../shared/unsubscriber/unsubscriber.service';
 import { AppEffect, EffectDimension } from 'src/app/shared/app-types/app-effects';
@@ -138,7 +138,7 @@ export class EffectsService extends UnsubscriberService {
   }
 
   getSelectedEffect$() {
-    return this.selectedEffect$;
+    return this.selectedEffect$.pipe(distinctUntilChanged());
   }
 
   getSelectedEffectMetadata$() {

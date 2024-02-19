@@ -1,7 +1,7 @@
 @import 'src/app/shared/scss/mixins';
 
-$buttonDimension: 42px;
-$buttonMargin: 4px;
+$buttonDimension: 32px;
+$buttonMargin: 8px;
 $buttonsPerRow: 4;
 // add 20 for padding, add 2 as a division error buffer (1px per side)
 $buttonWidth: #{($buttonDimension + $buttonMargin * 2) * $buttonsPerRow + 20 + 2};

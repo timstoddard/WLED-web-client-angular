@@ -1,0 +1,29 @@
+<h2
+  mat-dialog-title
+  class="effectsSettings__header">
+  Effect Settings
+</h2>
+
+<mat-dialog-content class="effectsSettings__form mat-typography">
+  <div class="effectsSettings__form__section">
+    <h2 class="effectsSettings__form__sectionTitle">
+      Options
+    </h2>
+    <app-effects-controls></app-effects-controls>
+  </div>
+  <div class="effectsSettings__form__section">
+    <h2 class="effectsSettings__form__sectionTitle">
+      Filters
+    </h2>
+    <app-effects-filter></app-effects-filter>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button
+    mat-raised-button
+    mat-dialog-close
+    color="primary">
+    Close
+  </button>
+</mat-dialog-actions>

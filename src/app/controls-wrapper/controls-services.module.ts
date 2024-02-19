@@ -4,6 +4,7 @@ import { ColorSlotsService } from './color-inputs/color-slots/color-slots.servic
 import { ApiDataResolver } from './api-data.resolver';
 import { ControlsService } from './controls.service';
 import { EffectsService } from './effects/effects.service';
+import { EffectsControlsService } from './effects/effects-controls/effects-controls.service';
 import { InfoService } from './info/info.service';
 import { PalettesService } from './palettes/palettes.service';
 import { PresetsService } from './presets/presets.service';
@@ -19,6 +20,7 @@ import { PresetsResolver } from './presets/presets.resolver';
     ColorSlotsService,
     ControlsService,
     EffectsService,
+    EffectsControlsService,
     InfoService,
     PalettesService,
     PresetsService,

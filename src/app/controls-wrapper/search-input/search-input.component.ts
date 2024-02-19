@@ -1,5 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { ComponentType } from '@angular/cdk/portal';
+import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { FormService } from '../../shared/form-service';
 import { OverlayPositionService } from '../../shared/overlay-position.service';
@@ -21,6 +23,7 @@ export class SearchInputComponent extends UnsubscriberComponent implements OnIni
   /** Search icon hover label. */
   @Input() label: string = '';
   @Input() selectedItem$!: Observable<SearchableItem>;
+  @Input() settingsDialogComponentType!: ComponentType<any>;
   @Output() searchValueChanges = new EventEmitter<string>();
   @ViewChild('searchInput', { read: ElementRef }) searchInputElement!: ElementRef<HTMLInputElement>;
   searchText!: FormControl;
@@ -30,6 +33,7 @@ export class SearchInputComponent extends UnsubscriberComponent implements OnIni
   constructor(
     private formService: FormService,
     private overlayPositionService: OverlayPositionService,
+    private dialog: MatDialog,
   ) {
     super();
   }
@@ -75,6 +79,11 @@ export class SearchInputComponent extends UnsubscriberComponent implements OnIni
   getOverlayPositions() {
     const rightPosition = this.overlayPositionService.rightBottomPosition();
     return [rightPosition];
+  }
+
+  openContextMenu() {
+    const { settingsDialogComponentType: dialogType } = this;
+    const dialogRef = this.dialog.open(dialogType);
   }
 
   private createFormControl() {

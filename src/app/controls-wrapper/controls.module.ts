@@ -10,7 +10,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
 import { BottomMenuBarComponent } from './bottom-menu-bar/bottom-menu-bar.component';
 import { ColorAndWhitenessSlidersComponent } from './color-inputs/color-and-whiteness-sliders/color-and-whiteness-sliders.component';
-import { ColorInputsComponent } from './color-inputs/color-inputs.component';
 import { ColorPickerComponent } from './color-inputs/color-picker/color-picker.component';
 import { ColorPresetsComponent } from './color-inputs/color-presets/color-presets.component';
 import { ColorSliderComponent } from './shared/color-slider/color-slider.component';
@@ -23,6 +22,7 @@ import { DeviceSelectorComponent } from './top-menu-bar/device-selector/device-s
 import { EffectsComponent } from './effects/effects.component';
 import { EffectsControlsComponent } from './effects/effects-controls/effects-controls.component';
 import { EffectsFilterComponent } from './effects/effects-filter/effects-filter.component';
+import { EffectsSettingsComponent } from './effects/effects-settings/effects-settings.component';
 import { ExpandIconComponent } from '../shared/expand-icon/expand-icon.component';
 import { HexInputComponent } from './color-inputs/hex-input/hex-input.component';
 import { InfoComponent } from './info/info.component';
@@ -30,6 +30,7 @@ import { LiveViewModule } from '../shared/live-view/live-view.module';
 import { NewSegmentComponent } from './segments/new-segment/new-segment.component';
 import { OverlayContainerComponent } from '../shared/overlay-container/overlay-container.component';
 import { PalettesComponent } from './palettes/palettes.component';
+import { PalettesSettingsComponent } from './palettes/palettes-settings/palettes-settings.component';
 import { PresetCycleComponent } from './presets/preset-cycle/preset-cycle.component';
 import { PresetFormComponent } from './presets/preset-form/preset-form.component';
 import { PresetListComponent } from './presets/preset-list/preset-list.component';
@@ -46,7 +47,6 @@ import { TopMenuBarComponent } from './top-menu-bar/top-menu-bar.component';
 
 const COLOR_INPUTS = [
   ColorAndWhitenessSlidersComponent,
-  ColorInputsComponent,
   ColorPickerComponent,
   ColorPresetsComponent,
   ColorSlotsComponent,
@@ -59,7 +59,7 @@ const SHARED_COMPONENTS = [
   ColorSliderComponent,
   ExpandIconComponent,
   OverlayContainerComponent,
-]
+];
 
 const COMPONENTS = [
   BottomMenuBarComponent,
@@ -69,9 +69,11 @@ const COMPONENTS = [
   EffectsComponent,
   EffectsControlsComponent,
   EffectsFilterComponent,
+  EffectsSettingsComponent,
   InfoComponent,
   NewSegmentComponent,
   PalettesComponent,
+  PalettesSettingsComponent,
   PresetCycleComponent,
   PresetFormComponent,
   PresetListComponent,

@@ -1,7 +1,4 @@
-<div
-  cdkOverlayOrigin
-  #trigger="cdkOverlayOrigin"
-  class="searchInput">
+<div class="searchInput">
   <span
     (click)="toggleSearchInput()"
     [title]="label"
@@ -52,23 +49,9 @@
   </div>
 
   <span
-    (click)="toggleContextMenu()"
+    (click)="openContextMenu()"
     [ngClass]="{ 'searchInput__icon--selected': isContextMenuOpen }"
     class="searchInput__icon material-symbols-outlined">
     tune
   </span>
 </div>
-
-<ng-template
-  cdkConnectedOverlay
-  [cdkConnectedOverlayOrigin]="trigger"
-  [cdkConnectedOverlayOpen]="isContextMenuOpen"
-  [cdkConnectedOverlayPositions]="getOverlayPositions()"
-  [cdkConnectedOverlayFlexibleDimensions]="true"
-  [cdkConnectedOverlayHasBackdrop]="true"
-  [cdkConnectedOverlayBackdropClass]="'searchInput__overlayBackdrop'"
-  (backdropClick)="isContextMenuOpen = false">
-  <app-overlay-container [isOpen]="isContextMenuOpen">
-    <ng-content></ng-content>
-  </app-overlay-container>
-</ng-template>

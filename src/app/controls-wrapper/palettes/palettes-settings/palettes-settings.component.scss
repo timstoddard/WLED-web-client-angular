@@ -1,6 +1,6 @@
 @import 'src/app/shared/scss/mixins';
 
-.colorInputs {
+.palettesSettings {
   &__header {
     margin-bottom: 12px;
     text-align: center;
@@ -13,14 +13,16 @@
   }
 
   &__container {
+    border: 1px solid var(--borderColorPrimary);
+    border-radius: 6px;
     display: flex;
-    flex-basis: min-content;
-    margin: 0 auto;
+    margin: 0 20px;
+    padding: 0;
 
     > * {
       @include flex-center;
-      flex-basis: min-content;
       padding: 10px;
+      margin: 10px 0;
     }
   
     > *:not(:last-child) {

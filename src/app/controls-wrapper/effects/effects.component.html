@@ -3,23 +3,8 @@
   [selectedItem$]="getSelectedEffect()"
   headerText="Effects"
   label="Search effects"
+  [settingsDialogComponentType]="EffectsSettingsComponent"
   class="effects__searchInput">
-  <div class="effects__form">
-    <div class="effects__form__section">
-      <h2 class="effects__form__sectionTitle">
-        Options
-      </h2>
-      <app-effects-controls
-        [effectsForm]="effectsForm">
-      </app-effects-controls>
-    </div>
-    <div class="effects__form__section">
-      <h2 class="effects__form__sectionTitle">
-        Filters
-      </h2>
-      <app-effects-filter></app-effects-filter>
-    </div>
-  </div>
 </app-search-input>
 
 <!-- TODO don't show 2d effects if not supported -->

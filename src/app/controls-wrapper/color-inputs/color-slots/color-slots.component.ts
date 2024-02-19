@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ColorSlotsService } from './color-slots.service';
-import { ColorInputsComponent } from '../color-inputs.component';
 
 // TODO variable number of slots
 
@@ -25,28 +24,12 @@ export class ColorSlotsComponent implements OnInit {
   }
 
   /**
-   * Selects the specified slot. Optionally also options the dialog, which should happen under the following conditions:
-   * - slot was not selected, and does not yet have a color
-   * - slot was already selected
+   * Selects the specified slot.
    * @param slot 
    * @param openDialog 
    */
   selectSlot(slot: number) {
-    const hasOpenDialog = this.colorSlotsService.getIsColorInputDialogOpen();
-    // TODO better way of determining "should open"
-    const shouldOpenDialog = this.colorSlotsService.isSlotSelected(slot);
-
     this.colorSlotsService.selectSlot(slot);
-
-    // TODO only open modal if palette is selected & has a color, or is not selected & doesn't have a color
-    if (!hasOpenDialog && shouldOpenDialog) {
-      const dialogRef = this.dialog.open(ColorInputsComponent);
-      this.colorSlotsService.setIsColorInputDialogOpen(true);
-
-      dialogRef.afterClosed().subscribe(result => {
-        this.colorSlotsService.setIsColorInputDialogOpen(false);
-      });
-    }
   }
 
   getSlots() {

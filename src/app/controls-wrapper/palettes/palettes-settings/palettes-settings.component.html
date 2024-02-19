@@ -1,0 +1,32 @@
+<h2
+  mat-dialog-title
+  class="palettesSettings__header">
+  Color Settings
+</h2>
+
+<mat-dialog-content class="palettesSettings__colorSlots mat-typography">
+  <app-color-slots></app-color-slots>
+</mat-dialog-content>
+
+<mat-dialog-content class="palettesSettings__container mat-typography">
+  <app-color-picker></app-color-picker>
+  <app-color-presets></app-color-presets>
+  <app-rgb-sliders
+    [rgbValues]="colorInputsForm.get('rgb')!">
+  </app-rgb-sliders>
+  <app-color-and-whiteness-sliders
+    [colorAndWhitenessSettings]="colorInputsForm.get('colorAndWhiteness')!">
+  </app-color-and-whiteness-sliders>
+  <app-hex-input
+    [hexInput]="colorInputsForm.get('hex')!">
+  </app-hex-input>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button
+    mat-raised-button
+    mat-dialog-close
+    color="primary">
+    Close
+  </button>
+</mat-dialog-actions>

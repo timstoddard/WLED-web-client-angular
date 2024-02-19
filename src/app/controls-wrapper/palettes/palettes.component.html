@@ -3,12 +3,13 @@
   [selectedItem$]="getSelectedPalette()"
   headerText="Palettes"
   label="Search palettes"
+  [settingsDialogComponentType]="PalettesSettingsComponent"
   class="palettes__searchInput">
-  <app-color-slots class="palettes__colorSlots"></app-color-slots>
 </app-search-input>
 
 <div class="palettes__list__container">
   <div class="palettes__list">
+    <!-- TODO move into own component ("palette") -->
     <!-- TODO (fix): onSelect animation plays when color is changed via sliders -->
     <label
       *ngFor="let palette of getFilteredPalettes() | async"

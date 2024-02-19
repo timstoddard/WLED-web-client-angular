@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormService, FormValues, createGetFormControl, getFormControlFn } from 'src/app/shared/form-service';
-import { DEFAULT_EFFECT_FILTERS, EffectFilters, EffectsService } from '../effects.service';
+import { EffectFilters, EffectsService } from '../effects.service';
 import { UnsubscriberComponent } from 'src/app/shared/unsubscriber/unsubscriber.component';
 
 @Component({
@@ -72,7 +72,9 @@ export class EffectsFilterComponent extends UnsubscriberComponent {
   }
 
   private createForm() {
-    const form = this.formService.createFormGroup(DEFAULT_EFFECT_FILTERS as {} as FormValues);
+    const form = this.formService.createFormGroup(
+      this.effectsService.getEffectFilters() as {} as FormValues
+    );
     return form;
   }
 }

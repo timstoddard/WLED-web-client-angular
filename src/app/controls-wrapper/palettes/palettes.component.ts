@@ -4,6 +4,7 @@ import { FormService } from '../../shared/form-service';
 import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
 import { PalettesService } from './palettes.service';
 import { AppPalette } from 'src/app/shared/app-types/app-palettes';
+import { PalettesSettingsComponent } from './palettes-settings/palettes-settings.component';
 
 const NO_PALETTE_SELECTED = -1;
 
@@ -16,6 +17,7 @@ const NO_PALETTE_SELECTED = -1;
 })
 export class PalettesComponent extends UnsubscriberComponent implements OnInit {
   selectedPalette!: FormControl;
+  PalettesSettingsComponent = PalettesSettingsComponent;
 
   constructor(
     private palettesService: PalettesService,

@@ -1,18 +1,18 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { merge } from 'rxjs';
-import { AppStateService } from '../../shared/app-state/app-state.service';
-import { FormService } from '../../shared/form-service';
-import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
-import { ColorService, CurrentColor } from '../color.service';
-import { ColorSlotsService } from './color-slots/color-slots.service';
+import { ColorService, CurrentColor } from '../../color.service';
+import { FormService } from 'src/app/shared/form-service';
+import { AppStateService } from 'src/app/shared/app-state/app-state.service';
+import { ColorSlotsService } from '../../color-inputs/color-slots/color-slots.service';
+import { UnsubscriberComponent } from 'src/app/shared/unsubscriber/unsubscriber.component';
 
 @Component({
-  selector: 'app-color-inputs',
-  templateUrl: './color-inputs.component.html',
-  styleUrls: ['./color-inputs.component.scss']
+  selector: 'app-palettes-settings',
+  templateUrl: './palettes-settings.component.html',
+  styleUrls: ['./palettes-settings.component.scss']
 })
-export class ColorInputsComponent extends UnsubscriberComponent implements OnInit, AfterViewInit {
+export class PalettesSettingsComponent extends UnsubscriberComponent implements OnInit, AfterViewInit {
   colorInputsForm!: FormGroup;
   private initialColor: number[] = [];
 
@@ -20,7 +20,7 @@ export class ColorInputsComponent extends UnsubscriberComponent implements OnIni
     private colorService: ColorService,
     private formService: FormService,
     private appStateService: AppStateService,
-    private colorSlotsService: ColorSlotsService
+    private colorSlotsService: ColorSlotsService,
   ) {
     super();
   }
