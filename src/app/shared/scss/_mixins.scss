@@ -243,7 +243,7 @@ $antWidth: 2px;
   }
 }
 
-@mixin textOverflowEllipsis {
+@mixin text-overflow-ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

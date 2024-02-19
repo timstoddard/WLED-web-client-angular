@@ -1,6 +1,7 @@
 @import 'src/app/shared/scss/mixins';
 
 :host {
+  // TODO deprecate usage, remove material input
   @include overrideMatTextInputStyles(--backgroundColorAccent);
   flex-direction: column;
 }

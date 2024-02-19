@@ -10,6 +10,8 @@ import { AppState } from '../../shared/app-types/app-types';
 import { OverlayPositionService } from '../../shared/overlay-position.service';
 import { InputConfig } from '../../shared/text-input/text-input.component';
 import { SnackbarService } from 'src/app/shared/snackbar.service';
+import { InfoComponent } from '../info/info.component';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 const MIN_SHOW_BRIGHTNESS_SLIDER_THRESHOLD_PX = 800;
 const MIN_SHOW_PC_MODE_BUTTON_THRESHOLD_PX = 1250;
@@ -32,7 +34,6 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
   buttons: MenuBarButton[] = [];
   topMenuBarForm!: FormGroup;
   isSettingsOverlayOpen: boolean = false;
-  isInfoOverlayOpen: boolean = false;
   showToggleSettingsButton: boolean = false;
   showPcModeButton: boolean = false;
   showLabels!: boolean;
@@ -59,6 +60,7 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
   private nightLightTargetBrightness = 0;
   private nightLightMode = false;
   private shouldToggleReceiveWithSend = true;
+  private infoDialogRef: MatDialogRef<InfoComponent> | null = null;
 
   constructor(
     private formService: FormService,
@@ -68,6 +70,7 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
     private uiConfigService: UIConfigService,
     private overlayPositionService: OverlayPositionService,
     private snackbarService: SnackbarService,
+    private dialog: MatDialog,
   ) {
     super();
   }
@@ -106,9 +109,7 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
       this.isSettingsOverlayOpen = false;
     }
 
-    if (this.isInfoOverlayOpen && !this.showPcModeButton) {
-      this.isInfoOverlayOpen = false;
-    }
+    this.closeInfoOverlay();
   }
 
   toggleSettingsOpen() {
@@ -116,7 +117,14 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
   }
 
   openInfoOverlay() {
-    this.isInfoOverlayOpen = !this.isInfoOverlayOpen;
+    this.infoDialogRef = this.dialog.open(InfoComponent);
+  }
+
+  closeInfoOverlay() {
+    if (this.infoDialogRef) {
+      this.infoDialogRef.close();
+    }
+    this.infoDialogRef = null;
   }
 
   getSettingsOverlayPositions() {
@@ -125,11 +133,6 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
     const centerPosition = this.overlayPositionService.centerBottomPosition(offsetXPx, offsetYPx);
     const rightPosition = this.overlayPositionService.rightBottomPosition(offsetXPx, offsetYPx);
     return [centerPosition, rightPosition];
-  }
-
-  getInfoOverlayPositions() {
-    const centerPosition = this.overlayPositionService.centerBottomPosition();
-    return [centerPosition];
   }
 
   private getButtons() {

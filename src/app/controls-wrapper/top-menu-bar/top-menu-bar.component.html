@@ -21,10 +21,7 @@
 
   <ng-container *ngIf="showPcModeButton && buttonValues.isPcMode">
     <!-- PC mode button: info -->
-    <div
-      cdkOverlayOrigin
-      #infoOverlayTrigger="cdkOverlayOrigin"
-      class="topMenuBar__buttonWrapper">
+    <div class="topMenuBar__buttonWrapper">
       <button
         (click)="openInfoOverlay()"
         class="topMenuBar__button">
@@ -37,24 +34,6 @@
         class="topMenuBar__button__text">
         Info
       </div>
-      <!-- TODO use a dialog for this instead -->
-      <ng-template
-        cdkConnectedOverlay
-        [cdkConnectedOverlayOrigin]="infoOverlayTrigger"
-        [cdkConnectedOverlayOpen]="isInfoOverlayOpen"
-        [cdkConnectedOverlayPositions]="getInfoOverlayPositions()"
-        [cdkConnectedOverlayFlexibleDimensions]="true"
-        [cdkConnectedOverlayHasBackdrop]="true"
-    [cdkConnectedOverlayBackdropClass]="'topMenuBar__overlayBackdrop'"
-        (backdropClick)="isInfoOverlayOpen = false">
-        <app-overlay-container
-          [isOpen]="isInfoOverlayOpen"
-          [hasTopBorderRadius]="true">
-          <div>
-            <app-info></app-info>
-          </div>
-        </app-overlay-container>
-      </ng-template>
     </div>
 
     <!-- TODO change to /controls when on settings route -->

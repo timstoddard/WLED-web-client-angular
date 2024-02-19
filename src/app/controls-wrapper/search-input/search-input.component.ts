@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { FormService } from '../../shared/form-service';
 import { OverlayPositionService } from '../../shared/overlay-position.service';
 import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
+import { expandFade } from 'src/app/shared/animations';
 
 export interface SearchableItem {
   id: number;
@@ -16,6 +17,7 @@ export interface SearchableItem {
   selector: 'app-search-input',
   templateUrl: './search-input.component.html',
   styleUrls: ['./search-input.component.scss'],
+  animations: [expandFade()],
 })
 export class SearchInputComponent extends UnsubscriberComponent implements OnInit {
   /** Header title. */

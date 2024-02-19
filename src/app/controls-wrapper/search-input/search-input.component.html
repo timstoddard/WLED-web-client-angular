@@ -1,57 +1,56 @@
-<div class="searchInput">
-  <span
-    (click)="toggleSearchInput()"
-    [title]="label"
-    [ngClass]="{ 'searchInput__icon--selected': showInput }"
-    class="searchInput__icon material-symbols-outlined">
-    {{ showInput ? 'search_off' : 'search' }}
-  </span>
-  
-  <div class="searchInput__header">
-    <div
-      *ngIf="showInput; else showTitle"
-      class="searchInput__inputWrapper">
-      <input
-        #searchInput
-        [formControl]="searchText"
-        (keydown)="onKeyDown($event)"
-        placeholder="Search"
-        class="searchInput__input">
-      <div class="searchInput__clearInputWrapper">
-        <span
-          *ngIf="searchText.value?.length > 0"
-          (click)="cancelSearch()"
-          class="searchInput__clearInput material-symbols-outlined">
-          close
-        </span>
-      </div>
-    </div>
-  
-    <ng-template #showTitle>
-      <h3 class="searchInput__title">
-        {{ headerText }}
-      </h3>
-      <ng-container *ngIf="selectedItem$ | async as selectedItem">
-        <!-- TODO don't modify html directly -->
-        <div
-          *ngIf="selectedItem && selectedItem.name; else noneSelected"
-          [innerHtml]="selectedItem.name"
-          class="searchInput__selectedName searchInput__selectedName--hasSelected">
-          <!-- {{ selectedItem.name }} -->
-        </div>
-        <ng-template #noneSelected>
-          <div class="searchInput__selectedName searchInput__selectedName--noneSelected">
-            None Selected
-          </div>
-        </ng-template>
-      </ng-container>
-    </ng-template>
-  </div>
+<span
+  (click)="toggleSearchInput()"
+  [title]="label"
+  [ngClass]="{ 'searchInput__icon--selected': showInput }"
+  class="searchInput__icon material-symbols-outlined">
+  {{ showInput ? 'search_off' : 'search' }}
+</span>
 
-  <span
-    (click)="openContextMenu()"
-    [ngClass]="{ 'searchInput__icon--selected': isContextMenuOpen }"
-    class="searchInput__icon material-symbols-outlined">
-    tune
-  </span>
+<div class="searchInput__header">
+  <h3 class="searchInput__title">
+    {{ headerText }}
+  </h3>
+  <ng-container *ngIf="selectedItem$ | async as selectedItem">
+    <!-- TODO don't modify html directly -->
+    <div
+      *ngIf="selectedItem && selectedItem.name; else noneSelected"
+      [innerHtml]="selectedItem.name"
+      class="searchInput__selectedName searchInput__selectedName--hasSelected">
+      <!-- {{ selectedItem.name }} -->
+    </div>
+    <ng-template #noneSelected>
+      <div class="searchInput__selectedName searchInput__selectedName--noneSelected">
+        None Selected
+      </div>
+    </ng-template>
+  </ng-container>
+</div>
+
+<span
+  (click)="openContextMenu()"
+  [ngClass]="{ 'searchInput__icon--selected': isContextMenuOpen }"
+  class="searchInput__icon material-symbols-outlined">
+  tune
+</span>
+
+<div
+  @expand
+  *ngIf="showInput"
+  class="searchInput__inputSection">
+  <div class="searchInput__inputWrapper">
+    <input
+      #searchInput
+      [formControl]="searchText"
+      (keydown)="onKeyDown($event)"
+      placeholder="Search"
+      class="searchInput__input">
+    <div class="searchInput__clearInputWrapper">
+      <span
+        *ngIf="searchText.value?.length > 0"
+        (click)="cancelSearch()"
+        class="searchInput__clearInput material-symbols-outlined">
+        close
+      </span>
+    </div>
+  </div>
 </div>

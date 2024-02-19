@@ -1,17 +1,14 @@
 @import 'src/app/shared/scss/mixins';
 
-.searchInput {
-  @include overrideMatTextInputStyles(--backgroundColorAccent);
+:host {
   align-items: center;
   border-bottom: solid 1px var(--borderColorPrimary);
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: auto auto;
   justify-content: space-between;
   min-width: 100px;
   padding: 4px;
-
-  @media screen and (max-width: 400px) {
-    padding: 4px 2px;
-  }
 }
 
 .searchInput {
@@ -19,6 +16,7 @@
     @include flex-center;
     flex-direction: column;
     text-align: center;
+    overflow: hidden;
   }
 
   &__title {
@@ -29,7 +27,7 @@
   &__selectedName {
     $selectedNameTransition: 0.5s ease-out 0.4s;
 
-    @include textOverflowEllipsis;
+    @include text-overflow-ellipsis;
     border-radius: 4px;
     font-size: 0.8em;
     font-weight: bold;
@@ -51,7 +49,13 @@
     }
   }
 
+  &__inputSection {
+    @include flex-center;
+    grid-area: 2 / 1 / 2 / 4;
+  }
+
   &__inputWrapper {
+    @include flex-center;
     position: relative;
   }
 
@@ -107,5 +111,9 @@
 
   ::ng-deep &__overlayBackdrop {
     @include overlay-backdrop;
+  }
+
+  @media screen and (max-width: 400px) {
+    padding: 4px 2px;
   }
 }

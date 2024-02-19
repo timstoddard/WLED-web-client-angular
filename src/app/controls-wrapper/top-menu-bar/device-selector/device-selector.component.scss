@@ -55,7 +55,7 @@
   }
 
   &__selectedName {
-    @include textOverflowEllipsis;
+    @include text-overflow-ellipsis;
     font-weight: bold;
   }
 
@@ -137,7 +137,7 @@
 
       &__name,
       &__link {
-        @include textOverflowEllipsis;
+        @include text-overflow-ellipsis;
         max-width: $listMaxWidth;
         width: 75vw;
       }
