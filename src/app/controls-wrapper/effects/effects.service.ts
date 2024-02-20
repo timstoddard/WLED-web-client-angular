@@ -48,6 +48,7 @@ export class EffectsService extends UnsubscriberService {
   private filterTextLowercase!: string;
   private currentEffectFilters!: EffectFilters;
   private nameToHyphenatedNameMap!: { [key: string]: string };
+  private htmlStringsToIgnore = ['&shy;'];
 
   constructor(
     private segmentApiService: SegmentApiService,
@@ -181,7 +182,7 @@ export class EffectsService extends UnsubscriberService {
       this.filterTextLowercase,
       // TODO add UI setting for search highlighting (high or low emphasis)
       `effectNameHighlight--${true ? 'highEmphasis' : 'lowEmphasis'}`,
-      ['&shy;'],
+      this.htmlStringsToIgnore,
     );
   }
 
@@ -347,7 +348,11 @@ export class EffectsService extends UnsubscriberService {
     ];
     const nameToHyphenatedNameMap: { [key: string]: string } = {};
     for (const hyphenatedName of hyphenatedNames) {
-      const normalizedName = hyphenatedName.replaceAll('&shy;', '');
+      // get normalized effect name, without html chars
+      let normalizedName = hyphenatedName;
+      for (const htmlString of this.htmlStringsToIgnore) {
+        normalizedName = normalizedName.replaceAll(htmlString, '');
+      }
       nameToHyphenatedNameMap[normalizedName] = hyphenatedName;
     }
     return nameToHyphenatedNameMap;
