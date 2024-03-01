@@ -6,17 +6,23 @@
   {{ showInput ? 'search_off' : 'search' }}
 </span>
 
-<div class="searchInput__header">
-  <h3 class="searchInput__title">
-    {{ headerText }}
-  </h3>
+<h3 class="searchInput__title">
+  {{ headerText }}
+</h3>
+
+<span
+  (click)="openContextMenu()"
+  [ngClass]="{ 'searchInput__icon--selected': isContextMenuOpen }"
+  class="searchInput__icon material-symbols-outlined">
+  tune
+</span>
+
+<div class="searchInput__selectedNameWrapper">
   <ng-container *ngIf="selectedItem$ | async as selectedItem">
-    <!-- TODO don't modify html directly -->
     <div
       *ngIf="selectedItem && selectedItem.name; else noneSelected"
-      [innerHtml]="selectedItem.name"
       class="searchInput__selectedName searchInput__selectedName--hasSelected">
-      <!-- {{ selectedItem.name }} -->
+      {{ selectedItem.name }}
     </div>
     <ng-template #noneSelected>
       <div class="searchInput__selectedName searchInput__selectedName--noneSelected">
@@ -25,13 +31,6 @@
     </ng-template>
   </ng-container>
 </div>
-
-<span
-  (click)="openContextMenu()"
-  [ngClass]="{ 'searchInput__icon--selected': isContextMenuOpen }"
-  class="searchInput__icon material-symbols-outlined">
-  tune
-</span>
 
 <div
   @expand

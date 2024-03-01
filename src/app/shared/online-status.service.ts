@@ -48,6 +48,5 @@ export class OnlineStatusService {
   private handleOffline = () => {
     this.onlineStatus$.next(false);
     this.snackbarService.openSnackBar('Network connection terminated.');
-    alert()
   }
 }
