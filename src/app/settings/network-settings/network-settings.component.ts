@@ -5,6 +5,7 @@ import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.co
 import { SelectItem } from '../shared/settings-types';
 import { NetworkSettingsService } from './network-settings.service';
 import { InputConfig } from 'src/app/shared/text-input/text-input.component';
+import { IPV4_ADDRESS_REGEX } from 'src/app/shared/common-regex';
 
 const DEFAULT_ETHERNET_TYPE = 0;
 const DEFAULT_OPEN_AP_OPTION = 0;
@@ -181,10 +182,9 @@ export class NetworkSettingsComponent extends UnsubscriberComponent implements O
     } = this.networkSettingsForm.value;
 
     // TODO move logic to service class
-    const ipAddressRegex = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/;
-    const staticIpParts = ipAddress.staticIp.match(ipAddressRegex);
-    const staticGatewayParts = ipAddress.staticGateway.match(ipAddressRegex);
-    const staticSubnetMaskParts = ipAddress.staticSubnetMask.match(ipAddressRegex);
+    const staticIpParts = ipAddress.staticIp.match(IPV4_ADDRESS_REGEX);
+    const staticGatewayParts = ipAddress.staticGateway.match(IPV4_ADDRESS_REGEX);
+    const staticSubnetMaskParts = ipAddress.staticSubnetMask.match(IPV4_ADDRESS_REGEX);
 
     const formValue: any /* TODO type */ = {
       I0: parseInt(staticIpParts[1], 10),

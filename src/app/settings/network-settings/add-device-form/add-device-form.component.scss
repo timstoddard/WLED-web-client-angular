@@ -55,6 +55,15 @@
         margin: 3px;
       }
     }
+
+    &__closeButton {
+      @include flex-center;
+      @include icon-button(32px);
+
+      &__icon {
+        font-size: 22px;
+      }
+    }
   }
 }
 

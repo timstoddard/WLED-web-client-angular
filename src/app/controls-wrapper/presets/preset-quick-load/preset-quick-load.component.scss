@@ -30,26 +30,10 @@
 
   &__button {
     @include flex-center;
-    
-    // TODO copy styles from top menu bar buttons
-    border: 1px solid var(--borderColorPrimary);
-    border-radius: 20px;
-    cursor: pointer;
+    @include icon-button(40px);
     font-size: 16px;
-    height: 40px;
     margin: 4px;
     padding: 4px;
-    user-select: none;
-    width: 40px;
-
-    &:hover,
-    &--selected {
-      background: var(--backgroundColorAccent);
-    }
-
-    &--selected {
-      @include rainbow(border-color);
-    }
   }
 
   &__noPresetsMessage {

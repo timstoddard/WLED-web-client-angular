@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { NetworkSettings, PickBooleans, PickNonBooleans, WledNetworkSettings, convertToBoolean, convertToString, convertToWledRequestFormat } from '../shared/settings-types';
+import { IPV4_ADDRESS_REGEX } from 'src/app/shared/common-regex';
 
 // TODO provide in settings services module
 @Injectable({ providedIn: 'root' })
@@ -58,10 +59,9 @@ export class NetworkSettingsTransformerService {
       staticSubnetMask,
     } = localNetwork;
     
-    const ipAddressRegex = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/;
-    const staticIpParts = staticIp.match(ipAddressRegex);
-    const staticGatewayParts = staticGateway.match(ipAddressRegex);
-    const staticSubnetMaskParts = staticSubnetMask.match(ipAddressRegex);
+    const staticIpParts = staticIp.match(IPV4_ADDRESS_REGEX);
+    const staticGatewayParts = staticGateway.match(IPV4_ADDRESS_REGEX);
+    const staticSubnetMaskParts = staticSubnetMask.match(IPV4_ADDRESS_REGEX);
     
     const baseOptions: PickNonBooleans<WledNetworkSettings> = {
       CS: localNetwork.ssid,

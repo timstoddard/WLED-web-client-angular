@@ -8,6 +8,7 @@ import { UnsubscriberComponent } from '../../../shared/unsubscriber/unsubscriber
 import { InputConfig } from 'src/app/shared/text-input/text-input.component';
 import { SnackbarService } from 'src/app/shared/snackbar.service';
 import { SelectedDeviceService } from 'src/app/shared/selected-device.service';
+import { IPV4_ADDRESS_OR_HOSTNAME_REGEX } from 'src/app/shared/common-regex';
 
 interface SelectableWLEDIpAddress extends WLEDIpAddress {
   selected: boolean;
@@ -161,13 +162,12 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
     name: '',
     ipv4Address: '',
   }) {
-    const IP_ADDRESS_REGEX = new Array(4).fill('\\d{1,3}').join('\\.');
     const formGroup = this.formService.createFormGroup({
       selected: values.selected,
       name: values.name,
       ipv4Address: values.ipv4Address,
     });
-    formGroup.get('ipv4Address')!.addValidators(Validators.pattern(IP_ADDRESS_REGEX));
+    formGroup.get('ipv4Address')!.addValidators(Validators.pattern(IPV4_ADDRESS_OR_HOSTNAME_REGEX));
 
     // when one is selected, unselect all others
     this.getValueChanges<boolean>(formGroup, 'selected')

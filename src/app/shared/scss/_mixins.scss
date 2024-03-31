@@ -70,12 +70,13 @@
   }
 }
 
-@mixin iconButton($buttonDimension) {
+@mixin icon-button($buttonDimension) {
   background: var(--backgroundColorPrimary);
   border: 1px solid var(--borderColorPrimary);
   border-radius: math.div($buttonDimension, 2);
   color: var(--textColorPrimary);
   height: $buttonDimension;
+  user-select: none;
   width: $buttonDimension;
 
   &:hover {
@@ -86,6 +87,7 @@
     cursor: pointer;
   }
 
+  // strong emphasis
   &--enabled {
     background: var(--themeColorPrimary);
     color: var(--backgroundColorPrimary);
@@ -93,6 +95,12 @@
     &:hover {
       background: var(--themeColorAccent);
     }
+  }
+
+  // light emphasis
+  &--selected {
+    @include rainbow(border-color);
+    background: var(--backgroundColorAccent);
   }
 }
 

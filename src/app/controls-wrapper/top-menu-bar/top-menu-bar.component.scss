@@ -68,11 +68,11 @@ $defaultSpacing: 5px;
     $buttonSize: 40px;
 
     @include flex-center;
-    @include iconButton($buttonSize);
+    @include icon-button($buttonSize);
     margin-bottom: 2px;
     padding: 3px;
     position: relative;
-    
+
     &:before {
       $borderWidth: 4px;
       $borderSpacing: 2px;

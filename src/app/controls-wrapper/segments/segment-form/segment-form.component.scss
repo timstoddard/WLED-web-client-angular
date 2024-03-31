@@ -32,7 +32,7 @@
   }
 
   &__button {
-    @include iconButton(36px);
+    @include icon-button(36px);
     @include flex-center;
 
     &__icon {
