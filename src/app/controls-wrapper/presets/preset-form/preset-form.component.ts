@@ -12,59 +12,12 @@ import { PresetsService } from '../presets.service';
 })
 export class PresetFormComponent implements OnInit {
   @Input() preset?: AppPreset;
-  newPresetForm!: FormGroup;
+  @Input() formType!: 'create' | 'update';
+  presetForm!: FormGroup;
   @Output() closeForm = new EventEmitter();
-  inputs: CustomInput[] = [
-    {
-      label: 'Name',
-      description: '',
-      inputs: [
-        {
-          type: 'text',
-          getFormControl: () => getFormControl(this.newPresetForm, 'name'),
-          placeholder: 'Name',
-          widthPx: 200,
-        },
-      ],
-    },
-    {
-      label: 'ID',
-      description: '',
-      inputs: [
-        {
-          type: 'number',
-          getFormControl: () => getFormControl(this.newPresetForm, 'id'),
-          placeholder: 'ID',
-          widthPx: 70,
-        },
-      ],
-    },
-    {
-      label: 'Quick Load Label',
-      description: 'Max 2 letters',
-      inputs: [
-        {
-          type: 'text',
-          getFormControl: () => getFormControl(this.newPresetForm, 'quickLoadLabel'),
-          placeholder: 'Label',
-          widthPx: 100,
-        },
-      ],
-    },
-  ];
-  textareaInput: CustomInput = {
-    label: 'API Command', // TODO better label
-    description: 'Manually set the API parameters.',
-    inputs: [
-      {
-        type: 'textarea',
-        getFormControl: () => getFormControl(this.newPresetForm, 'apiValue'),
-        placeholder: '{}', // TODO better placeholder
-        widthPx: 200,
-        heightPx: 100,
-      },
-    ],
-  };
+  inputs1!: CustomInput[];
+  inputs2!: CustomInput[];
+  textAreaInput!: CustomInput;
   getFormControl!: getFormControlFn;
 
   constructor(
@@ -73,8 +26,11 @@ export class PresetFormComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.newPresetForm = this.createForm(this.preset);
-    this.getFormControl = createGetFormControl(this.newPresetForm);
+    this.presetForm = this.createForm(this.preset);
+    this.getFormControl = createGetFormControl(this.presetForm);
+    this.inputs1 = this.getInputs1();
+    this.inputs2 = this.getInputs2();
+    this.textAreaInput = this.gettextAreaInput();
   }
 
   savePreset() {
@@ -83,19 +39,19 @@ export class PresetFormComponent implements OnInit {
       id,
       name,
       quickLoadLabel,
-      apiValue,
+      apiCommand,
       useCurrentState,
       includeBrightness,
       saveSegmentBounds,
-    } = this.newPresetForm.value
+    } = this.presetForm.value
     let preset: Partial<AppPreset> = {};
 
     if (useCurrentState) {
       try {
         // TODO need to figure out better how this works
-        preset = JSON.parse(apiValue);
+        preset = JSON.parse(apiCommand);
       } catch (e) {
-        preset.apiValue = apiValue;
+        preset.apiValue = apiCommand;
         // TODO display error message
       }
     } else {
@@ -103,14 +59,15 @@ export class PresetFormComponent implements OnInit {
         id,
         name,
         quickLoadLabel,
-        apiValue,
+        apiValue: apiCommand,
         isExpanded: false,
       };
       this.presetsService.updatePreset(
         preset,
         useCurrentState,
         includeBrightness,
-        saveSegmentBounds);
+        saveSegmentBounds,
+      );
     }
 
     this.emitCloseForm()
@@ -120,17 +77,79 @@ export class PresetFormComponent implements OnInit {
     this.closeForm.emit();
   }
 
+  private getInputs1(): CustomInput[] {
+    return [
+      {
+        label: 'Name',
+        description: '',
+        inputs: [
+          {
+            type: 'text',
+            getFormControl: () => getFormControl(this.presetForm, 'name'),
+            placeholder: 'Name',
+            widthPx: 250,
+          },
+        ],
+      },
+    ];
+  }
+
+  private getInputs2(): CustomInput[] {
+    return [
+      {
+        label: 'ID',
+        description: '',
+        inputs: [
+          {
+            type: 'number',
+            getFormControl: () => getFormControl(this.presetForm, 'id'),
+            placeholder: 'ID',
+            widthPx: 70,
+          },
+        ],
+      },
+      {
+        label: 'Quick Load Label',
+        description: 'Max 2 letters',
+        inputs: [
+          {
+            type: 'text',
+            getFormControl: () => getFormControl(this.presetForm, 'quickLoadLabel'),
+            placeholder: 'Label',
+            widthPx: 80,
+          },
+        ],
+      },
+    ];
+  }
+
+  private gettextAreaInput(): CustomInput {
+    return {
+      label: 'API Command',
+      description: 'Accepts any valid HTTP or JSON API command',
+      inputs: [
+        {
+          type: 'textarea',
+          getFormControl: () => getFormControl(this.presetForm, 'apiCommand'),
+          placeholder: '{}', // TODO better placeholder
+          widthPx: 200,
+          heightPx: 100,
+        },
+      ],
+    };
+  }
+
   private createForm(existingPreset?: AppPreset) {
     let id = this.presetsService.getNextPresetId();
     let name = '';
     let quickLoadLabel = '';
-    let apiValue = '';
+    let apiCommand = '';
 
     if (existingPreset) {
       id = existingPreset.id;
       name = existingPreset.name;
       quickLoadLabel = existingPreset.quickLoadLabel ?? '';
-      apiValue = existingPreset.apiValue;
+      apiCommand = existingPreset.apiValue;
     }
 
     const form = this.formService.createFormGroup({
@@ -141,7 +160,7 @@ export class PresetFormComponent implements OnInit {
     }, {
       includeBrightness: this.formService.formBuilder.control(true, this.requiredIfUseCurrentStateEquals(true)),
       saveSegmentBounds: this.formService.formBuilder.control(true, this.requiredIfUseCurrentStateEquals(true)),
-      apiValue: this.formService.formBuilder.control(apiValue, this.requiredIfUseCurrentStateEquals(false)),
+      apiCommand: this.formService.formBuilder.control(apiCommand, this.requiredIfUseCurrentStateEquals(false)),
     });
 
     return form;
@@ -149,11 +168,11 @@ export class PresetFormComponent implements OnInit {
 
   private requiredIfUseCurrentStateEquals(expectedValue: boolean) {
     return (control: AbstractControl): ValidationErrors | null => {
-      if (!this.newPresetForm) {
+      if (!this.presetForm) {
         return null
       }
 
-      const useCurrentStateControl = this.newPresetForm.get('useCurrentState')
+      const useCurrentStateControl = this.presetForm.get('useCurrentState')
       const isRequired = useCurrentStateControl &&
         useCurrentStateControl.value === expectedValue;
       return isRequired

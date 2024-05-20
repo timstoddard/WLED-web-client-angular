@@ -30,6 +30,10 @@ export interface InputConfig {
   max?: number;
   /** Step value. For number type inputs only. */
   step?: number;
+  /** Max length of input text. */
+  maxLength?: number;
+  /** Enable/disable the autocomplete functionality. */
+  autocomplete?: boolean;
 }
 
 @Component({
@@ -45,11 +49,6 @@ export class TextInputComponent {
   @Input() @Optional() suffix: string = '';
   @Input() @Optional() flexDirection: 'column' | 'row' | 'auto' = 'auto';
   @Input() @Optional() hideValidity = false;
-  showDescription!: boolean;
-
-  ngOnInit() {
-    this.showDescription = false;
-  }
 
   getInputMode({ type, inputMode }: InputConfig) {
     return inputMode
@@ -115,8 +114,8 @@ export class TextInputComponent {
     return styles;
   }
 
-  toggleDescription() {
-    this.showDescription = !this.showDescription;
+  formatBoolean(bool?: boolean) {
+    return bool ? 'on' : 'off';
   }
 
   private getDefaultInputModeForInputType(inputType: string) {

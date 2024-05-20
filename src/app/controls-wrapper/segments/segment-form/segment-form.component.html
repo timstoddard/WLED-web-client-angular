@@ -5,18 +5,31 @@
   class="segment">
   <!-- <div>{{ segmentForm.value | json }}</div> -->
 
-  <div class="segmentForm__row segmentForm__row--wrappedRow">
+  <h3
+    *ngIf="formType === 'create'"
+    class="segmentForm__title">
+    New Segment
+  </h3>
+
+  <div
+    *ngIf="formType !== 'create'"
+    class="segmentForm__row segmentForm__row--topRow">
     <label
       [ngClass]="{ 'segmentForm__powerButton--enabled': segmentForm.get('isOn')!.value }"
-      class="segmentForm__button segmentForm__powerButton">
+      class="segmentForm__powerButton">
       <input
         formControlName="isOn"
         type="checkbox"
         class="segmentForm__powerButton__input" />
-      <span class="segmentForm__button__icon material-symbols-outlined">
+      <span class="segmentForm__powerButton__icon material-symbols-outlined">
         power_settings_new
       </span>
     </label>
+
+    <app-checkbox
+      [control]="getFormControl('isReverse')"
+      label="Reverse direction">
+    </app-checkbox>
 
     <app-color-slider
       [control]="segmentForm.get('brightness')!"
@@ -27,49 +40,80 @@
       class="">
     </app-color-slider>
 
-    <div class="segmentForm__checkboxes">
-      <app-checkbox
-        [control]="getFormControl('isReverse')"
-        label="Reverse direction">
-      </app-checkbox>
-      <app-checkbox
-        [control]="getFormControl('isMirror')"
-        label="Mirror effect">
-      </app-checkbox>
-    </div>
+    <app-checkbox
+      [control]="getFormControl('isMirror')"
+      label="Mirror effect">
+    </app-checkbox>
   </div>
 
   <div class="segmentForm__row segmentForm__row--column">
-    <app-text-input
-      *ngFor="let input of inputs"
-      [label]="input.label"
-      [inputs]="input.inputs"
-      [description]="input.description">
-    </app-text-input>
+    <!-- TODO figure this out -->
+    <div>
+      {{ useSegmentLength ? 'Length' : 'Stop LED' }}
+    </div>
+    <div>
+      {{ ledCountLabel }}
+    </div>
+    <div class="segmentForm__subRow">
+      <!-- TODO set min/max values, see new segment form -->
+      <app-text-input
+        *ngFor="let input of inputs1"
+        [label]="input.label"
+        [inputs]="input.inputs"
+        [description]="input.description"
+        flexDirection="column"
+        class="segmentForm__textInput">
+      </app-text-input>
+    </div>
+    <div
+      *ngIf="formType !== 'create'"
+      class="segmentForm__subRow">
+      <app-text-input
+        *ngFor="let input of inputs2"
+        [label]="input.label"
+        [inputs]="input.inputs"
+        [description]="input.description"
+        flexDirection="column"
+        class="segmentForm__textInput">
+      </app-text-input>
+    </div>
   </div>
 
-  <div class="segmentForm__row segmentForm__row--wrappedRow">
-    <button
-      mat-raised-button
-      color="warn"
-      (click)="deleteSegment()"
-      [disabled]="getSegmentsLength() <= 1"
-      class="segmentForm__deleteButton">
-      <span class="material-symbols-outlined">
-        delete
-      </span>
-      Delete
-    </button>
+  <div class="segmentForm__row segmentForm__row--bottomRow">
+    <div [ngSwitch]="formType">
+      <ng-container *ngSwitchCase="'create'">
+        <button
+          mat-raised-button
+          color="warn"
+          (click)="emitCloseForm()">
+          <span class="material-symbols-outlined">
+            cancel
+          </span>
+          Cancel
+        </button>
+      </ng-container>
+      <ng-container *ngSwitchCase="'update'">
+        <button
+          mat-raised-button
+          color="warn"
+          (click)="deleteSegment()"
+          [disabled]="getSegmentsLength() <= 1">
+          <span class="material-symbols-outlined">
+            delete
+          </span>
+          Delete
+        </button>
+      </ng-container>
+    </div>
 
     <button
       mat-raised-button
       color="primary"
-      (click)="updateSegment()"
-      class="segmentForm__applyButton">
+      (click)="updateSegment()">
       <span class="material-symbols-outlined">
         done
       </span>
-      Apply
+      Save
     </button>
   </div>
 

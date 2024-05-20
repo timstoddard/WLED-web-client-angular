@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { AppSegment } from '../../../shared/app-types/app-state';
 import { FormService, getFormControl, createGetFormControl, getFormControlFn } from '../../../shared/form-service';
@@ -14,78 +14,17 @@ import { SegmentsService } from '../segments.service';
   styleUrls: ['./segment-form.component.scss'],
 })
 export class SegmentFormComponent extends UnsubscriberComponent implements OnInit {
-  @Input() segment!: AppSegment;
+  @Input() segment?: AppSegment;
+  @Input() formType!: 'create' | 'update';
+  @Input() newSegmentId!: number;
+  @Input() ledCount!: number;
+  @Input() lastLed!: number;
+  @Output() closeForm = new EventEmitter();
   segmentForm!: FormGroup;
   ledCountLabel!: string;
   useSegmentLength!: boolean;
-  inputs: CustomInput[] = [
-    {
-      label: 'Name',
-      description: '',
-      inputs: [
-        {
-          type: 'text',
-          getFormControl: () => getFormControl(this.segmentForm, 'name'),
-          placeholder: 'Name',
-          widthPx: 120,
-        },
-      ],
-    },
-    {
-      label: 'Start/Stop LED',
-      description: 'The first and last LEDs to be included in this segment.',
-      inputs: [
-        {
-          type: 'number',
-          getFormControl: () => getFormControl(this.segmentForm, 'start'),
-          placeholder: '0',
-          widthPx: 69,
-        },
-        {
-          type: 'number',
-          getFormControl: () => getFormControl(this.segmentForm, 'stop'),
-          placeholder: '100',
-          widthPx: 69,
-        },
-      ],
-    },
-    {
-      label: 'Offset',
-      description: 'Offset before first LED.',
-      inputs: [
-        {
-          type: 'number',
-          getFormControl: () => getFormControl(this.segmentForm, 'offset'),
-          placeholder: '0',
-          widthPx: 69,
-        },
-      ],
-    },
-    {
-      label: 'Grouping',
-      description: 'The group number that includes this segment.',
-      inputs: [
-        {
-          type: 'number',
-          getFormControl: () => getFormControl(this.segmentForm, 'grouping'),
-          placeholder: '1',
-          widthPx: 69,
-        },
-      ],
-    },
-    {
-      label: 'Spacing',
-      description: 'Number of LEDs to add space around the segment.',
-      inputs: [
-        {
-          type: 'number',
-          getFormControl: () => getFormControl(this.segmentForm, 'spacing'),
-          placeholder: '0',
-          widthPx: 69,
-        },
-      ],
-    },
-  ];
+  inputs1!: CustomInput[];
+  inputs2!: CustomInput[];
   getFormControl!: getFormControlFn;
 
   constructor(
@@ -100,14 +39,21 @@ export class SegmentFormComponent extends UnsubscriberComponent implements OnIni
     this.uiConfigService.getUIConfig(this.ngUnsubscribe)
       .subscribe((uiConfig) => {
         this.useSegmentLength = uiConfig.useSegmentLength;
+        this.inputs1 = this.getInputs1();
+        this.inputs2 = this.getInputs2();
       });
 
     this.segmentForm = this.createForm();
     this.getFormControl = createGetFormControl(this.segmentForm);
-    this.updateLedCountLabel(this.segment);
+    this.updateLedCountLabel();
+    this.inputs1 = this.getInputs1();
+    this.inputs2 = this.getInputs2();
   }
 
   updateSegment() {
+    if (!this.segment) {
+      return;
+    }
     // TODO if `stop < start` show validation error message, don't submit form
     const name = this.segmentForm.get('name')!.value as string; // TODO save name in local storage
     const start = this.segmentForm.get('start')!.value as number;
@@ -117,6 +63,7 @@ export class SegmentFormComponent extends UnsubscriberComponent implements OnIni
     const spacing = this.segmentForm.get('spacing')!.value as number;
     const options = {
       segmentId: this.segment.id,
+      name,
       start,
       stop,
       useSegmentLength: this.useSegmentLength,
@@ -130,6 +77,9 @@ export class SegmentFormComponent extends UnsubscriberComponent implements OnIni
   }
 
   deleteSegment() {
+    if (!this.segment) {
+      return;
+    }
     try {
       this.handleUnsubscribe(
         this.segmentsService.deleteSegment(this.segment.id)!)
@@ -144,12 +94,104 @@ export class SegmentFormComponent extends UnsubscriberComponent implements OnIni
     return this.segmentsService.getSegments().length;
   }
 
-  private updateLedCountLabel(segment: AppSegment) {
-    const { startColumn, stopColumn } = segment;
+  emitCloseForm() {
+    this.closeForm.emit();
+  }
+
+  private getInputs1(): CustomInput[] {
+    return [
+      {
+        label: 'Name',
+        description: '',
+        inputs: [
+          {
+            type: 'text',
+            getFormControl: () => getFormControl(this.segmentForm, 'name'),
+            placeholder: 'Name',
+            widthPx: 150,
+          },
+        ],
+      },
+      {
+        label: 'Start/Stop LED',
+        description: 'The first and last LEDs to be included in this segment.',
+        inputs: [
+          {
+            type: 'number',
+            getFormControl: () => getFormControl(this.segmentForm, 'start'),
+            placeholder: '0',
+            min: 0,
+            max: this.ledCount - 1,
+            widthPx: 60,
+          },
+          {
+            type: 'number',
+            getFormControl: () => getFormControl(this.segmentForm, 'stop'),
+            placeholder: '100',
+            min: 0,
+            max: this.ledCount - (this.useSegmentLength ? this.lastLed : 0),
+            widthPx: 60,
+          },
+        ],
+      },
+    ];
+  }
+
+  private getInputs2(): CustomInput[] {
+    return [
+      {
+        label: 'Offset',
+        description: 'Offset before first LED.',
+        inputs: [
+          {
+            type: 'number',
+            getFormControl: () => getFormControl(this.segmentForm, 'offset'),
+            placeholder: '0',
+            widthPx: 60,
+          },
+        ],
+      },
+      {
+        label: 'Grouping',
+        description: 'The group number that includes this segment.',
+        inputs: [
+          {
+            type: 'number',
+            getFormControl: () => getFormControl(this.segmentForm, 'grouping'),
+            placeholder: '1',
+            widthPx: 60,
+          },
+        ],
+      },
+      {
+        label: 'Spacing',
+        description: 'Number of LEDs to add space around the segment.',
+        inputs: [
+          {
+            type: 'number',
+            getFormControl: () => getFormControl(this.segmentForm, 'spacing'),
+            placeholder: '0',
+            widthPx: 60,
+          },
+        ],
+      },
+    ];
+  }
+
+  private updateLedCountLabel() {
+    if (!this.segment) {
+      return;
+    }
+
+    const {
+      startColumn,
+      stopColumn,
+      space: spacing,
+      group,
+    } = this.segment;
     const length = stopColumn - (this.useSegmentLength ? 0 : startColumn);
-    const spacing = segment.space;
-    const grouping = segment.group >= 0
-      ? segment.group
+    const grouping = group >= 0
+      ? group
       : 1;
 
     let label: string;
@@ -166,27 +208,35 @@ export class SegmentFormComponent extends UnsubscriberComponent implements OnIni
   }
 
   private toggleOn(isOn: boolean) {
-    this.handleUnsubscribe(
-      this.segmentsService.setSegmentOn(this.segment.id, isOn))
-      .subscribe();
+    if (this.segment) {
+      this.handleUnsubscribe(
+        this.segmentsService.setSegmentOn(this.segment.id, isOn))
+        .subscribe();
+    }
   }
 
   private setBrightness(brightness: number) {
-    this.handleUnsubscribe(
-      this.segmentsService.setSegmentBrightness(this.segment.id, brightness))
-      .subscribe();
+    if (this.segment) {
+      this.handleUnsubscribe(
+        this.segmentsService.setSegmentBrightness(this.segment.id, brightness))
+        .subscribe();
+    }
   }
 
   private toggleReverse(isReverse: boolean) {
-    this.handleUnsubscribe(
-      this.segmentsService.setSegmentReverse(this.segment.id, isReverse))
-      .subscribe();
+    if (this.segment) {
+      this.handleUnsubscribe(
+        this.segmentsService.setSegmentReverse(this.segment.id, isReverse))
+        .subscribe();
+    }
   }
 
   private toggleMirror(isMirror: boolean) {
-    this.handleUnsubscribe(
-      this.segmentsService.setSegmentMirror(this.segment.id, isMirror))
-      .subscribe();
+    if (this.segment) {
+      this.handleUnsubscribe(
+        this.segmentsService.setSegmentMirror(this.segment.id, isMirror))
+        .subscribe();
+    }
   }
 
   /** Validator: `stop` must be greater than `start`.  */
@@ -198,7 +248,7 @@ export class SegmentFormComponent extends UnsubscriberComponent implements OnIni
       const start = this.segmentForm.get('start')!.value as number;
       const stop = this.segmentForm.get('stop')!.value as number;
       const error = {
-        stopNotGreaterThanStart: {
+        stopLessThanStart: {
           start,
           stop,
         },
@@ -211,18 +261,35 @@ export class SegmentFormComponent extends UnsubscriberComponent implements OnIni
 
   private createForm() {
     // TODO add new fields to form
-    const form = this.formService.createFormGroup({
-      name: this.segment.name || '',
-      isOn: this.segment.isOn,
-      brightness: this.segment.brightness,
-      start: this.segment.startColumn,
-      stop: this.segment.stopColumn,
-      offset: this.segment.startOffset,
-      grouping: this.segment.group,
-      spacing: this.segment.space,
-      isReverse: this.segment.isHorizontallyReversed,
-      isMirror: this.segment.isHorizonallyMirrored,
-    });
+    let formFields;
+    if (this.segment) {
+      formFields = {
+        name: this.segment.name || '',
+        isOn: this.segment.isOn,
+        brightness: this.segment.brightness,
+        start: this.segment.startColumn,
+        stop: this.segment.stopColumn,
+        offset: this.segment.startOffset,
+        grouping: this.segment.group,
+        spacing: this.segment.space,
+        isReverse: this.segment.isHorizontallyReversed,
+        isMirror: this.segment.isHorizonallyMirrored,
+      };
+    } else {
+      formFields = {
+        name: '',
+        isOn: true,
+        brightness: 128,
+        start: 0,
+        stop: 0,
+        offset: 0,
+        grouping: 1,
+        spacing: 0,
+        isReverse: false,
+        isMirror: false,
+      };
+    }
+    const form = this.formService.createFormGroup(formFields);
 
     // add validators
     form.get('stop')!.addValidators(this.validateStopGreaterThanStart());

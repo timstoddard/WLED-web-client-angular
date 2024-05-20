@@ -139,32 +139,60 @@
   margin: 0 auto;
   max-width: 600px;
   padding: 0 4px;
+  width: 100%;
 }
 
 @mixin listItemBaseStyles() {
-  border: 1px solid var(--borderColorPrimary);
+  border: 2px solid var(--borderColorPrimary);
   border-radius: 6px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   margin: 5px;
   user-select: none;
+  width: 100%;
 
   &__mainContent {
     align-items: center;
     border-radius: 6px;
-    cursor: pointer;
-    display: flex;
+    display: grid;
+    grid: auto / auto 1fr auto;
     justify-content: space-between;
-    padding: 10px;
     width: 100%;
 
-    &:hover {
-      background-color: var(--backgroundColorAccent);
-    }
-
     & > * {
-      margin: 3px 5px;
+      margin: 0;
+    }
+  }
+  
+  &__upperLeft,
+  &__upperRight {
+    @include forceWidth(50px);
+    @include forceHeight(50px);
+    @include flex-center;
+  }
+
+  &__upperLeft {
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 0;
+    border-right: 1px solid var(--borderColorAccent);
+    border-top-left-radius: 6px;
+    border-top-right-radius: 0;
+
+    &--expanded {
+      border-bottom-left-radius: 0;
+    }
+  }
+
+  &__upperRight {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 6px;
+    border-left: 1px solid var(--borderColorAccent);
+    border-top-left-radius: 0;
+    border-top-right-radius: 6px;
+
+    &--expanded {
+      border-bottom-right-radius: 0;
     }
   }
 
@@ -331,4 +359,34 @@ $antWidth: 2px;
 
 @mixin overlay-backdrop {
   background: rgba(0,0,0,0.3);
+}
+
+@mixin common-form-base {
+  width: 100%;
+
+  &__row {
+    @include flex-center;
+    border-top: 1px solid var(--borderColorAccent);
+    padding: 10px;
+
+    &--column {
+      flex-direction: column;
+    }
+
+    &--bottomRow {
+      justify-content: space-between;
+      padding-left: 30px;
+      padding-right: 30px;
+    }
+  }
+
+  &__subRow {
+    @include flex-center;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  &__textInput {
+    flex-grow: 1;
+  }
 }

@@ -7,6 +7,7 @@ import { UnsubscriberComponent } from '../../../shared/unsubscriber/unsubscriber
 import { formatPlural } from '../../utils';
 import { SegmentsService } from '../segments.service';
 
+// TODO DEPRECATE AND REMOVE COMPONENT
 @Component({
   selector: 'app-new-segment',
   templateUrl: './new-segment.component.html',
@@ -95,6 +96,7 @@ export class NewSegmentComponent extends UnsubscriberComponent implements OnInit
   }
 
   private getNumberInputs() {
+    // TODO use these min/max values in segment form comp
     return [
       {
         formControlName: 'start',

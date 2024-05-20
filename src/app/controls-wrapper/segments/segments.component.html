@@ -7,8 +7,8 @@
   <button
     mat-raised-button
     color="primary"
-    (click)="setShowNewSegmentForm(true)"
-    [disabled]="showNewSegmentForm"
+    (click)="setShowCreateForm(true)"
+    [disabled]="showCreateForm"
     class="">
     <!-- TODO or just a '+' sign? -->
     New Segment
@@ -49,13 +49,27 @@
   </button>
 </div>
 
-<app-new-segment
-  *ngIf="showNewSegmentForm"
-  (submit)="setShowNewSegmentForm(false)"
+<div
+  @expand
+  *ngIf="showCreateForm"
+  class="segments__formWrapper">
+  <app-segment-form
+    (closeForm)="setShowCreateForm(false)"
+    formType="create"
+    [newSegmentId]="getSegments().length"
+    [ledCount]="ledCount"
+    [lastLed]="lastLed"
+    class="segments__createForm">
+  </app-segment-form>
+</div>
+
+<!-- <app-new-segment
+  *ngIf="showCreateForm"
+  (submit)="setShowCreateForm(false)"
   [newSegmentId]="getSegments().length"
   [ledCount]="ledCount"
   [lastLed]="lastLed">
-</app-new-segment>
+</app-new-segment> -->
 
 <app-segment-list
   [segments]="getSegments()">

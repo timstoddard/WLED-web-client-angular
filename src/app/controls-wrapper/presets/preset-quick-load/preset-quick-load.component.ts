@@ -12,7 +12,7 @@ import { timer } from 'rxjs';
   styleUrls: ['./preset-quick-load.component.scss'],
   animations: [
     expandFade(),
-    expandText(1.25, 0.9),
+    expandText(1.25, 1),
     expandVerticalPadding(8, 3),
   ],
 })

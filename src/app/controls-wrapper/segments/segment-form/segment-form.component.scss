@@ -5,42 +5,29 @@
 }
 
 .segmentForm {
-  width: 100%;
+  @include common-form-base;
 
   &__row {
-    align-items: center;
-    border-top: 1px solid var(--borderColorAccent);
-    display: flex;
-    justify-content: space-evenly;
-    padding: 10px;
-
-    &--column {
-      flex-direction: column;
-    }
-
-    &--wrappedRow {
-      flex-wrap: wrap;
-    }
-
-    & > * {
-      margin: 6px;
-    }
-
-    & ::ng-deep .mat-button-wrapper {
-      @include flex-center;
-    }
-  }
-
-  &__button {
-    @include icon-button(36px);
-    @include flex-center;
-
-    &__icon {
-      font-size: 22px;
+    &--topRow {
+      // TODO simpler way to do this?
+      display: grid;
+      grid: auto auto / auto auto;
+      justify-content: space-evenly;
+      justify-items: center;
+      align-content: center;
+      align-items: center;
     }
   }
 
   &__powerButton {
+    @include icon-button(36px);
+    @include flex-center;
+    margin: 8px;
+
+    &__icon {
+      font-size: 22px;
+    }
+
     &__input {
       display: none;
     }
@@ -50,27 +37,5 @@
     ::ng-deep &__input {
       margin: -12px 6px;
     }
-  }
-
-  &__checkboxes {
-    @include flex-center;
-    flex-direction: column;
-
-    & > * {
-      margin: 3px;
-      padding: 3px;
-    }
-  }
-
-  &__numberButtonWrapper {
-    align-items: center;
-    display: flex;
-    justify-content: center;
-  }
-
-  &__deleteButton {
-  }
-
-  &__applyButton {
   }
 }

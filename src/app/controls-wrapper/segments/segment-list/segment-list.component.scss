@@ -2,8 +2,28 @@
 
 .segmentList {
   @include listWrapperBaseStyles;
+  @include flex-center;
 
   &Item {
     @include listItemBaseStyles;
+
+    &__upperLeft {
+      & ::ng-deep .checkboxContainer {
+        @include flex-center;
+        border: 1px solid transparent;
+        border-bottom-left-radius: 6px;
+        border-bottom-right-radius: 0;
+        border-top-left-radius: 6px;
+        border-top-right-radius: 0;
+        height: 50px;
+        width: 50px;
+      }
+
+      &--expanded {
+        & ::ng-deep .checkboxContainer {
+          border-bottom-left-radius: 0;
+        }
+      }
+    }
   }
 }

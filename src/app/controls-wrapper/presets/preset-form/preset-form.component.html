@@ -1,23 +1,44 @@
 <div
-  [formGroup]="newPresetForm"
+  [formGroup]="presetForm"
   class="presetForm">
 
-  <div class="presetForm__row presetForm__row--wrapped">
-    <app-text-input
-      *ngFor="let input of inputs"
-      [label]="input.label"
-      [inputs]="input.inputs"
-      [description]="input.description">
-    </app-text-input>
+  <h3
+    *ngIf="formType === 'create'"
+    class="presetForm__title">
+    New Preset
+  </h3>
+
+  <div class="presetForm__row presetForm__row--column">
+    <div class="presetForm__subRow">
+      <app-text-input
+        *ngFor="let input of inputs1"
+        [label]="input.label"
+        [inputs]="input.inputs"
+        [description]="input.description"
+        flexDirection="column"
+        class="presetForm__textInput">
+      </app-text-input>
+    </div>
+
+    <div class="presetForm__subRow">
+      <app-text-input
+        *ngFor="let input of inputs2"
+        [label]="input.label"
+        [inputs]="input.inputs"
+        [description]="input.description"
+        flexDirection="column"
+        class="presetForm__textInput">
+      </app-text-input>
+    </div>
   </div>
 
-  <div class="presetForm__row">
+  <div class="presetForm__row presetForm__row--checkboxes">
     <app-checkbox
       [control]="getFormControl('useCurrentState')"
       label="Use current state">
     </app-checkbox>
 
-    <ng-container *ngIf="newPresetForm.get('useCurrentState')?.value === true; else apiValueInput">
+    <ng-container *ngIf="presetForm.get('useCurrentState')?.value === true; else apiValueInput">
       <app-checkbox
         [control]="getFormControl('includeBrightness')"
         label="Include brightness">
@@ -30,29 +51,32 @@
 
     <ng-template #apiValueInput>
       <app-text-input
-        [label]="textareaInput.label"
-        [inputs]="textareaInput.inputs"
-        [description]="textareaInput.description">
+        [label]="textAreaInput.label"
+        [inputs]="textAreaInput.inputs"
+        [description]="textAreaInput.description"
+        flexDirection="column">
       </app-text-input>
     </ng-template>
   </div>
 
-  <div class="presetForm__row">
-    <div class="presetForm__bottomButtons presetForm__horizontalSection">
-      <button
-        mat-raised-button
-        color="primary"
-        (click)="emitCloseForm()"
-        class="">
-        Cancel
-      </button>
-      <button
-        mat-raised-button
-        color="primary"
-        (click)="savePreset()"
-        class="">
-        Save
-      </button>
-    </div>
+  <div class="presetForm__row presetForm__row--bottomRow">
+    <button
+      mat-raised-button
+      color="warn"
+      (click)="emitCloseForm()">
+      <span class="material-symbols-outlined">
+        cancel
+      </span>
+      Cancel
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="savePreset()">
+      <span class="material-symbols-outlined">
+        done
+      </span>
+      Save
+    </button>
   </div>
 </div>

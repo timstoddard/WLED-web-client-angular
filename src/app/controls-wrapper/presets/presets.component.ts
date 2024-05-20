@@ -6,6 +6,7 @@ import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.co
 import { PresetsService } from './presets.service';
 import { WLEDPlaylist, WLEDPlaylists, WLEDPreset, WLEDPresets } from '../../shared/api-types/api-presets';
 import { AppPreset } from '../../shared/app-types/app-presets';
+import { expandFade } from 'src/app/shared/animations';
 
 interface PresetError {
   isEmpty: boolean;
@@ -31,6 +32,7 @@ const getDefaultPlaylist = (partial: Partial<WLEDPlaylist> = {}): WLEDPlaylist =
   selector: 'app-presets',
   templateUrl: './presets.component.html',
   styleUrls: ['./presets.component.scss'],
+  animations: [expandFade()],
 })
 export class PresetsComponent extends UnsubscriberComponent implements OnInit {
   @Input() useLocalStorage: boolean = true;
@@ -136,8 +138,16 @@ export class PresetsComponent extends UnsubscriberComponent implements OnInit {
     return this.presetsService.getPresets();
   }
 
-  setShowCreateForm(setShowCreateForm: boolean) {
-    this.showCreateForm = setShowCreateForm;
+  toggleCreatePresetForm() {
+    this.showCreateForm = !this.showCreateForm;
+  }
+
+  expandAll() {
+    this.presetsService.expandAll();
+  }
+
+  collapseAll() {
+    this.presetsService.collapseAll();
   }
 
   private getDefaultPlaylists() {

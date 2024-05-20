@@ -3,15 +3,17 @@ import { UIConfigService } from '../../shared/ui-config.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
 import { SegmentsService } from './segments.service';
+import { expandFade } from 'src/app/shared/animations';
 
 @Component({
   selector: 'app-segments',
   templateUrl: './segments.component.html',
   styleUrls: ['./segments.component.scss'],
+  animations: [expandFade()],
 })
 export class SegmentsComponent extends UnsubscriberComponent implements OnInit {
   noNewSegments: boolean = false;
-  showNewSegmentForm: boolean = false;
+  showCreateForm: boolean = false;
   ledCount = 0; // TODO do these belong here?
   lastLed = 0; // TODO do these belong here?
   useSegmentLength!: boolean;
@@ -46,7 +48,7 @@ export class SegmentsComponent extends UnsubscriberComponent implements OnInit {
     if (this.getSegments().length >= this.maxSegments) {
       this.noNewSegments = true;
     } else if (this.noNewSegments) {
-      this.showNewSegmentForm = false;
+      this.showCreateForm = false;
       this.noNewSegments = false;
     }
   }
@@ -56,11 +58,13 @@ export class SegmentsComponent extends UnsubscriberComponent implements OnInit {
   }
 
   createSegment(
+    name: string,
     start: number,
     stop: number,
     useSegmentLength: boolean,
   ) {
     const result = this.segmentsService.createSegment({
+      name,
       start,
       stop,
       useSegmentLength,
@@ -88,8 +92,8 @@ export class SegmentsComponent extends UnsubscriberComponent implements OnInit {
       .subscribe();
   }
 
-  setShowNewSegmentForm(showNewSegmentForm: boolean) {
-    this.showNewSegmentForm = showNewSegmentForm;
+  setShowCreateForm(showCreateForm: boolean) {
+    this.showCreateForm = showCreateForm;
   }
 
   getResetButtonText() {

@@ -2,6 +2,45 @@
   [presets]="getPresets()">
 </app-preset-quick-load>
 
+<!-- TODO make own component -->
+<div class="presets__topMenuBar">
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="toggleCreatePresetForm()"
+    [disabled]="showCreateForm">
+    <!-- TODO or just a '+' sign? -->
+    New Preset
+  </button>
+
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="expandAll()"
+    class="">
+    Expand All
+  </button>
+
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="collapseAll()"
+    class="">
+    Collapse All
+  </button>
+</div>
+
+<div
+  @expand
+  *ngIf="showCreateForm"
+  class="presets__formWrapper">
+  <app-preset-form
+    (closeForm)="toggleCreatePresetForm()"
+    formType="create"
+    class="presets__createForm">
+  </app-preset-form>
+</div>
+
 <app-preset-list
   [presets]="getPresets()">
 </app-preset-list>

@@ -4,13 +4,12 @@
     [formGroup]="getFormGroupBySegmentId(segment.id)"
     class="segmentListItem">
 
-    <div
-      (click)="toggleExpanded(segment.id)"
-      class="segmentListItem__mainContent">
-      <!-- TODO stop propagation on click -->
+    <div class="segmentListItem__mainContent">
       <app-checkbox
         [control]="getFormControl(segment.id, 'isSelected')"
-        label="">
+        label=""
+        [ngClass]="{ 'segmentListItem__upperLeft--expanded': segment.isExpanded }"
+        class="segmentListItem__upperLeft">
       </app-checkbox>
   
       <h3
@@ -20,7 +19,10 @@
       </h3>
   
       <app-expand-icon
-        [expanded]="segment.isExpanded">
+        (click)="toggleExpanded(segment.id)"
+        [expanded]="segment.isExpanded"
+        [ngClass]="{ 'segmentListItem__upperRight--expanded': segment.isExpanded }"
+        class="segmentListItem__upperRight">
       </app-expand-icon>
     </div>
 

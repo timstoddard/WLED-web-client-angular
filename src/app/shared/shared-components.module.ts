@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { CheckboxComponent } from '../shared/checkbox/checkbox.component';
 import { FileUploadComponent } from './file-upload/file-upload.component';
@@ -27,6 +28,8 @@ const COMPONENTS = [
     MatCardModule,
     MatCheckboxModule,
     MatFormFieldModule,
+    MatTooltipModule,
+    MatTooltipModule,
     ReactiveFormsModule,
   ]
 })

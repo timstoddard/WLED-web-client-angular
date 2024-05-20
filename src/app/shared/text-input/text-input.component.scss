@@ -22,14 +22,17 @@
 
   &__mainContent {
     @include flex-center;
+    width: 100%;
   }
 
   &__labelWrapper {
     @include flex-center;
     cursor: pointer;
     flex-direction: row;
+    justify-content: space-evenly;
+    width: 100%;
 
-    // TODO make this generic (was just for segments)
+    // TODO make this generic (currently for transition time)
     // breakpoint under which the number inputs start to wrap
     @media screen and (max-width: 670px) {
       flex-direction: column;
@@ -111,7 +114,7 @@
     margin-right: 3px;
   }
 
-  &__toggleDescription {
+  &__info {
     @include flex-center;
     @include forceHeight(20px);
     @include forceWidth(20px);
@@ -129,14 +132,10 @@
     }
   }
 
-  &__description {
-    background: var(--backgroundColorPrimaryOffset);
-    border: 1px solid var(--borderColorAccent);
-    border-radius: 4px;
-    font-size: 14px;
-    font-style: italic;
-    margin: 2px 1px 1px;
-    padding: 2px 4px;
-    width: 100%;
+  ::ng-deep &__tooltip {
+    background: rgba(var(--backgroundColorPrimaryRgb), 0.85);
+    border: 1px solid var(--themeColorPrimary);
+    border-radius: 6px;
+    text-align: center;
   }
 }

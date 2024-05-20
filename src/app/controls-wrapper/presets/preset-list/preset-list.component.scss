@@ -1,17 +1,8 @@
 @import 'src/app/shared/scss/mixins';
 
 .presetList {
-  &__buttons {
-    @include flex-center;
-
-    & > * {
-      margin: 5px;
-    }
-  }
-
-  &__items {
-    @include listWrapperBaseStyles;
-  }
+  @include listWrapperBaseStyles;
+  @include flex-center;
 
   &Item {
     @include listItemBaseStyles;

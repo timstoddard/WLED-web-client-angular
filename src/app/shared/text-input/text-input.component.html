@@ -28,19 +28,16 @@
       </div>
     </label>
   
+    <!-- TODO why doesn't tooltip open on mobile? both chrome devtools mock mobile, and my iphone safari -->
     <div
       *ngIf="description"
-      (click)="toggleDescription()"
-      class="textInput__toggleDescription">
+      [matTooltip]="description"
+      matTooltipPosition="above"
+      matTooltipTouchGestures="auto"
+      matTooltipClass="textInput__tooltip"
+      class="textInput__info">
       i
     </div>
-  </div>
-
-  <!-- TODO show overlay instead of div for the description -->
-  <div
-    *ngIf="description && showDescription"
-    class="textInput__description">
-    {{ description }}
   </div>
 </div>
 
@@ -54,8 +51,10 @@
         [type]="input.type"
         [formControl]="input.getFormControl()"
         [placeholder]="input.placeholder"
+        [maxlength]="input.maxLength ?? null"
         [pattern]="input.pattern ?? ''"
         [attr.inputmode]="getInputMode(input)"
+        [autocomplete]="formatBoolean(input.autocomplete)"
         [ngStyle]="getNgStyle(input, true)"
         class="textInput__input textInput__input--centered">
       <!-- same as text type due to https://stackoverflow.com/questions/40176061/two-switch-case-values-in-angular -->
@@ -64,8 +63,10 @@
         [type]="input.type"
         [formControl]="input.getFormControl()"
         [placeholder]="input.placeholder"
+        [maxlength]="input.maxLength ?? null"
         [pattern]="input.pattern ?? ''"
         [attr.inputmode]="getInputMode(input)"
+        [autocomplete]="formatBoolean(input.autocomplete)"
         [ngStyle]="getNgStyle(input, true)"
         class="textInput__input textInput__input--centered">
       <input
@@ -76,13 +77,17 @@
         [step]="input.step"
         [formControl]="input.getFormControl()"
         [placeholder]="input.placeholder"
+        [maxlength]="input.maxLength ?? null"
         [attr.inputmode]="getInputMode(input)"
+        [autocomplete]="formatBoolean(input.autocomplete)"
         [ngStyle]="getNgStyle(input, true)"
         class="textInput__input textInput__input--centered">
       <textarea
         *ngSwitchCase="'textarea'"
         [formControl]="input.getFormControl()"
         [placeholder]="input.placeholder"
+        [maxlength]="input.maxLength ?? null"
+        [autocomplete]="formatBoolean(input.autocomplete)"
         [ngStyle]="getNgStyle(input, false)"
         class="textInput__input">
       </textarea>

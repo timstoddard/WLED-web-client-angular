@@ -17,10 +17,6 @@ export class PresetListComponent {
     this.showCreateForm = false;
   }
 
-  toggleCreatePresetForm() {
-    this.showCreateForm = !this.showCreateForm;
-  }
-
   toggleExpanded(presetId: number) {
     this.presetsService.togglePresetExpanded(presetId);
   }
@@ -32,13 +28,5 @@ export class PresetListComponent {
     return label
       ? `${preset.name} ${label}`
       : preset.name;
-  }
-
-  expandAll() {
-    this.presetsService.expandAll();
-  }
-
-  collapseAll() {
-    this.presetsService.collapseAll();
   }
 }

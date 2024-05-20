@@ -37,6 +37,7 @@ export class SegmentsService extends UnsubscriberService {
   }
 
   createSegment(options: {
+    name: string,
     start: number,
     stop: number,
     useSegmentLength: boolean,
@@ -53,6 +54,7 @@ export class SegmentsService extends UnsubscriberService {
 
   updateSegment(options: {
     segmentId: number,
+    name: string,
     start: number,
     stop: number,
     useSegmentLength: boolean,

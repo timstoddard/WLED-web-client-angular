@@ -3,3 +3,30 @@
 :host {
   @include main-view-container;
 }
+
+.presets {
+  &__topMenuBar {
+    @include flex-center;
+    flex-wrap: wrap;
+    width: 100%;
+
+    & > * {
+      margin: 5px;
+    }
+  }
+
+  &__formWrapper {
+    @include flex-center;
+    @include listWrapperBaseStyles;
+  }
+
+  &__createForm {
+    // values copied from @mixin listItemBaseStyles
+    border: 2px solid var(--borderColorPrimary);
+    border-radius: 6px;
+    margin: 5px;
+
+    // unique values
+    margin-bottom: 20px;
+  }
+}
