@@ -1,5 +1,8 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter, takeUntil } from 'rxjs';
 import { UIConfigService } from '../../shared/ui-config.service';
 import { AppStateService } from '../../shared/app-state/app-state.service';
 import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
@@ -11,7 +14,6 @@ import { OverlayPositionService } from '../../shared/overlay-position.service';
 import { InputConfig } from '../../shared/text-input/text-input.component';
 import { SnackbarService } from 'src/app/shared/snackbar.service';
 import { InfoComponent } from '../info/info.component';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 const MIN_SHOW_BRIGHTNESS_SLIDER_THRESHOLD_PX = 800;
 const MIN_SHOW_PC_MODE_BUTTON_THRESHOLD_PX = 1250;
@@ -61,6 +63,7 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
   private nightLightMode = false;
   private shouldToggleReceiveWithSend = true;
   private infoDialogRef: MatDialogRef<InfoComponent> | null = null;
+  private currentUrl!: string;
 
   constructor(
     private formService: FormService,
@@ -71,6 +74,7 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
     private overlayPositionService: OverlayPositionService,
     private snackbarService: SnackbarService,
     private dialog: MatDialog,
+    private router: Router,
   ) {
     super();
   }
@@ -79,6 +83,7 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
     this.buttons = this.getButtons();
     this.topMenuBarForm = this.createForm();
     this.onResize();
+    this.currentUrl = this.router.url;
 
     this.appStateService.getAppState(this.ngUnsubscribe)
       .subscribe(this.handleAppStateUpdate);
@@ -87,6 +92,13 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
       .subscribe((uiConfig) => {
         this.showLabels = uiConfig.showLabels;
       });
+
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      takeUntil(this.ngUnsubscribe),
+    ).subscribe((event) => {
+      this.currentUrl = (event as NavigationEnd).urlAfterRedirects;
+    });
   }
 
   getProcessingStatus(name: string) {
@@ -133,6 +145,11 @@ export class TopMenuBarComponent extends UnsubscriberComponent implements OnInit
     const centerPosition = this.overlayPositionService.centerBottomPosition(offsetXPx, offsetYPx);
     const rightPosition = this.overlayPositionService.rightBottomPosition(offsetXPx, offsetYPx);
     return [centerPosition, rightPosition];
+  }
+
+  isPcModeSettingsPage() {
+    return this.buttonValues.isPcMode
+      && this.currentUrl.startsWith('/controls/settings');
   }
 
   private getButtons() {

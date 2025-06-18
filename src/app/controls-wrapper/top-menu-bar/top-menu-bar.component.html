@@ -36,20 +36,23 @@
       </div>
     </div>
 
-    <!-- TODO change to /controls when on settings route -->
     <!-- PC mode button: settings -->
+    <!-- if in PC mode and on a settings page, switches to "controls" link -->
     <div class="topMenuBar__buttonWrapper">
       <a
-        [routerLink]="['/', 'controls', 'settings']"
+        [routerLink]="isPcModeSettingsPage()
+          ? ['/', 'controls']
+          : ['/', 'controls', 'settings']"
+        queryParamsHandling="merge"
         class="topMenuBar__button topMenuBar__button--settingsButton">
         <span class="topMenuBar__button__icon material-symbols-outlined">
-          settings
+          {{ isPcModeSettingsPage() ? 'tune' : 'settings' }}
         </span>
       </a>
       <div
         *ngIf="showLabels"
         class="topMenuBar__button__text">
-        Settings
+        {{ isPcModeSettingsPage() ? 'Controls' : 'Settings' }}
       </div>
     </div>
   </ng-container>
