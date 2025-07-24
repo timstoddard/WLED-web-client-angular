@@ -170,7 +170,7 @@ export class NetworkSettingsComponent extends UnsubscriberComponent implements O
         this.wledAccessPointIpAddress = metadata['wledAccessPointIpAddress'] as string;
       }
       this.changeDetectorRef.markForCheck();
-    })
+    });
   }
 
   submitForm() {
@@ -186,6 +186,7 @@ export class NetworkSettingsComponent extends UnsubscriberComponent implements O
     const staticGatewayParts = ipAddress.staticGateway.match(IPV4_ADDRESS_REGEX);
     const staticSubnetMaskParts = ipAddress.staticSubnetMask.match(IPV4_ADDRESS_REGEX);
 
+    // TODO use transformNetworkSettingsToWledNetworkSettings()
     const formValue: any /* TODO type */ = {
       I0: parseInt(staticIpParts[1], 10),
       I1: parseInt(staticIpParts[2], 10),
@@ -227,6 +228,7 @@ export class NetworkSettingsComponent extends UnsubscriberComponent implements O
 
     // TODO get default values from server/api (is this currently possible? existing website has them hardcoded into the html)
 
+    // TODO use form service utils
     // TODO add validators for IP address controls
     return this.formService.formBuilder.group({
       localNetwork: this.formService.formBuilder.group({

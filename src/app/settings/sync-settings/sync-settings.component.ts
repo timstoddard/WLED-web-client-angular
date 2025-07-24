@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { FormService, FormValues, createGetFormControl, getFormControlFn } from '../../shared/form-service';
+import { FormService, FormValues, createGetFormControl, getFormControl, getFormControlFn } from '../../shared/form-service';
 import { SelectItem } from '../shared/settings-types';
+import { InputConfig } from 'src/app/shared/text-input/text-input.component';
 
 @Component({
   selector: 'app-sync-settings',
@@ -136,6 +137,146 @@ export class SyncSettingsComponent implements OnInit {
   ];
   getFormControl!: getFormControlFn;
 
+  udpPortInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.syncSettingsForm, 'broadcast.udpPort'),
+    placeholder: '',
+    widthPx: 120,
+  };
+
+  secondPortInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.syncSettingsForm, 'broadcast.secondPort'),
+    placeholder: '',
+    widthPx: 120,
+  };
+
+  startUniverseInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.syncSettingsForm, 'realTime.startUniverse'),
+    placeholder: '',
+    widthPx: 80,
+  };
+
+  dmxStartAddressInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.syncSettingsForm, 'realTime.dmxStartAddress'),
+    placeholder: '',
+    widthPx: 80,
+  };
+
+  timeoutMsInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.syncSettingsForm, 'realTime.timeoutMs'),
+    placeholder: '',
+    widthPx: 100,
+  };
+
+  ledOffsetInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.syncSettingsForm, 'realTime.ledOffset'),
+    placeholder: '',
+    widthPx: 80,
+  };
+
+  alexaInvocationNameInputConfig: InputConfig = {
+    type: 'text',
+    getFormControl: () => getFormControl(this.syncSettingsForm, 'alexaConfig.invocationName'),
+    placeholder: '',
+    widthPx: 100,
+  };
+
+  blynkHostInputConfig: InputConfig = {
+    type: 'text',
+    getFormControl: () => getFormControl(this.syncSettingsForm, 'blynkConfig.host'),
+    placeholder: '',
+    widthPx: 180,
+  };
+
+  blynkPortInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.syncSettingsForm, 'blynkConfig.port'),
+    placeholder: '',
+    widthPx: 100,
+  };
+
+  blynkDeviceAuthTokenInputConfig: InputConfig = {
+    type: 'text',
+    getFormControl: () => getFormControl(this.syncSettingsForm, 'blynkConfig.deviceAuthToken'),
+    placeholder: '',
+    widthPx: 180,
+  };
+
+  mqttBrokerInputConfig: InputConfig = {
+    type: 'text',
+    getFormControl: () => getFormControl(this.syncSettingsForm, 'mqttConfig.broker'),
+    placeholder: '',
+    widthPx: 100,
+  };
+
+  mqttPortInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.syncSettingsForm, 'mqttConfig.port'),
+    placeholder: '',
+    widthPx: 100,
+  };
+
+  mqttUsernameInputConfig: InputConfig = {
+    type: 'text',
+    getFormControl: () => getFormControl(this.syncSettingsForm, 'mqttConfig.username'),
+    placeholder: '',
+    widthPx: 150,
+  };
+
+  mqttPasswordInputConfig: InputConfig = {
+    type: 'password',
+    getFormControl: () => getFormControl(this.syncSettingsForm, 'mqttConfig.password'),
+    placeholder: '',
+    widthPx: 150,
+  };
+
+  mqttClientIdInputConfig: InputConfig = {
+    type: 'text',
+    getFormControl: () => getFormControl(this.syncSettingsForm, 'mqttConfig.clientId'),
+    placeholder: '',
+    widthPx: 150,
+  };
+
+  mqttDeviceTopicInputConfig: InputConfig = {
+    type: 'text',
+    getFormControl: () => getFormControl(this.syncSettingsForm, 'mqttConfig.deviceTopic'),
+    placeholder: '',
+    widthPx: 150,
+  };
+
+  mqttGroupTopicInputConfig: InputConfig = {
+    type: 'text',
+    getFormControl: () => getFormControl(this.syncSettingsForm, 'mqttConfig.groupTopic'),
+    placeholder: '',
+    widthPx: 150,
+  };
+
+  huePollLightIdInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.syncSettingsForm, 'philipsHueConfig.pollLightId'),
+    placeholder: '',
+    widthPx: 80,
+  };
+
+  huePollIntervalMsInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.syncSettingsForm, 'philipsHueConfig.pollIntervalMs'),
+    placeholder: '',
+    widthPx: 80,
+  };
+
+  hueBridgeIpAddressInputConfig: InputConfig = {
+    type: 'text',
+    getFormControl: () => getFormControl(this.syncSettingsForm, 'philipsHueConfig.hueBridgeIpAddress'),
+    placeholder: '',
+    widthPx: 180,
+  };
+
   constructor(private formService: FormService) { }
 
   ngOnInit() {
@@ -174,7 +315,7 @@ export class SyncSettingsComponent implements OnInit {
           sendTwice: false,
         },
       },
-      instanceList: {
+      deviceList: {
         enable: true,
         isThisInstanceDiscoverable: true,
       },

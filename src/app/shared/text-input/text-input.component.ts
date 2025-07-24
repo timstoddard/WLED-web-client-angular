@@ -36,6 +36,10 @@ export interface InputConfig {
   autocomplete?: boolean;
 }
 
+export interface InputConfigs {
+  [key: number]: InputConfig
+}
+
 @Component({
   selector: 'app-text-input',
   templateUrl: './text-input.component.html',

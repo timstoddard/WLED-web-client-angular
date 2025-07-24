@@ -18,7 +18,7 @@ fdescribe('HtmlHighlightService', () => {
       ],
     });
     htmlHighlightService = TestBed.inject(HtmlHighlightService);
-  })
+  });
 
   it('should work for blank html text, blank filter text', () => {
     // arrange

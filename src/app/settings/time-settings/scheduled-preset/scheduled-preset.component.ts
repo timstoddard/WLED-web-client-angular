@@ -1,20 +1,24 @@
 import { Component, HostBinding, HostListener, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { FormService, FormValues, createGetFormControl, getFormControl, getFormControlFn } from 'src/app/shared/form-service';
+import { createGetFormControl, createGetFormGroup, getFormControl, getFormControlFn, getFormGroupFn } from 'src/app/shared/form-service';
 import { InputConfig } from 'src/app/shared/text-input/text-input.component';
-import { SelectItem, ScheduledPreset } from '../../shared/settings-types';
 import { UnsubscriberComponent } from 'src/app/shared/unsubscriber/unsubscriber.component';
+import { expandFade } from 'src/app/shared/animations';
 
 @Component({
   selector: 'app-scheduled-preset',
   templateUrl: './scheduled-preset.component.html',
-  styleUrls: ['./scheduled-preset.component.scss']
+  styleUrls: ['./scheduled-preset.component.scss'],
+  animations: [expandFade()],
 })
 export class ScheduledPresetComponent extends UnsubscriberComponent implements OnInit {
-  @Input() scheduledPreset?: ScheduledPreset;
-  scheduledPresetForm!: FormGroup;
+  @Input() scheduledPresetForm!: FormGroup;
+  @Input() isSunrise!: boolean;
+  @Input() isSunset!: boolean;
+  @Input() customDateString!: string;
   getFormControl!: getFormControlFn;
-  
+  getFormGroup!: getFormGroupFn;
+
   @HostBinding('class.isEditing')
   isEditing!: boolean;
 
@@ -25,17 +29,6 @@ export class ScheduledPresetComponent extends UnsubscriberComponent implements O
     }
   }
 
-  daysOfWeek = [
-    { label: 'Sun', shortLabel: 'S', formControlName: 'days.sunday' },
-    { label: 'Mon', shortLabel: 'M', formControlName: 'days.monday' },
-    { label: 'Tue', shortLabel: 'T', formControlName: 'days.tuesday' },
-    { label: 'Wed', shortLabel: 'W', formControlName: 'days.wednesday' },
-    { label: 'Thu', shortLabel: 'T', formControlName: 'days.thursday' },
-    { label: 'Fri', shortLabel: 'F', formControlName: 'days.friday' },
-    { label: 'Sat', shortLabel: 'S', formControlName: 'days.saturday' },
-  ];
-
-  // TODO copy input configs from wled html
   hourInputConfig: InputConfig = {
     type: 'number',
     getFormControl: () => getFormControl(this.scheduledPresetForm, 'hour'),
@@ -50,6 +43,7 @@ export class ScheduledPresetComponent extends UnsubscriberComponent implements O
     getFormControl: () => getFormControl(this.scheduledPresetForm, 'minute'),
     placeholder: '0',
     widthPx: 50,
+    // TODO - OG version allows -59 to 59: https://github.com/wled/WLED/blob/929a5a8d801e9db691a2d2da6c74dc80105ce8db/wled00/data/settings_time.htm#L48
     min: 0,
     max: 59,
   };
@@ -59,87 +53,38 @@ export class ScheduledPresetComponent extends UnsubscriberComponent implements O
     getFormControl: () => getFormControl(this.scheduledPresetForm, 'presetId'),
     placeholder: '0',
     widthPx: 50,
+    min: 0,
+    max: 250,
   };
 
-  startDateDayInputConfig: InputConfig = {
-    type: 'number',
-    getFormControl: () => getFormControl(this.scheduledPresetForm, 'startDate.day'),
-    placeholder: '0',
-    widthPx: 50,
-    min: 1,
-    max: 31,
-  };
-
-  endDateDayInputConfig: InputConfig = {
-    type: 'number',
-    getFormControl: () => getFormControl(this.scheduledPresetForm, 'endDate.day'),
-    placeholder: '0',
-    widthPx: 50,
-    min: 1,
-    max: 31,
-  };
-
-  monthOptions: SelectItem<number>[] = [
-    {
-      name: 'Jan',
-      value: 1,
-    },
-    {
-      name: 'Feb',
-      value: 2,
-    },
-    {
-      name: 'Mar',
-      value: 3,
-    },
-    {
-      name: 'Apr',
-      value: 4,
-    },
-    {
-      name: 'May',
-      value: 5,
-    },
-    {
-      name: 'Jun',
-      value: 6,
-    },
-    {
-      name: 'Jul',
-      value: 7,
-    },
-    {
-      name: 'Aug',
-      value: 8,
-    },
-    {
-      name: 'Sep',
-      value: 9,
-    },
-    {
-      name: 'Oct',
-      value: 10,
-    },
-    {
-      name: 'Nov',
-      value: 11,
-    },
-    {
-      name: 'Dec',
-      value: 12,
-    },
+  monthNames: string[] = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
   ];
 
-  constructor(
-    private formService: FormService,
-  ) {
+  constructor() {
     super();
   }
 
   ngOnInit() {
-    this.scheduledPresetForm = this.createForm(this.scheduledPreset as unknown as FormValues ?? this.getDefaultFormValues());
     this.getFormControl = createGetFormControl(this.scheduledPresetForm);
-    this.isEditing = false;
+    this.getFormGroup = createGetFormGroup(this.scheduledPresetForm);
+    this.createFormListeners(this.scheduledPresetForm);
+    this.isEditing = this.hasNonDefaultSettings();
+
+    this.getValueChanges(this.scheduledPresetForm).subscribe(() => {
+      this.isEditing = this.hasNonDefaultSettings();
+    });
   }
 
   minimize(event: Event) {
@@ -148,108 +93,124 @@ export class ScheduledPresetComponent extends UnsubscriberComponent implements O
   }
 
   formatTime() {
-    const type = this.getFormControl('type')
-      ? this.getFormControl('type').value
-      : '';
     const minute = this.getFormControl('minute').value;
     const minuteFormatted = `0${minute}`.slice(-2);
-    switch (type) {
-      case 'sunrise':
-        return `Sunrise (minute :${minuteFormatted})`;
-      case 'sunset':
-        return `Sunset (minute :${minuteFormatted})`;
-      default:
-        const hour = this.getFormControl('hour').value;
-        const hourFormatted = `0${hour}`.slice(-2);
-        return `${hourFormatted}:${minuteFormatted}`;
+    const hourControl = this.getFormControl('hour');
+    if (hourControl) {
+      const hour = this.getFormControl('hour').value;
+      const hourFormatted = `0${hour}`.slice(-2);
+      return `${hourFormatted}:${minuteFormatted}`;
+    } else {
+      return `${minute >= 0 ? '+' : '-'}${minute} mins`
     }
   }
 
-  getDayValues() {
-    // TODO cache this for performance?
-    return this.daysOfWeek
-      .map(({ formControlName, shortLabel }) => {
-        const { value } = this.getFormControl(formControlName);
-        return {
-          label: shortLabel,
-          enabled: value,
-        };
-      });
+  isSunriseOrSunset() {
+    return this.isSunrise || this.isSunset;
   }
 
   formatDateRange() {
+    if (this.isSunriseOrSunset()) {
+      return '';
+    }
+
     try {
-      const startMonth = this.getFormControl('startDate.month').value;
-      const startDay = this.getFormControl('startDate.day').value;
-      const endMonth = this.getFormControl('endDate.month').value;
-      const endDay = this.getFormControl('endDate.day').value;
-      const startMonthLabel = this.monthOptions.find(({ value }) => value === startMonth)!.name;
-      const endMonthLabel = this.monthOptions.find(({ value }) => value === endMonth)!.name;
-      return `${startMonthLabel} ${startDay} - ${endMonthLabel} ${endDay}`
+      const {
+        startMonth,
+        startDay,
+        endMonth,
+        endDay,
+      } = this.getStartEndMonthDay();
+
+      const startMonthLabel = this.monthNames[startMonth];
+      const endMonthLabel = this.monthNames[endMonth];
+      const result = `${startMonthLabel} ${startDay} - ${endMonthLabel} ${endDay}`;
+      return result;
     } catch (e) {
-      return 'invalid date range'
+      return 'invalid date range';
     }
   }
 
-  private createForm(formValues = this.getDefaultFormValues()) {
-    // TODO which (if any) of these should be required by default?
-    const form = this.formService.createFormGroup(formValues);
-
-    this.getValueChanges<boolean>(form, 'enabled')
-      .subscribe(value => {
-        this.toggleRowEnabled(form);
+  private createFormListeners(scheduledPresetForm: FormGroup) {
+    this.getValueChanges<boolean>(scheduledPresetForm, 'enabled')
+      .subscribe((value: boolean) => {
+        this.setRowEnabled(scheduledPresetForm, value);
       });
-
-    return form;
   }
 
-  private getDefaultFormValues(): FormValues {
-    const value: ScheduledPreset = {
-      enabled: true,
-      hour: 0,
-      minute: 0,
-      presetId: 0,
-      days: {
-        sunday: true,
-        monday: true,
-        tuesday: true,
-        wednesday: true,
-        thursday: true,
-        friday: true,
-        saturday: true,
-      },
-      startDate: {
-        month: 1,
-        day: 1,
-      },
-      endDate: {
-        month: 12,
-        day: 31,
-      },
-    };
-    return value as unknown as FormValues;
-  }
-
-  private toggleRowEnabled(scheduledPresetForm: FormGroup) {
+  private setRowEnabled(scheduledPresetForm: FormGroup, isEnabled: boolean) {
     if (scheduledPresetForm) {
-      const isEnabled = scheduledPresetForm.get('enabled')!.value;
       if (isEnabled) {
         // enable all
         scheduledPresetForm.get('hour')?.enable({ emitEvent: false });
         scheduledPresetForm.get('minute')?.enable({ emitEvent: false });
         scheduledPresetForm.get('presetId')!.enable({ emitEvent: false });
         scheduledPresetForm.get('days')!.enable({ emitEvent: false });
-        scheduledPresetForm.get('startDate')!.enable({ emitEvent: false });
-        scheduledPresetForm.get('endDate')!.enable({ emitEvent: false });
+        if (!this.isSunriseOrSunset()) {
+          scheduledPresetForm.get('startDate')!.enable({ emitEvent: false });
+          scheduledPresetForm.get('endDate')!.enable({ emitEvent: false });
+        }
       } else {
         // disable all
         scheduledPresetForm.get('hour')?.disable({ emitEvent: false });
         scheduledPresetForm.get('minute')?.disable({ emitEvent: false });
         scheduledPresetForm.get('presetId')!.disable({ emitEvent: false });
         scheduledPresetForm.get('days')!.disable({ emitEvent: false });
-        scheduledPresetForm.get('startDate')!.disable({ emitEvent: false });
-        scheduledPresetForm.get('endDate')!.disable({ emitEvent: false });
+        if (!this.isSunriseOrSunset()) {
+          scheduledPresetForm.get('startDate')!.disable({ emitEvent: false });
+          scheduledPresetForm.get('endDate')!.disable({ emitEvent: false });
+        }
       }
     }
+  }
+
+  private hasNonDefaultSettings() {
+    let result = false;
+    
+    const daysOfWeek = Object.values(this.scheduledPresetForm.get('days')!.value);
+    const allDaysEnabled = daysOfWeek.reduce((curr, prev) => curr && prev, true);
+    if (!allDaysEnabled) {
+      result = true;
+    }
+    if (this.isSunrise) {
+      console.log('SUNRISE', daysOfWeek, daysOfWeek)
+    }
+
+    if (!this.isSunriseOrSunset()) {
+      const {
+        startMonth,
+        startDay,
+        endMonth,
+        endDay,
+      } = this.getStartEndMonthDay();
+      if (
+        // js dates store month as zero indexed
+        (startMonth + 1) !== 1
+        || startDay !== 1
+        || (endMonth + 1) !== 12
+        || endDay !== 31
+      ) {
+        result = true;
+      }
+    }
+
+    return result;
+  }
+
+  private getStartEndMonthDay = () => {
+    const startDate = new Date(this.getFormControl('startDate').value);
+    const startMonth = startDate.getMonth();
+    const startDay = startDate.getDate();
+
+    const endDate = new Date(this.getFormControl('endDate').value);
+    const endMonth = endDate.getMonth();
+    const endDay = endDate.getDate();
+
+    return {
+      startMonth,
+      startDay,
+      endMonth,
+      endDay,
+    };
   }
 }

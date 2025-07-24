@@ -108,7 +108,7 @@ export interface WLEDSegmentPostRequest extends WLEDSegmentFiltered {
    * 
    * Note: For your colors to apply correctly, make sure the desired brightness is set beforehand. Turning on the LEDs from an off state and setting individual LEDs in the same JSON request will not work!
    */
-  i?: Array<number | number[]>;
+  i?: IndividualLedOverride[];
 }
 
 export interface WLEDUdpStatePostRequest {
@@ -129,3 +129,5 @@ export interface SavePresetRequest1 extends SavePresetRequestBase {
 // TODO define the specific properties of the partial state
 export type SavePresetRequest2 = SavePresetRequestBase & Partial<WLEDState>;
 export type SavePresetRequest = SavePresetRequest1 | SavePresetRequest2;
+
+export type IndividualLedOverride = string | [number, number, number];

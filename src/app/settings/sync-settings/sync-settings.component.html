@@ -48,27 +48,16 @@
     title="WLED Broadcast"
     formGroupName="broadcast"
     class="syncSettingsForm__broadcast">
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>UDP Port</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="udpPort"
-        class="">
-    </mat-form-field>
 
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>2nd Port</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="secondPort"
-        class="">
-    </mat-form-field>
+    <app-text-input
+      label="UDP Port"
+      [inputs]="[udpPortInputConfig]">
+    </app-text-input>
+
+    <app-text-input
+      label="2nd Port"
+      [inputs]="[secondPortInputConfig]">
+    </app-text-input>
 
     <div formGroupName="receive">
       Receive:
@@ -118,23 +107,22 @@
     </div>
   </app-settings-group>
 
-  <!-- TODO update form group name -->
   <app-settings-group
     title="Device List"
-    formGroupName="instanceList"
+    formGroupName="deviceList"
     class="syncSettingsForm__instanceList">
     <app-checkbox
-      [control]="getFormControl('instanceList.enable')"
+      [control]="getFormControl('deviceList.enable')"
       label="Enable device list">
     </app-checkbox>
     <app-checkbox
-      [control]="getFormControl('instanceList.isThisInstanceDiscoverable')"
+      [control]="getFormControl('deviceList.isThisInstanceDiscoverable')"
       label="Make this device discoverable">
     </app-checkbox>
   </app-settings-group>
 
   <app-settings-group
-    title="Realtime"
+    title="Realtime Sync"
     formGroupName="realTime"
     class="syncSettingsForm__realTime">
     <app-checkbox
@@ -160,16 +148,10 @@
       label="Multicast">
     </app-checkbox>
 
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Start Universe</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="startUniverse"
-        class="">
-    </mat-form-field>
+    <app-text-input
+      label="Start Universe"
+      [inputs]="[startUniverseInputConfig]">
+    </app-text-input>
 
     <div>
       <p>
@@ -189,16 +171,10 @@
       label="Skip out-of-sequence packets">
     </app-checkbox>
 
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>DMX Start Address</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="dmxStartAddress"
-        class="">
-    </mat-form-field>
+    <app-text-input
+      label="DMX Start Address"
+      [inputs]="[dmxStartAddressInputConfig]">
+    </app-text-input>
 
     DMX Mode
     <select formControlName="dmxMode">
@@ -219,16 +195,10 @@
       </p>
     </div>
 
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Timeout (ms)</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="timeoutMs"
-        class="">
-    </mat-form-field>
+    <app-text-input
+      label="Timeout (ms)"
+      [inputs]="[timeoutMsInputConfig]">
+    </app-text-input>
 
     <app-checkbox
       [control]="getFormControl('realTime.forceMaxBrightness')"
@@ -240,16 +210,10 @@
       label="Disable realtime gamma correction">
     </app-checkbox>
 
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Realtime LED offset</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="ledOffset"
-        class="">
-    </mat-form-field>
+    <app-text-input
+      label="Realtime LED offset"
+      [inputs]="[ledOffsetInputConfig]">
+    </app-text-input>
   </app-settings-group>
 
   <app-settings-group
@@ -263,16 +227,10 @@
       label="Emulate Alexa device">
     </app-checkbox>
 
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <!-- TODO better wording -->
-      <mat-label>Alexa invocation name</mat-label>
-      <input
-        matInput
-        formControlName="invocationName"
-        class="">
-    </mat-form-field>
+    <app-text-input
+      label="Device name for Alexa"
+      [inputs]="[alexaInvocationNameInputConfig]">
+    </app-text-input>
   </app-settings-group>
 
   <app-settings-group>
@@ -294,36 +252,21 @@
     title="Blynk"
     formGroupName="blynkConfig"
     class="syncSettingsForm__blynkConfig">
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Host</mat-label>
-      <input
-        matInput
-        formControlName="host"
-        class="">
-    </mat-form-field>
 
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Post</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="port"
-        class="">
-    </mat-form-field>
+    <app-text-input
+      label="Host"
+      [inputs]="[blynkHostInputConfig]">
+    </app-text-input>
 
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Device Auth Token</mat-label>
-      <input
-        matInput
-        formControlName="deviceAuthToken"
-        class="">
-    </mat-form-field>
+    <app-text-input
+      label="Port"
+      [inputs]="[blynkPortInputConfig]">
+    </app-text-input>
+
+    <app-text-input
+      label="Device Auth Token"
+      [inputs]="[blynkDeviceAuthTokenInputConfig]">
+    </app-text-input>
 
     <div>
       <p>
@@ -348,73 +291,40 @@
       label="Enable">
     </app-checkbox>
 
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Broker</mat-label>
-      <input
-        matInput
-        formControlName="broker"
-        class="">
-    </mat-form-field>
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Port</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="port"
-        class="">
-    </mat-form-field>
+    <app-text-input
+      label="Broker"
+      [inputs]="[mqttBrokerInputConfig]">
+    </app-text-input>
 
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Username</mat-label>
-      <input
-        matInput
-        formControlName="username"
-        class="">
-    </mat-form-field>
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Password</mat-label>
-      <input
-        matInput
-        type="password"
-        formControlName="password"
-        class="">
-    </mat-form-field>
+    <app-text-input
+      label="Port"
+      [inputs]="[mqttPortInputConfig]">
+    </app-text-input>
 
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Client ID</mat-label>
-      <input
-        matInput
-        formControlName="clientId"
-        class="">
-    </mat-form-field>
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Device Topic</mat-label>
-      <input
-        matInput
-        formControlName="deviceTopic"
-        class="">
-    </mat-form-field>
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Group Topic</mat-label>
-      <input
-        matInput
-        formControlName="groupTopic"
-        class="">
-    </mat-form-field>
+    <app-text-input
+      label="Username"
+      [inputs]="[mqttUsernameInputConfig]">
+    </app-text-input>
+
+    <app-text-input
+      label="Password"
+      [inputs]="[mqttPasswordInputConfig]">
+    </app-text-input>
+
+    <app-text-input
+      label="Client ID"
+      [inputs]="[mqttClientIdInputConfig]">
+    </app-text-input>
+
+    <app-text-input
+      label="Device Topic"
+      [inputs]="[mqttDeviceTopicInputConfig]">
+    </app-text-input>
+
+    <app-text-input
+      label="Group Topic"
+      [inputs]="[mqttGroupTopicInputConfig]">
+    </app-text-input>
 
     <div>
       <p>
@@ -434,32 +344,26 @@
     title="Philips Hue"
     formGroupName="philipsHueConfig"
     class="syncSettingsForm__philipsHueConfig">
+
     <app-checkbox
       [control]="getFormControl('philipsHueConfig.enable')"
       label="Enable">
     </app-checkbox>
-    
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Poll Hue Light</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="pollLightId"
-        class="">
-    </mat-form-field>
 
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Poll Interval (ms)</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="pollIntervalMs"
-        class="">
-    </mat-form-field>
+    <app-text-input
+      label="Hue Bridge IP Address"
+      [inputs]="[hueBridgeIpAddressInputConfig]">
+    </app-text-input>
+
+    <app-text-input
+      label="Poll Hue Light"
+      [inputs]="[huePollLightIdInputConfig]">
+    </app-text-input>
+    
+    <app-text-input
+      label="Poll Interval (ms)"
+      [inputs]="[huePollIntervalMsInputConfig]">
+    </app-text-input>
 
     <div formGroupName="receive">
       Receive:
@@ -476,16 +380,6 @@
         label="Color">
       </app-checkbox>
     </div>
-
-     <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Hue Bridge IP Address</mat-label>
-      <input
-        matInput
-        formControlName="hueBridgeIpAddress"
-        class="">
-    </mat-form-field>
 
     <div>
       <p>

@@ -1,0 +1,27 @@
+<div class="dayOfWeekPicker__daysWrapper">
+  <ul
+    *ngIf="!readOnly; else readOnlyTemplate"
+    class="dayOfWeekPicker__days">
+    <li
+      *ngFor="let day of daysOfWeek"
+      class="dayOfWeekPicker__day">
+      <app-checkbox
+        [ngClass]="'dayOfWeekPicker__checkbox--' + getDayClassModifier(day.formControlName)"  
+        [control]="getFormControl(day.formControlName)"
+        [label]="day.label"
+        [hideCheckbox]="true"
+        class="dayOfWeekPicker__checkbox">
+      </app-checkbox>
+    </li>
+  </ul>
+</div>
+
+<ng-template #readOnlyTemplate>
+  <div class="dayOfWeekPicker__readOnlyTemplate__days">
+    <div
+      *ngFor="let day of daysOfWeek"
+      [ngClass]="'dayOfWeekPicker__readOnlyTemplate__day--' + getDayClassModifier(day.formControlName)">
+      {{ day.shortLabel }}
+    </div>
+  </div>
+</ng-template>

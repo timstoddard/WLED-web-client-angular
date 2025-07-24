@@ -74,7 +74,7 @@
         [type]="input.type"
         [min]="input.min"
         [max]="input.max"
-        [step]="input.step"
+        [step]="input.step || 1"
         [formControl]="input.getFormControl()"
         [placeholder]="input.placeholder"
         [maxlength]="input.maxLength ?? null"

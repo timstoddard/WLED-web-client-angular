@@ -4,7 +4,7 @@
   <mat-checkbox
     [formControl]="control"
     (click)="click.emit()"
-    class="">
+    [ngClass]="{ 'checkbox__control--hidden': hideCheckbox }">
     <mat-label class="checkbox__label">
       {{ label }}
     </mat-label>

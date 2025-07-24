@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, of } from 'rxjs';
 import { MOCK_API_RESPONSE } from '../../controls-wrapper/mock-api-data';
@@ -11,10 +11,11 @@ import { responseTypeAsJsonHack } from 'src/app/controls-wrapper/utils';
 import { AppStateService } from '../app-state/app-state.service';
 import { ApiTypeMapper } from '../api-type-mapper';
 import { SnackbarService } from '../snackbar.service';
+import { WLEDSegmentPostRequest } from '../api-types/post-requests';
 
 // TODO move to post-requests.ts
 interface WLEDStatePostRequest {
-  seg?: Partial<WLEDSegment> | Array<Partial<WLEDSegment>>;
+  seg?: WLEDSegmentPostRequest | Array<WLEDSegmentPostRequest>;
   bri?: number;
   lor?: number;
   transition?: number;
@@ -82,18 +83,19 @@ export class ApiService extends UnsubscriberService {
       // subset of options for http.post()
       params?: HttpParams,
       responseType?: 'json' | 'text',
+      headers?: HttpHeaders,
     } = {},
   ) => {
     const url = this.buildApiUrl(apiPath);
     const parsedOptions = {
       ...options,
       responseType: responseTypeAsJsonHack(options.responseType),
-    }
+    };
     if (this.selectedDeviceService.isNoDeviceSelected()) {
-      console.log('MOCK POST:', url, body);
+      console.log('MOCK POST:', url, '\n', body);
       return of(offlineDefault);
     } else {
-      console.log('REAL POST:', url, body);
+      console.log('REAL POST:', url, '\n', body);
       // TODO add timeout like in httpGet()
       return this.http.post<T>(url, body, parsedOptions)
         .pipe(catchError(e => {

@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { FormService, FormValues, createGetFormControl, getFormControlFn } from '../../shared/form-service';
+import { FormService, FormValues, createGetFormControl, getFormControl, getFormControlFn } from '../../shared/form-service';
 import { LocalStorageKey, LocalStorageService } from '../../shared/local-storage.service';
 import { AppUIConfig, UIConfigService } from '../../shared/ui-config.service';
 import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
 import { UISettingsService } from './ui-settings.service';
+import { InputConfig } from 'src/app/shared/text-input/text-input.component';
 
 @Component({
   selector: 'app-ui-settings',
@@ -26,8 +27,7 @@ export class UISettingsComponent extends UnsubscriberComponent implements OnInit
     },
     {
       name: 'presets',
-      // TODO rename to not have 'preset' in the name
-      label: 'Preset Buttons',
+      label: 'Color Presets',
     },
     {
       name: 'hex',
@@ -35,6 +35,43 @@ export class UISettingsComponent extends UnsubscriberComponent implements OnInit
     },
   ];
   getFormControl!: getFormControlFn;
+
+  serverNameInputConfig: InputConfig = {
+    type: 'text',
+    getFormControl: () => getFormControl(this.uiSettingsForm, 'serverName'),
+    placeholder: 'WLED',
+    widthPx: 180,
+  };
+
+  backgroundOpacityInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.uiSettingsForm, 'backgroundOpacity'),
+    placeholder: '0.6',
+    widthPx: 80,
+    step: 0.1,
+  };
+
+  buttonOpacityInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.uiSettingsForm, 'buttonOpacity'),
+    placeholder: '0.8',
+    widthPx: 80,
+    step: 0.1,
+  };
+
+  backgroundHexInputConfig: InputConfig = {
+    type: 'text',
+    getFormControl: () => getFormControl(this.uiSettingsForm, 'backgroundHexColor'),
+    placeholder: 'ffffff',
+    widthPx: 180,
+  };
+
+  backgroundImageInputConfig: InputConfig = {
+    type: 'text',
+    getFormControl: () => getFormControl(this.uiSettingsForm, 'backgroundImageUrl'),
+    placeholder: '',
+    widthPx: 300,
+  };
 
   constructor(
     private formService: FormService,
@@ -53,7 +90,7 @@ export class UISettingsComponent extends UnsubscriberComponent implements OnInit
 
   submitForm() {
     const {
-      serverDescription,
+      serverName,
       shouldToggleReceiveWithSend,
       showColorInputs,
       showLabels,
@@ -101,8 +138,9 @@ export class UISettingsComponent extends UnsubscriberComponent implements OnInit
     };
     this.uiConfigService.setAll(uiConfig);
 
+    // TODO use transformUISettingsToWledUISettings()
     const formValue = {
-      DS: serverDescription,
+      DS: serverName,
       // TODO server checks for existence not truthiness
       ST: shouldToggleReceiveWithSend ? true : undefined,
       // TODO are these handled separately or here?
@@ -122,14 +160,12 @@ export class UISettingsComponent extends UnsubscriberComponent implements OnInit
     // TODO implement
   }
 
-  getShouldToggleReceiveWithSendDescription() {
-    const { value } = this.uiSettingsForm.get('shouldToggleReceiveWithSend')!;
-    // TODO changing text on click is jarring
-    return `Control ${value ? 'both' : 'only' } send ${value ? 'and receive ' : '' }with Sync button`;
-  }
-
   private createForm() {
-    const form = this.formService.createFormGroup(this.getDefaultFormValues());
+    // TODO use form service utils
+    const form = this.formService.createFormGroup(this.getDefaultFormValues(), {
+      backgroundImageUrl: this.formService.formBuilder.control(''),
+      backgroundHexColor: this.formService.formBuilder.control(''),
+    });
 
     const defaultConfig: any = {}; // TODO better defaults
     const config = this.localStorageService.get<AppUIConfig>(LocalStorageKey.UI_CONFIG, defaultConfig);
@@ -162,7 +198,7 @@ export class UISettingsComponent extends UnsubscriberComponent implements OnInit
 
   private getDefaultFormValues(): FormValues {
     return {
-      serverDescription: 'WLED',
+      serverName: 'WLED',
       shouldToggleReceiveWithSend: false,
       showColorInputs: {
         picker: true,
@@ -177,13 +213,13 @@ export class UISettingsComponent extends UnsubscriberComponent implements OnInit
       isDarkMode: true,
       backgroundOpacity: 0.6,
       buttonOpacity: 0.8,
-      backgroundHexColor: '',
-      backgroundImageUrl: '',
+      // backgroundHexColor: '',
+      // backgroundImageUrl: '',
       useRandomBackgroundImage: false,
       useCustomCss: false,
-      customCssFile: null,
+      customCssFile: '',
       enableHolidays: false,
-      holidaysFile: null,
+      holidaysFile: '',
     };
   }
 }

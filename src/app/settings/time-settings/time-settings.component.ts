@@ -2,20 +2,33 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { FormService, FormValues, createGetFormArray, createGetFormControl, getFormArrayFn, getFormControl, getFormControlFn } from '../../shared/form-service';
 import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
-import { ScheduledPreset, SelectItem, TimeSettings } from '../shared/settings-types';
+import { ButtonAction, ScheduledPreset, SelectItem, SunriseSunsetScheduledPreset, TimeSettings } from '../shared/settings-types';
 import { TimeSettingsService } from './time-settings.service';
 import { InputConfig } from 'src/app/shared/text-input/text-input.component';
+import { Router } from '@angular/router';
+import { expandFade } from 'src/app/shared/animations';
+import { SnackbarService } from 'src/app/shared/snackbar.service';
 
-enum ScheduledPresetType {
-  TIME = 'TIME',
-  SUNRISE = 'SUNRISE',
-  SUNSET = 'SUNSET',
-}
+const DEFAULT_SUNRISE_SUNSET_PRESET = {
+  enabled: true,
+  presetId: 0,
+  minute: 0,
+  days: {
+    0: true,
+    1: true,
+    2: true,
+    3: true,
+    4: true,
+    5: true,
+    6: true,
+  },
+};
 
 @Component({
   selector: 'app-time-settings',
   templateUrl: './time-settings.component.html',
-  styleUrls: ['./time-settings.component.scss']
+  styleUrls: ['./time-settings.component.scss'],
+  animations: [expandFade()],
 })
 export class TimeSettingsComponent extends UnsubscriberComponent implements OnInit {
   timeSettingsForm!: FormGroup;
@@ -122,6 +135,7 @@ export class TimeSettingsComponent extends UnsubscriberComponent implements OnIn
     },
   ];
 
+  // TODO - not currently used, check with WLED
   clockOverlayOptions: SelectItem<string>[] = [
     // gId("cac").style.display="none";
 		// gId("coc").style.display="block";
@@ -209,15 +223,22 @@ export class TimeSettingsComponent extends UnsubscriberComponent implements OnIn
   latitudeInputConfig: InputConfig = {
     type: 'number',
     getFormControl: () => getFormControl(this.timeSettingsForm, 'coordinates.latitude'),
-    placeholder: '0',
+    placeholder: '0.0',
     widthPx: 100,
+    // note, WLED app sets max of 66.6
+    max: 90,
+    min: -90,
+    step: 0.01,
   };
 
   longitudeInputConfig: InputConfig = {
     type: 'number',
     getFormControl: () => getFormControl(this.timeSettingsForm, 'coordinates.longitude'),
-    placeholder: '0',
+    placeholder: '0.0',
     widthPx: 100,
+    max: 180,
+    min: -180,
+    step: 0.01,
   };
 
   firstLedInputConfig: InputConfig = {
@@ -225,6 +246,7 @@ export class TimeSettingsComponent extends UnsubscriberComponent implements OnIn
     getFormControl: () => getFormControl(this.timeSettingsForm, 'analogClockOverlay.firstLed'),
     placeholder: '0',
     widthPx: 80,
+    min: 0,
   };
 
   lastLedInputConfig: InputConfig = {
@@ -232,6 +254,7 @@ export class TimeSettingsComponent extends UnsubscriberComponent implements OnIn
     getFormControl: () => getFormControl(this.timeSettingsForm, 'analogClockOverlay.lastLed'),
     placeholder: '0',
     widthPx: 80,
+    min: 0,
   };
 
   middleLedInputConfig: InputConfig = {
@@ -239,12 +262,13 @@ export class TimeSettingsComponent extends UnsubscriberComponent implements OnIn
     getFormControl: () => getFormControl(this.timeSettingsForm, 'analogClockOverlay.middleLed'),
     placeholder: '0',
     widthPx: 80,
+    min: 0,
   };
 
   countdownYearInputConfig: InputConfig = {
     type: 'number',
     getFormControl: () => getFormControl(this.timeSettingsForm, 'countdown.year'),
-    placeholder: '2023',
+    placeholder: '2025',
     widthPx: 80,
   };
 
@@ -322,14 +346,18 @@ export class TimeSettingsComponent extends UnsubscriberComponent implements OnIn
   };
 
   pageLoadLocalTime: string;
+  hasCurrentLatLong: boolean;
 
   constructor(
     private formService: FormService,
     private timeSettingsService: TimeSettingsService,
     private changeDetectorRef: ChangeDetectorRef,
+    private snackbarService: SnackbarService,
+    private router: Router,
   ) {
     super();
-    this.pageLoadLocalTime = 'loading.';
+    this.pageLoadLocalTime = 'loading...';
+    this.hasCurrentLatLong = false;
   }
 
   ngOnInit() {
@@ -339,7 +367,7 @@ export class TimeSettingsComponent extends UnsubscriberComponent implements OnIn
 
     this.handleUnsubscribe(
       this.timeSettingsService.getParsedValues()
-    ).subscribe(({ formValues, metadata }) => {
+    ).subscribe(({ formValues, metadata, methodCalls }) => {
       console.log(' >>> TIME formValues', formValues)
       console.log(' >>> TIME metadata', metadata)
       if (metadata['pageLoadLocalTime']) {
@@ -351,21 +379,63 @@ export class TimeSettingsComponent extends UnsubscriberComponent implements OnIn
 
       // update scheduled presets
       const scheduledPresets = formValues['scheduledPresets'] as ScheduledPreset[];
-      const scheduledPresetsControl = this.formService.createFormArray(scheduledPresets);
-      this.timeSettingsForm.removeControl('scheduledPresets')
-      this.timeSettingsForm.addControl('scheduledPresets', scheduledPresetsControl);
-      console.log('new scheduledPresets', scheduledPresets)
+      const sunrisePreset = {...(formValues['sunrisePreset'] as SunriseSunsetScheduledPreset)};
+      const sunsetPreset = {...(formValues['sunsetPreset'] as SunriseSunsetScheduledPreset)};
+
+      this.timeSettingsForm.removeControl('scheduledPresets');
+      this.timeSettingsForm.addControl('scheduledPresets', this.formService.createFormArray(scheduledPresets));
+
+      if (sunrisePreset && Object.keys(sunrisePreset).length > 0) {
+        this.sunrisePreset.setValue(sunrisePreset);
+      }
+      if (sunsetPreset && Object.keys(sunsetPreset).length > 0) {
+        this.sunsetPreset.setValue(sunsetPreset);
+      }
+
+      // update button actions
+      const buttonActions = formValues['buttonActions'] as ButtonAction[];
+      this.timeSettingsForm.removeControl('buttonActions');
+      this.timeSettingsForm.addControl('buttonActions', this.formService.createFormArray(buttonActions));
 
       this.changeDetectorRef.markForCheck();
     });
   }
 
+  override ngOnDestroy(): void {
+    // TODO window removeEventListener 'message'
+    super.ngOnDestroy();
+  }
+
   submitForm() {
-    // TODO
+    const formValue = this.timeSettingsForm.getRawValue() as TimeSettings;
+    this.handleUnsubscribe(
+      this.timeSettingsService.setTimeSettings(formValue)
+    ).subscribe((responseHTML: string) => {
+      const expectedText = 'Time settings saved.';
+      const snackbarMessage = responseHTML.includes(expectedText)
+        ? 'Time settings were updated successfully.'
+        : 'Error: Time settings were NOT updated.';
+      this.snackbarService.openSnackBar(snackbarMessage);
+    });
+    
+    // TODO should this be conditional?
+    // this.router.navigate(['controls']);
+  }
+
+  get buttonActions() {
+    return this.timeSettingsForm.get('buttonActions') as FormArray<FormGroup>;
   }
 
   get scheduledPresets() {
-    return this.timeSettingsForm.get('scheduledPresets') as FormArray;
+    return this.timeSettingsForm.get('scheduledPresets') as FormArray<FormGroup>;
+  }
+
+  get sunrisePreset() {
+    return this.timeSettingsForm.get('sunrisePreset') as FormGroup;
+  }
+
+  get sunsetPreset() {
+    return this.timeSettingsForm.get('sunsetPreset') as FormGroup;
   }
 
   getDaysByIndex(index: number) {
@@ -391,6 +461,31 @@ export class TimeSettingsComponent extends UnsubscriberComponent implements OnIn
       .at(index)
       .get('days')!
       .patchValue(newDays);
+  }
+
+  isAnalogOverlayEnabled() {
+    return this.getFormControl('analogClockOverlay.enabled').value;
+  }
+
+  isCountdownEnabled() {
+    return this.getFormControl('countdown.enabled').value;
+  }
+
+  getLatLong() {
+    // TODO the locator website currently fails, even with permission
+
+    if (!this.hasCurrentLatLong) {
+			window.addEventListener('message', (event) => {
+				if (event.origin !== 'https://locate.wled.me') return;
+				if (event.data instanceof Object) {
+          console.log('LAT LONG', event.data)
+          this.getFormControl('coordinates.latitude').setValue(event.data.lat as number);
+          this.getFormControl('coordinates.longitude').setValue(event.data.lon as number);
+				}
+			}, false);
+			this.hasCurrentLatLong = true;
+		}
+		window.open('https://locate.wled.me', '_blank');
   }
 
   private createForm() {
@@ -427,6 +522,7 @@ export class TimeSettingsComponent extends UnsubscriberComponent implements OnIn
         middleLed: 0,
         show5MinuteMarks: false,
         showSeconds: false,
+        showSolidBlack: false, // TODO add to form in ui
       },
       countdown: {
         enabled: false,
@@ -443,35 +539,10 @@ export class TimeSettingsComponent extends UnsubscriberComponent implements OnIn
         countdownEnd: 0,
         timerEnd: 0,
       },
-      buttonActions: {
-        // TODO
-      },
-      // TODO generated and add proper default with all 10 rows
-      scheduledPresets: [
-        {
-          hour: 0,
-          minute: 0,
-          presetId: 0,
-          enabled: false,
-          days: {
-            sunday: true,
-            monday: true,
-            tuesday: true,
-            wednesday: true,
-            thursday: true,
-            friday: true,
-            saturday: true,
-          },
-          startDate: {
-            month: 0,
-            day: 0,
-          },
-          endDate: {
-            month: 0,
-            day: 0,
-          },
-        }
-      ],
+      buttonActions: [],
+      scheduledPresets: [],
+      sunrisePreset: DEFAULT_SUNRISE_SUNSET_PRESET,
+      sunsetPreset: DEFAULT_SUNRISE_SUNSET_PRESET,
     };
     return values as unknown as FormValues;
   }

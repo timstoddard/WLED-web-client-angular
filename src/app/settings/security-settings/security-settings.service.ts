@@ -29,11 +29,13 @@ export class SecuritySettingsService extends UnsubscriberService {
             const {
               formValues,
               metadata,
+              methodCalls,
             } = this.apiResponseParserService.parseJsFile(responseJs, SECURITY_PARSE_CONFIGURATIONS);
             this.parsedValues.next({
               formValues: this.securitySettingsTransformerService
                 .transformWledSecuritySettingsToSecuritySettings(formValues),
               metadata,
+              methodCalls,
             });
           });
       });

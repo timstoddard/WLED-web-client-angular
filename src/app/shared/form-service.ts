@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 export const getFormControl = (
-  formGroup: FormGroup,
+  formGroup: FormGroup | FormArray,
   formControlName: string,
 ) => {
   return formGroup.get(formControlName) as FormControl;
 }
 
 export type getFormControlFn = (name: string) => FormControl;
+export type getFormGroupFn = (name: string) => FormGroup;
 export type getFormArrayFn = (name: string) => FormArray;
 
 /**
@@ -19,6 +20,17 @@ export type getFormArrayFn = (name: string) => FormArray;
 export const createGetFormControl = (formGroup: FormGroup): getFormControlFn => {
   return (name: string) => {
     return formGroup.get(name) as FormControl;
+  }
+}
+
+/**
+ * Simplifies the process of creating a function to return a specific form control
+ * @param formGroup form group to get the form control from
+ * @returns 
+ */
+export const createGetFormGroup = (formGroup: FormGroup): getFormGroupFn => {
+  return (name: string) => {
+    return formGroup.get(name) as FormGroup;
   }
 }
 
@@ -81,37 +93,45 @@ export class FormService {
     if (values) {
       // add controls for all the default values
       for (const key in values) {
-        const value = values[key];
-        let control: AbstractControl;
-        if (value !== null && value !== undefined) {
-          if (typeof value === 'object') {
-            if (Array.isArray(value)) {
-              control = this.createFormArray(value);
-            } else {
-              control = this.createFormGroup(value as FormValues);
-            }
-          } else {
-            control = this.createFormControl(value);
-          }
-          formGroup.setControl(key, control);
-        }
+        formGroup.setControl(key, this.createFormFromValue(values[key]));
       }
     }
     if (additionalControls) {
       // add custom controls, if provided
       for (const key in additionalControls) {
-        const control = additionalControls[key];
-        formGroup.setControl(key, control);
+        formGroup.setControl(key, additionalControls[key]);
       }
     }
     return formGroup;
   }
 
-  createFormArray(value: Array<unknown> = []): FormArray {
-    return this._formBuilder.array(value);
+  createFormArray(values: Array<unknown> = []): FormArray {
+    const controls: AbstractControl[] = values
+      .map(value => this.createFormFromValue(value));
+    return this._formBuilder.array(controls);
   }
 
   get formBuilder() {
     return this._formBuilder;
+  }
+
+  private createFormFromValue(value: unknown) {
+    let control: AbstractControl;
+    if (value !== null && value !== undefined) {
+      if (typeof value === 'object') {
+        if (Array.isArray(value)) {
+          control = this.createFormArray(value);
+        } else if (value instanceof Date) {
+          control = this.createFormControl(value);
+        } else {
+          control = this.createFormGroup(value as FormValues);
+        }
+      } else {
+        control = this.createFormControl(value);
+      }
+    } else {
+      throw new Error(`invalid control value: ${value}`);
+    }
+    return control;
   }
 }

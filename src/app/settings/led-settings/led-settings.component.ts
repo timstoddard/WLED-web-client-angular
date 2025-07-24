@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
-import { FormService, FormValues, createGetFormControl, getFormControlFn } from '../../shared/form-service';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormService, FormValues, createGetFormControl, getFormControl, getFormControlFn } from '../../shared/form-service';
 import { UnsubscriberComponent } from '../../shared/unsubscriber/unsubscriber.component';
 import { SelectItem } from '../shared/settings-types';
+import { InputConfig, InputConfigs } from 'src/app/shared/text-input/text-input.component';
+import { LedSettingsService } from './led-settings.service';
 
 @Component({
   selector: 'app-led-settings',
@@ -13,6 +15,11 @@ export class LedSettingsComponent extends UnsubscriberComponent implements OnIni
   ledSettingsForm!: FormGroup;
   // TODO set this automatically
   hasHighCurrent = true;
+  ledOutputPinInputConfigs: InputConfigs = {};
+  ledOutputStartInputConfigs: InputConfigs = {};
+  ledOutputCountInputConfigs: InputConfigs = {};
+  clientIpAddress = '';
+  wledAccessPointIpAddress = '';
 
   ledVoltageByStripType: SelectItem<number>[] = [
     {
@@ -175,13 +182,110 @@ export class LedSettingsComponent extends UnsubscriberComponent implements OnIni
   ];
   getFormControl!: getFormControlFn;
 
-  constructor(private formService: FormService) {
+  totalLedCountInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.ledSettingsForm, 'totalLedCount'),
+    placeholder: '100',
+    widthPx: 80,
+  };
+
+  maxCurrentInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.ledSettingsForm, 'maxCurrent'),
+    placeholder: '1000',
+    widthPx: 80,
+  };
+
+  buttonPinInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.ledSettingsForm, 'buttonPin'),
+    placeholder: '',
+    widthPx: 80,
+  };
+
+  irPinInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.ledSettingsForm, 'irPin'),
+    placeholder: '',
+    widthPx: 80,
+  };
+
+  relayPinInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.ledSettingsForm, 'relayPin'),
+    placeholder: '',
+    widthPx: 80,
+  };
+
+  rebootDefaultBrightnessInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.ledSettingsForm, 'rebootDefaultBrightness'),
+    placeholder: '128',
+    widthPx: 80,
+  };
+
+  rebootDefaultPresetInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.ledSettingsForm, 'rebootDefaultPreset'),
+    placeholder: '0',
+    widthPx: 80,
+  };
+
+  brightnessFactorInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.ledSettingsForm, 'brightnessFactor'),
+    placeholder: '0',
+    widthPx: 80,
+  };
+
+  transitionTimeMsInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.ledSettingsForm, 'transitionTimeMs'),
+    placeholder: '250',
+    widthPx: 80,
+  };
+
+  durationMinsInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.ledSettingsForm, 'timer.durationMins'),
+    placeholder: '5',
+    widthPx: 80,
+  };
+
+  targetBrightnessInputConfig: InputConfig = {
+    type: 'number',
+    getFormControl: () => getFormControl(this.ledSettingsForm, 'timer.targetBrightness'),
+    placeholder: '0',
+    widthPx: 80,
+  };
+
+  constructor(
+    private formService: FormService,
+    private ledSettingsService: LedSettingsService,
+  ) {
     super();
   }
 
   ngOnInit() {
     this.ledSettingsForm = this.createForm();
     this.getFormControl = createGetFormControl(this.ledSettingsForm);
+    this.generateInputConfigs();
+
+    this.handleUnsubscribe(
+      this.ledSettingsService.getParsedValues()
+    ).subscribe(({ formValues, metadata }) => {
+      console.log(' >>> LED formValues', formValues)
+      console.log(' >>> LED metadata', metadata)
+
+      this.ledSettingsForm.patchValue(formValues);
+
+      if (metadata['clientIpAddress']) {
+        this.clientIpAddress = metadata['clientIpAddress'] as string;
+      }
+      if (metadata['wledAccessPointIpAddress']) {
+        this.wledAccessPointIpAddress = metadata['wledAccessPointIpAddress'] as string;
+      }
+    });
   }
 
   submitForm() {
@@ -314,7 +418,12 @@ export class LedSettingsComponent extends UnsubscriberComponent implements OnIni
   }
 
   addLedOutput() {
-    this.ledOutputs.push(this.createLedOutputFormGroup());
+    this.ledOutputs.push(
+      this.formService.createFormGroup(
+        this.createLedOutputFormValues()
+      )
+    );
+    this.generateInputConfigs();
   }
 
   clearPin(formControlName: 'buttonPin' | 'irPin' | 'relayPin') {
@@ -419,8 +528,8 @@ export class LedSettingsComponent extends UnsubscriberComponent implements OnIni
   private createForm() {
     const formGroup = this.formService.createFormGroup(this.getDefaultFormValues(), {
       ledOutputs: this.formService.createFormArray([
-        this.createLedOutputFormGroup(),
-        this.createLedOutputFormGroup(),
+        this.createLedOutputFormValues(),
+        this.createLedOutputFormValues(),
       ]),
     });
 
@@ -464,15 +573,15 @@ export class LedSettingsComponent extends UnsubscriberComponent implements OnIni
     };
   }
 
-  private createLedOutputFormGroup() {
-    return this.formService.createFormGroup({
+  private createLedOutputFormValues() {
+    return {
       stripType: 22,
       colorOrder: 1, // used to be 0,
       pin: 0,
       start: 0,
       count: 0,
       isReverse: false,
-    });
+    };
   }
 
   private toggleRebootPresetIdEnabled(rowGroup: FormGroup) {
@@ -487,4 +596,41 @@ export class LedSettingsComponent extends UnsubscriberComponent implements OnIni
       }
     }
   }
+
+  private generateInputConfigs = () => {
+    const ledOutputPinInputConfigs: InputConfigs = {};
+    const ledOutputStartInputConfigs: InputConfigs = {};
+    const ledOutputCountInputConfigs: InputConfigs = {};
+
+    for (let i = 0; i < this.ledOutputs.length; i++) {
+      ledOutputPinInputConfigs[i] = this.getLedOutputPinInputConfig(i);
+      ledOutputStartInputConfigs[i] = this.getLedOutputStartInputConfig(i);
+      ledOutputCountInputConfigs[i] = this.getLedOutputCountInputConfig(i);
+    }
+
+    this.ledOutputPinInputConfigs = ledOutputPinInputConfigs;
+    this.ledOutputStartInputConfigs = ledOutputStartInputConfigs;
+    this.ledOutputCountInputConfigs = ledOutputCountInputConfigs;
+  }
+
+  private getLedOutputPinInputConfig = (i: number): InputConfig => ({
+    type: 'number',
+    getFormControl: () => getFormControl(this.ledSettingsForm, `ledOutputs.${i}.pin`),
+    placeholder: '',
+    widthPx: 80,
+  });
+
+  private getLedOutputStartInputConfig = (i: number): InputConfig => ({
+    type: 'number',
+    getFormControl: () => getFormControl(this.ledSettingsForm, `ledOutputs.${i}.start`),
+    placeholder: '',
+    widthPx: 80,
+  });
+
+  private getLedOutputCountInputConfig = (i: number): InputConfig => ({
+    type: 'number',
+    getFormControl: () => getFormControl(this.ledSettingsForm, `ledOutputs.${i}.count`),
+    placeholder: '',
+    widthPx: 80,
+  });
 }

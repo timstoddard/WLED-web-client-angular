@@ -3,7 +3,6 @@
 :host {
   border: 1px solid var(--borderColorAccent);
   border-radius: 6px;
-  padding: 6px 10px;
   cursor: pointer;
 
   &:hover {
@@ -19,69 +18,151 @@
   }
 }
 
-.timeBasedPreset {
-  &__enabled {
-    //
-  }
+.scheduledPreset {
+  &__wrapper {
+    padding: 0 0 10px 0;
 
-  &__mainConfig {
-    @include flex-center;
-  }
-
-  &__daysWrapper {
-    display: flex;
-    flex-direction: column;
-  }
-
-  &__days {
-    display: flex;
-  }
-
-  &__day {
-    @include flex-center;
-    flex-direction: column;
-  }
-
-  &__dateRange {
-    @include flex-center;
-
-    &__startDate,
-    &__endDate {
-      margin: 2px 6px;
-
-      &Controls {
-        @include flex-center;
-      }
+    & > * {
+      margin: 0;
+      padding: 5px 10px;
     }
+
+    & ::ng-deep .mat-button-wrapper {
+      @include flex-center;
+      gap: 5px;
+    }
+
+    & ::ng-deep .mat-slide-toggle-label {
+      // TODO revisit this
+      // border: 1px solid var(--borderColorAccent);
+      // border-radius: 6px;
+      // padding: 6px;
+    }
+  }
+
+  &__row1 {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+  }
+
+  &__row2 {
+    @include flex-center;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+
+  &__row3 {
+  }
+
+  &__row4 {
+    & mat-form-field {
+      border: 1px solid var(--borderColorAccent);
+      border-radius: 6px;
+      padding: 10px;
+    }
+
+    & ::ng-deep .mat-datepicker-toggle-default-icon {
+      fill: var(--textColorPrimary);
+    }
+
+    & ::ng-deep .mat-form-field-infix {
+      background: var(--backgroundColorPrimary);
+    }
+  }
+
+  &__closeButton {
+    @include flex-center;
+    background: 0;
+    border: 0;
+    color: var(--textColorPrimary);
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__dateHint {
+    color: var(--textColorPrimary);
   }
 
   &__readOnlyTemplate {
+    align-items: center;
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 6px 10px;
 
     & > * {
-      margin: 2px 8px;
-    }
-
-    &__days {
       @include flex-center;
+      margin: 2px 6px;
+      white-space: nowrap;
+    }
 
-      & > * {
-        margin: 0 2px;
+    &--expanded {
+      background-color: var(--materialThemePurple);
+    }
+
+    &__enabled {
+      border: 1px solid var(--materialThemePurple);
+      border-radius: 4px;
+      padding: 1px 6px;
+      text-shadow: 1px 1px 1px var(--backgroundColorPrimary);
+
+      &--on,
+      &--off {
+        background: var(--materialThemePurple);
+      }
+
+      &--on {
+        background: linear-gradient(30deg,
+          var(--materialThemePurple) 0%,
+          var(--themeColorPrimary) 80%,
+          var(--themeColorPrimary) 100%);
+      }
+
+      &--off {
+        background: linear-gradient(30deg,
+          var(--materialThemePurple) 0%,
+          rgba(255,0,0,1) 80%,
+          rgba(255,0,0,1) 100%);
       }
     }
 
-    &__day {
-      &--enabled {
-        font-weight: bold;
-        text-shadow: 0.5px 0.5px 2px var(--themeColorPrimary);
-      }
-
-      &--disabled {
-        color: var(--backgroundColorAccent);
-        opacity: 0.5;
-        text-shadow: 1px 1px 1px var(--backgroundColorPrimary);
-      }
+    &__dates {
+      @include flex-center;
     }
+
+    &__subtext {
+      font-size: 90%;
+      margin-left: 5px;
+    }
+  }
+
+  &__sunriseIcon,
+  &__sunsetIcon {
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  &__sunriseIcon {
+    background-image: linear-gradient(
+      to top,
+      #FFD700 0%,    /* Bright fiery yellow-orange starts at the very bottom */
+      #FF9500 30%,   /* Becomes a vibrant orange by 30% of the way up */
+      #FF5733 65%,   /* Transitions to a brighter orange-red by 65% of the way up */
+      #D93600 100%   /* Deep Red-Orange reaches the very top */
+    );
+  }
+
+  &__sunsetIcon {
+    background-image: linear-gradient(
+      to top,
+      #FF4500 0%,    /* Deep Orange (like a setting sun on the horizon) */
+      #FF8C00 25%,   /* Dark Orange */
+      #FF6347 50%,   /* Tomato (a warmer red-orange in the middle) */
+      #8A2BE2 75%,   /* Blue Violet (beginning of the twilight sky) */
+      #483D8B 100%   /* Dark Slate Blue (deepest bluish-purple at the top) */
+    );
   }
 }

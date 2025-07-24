@@ -12,4 +12,20 @@
   &__presetId {
     max-width: 100px;
   }
+
+  &__buttonActions {
+    &__contentWrapper {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(4, 1fr);
+  
+      & > * {
+        display: contents;
+  
+        & ::ng-deep > * {
+          white-space: nowrap;
+        }
+      }
+    }
+  }
 }

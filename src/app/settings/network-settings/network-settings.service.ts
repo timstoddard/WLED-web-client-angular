@@ -29,11 +29,13 @@ export class NetworkSettingsService extends UnsubscriberService {
             const {
               formValues,
               metadata,
+              methodCalls,
             } = this.apiResponseParserService.parseJsFile(responseJs, WIFI_PARSE_CONFIGURATIONS);
             this.parsedValues.next({
               formValues: this.networkSettingsTransformerService
                 .transformWledNetworkSettingsToNetworkSettings(formValues as unknown as WledNetworkSettings),
               metadata,
+              methodCalls,
             });
           });
       });

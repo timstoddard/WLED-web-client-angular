@@ -13,17 +13,12 @@
   </h1>
 
   <app-settings-group title="Hardware Settings">
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Total LED count</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="totalLedCount"
-        placeholder="100"
-        class="">
-    </mat-form-field>
+
+    <app-text-input
+      label="Total LED count"
+      [inputs]="[totalLedCountInputConfig]">
+    </app-text-input>
+
     <div>
       <p>Recommended power supply for brightest white:</p>
       <p>WS2815 12V 21A connected to LEDs</p>
@@ -37,20 +32,14 @@
       <p>Automatically limits brightness to stay close to the limit.</p>
       <p>Keep at &lt;1A if powering LEDs directly from the ESP 5V pin!</p>
       <p>If you are using an external power supply, enter its rating.</p>
+      <!-- TODO -->
       <p>Current estimated usage: XXX mA</p>
     </div>
-  
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Maximum current (mA)</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="maxCurrent"
-        placeholder="1000"
-        class="">
-    </mat-form-field>
+
+    <app-text-input
+      label="Maximum current (mA)"
+      [inputs]="[maxCurrentInputConfig]">
+    </app-text-input>
   
     <div
       *ngIf="hasHighCurrent"
@@ -88,6 +77,8 @@
         class="timeSettingsForm__tableRow">
         <div>{{ i + 1 }}</div>
         <button
+          mat-raised-button
+          color="primary"
           (click)="ledOutputs.removeAt(i)">
           X
         </button>
@@ -111,39 +102,18 @@
         </select>
 
         <!-- TODO add link to docs about pin numbers -->
-        <mat-form-field
-          appearance="fill"
-          class="">
-          <mat-label>Pin</mat-label>
-          <input
-            matInput
-            type="number"
-            formControlName="pin"
-            placeholder=""
-            class="">
-        </mat-form-field>
-        <mat-form-field
-          appearance="fill"
-          class="">
-          <mat-label>Start</mat-label>
-          <input
-            matInput
-            type="number"
-            formControlName="start"
-            placeholder=""
-            class="">
-        </mat-form-field>
-        <mat-form-field
-          appearance="fill"
-          class="">
-          <mat-label>Count</mat-label>
-          <input
-            matInput
-            type="number"
-            formControlName="count"
-            placeholder=""
-            class="">
-        </mat-form-field>
+        <app-text-input
+          label="Pin"
+          [inputs]="[ledOutputPinInputConfigs[i]]">
+        </app-text-input>
+        <app-text-input
+          label="Start"
+          [inputs]="[ledOutputStartInputConfigs[i]]">
+        </app-text-input>
+        <app-text-input
+          label="Count"
+          [inputs]="[ledOutputStartInputConfigs[i]]">
+        </app-text-input>
 
         <app-checkbox
           [control]="getFormControl('ledOutputs.' + i + '.isReverse')"
@@ -156,9 +126,10 @@
           <p>For best experience, use &lt;800 LEDs per pin!</p>
         </div>
       </div>
-      <!-- <div *ngFor="let ledOutputGroup of ledOutputs.controls">TODO create list for LED output configs</div> -->
       <div>
         <button
+          mat-raised-button
+          color="primary"
           (click)="addLedOutput()"
           class="">
           +
@@ -171,48 +142,33 @@
     <!-- TODO add graphic of used memory -->
     <div>[###_______]</div>
 
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Button Pin</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="buttonPin"
-        placeholder=""
-        class="">
-    </mat-form-field>
+    <app-text-input
+      label="Button Pin"
+      [inputs]="[buttonPinInputConfig]">
+    </app-text-input>
+
     <button (click)="clearPin('buttonPin')">
       X
     </button>
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>IR Pin</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="irPin"
-        placeholder=""
-        class="">
-    </mat-form-field>
+
+    <app-text-input
+      label="IR Pin"
+      [inputs]="[irPinInputConfig]">
+    </app-text-input>
+
     <button (click)="clearPin('irPin')">
       X
     </button>
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Relay Pin</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="relayPin"
-        placeholder=""
-        class="">
-    </mat-form-field>
+
+    <app-text-input
+      label="Relay Pin"
+      [inputs]="[relayPinInputConfig]">
+    </app-text-input>
+
     <button (click)="clearPin('relayPin')">
       X
     </button>
+
     <app-checkbox
       [control]="getFormControl('activeHigh')"
       label="Active High">
@@ -225,30 +181,18 @@
       label="Turn on after reboot">
     </app-checkbox>
   
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <!-- TODO start at 0 or 1? -->
-      <mat-label>Default Brightness on Reboot (0-255)</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="rebootDefaultBrightness"
-        placeholder="128"
-        class="">
-    </mat-form-field>
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Default Preset on Reboot</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="rebootDefaultPreset"
-        placeholder="0"
-        class="">
-    </mat-form-field>
-  
+    <!-- TODO starts at 0 or 1? -->
+    <app-text-input
+      label="Default Brightness on Reboot"
+      [inputs]="[rebootDefaultBrightnessInputConfig]"
+      description="Valid range from 0-255">
+    </app-text-input>
+
+    <app-text-input
+      label="Default Preset on Reboot"
+      [inputs]="[rebootDefaultPresetInputConfig]">
+    </app-text-input>
+
     <app-checkbox
       [control]="getFormControl('setCurrentPresetAsRebootDefault')"
       label="Set current preset cycle setting as boot default">
@@ -261,22 +205,17 @@
       [control]="getFormControl('useGammaCorrectionForColor')"
       label="Use Gamma correction for Color (strongly recommended)">
     </app-checkbox>
+
     <app-checkbox
       [control]="getFormControl('useGammaCorrectionForBrightness')"
       label="Use Gamma correction for Brightness (not recommended)">
     </app-checkbox>
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Brightness Factor</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="brightnessFactor"
-        placeholder="0"
-        class="">
-        <!-- TODO add % symbol -->
-    </mat-form-field>
+
+    <app-text-input
+      label="Brightness Factor"
+      [inputs]="[brightnessFactorInputConfig]"
+      suffix="%">
+    </app-text-input>
   </app-settings-group>
 
   <app-settings-group title="Transitions">
@@ -285,17 +224,10 @@
       label="Use Crossfade">
     </app-checkbox>
   
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Transition Time (ms)</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="transitionTimeMs"
-        placeholder="70"
-        class="">
-    </mat-form-field>
+    <app-text-input
+      label="Transition Time (ms)"
+      [inputs]="[transitionTimeMsInputConfig]">
+    </app-text-input>
   
     <app-checkbox
       [control]="getFormControl('usePaletteTransitions')"
@@ -306,28 +238,18 @@
   <app-settings-group
     title="Timer"
     formGroupName="timer">
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Timer Duration (mins)</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="durationMins"
-        placeholder="5"
-        class="">
-    </mat-form-field>
-    <mat-form-field
-      appearance="fill"
-      class="">
-      <mat-label>Target Brightness (0-255)</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="targetBrightness"
-        placeholder="0"
-        class="">
-    </mat-form-field>
+
+    <app-text-input
+      label="Timer Duration (mins)"
+      [inputs]="[durationMinsInputConfig]">
+    </app-text-input>
+
+    <!-- TODO starts at 0 or 1? -->
+    <app-text-input
+      label="Target Brightness"
+      [inputs]="[targetBrightnessInputConfig]"
+      description="Valid range from 0-255">
+    </app-text-input>
 
     Timer Mode
     <select formControlName="mode">

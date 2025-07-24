@@ -3,9 +3,9 @@ import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NO_DEVICE_IP_SELECTED } from '../../../shared/app-state/app-state-defaults';
 import { AppStateService } from '../../../shared/app-state/app-state.service';
 import { WLEDIpAddress } from '../../../shared/app-types/app-types';
-import { FormService } from '../../../shared/form-service';
+import { FormService, getFormControl } from '../../../shared/form-service';
 import { UnsubscriberComponent } from '../../../shared/unsubscriber/unsubscriber.component';
-import { InputConfig } from 'src/app/shared/text-input/text-input.component';
+import { InputConfig, InputConfigs } from 'src/app/shared/text-input/text-input.component';
 import { SnackbarService } from 'src/app/shared/snackbar.service';
 import { SelectedDeviceService } from 'src/app/shared/selected-device.service';
 import { IPV4_ADDRESS_OR_HOSTNAME_REGEX } from 'src/app/shared/common-regex';
@@ -26,8 +26,8 @@ interface IpAddressTestResults {
 export class AddDeviceFormComponent extends UnsubscriberComponent implements OnInit {
   wledIpAddresses!: FormArray;
   ipAddressTestResults!: IpAddressTestResults;
-  deviceNameInputConfigs: { [key: number]: InputConfig } = {};
-  deviceIpAddressInputConfigs: { [key: number]: InputConfig } = {};
+  deviceNameInputConfigs: InputConfigs = {};
+  deviceIpAddressInputConfigs: InputConfigs = {};
   private selectedWLEDIpAddress!: WLEDIpAddress;
 
   constructor(
@@ -55,7 +55,7 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
       });
   }
 
-  getFormGroups() {
+  get wledIpAddressesFormGroups() {
     return this.wledIpAddresses.controls as FormGroup[];
   }
 
@@ -152,9 +152,9 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
   }
 
   private createForm() {
-    return this.formService.createFormArray([
-      this.createWLEDIpAddressGroup(),
-    ]);
+    const form = this.formService.createFormArray([]);
+    form.push(this.createWLEDIpAddressGroup());
+    return form;
   }
 
   private createWLEDIpAddressGroup(values: SelectableWLEDIpAddress = {
@@ -210,13 +210,12 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
   };
 
   private generateInputConfigs = () => {
-    const deviceNameInputConfigs: { [key: number]: InputConfig } = {};
-    const deviceIpAddressInputConfigs: { [key: number]: InputConfig } = {};
+    const deviceNameInputConfigs: InputConfigs = {};
+    const deviceIpAddressInputConfigs: InputConfigs = {};
 
-    const formGroups = this.getFormGroups();
-    for (let i = 0; i < formGroups.length; i++) {
+    for (let i = 0; i < this.wledIpAddressesFormGroups.length; i++) {
       deviceNameInputConfigs[i] = this.getDeviceNameInputConfig(i);
-      deviceIpAddressInputConfigs[i] = this.getDeviceIpAddressInputConfigs(i);
+      deviceIpAddressInputConfigs[i] = this.getDeviceIpAddressInputConfig(i);
     }
 
     this.deviceNameInputConfigs = deviceNameInputConfigs;
@@ -225,14 +224,14 @@ export class AddDeviceFormComponent extends UnsubscriberComponent implements OnI
 
   private getDeviceNameInputConfig = (i: number): InputConfig => ({
     type: 'text',
-    getFormControl: () => this.getFormControlAtIndex('name', i),
+    getFormControl: () => getFormControl(this.wledIpAddresses, `${i}.name`),
     placeholder: 'Name',
     widthPx: 150,
   });
 
-  private getDeviceIpAddressInputConfigs = (i: number): InputConfig => ({
+  private getDeviceIpAddressInputConfig = (i: number): InputConfig => ({
     type: 'text',
-    getFormControl: () => this.getFormControlAtIndex('ipv4Address', i),
+    getFormControl: () => getFormControl(this.wledIpAddresses, `${i}.ipv4Address`),
     placeholder: '0.0.0.0',
     widthPx: 150,
   });

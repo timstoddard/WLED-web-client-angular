@@ -54,17 +54,26 @@
     </div>
   
     <div>
-      <!-- TODO add "N" dropdown -->
       <app-text-input
-        label="Latitude"
-        [inputs]="[latitudeInputConfig]">
+        [label]="'Latitude ' + (getFormControl('coordinates.latitude').value >= 0 ? '(N)' : '(S)')"
+        [inputs]="[latitudeInputConfig]"
+        description="Enter N as positive and S as negative">
       </app-text-input>
 
-      <!-- TODO add "E" dropdown -->
       <app-text-input
-        label="Longitude"
-        [inputs]="[longitudeInputConfig]">
+        [label]="'Longitude ' + (getFormControl('coordinates.longitude').value >= 0 ? '(E)' : '(W)')"
+        [inputs]="[longitudeInputConfig]"
+        description="Enter E as positive and W as negative">
       </app-text-input>
+    </div>
+
+    <div>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="getLatLong()">
+        Get Location
+      </button>
     </div>
   </app-settings-group>
 
@@ -73,43 +82,57 @@
     formGroupName="analogClockOverlay"
     class="timeSettingsForm__clock">
 
-    <!-- TODO make this a slider -->
-    <app-checkbox
-      [control]="getFormControl('analogClockOverlay.enabled')"
-      label="Enable">
-    </app-checkbox>
+    <div>
+      <mat-slide-toggle
+        (change)="getFormControl('analogClockOverlay.enabled').setValue(!isAnalogOverlayEnabled())"
+        color="primary"
+        [checked]="isAnalogOverlayEnabled()"
+        class="timeSettings__analogOverlay__enabled">
+        {{ isAnalogOverlayEnabled() ? 'Enabled' : 'Disabled' }}
+      </mat-slide-toggle>
+    </div>
 
-    <app-text-input
-      label="First/Last LEDs"
-      [inputs]="[firstLedInputConfig, lastLedInputConfig]">
-    </app-text-input>
-
-    <app-text-input
-      label="Middle LED (12 hour mark)"
-      [inputs]="[middleLedInputConfig]">
-    </app-text-input>
-
-    <app-checkbox
-      [control]="getFormControl('analogClockOverlay.show5MinuteMarks')"
-      label="Show 5-minute marks">
-    </app-checkbox>
-
-    <app-checkbox
-      [control]="getFormControl('analogClockOverlay.showSeconds')"
-      label="Show seconds (as trail)">
-    </app-checkbox>
+    <div
+      @expand
+      *ngIf="isAnalogOverlayEnabled()">
+      <app-text-input
+        label="First/Last LEDs"
+        [inputs]="[firstLedInputConfig, lastLedInputConfig]">
+      </app-text-input>
+  
+      <app-text-input
+        label="Middle LED (12 hour mark)"
+        [inputs]="[middleLedInputConfig]">
+      </app-text-input>
+  
+      <app-checkbox
+        [control]="getFormControl('analogClockOverlay.show5MinuteMarks')"
+        label="Show 5-minute marks">
+      </app-checkbox>
+  
+      <app-checkbox
+        [control]="getFormControl('analogClockOverlay.showSeconds')"
+        label="Show seconds (as trail)">
+      </app-checkbox>
+    </div>
   </app-settings-group>
 
   <app-settings-group
     title="Countdown"
     class="timeSettingsForm__countdown">
-    <!-- TODO make this a slider -->
-    <app-checkbox
-      [control]="getFormControl('countdown.enabled')"
-      label="Enable">
-    </app-checkbox>
-
     <div>
+      <mat-slide-toggle
+        (change)="getFormControl('countdown.enabled').setValue(!isCountdownEnabled())"
+        color="primary"
+        [checked]="isCountdownEnabled()"
+        class="timeSettings__countdown__enabled">
+        {{ isCountdownEnabled() ? 'Enabled' : 'Disabled' }}
+      </mat-slide-toggle>
+    </div>
+
+    <div
+      @expand
+      *ngIf="isCountdownEnabled()">
       <h3>
         Countdown End
       </h3>
@@ -127,7 +150,7 @@
       </app-text-input>
 
       <app-text-input
-        label="Hour / Minute / Second"
+        label="Hour : Minute : Second"
         [inputs]="[
           countdownHourInputConfig,
           countdownMinuteInputConfig,
@@ -168,11 +191,53 @@
   </app-settings-group>
 
   <app-settings-group
+    title="Button Actions"
+    class="timeSettingsForm__buttonActions">
+    <div class="timeSettingsForm__buttonActions__contentWrapper">
+      <div class="timeSettingsForm__buttonActions__headerRow">
+        <div>Push</div>
+        <div>Short</div>
+        <div>Long</div>
+        <div>Double</div>
+      </div>
+      <div class="timeSettingsForm__buttonActions__headerRow">
+        <div>Switch</div>
+        <div>Turn off</div>
+        <div>Turn on</div>
+        <div>-</div>
+      </div>
+      <app-button-actions
+        *ngFor="let buttonActionsForm of buttonActions.controls"
+        [buttonActionsForm]="buttonActionsForm"
+        [buttonIndex]="buttonActionsForm.get('index')!.value">
+      </app-button-actions>
+    </div>
+    <div>
+      <app-external-link
+        href="https://kno.wled.ge/features/macros/#analog-button"
+        text="Analog Button setup">
+      </app-external-link>
+    </div>
+  </app-settings-group>
+
+  <app-settings-group
     title="Scheduled Presets"
     class="timeSettingsForm__scheduledPresets">
     <app-scheduled-preset
-      *ngFor="let scheduledPreset of getFormArray('scheduledPresets').value"
-      [scheduledPreset]="scheduledPreset">
+      *ngFor="let scheduledPresetForm of scheduledPresets.controls"
+      [scheduledPresetForm]="scheduledPresetForm">
+    </app-scheduled-preset>
+
+    <app-scheduled-preset
+      *ngIf="sunrisePreset"
+      [scheduledPresetForm]="sunrisePreset"
+      [isSunrise]="true">
+    </app-scheduled-preset>
+
+    <app-scheduled-preset
+      *ngIf="sunsetPreset"
+      [scheduledPresetForm]="sunsetPreset"
+      [isSunset]="true">
     </app-scheduled-preset>
   </app-settings-group>
   

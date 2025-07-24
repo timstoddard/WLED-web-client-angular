@@ -9,5 +9,6 @@ import { FormControl } from '@angular/forms';
 export class CheckboxComponent {
   @Input() control!: FormControl;
   @Input() label!: string;
+  @Input() hideCheckbox = false;
   @Output() click = new EventEmitter();
 }

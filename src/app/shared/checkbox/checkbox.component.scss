@@ -52,6 +52,21 @@
     }
   }
 
+  &:has(input[type="checkbox"][disabled]) {
+    background: rgba(
+      var(--backgroundColorAccentRgb),
+      var(--form-control-background-opacity-default),
+    );
+    border: 1px solid rgba(
+      var(--borderColorAccentRgb),
+      var(--form-control-border-opacity-default),
+    );
+
+    &:hover {
+      cursor: initial;
+    }
+  }
+
   & ::ng-deep .mat-checkbox-label {
     @include flex-center;
   }
@@ -63,6 +78,14 @@
 }
 
 .checkbox {
+  &__control {
+    &--hidden {
+      & ::ng-deep .mat-checkbox-inner-container {
+        display: none;
+      }
+    }
+  }
+
   &__label {
     line-height: 1.25;
     text-wrap: wrap;

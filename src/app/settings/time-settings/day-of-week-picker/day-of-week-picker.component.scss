@@ -1,0 +1,62 @@
+@import 'src/app/shared/scss/mixins';
+
+:host {
+  display: flex;
+  justify-content: center;
+}
+
+.dayOfWeekPicker {
+  &__daysWrapper {
+    min-width: 0;
+    overflow-x: auto;
+    max-width: 100%;
+    padding: 5px;
+  }
+
+  &__days {
+    display: flex;
+    list-style: none;
+    margin: 4px auto;
+    padding: 0;
+  }
+
+  &__day {
+    margin: 0;
+    padding: 0;
+  }
+
+  &__checkbox {
+    margin: 4px 1px;
+
+    &--enabled {
+      //
+    }
+
+    &--disabled {
+      color: var(--borderColorPrimary);
+    }
+  }
+
+  &__readOnlyTemplate {
+    &__days {
+      @include flex-center;
+  
+      & > * {
+        margin: 0 2px;
+      }
+    }
+
+    &__day {
+      &--enabled {
+        font-weight: bold;
+        text-shadow: 0.5px 0.5px 2px var(--themeColorPrimary);
+      }
+
+      &--disabled {
+        color: var(--textColorAccent);
+        opacity: 0.5;
+        text-shadow: 1px 1px 1px var(--backgroundColorPrimary);
+      }
+    }
+  }
+}

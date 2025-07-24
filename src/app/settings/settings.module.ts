@@ -6,14 +6,18 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
+import { MatNativeDateModule } from '@angular/material/core';
 import { MatOptionModule } from '@angular/material/core';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { AddDeviceFormComponent } from './network-settings/add-device-form/add-device-form.component';
+import { ButtonActionsComponent } from './time-settings/button-actions/button-actions.component';
+import { DayOfWeekPickerComponent } from './time-settings/day-of-week-picker/day-of-week-picker.component';
 import { DmxSettingsComponent } from './dmx-settings/dmx-settings.component';
 import { ExternalLinkComponent } from '../shared/external-link/external-link.component';
 import { LedSettingsComponent } from './led-settings/led-settings.component';
@@ -33,8 +37,10 @@ import { UserModSettingsComponent } from './user-mod-settings/user-mod-settings.
 
 const COMPONENTS = [
   AddDeviceFormComponent,
+  ButtonActionsComponent,
+  DayOfWeekPickerComponent,
   DmxSettingsComponent,
-  // TODO share with controls module and/or app module?
+  // TODO move to controls/app module
   ExternalLinkComponent,
   LedSettingsComponent,
   NetworkSettingsComponent,
@@ -59,16 +65,18 @@ const COMPONENTS = [
     MatButtonToggleModule,
     MatCardModule,
     MatCheckboxModule,
+    MatDatepickerModule,
     MatFormFieldModule,
     MatIconModule,
-    MatInputModule,
+    MatNativeDateModule,
     MatOptionModule,
+    MatRadioModule,
     MatSidenavModule,
     MatSlideToggleModule,
     MatToolbarModule,
     ReactiveFormsModule,
     SettingsRoutingModule,
     SharedComponentsModule,
-  ]
+  ],
 })
 export class SettingsModule { }

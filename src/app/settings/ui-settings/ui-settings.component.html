@@ -11,25 +11,21 @@
   <h1>
     UI Settings
   </h1>
-  
-  <app-settings-group title="Web Config">
-    <mat-form-field
-      appearance="fill"
-      class="uiSettingsForm__formField">
-      <!-- TODO server description? -->
-      <mat-label>Server Name</mat-label>
-      <input
-        matInput
-        formControlName="serverDescription"
-        placeholder="WLED"
-        class="uiSettingsForm__input">
-    </mat-form-field>
 
-    <!-- TODO this label text gets confusing -->
-    <app-checkbox
-      [control]="getFormControl('shouldToggleReceiveWithSend')"
-      [label]="getShouldToggleReceiveWithSendDescription()">
-    </app-checkbox>
+  <app-settings-group title="Web Config">
+    <app-text-input
+      label="Server Name"
+      [inputs]="[serverNameInputConfig]">
+    </app-text-input>
+
+    <mat-radio-group aria-label="Toggle receive with send">
+      <mat-radio-button value="true">
+        Control both send and receive with Sync button
+      </mat-radio-button>
+      <mat-radio-button value="false">
+        Control only send with Sync button
+      </mat-radio-button>
+    </mat-radio-group>
   </app-settings-group>
 
   <app-settings-group>
@@ -37,7 +33,7 @@
       The following UI customization settings are unique both to the WLED device and this browser.
     </div>
     <div style="font-style:italic">
-      You will need to set them again if using a different browser, device or WLED IP address.
+      You will need to set them again if using a different browser, device, or WLED IP address.
     </div>
   </app-settings-group>
 
@@ -77,55 +73,27 @@
       class="uiSettingsForm__checkbox">
     </app-checkbox>
 
-    <!-- TODO slider? -->
-    <mat-form-field
-      appearance="fill"
-      class="uiSettingsForm__formField">
-      <mat-label>Background Opacity</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="backgroundOpacity"
-        step="0.1"
-        placeholder="0.6"
-        class="uiSettingsForm__input">
-    </mat-form-field>
+    <!-- TODO replace with slider -->
+    <app-text-input
+      label="Background Opacity"
+      [inputs]="[backgroundOpacityInputConfig]">
+    </app-text-input>
 
-    <!-- TODO slider? -->
-    <mat-form-field
-      appearance="fill"
-      class="uiSettingsForm__formField">
-      <mat-label>Button Opacity</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="buttonOpacity"
-        step="0.1"
-        placeholder="0.8"
-        class="uiSettingsForm__input">
-    </mat-form-field>
+    <!-- TODO replace with slider -->
+    <app-text-input
+      label="Button Opacity"
+      [inputs]="[buttonOpacityInputConfig]">
+    </app-text-input>
 
-    <mat-form-field
-      appearance="fill"
-      class="uiSettingsForm__formField">
-      <mat-label>Background hex color</mat-label>
-      <input
-        matInput
-        formControlName="backgroundHexColor"
-        placeholder="ffffff"
-        class="uiSettingsForm__input">
-    </mat-form-field>
+    <app-text-input
+      label="Background hex color"
+      [inputs]="[backgroundHexInputConfig]">
+    </app-text-input>
 
-    <mat-form-field
-      appearance="fill"
-      class="uiSettingsForm__formField">
-      <mat-label>Background image URL</mat-label>
-      <input
-        matInput
-        formControlName="backgroundImageUrl"
-        placeholder=""
-        class="uiSettingsForm__input">
-    </mat-form-field>
+    <app-text-input
+      label="Background image URL"
+      [inputs]="[backgroundImageInputConfig]">
+    </app-text-input>
 
     <app-checkbox
       [control]="getFormControl('useRandomBackgroundImage')"
