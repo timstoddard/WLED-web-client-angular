@@ -1,8 +1,6 @@
 <form
   [formGroup]="networkSettingsForm"
   class="networkSettingsForm">
-  <div>{{ networkSettingsForm.value | json }}</div>
-  
   <!-- TODO save button should say "Save & Connect" -->
   <app-settings-header
     helpUrl="https://kno.wled.ge/features/settings/#wifi-settings"
@@ -12,6 +10,8 @@
   <h1>
     Network Settings
   </h1>
+
+  <app-form-value-display [formGroup]="networkSettingsForm"></app-form-value-display>
 
   <app-settings-group title="WLED IP Addresses">
     <app-add-device-form></app-add-device-form>

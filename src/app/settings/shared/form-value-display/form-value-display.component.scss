@@ -1,0 +1,28 @@
+:host {
+  display: block;
+  position: relative;
+  width: 80%;
+}
+
+.formValueDisplay {
+  &__text {
+    background-color: var(--backgroundColorAccent);
+    border: 1px solid var(--borderColorAccent);
+    border-radius: 12px;
+    color: var(--textColorPrimary);
+    font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace; /* Monospaced font for readability */
+    line-height: 1.5;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 15px 20px;
+    text-align: left;
+    white-space: pre-wrap; /* Preserves whitespace and wraps long lines */
+    word-wrap: break-word; /* Breaks long words that don't fit on a line */
+  }
+
+  &__toggle {
+    position: absolute;
+    right: 9px;
+    top: 24px;
+  }
+}

@@ -1,8 +1,6 @@
 <form
   [formGroup]="syncSettingsForm"
   class="syncSettingsForm">
-  <div>{{ syncSettingsForm.value | json }}</div>
-  
   <app-settings-header
     helpUrl="https://kno.wled.ge/features/settings/#sync-settings"
     (save)="submitForm()">
@@ -11,6 +9,8 @@
   <h1>
     Sync Settings
   </h1>
+
+  <app-form-value-display [formGroup]="syncSettingsForm"></app-form-value-display>
 
   <!-- TODO (title) "settings" or "config"? -->
   <app-settings-group

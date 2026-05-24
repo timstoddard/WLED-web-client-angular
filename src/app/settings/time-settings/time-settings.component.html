@@ -1,8 +1,6 @@
 <form
   [formGroup]="timeSettingsForm"
   class="timeSettingsForm">
-  <div>{{ timeSettingsForm.value | json }}</div>
-  
   <app-settings-header
     helpUrl="https://kno.wled.ge/features/settings/#time-settings"
     (save)="submitForm()">
@@ -11,6 +9,8 @@
   <h1>
     Time Settings
   </h1>
+
+  <app-form-value-display [formGroup]="timeSettingsForm"></app-form-value-display>
 
   <app-settings-group title="Time">
     <div

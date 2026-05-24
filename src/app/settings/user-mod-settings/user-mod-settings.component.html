@@ -1,13 +1,13 @@
 <form
   [formGroup]="userModSettingsForm"
   class="userModSettingsForm">
-  <div>{{ userModSettingsForm.value | json }}</div>
-  
   <app-settings-header (save)="submitForm()"></app-settings-header>
 
   <h1>
     User Mod Settings
   </h1>
+
+  <app-form-value-display [formGroup]="userModSettingsForm"></app-form-value-display>
 
   <!-- TODO add form controls here -->
 

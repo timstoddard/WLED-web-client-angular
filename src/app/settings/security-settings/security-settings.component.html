@@ -1,8 +1,6 @@
 <form
   [formGroup]="securitySettingsForm"
   class="securitySettingsForm">
-  <div>{{ securitySettingsForm.value | json }}</div>
-
   <app-settings-header
     helpUrl="https://kno.wled.ge/features/settings/#security-settings"
     (save)="submitForm()">
@@ -11,6 +9,8 @@
   <h1>
     Security Settings
   </h1>
+
+  <app-form-value-display [formGroup]="securitySettingsForm"></app-form-value-display>
 
   <app-warning-card
     title="Warning"

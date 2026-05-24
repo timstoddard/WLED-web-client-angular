@@ -1,8 +1,6 @@
 <form
   [formGroup]="ledSettingsForm"
   class="ledSettingsForm">
-  <div>{{ ledSettingsForm.value | json }}</div>
-  
   <app-settings-header
     helpUrl="https://kno.wled.ge/features/settings/#led-settings"
     (save)="submitForm()">
@@ -11,6 +9,8 @@
   <h1>
     Led Settings
   </h1>
+
+  <app-form-value-display [formGroup]="ledSettingsForm"></app-form-value-display>
 
   <app-settings-group title="Hardware Settings">
 

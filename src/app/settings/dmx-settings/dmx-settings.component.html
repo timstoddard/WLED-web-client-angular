@@ -1,13 +1,13 @@
 <form
   [formGroup]="dmxSettingsForm"
   class="dmxSettingsForm">
-  <div>{{ dmxSettingsForm.value | json }}</div>
-  
   <app-settings-header (save)="submitForm()"></app-settings-header>
 
   <h1>
     DMX Settings
   </h1>
+
+  <app-form-value-display [formGroup]="dmxSettingsForm"></app-form-value-display>
 
   <!-- TODO add form controls here -->
 

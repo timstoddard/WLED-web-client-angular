@@ -1,8 +1,6 @@
 <div
   [formGroup]="uiSettingsForm"
   class="uiSettingsForm">
-  <div>{{ uiSettingsForm.value | json }}</div>
-
   <app-settings-header
     helpUrl="https://kno.wled.ge/features/settings/#user-interface-settings"
     (save)="submitForm()">
@@ -11,6 +9,8 @@
   <h1>
     UI Settings
   </h1>
+
+  <app-form-value-display [formGroup]="uiSettingsForm"></app-form-value-display>
 
   <app-settings-group title="Web Config">
     <app-text-input

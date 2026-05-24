@@ -1,0 +1,11 @@
+<ng-container *ngIf="show">
+  <!-- keep the pre text on the same line so it doesn't add space at the beginning of the rendered text -->
+  <pre class="formValueDisplay__text">{{ isExpanded ? getPrintValue() : '{ ... }' }}</pre>
+  <button
+    (click)="isExpanded = !isExpanded"
+    mat-raised-button
+    color="primary"
+    class="formValueDisplay__toggle">
+    {{ isExpanded ? 'Hide' : 'Show' }}
+  </button>
+</ng-container>
