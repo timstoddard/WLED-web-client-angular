@@ -29,6 +29,12 @@ export class BottomMenuBarComponent extends UnsubscriberComponent implements OnI
       icon: 'tune',
     },
     {
+      name: 'Custom',
+      routerLink: ['/controls', 'custom-effects'],
+      routerLinkActiveExactMatch: false,
+      icon: 'dashboard_customize',
+    },
+    {
       name: 'Info',
       routerLink: ['/controls', 'info'],
       routerLinkActiveExactMatch: false,
@@ -51,6 +57,6 @@ export class BottomMenuBarComponent extends UnsubscriberComponent implements OnI
       this.uiConfigService.getUIConfig(this.ngUnsubscribe))
       .subscribe(({ showLabels }) => {
         this.showLabels = showLabels;
-      })
+      });
   }
 }

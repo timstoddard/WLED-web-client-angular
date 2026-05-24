@@ -1,0 +1,46 @@
+<div class="customEffects">
+  <canvas
+    #customEffectsCanvas
+    class="customEffects__canvas"
+    >
+  </canvas>
+
+  <div class="customEffects__buttonsWrapper">
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="start()"
+    >
+      Start
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="stop()"
+    >
+      Stop
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="reset()"
+    >
+      Reset
+    </button>
+  </div>
+
+  <app-text-input
+    label="Render Rate (ms)"
+    [inputs]="[renderRateInputConfig]">
+  </app-text-input>
+
+  <div [formGroup]="customEffectsForm">
+    <select formControlName="selectedEffect">
+      <option
+        *ngFor="let effect of CUSTOM_EFFECTS; let i = index"
+        [value]="i">
+        {{ effect.name }}
+      </option>
+    </select>
+  </div>
+</div>

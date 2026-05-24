@@ -116,7 +116,7 @@ export class AppComponent extends UnsubscriberComponent {
         content: '#222222',
       },
       {
-        name: 'apple-mobile-web-app-capable',
+        name: 'mobile-web-app-capable',
         content: 'yes',
       },
     ];

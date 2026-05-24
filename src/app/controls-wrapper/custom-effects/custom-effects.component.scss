@@ -1,0 +1,36 @@
+@import 'src/app/shared/scss/mixins';
+
+:host {
+  @include main-view-container;
+}
+
+.customEffects {
+  @include flex-center;
+  flex-direction: column;
+  height: 100%;
+
+  &__canvas {
+    border: 1px solid var(--textColorPrimary);
+    width: 100%;
+  }
+
+  &__buttonsWrapper {
+    @include flex-center;
+    border: 1px solid var(--textColorPrimary);
+    border-radius: 6px;
+    margin: 2px;
+    padding: 6px;
+
+    & > * {
+      margin: 2px 4px;
+    }
+
+    & > :first-child {
+      margin-left: 0;
+    }
+
+    & > :last-child {
+      margin-right: 0;
+    }
+  }
+}

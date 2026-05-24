@@ -1,5 +1,5 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AppStateService } from '../shared/app-state/app-state.service';
 import { LocalStorageKey, LocalStorageService } from '../shared/local-storage.service';
 import { AppUIConfig, UIConfigService } from '../shared/ui-config.service';
@@ -35,6 +35,7 @@ export class ControlsWrapperComponent extends UnsubscriberComponent implements O
     private route: ActivatedRoute,
     private appStateService: AppStateService,
     private uiConfigService: UIConfigService,
+    private router: Router,
   ) {
     super();
 
@@ -55,10 +56,17 @@ export class ControlsWrapperComponent extends UnsubscriberComponent implements O
         this.appStateService.setAll(apiData, effectsData, presets);
       });
 
+    // redirect all pages except settings to main controls when pc mode is enabled
     this.appStateService.getLocalSettings(this.ngUnsubscribe)
-      .subscribe((localSettings) => {
-        this.isPcMode = localSettings.isPcMode;
-      })
+      .subscribe(({ isPcMode }) => {
+        this.isPcMode = isPcMode;
+
+        const redirectExcludePaths = ['settings'];
+        const skipRedirect = redirectExcludePaths.some(path => this.router.url.includes(path));
+        if (isPcMode && !skipRedirect) {
+          this.router.navigate(['']);
+        }
+      });
 
     this.uiConfigService.getUIConfig(this.ngUnsubscribe)
       .subscribe((uiConfig) => {

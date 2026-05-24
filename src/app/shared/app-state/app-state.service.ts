@@ -11,11 +11,10 @@ import { AppState } from '../app-types/app-types';
 import { ClientOnlyFieldsService, ClientOnlySegmentFieldsMap } from '../client-only-fields.service';
 import { DEFAULT_APP_STATE } from './app-state-defaults';
 import { LocalStorageService } from '../local-storage.service';
-import { UnsubscriberService } from '../unsubscriber/unsubscriber.service';
 import { WLEDInfo } from '../api-types/api-info';
 
 @Injectable({ providedIn: 'root' })
-export class AppStateService extends UnsubscriberService {
+export class AppStateService {
   private appStateStore: Store;
 
   constructor(
@@ -23,7 +22,6 @@ export class AppStateService extends UnsubscriberService {
     private clientOnlyFieldsService: ClientOnlyFieldsService,
     private localStorageService: LocalStorageService,
   ) {
-    super();
     const clientConfig = this.localStorageService.updateAndSaveClientConfig({});
     const defaultStateWithSavedSettings = Object.assign({}, 
       DEFAULT_APP_STATE,

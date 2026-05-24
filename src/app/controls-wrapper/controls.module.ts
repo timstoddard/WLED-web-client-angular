@@ -6,7 +6,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
 import { BottomMenuBarComponent } from './bottom-menu-bar/bottom-menu-bar.component';
 import { ColorAndWhitenessSlidersComponent } from './color-inputs/color-and-whiteness-sliders/color-and-whiteness-sliders.component';
@@ -18,6 +17,7 @@ import { ControlsComponent } from './controls/controls.component';
 import { ControlsWrapperComponent } from './controls-wrapper.component';
 import { ControlsRoutingModule } from './controls-routing.module';
 import { ControlsServicesModule } from './controls-services.module';
+import { CustomEffectsComponent } from './custom-effects/custom-effects.component';
 import { DeviceSelectorComponent } from './top-menu-bar/device-selector/device-selector.component';
 import { EffectsComponent } from './effects/effects.component';
 import { EffectsControlsComponent } from './effects/effects-controls/effects-controls.component';
@@ -65,6 +65,7 @@ const COMPONENTS = [
   BottomMenuBarComponent,
   ControlsComponent,
   ControlsWrapperComponent,
+  CustomEffectsComponent,
   DeviceSelectorComponent,
   EffectsComponent,
   EffectsControlsComponent,
@@ -101,7 +102,6 @@ const COMPONENTS = [
     MatCheckboxModule,
     MatDialogModule,
     MatFormFieldModule,
-    MatInputModule,
     MatSliderModule,
     OverlayModule,
     ReactiveFormsModule,
