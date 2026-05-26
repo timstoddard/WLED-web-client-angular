@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 import { App, Tags } from 'aws-cdk-lib'
-import { CloudFrontWebsiteStack, CloudFrontStackProps } from '../lib/cloudfront-website-stack'
+import { CloudFrontWebsiteStack, CloudFrontStackWebsiteProps } from '../lib/cloudfront-website-stack'
 
 const app = new App()
 
 // shared constants
 const publicSSLCertificateArn = 'arn:aws:acm:us-east-1:114243598814:certificate/653a0d54-1df6-4d8c-828c-02b2996d96e0'
 
-const websites: CloudFrontStackProps[] = [
+const websites: CloudFrontStackWebsiteProps[] = [
   // TODO uncomment when ready
   // {
   //   websiteUrl: 'wled.io',
