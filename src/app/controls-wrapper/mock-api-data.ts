@@ -44,7 +44,8 @@ export const MOCK_API_RESPONSE: WLEDApiResponse = {
           [0, 0, 0],
           [0, 0, 0]
         ],
-        fx: 0,
+        // TODO make this easily configurable for testing, sets current effect in offline mode
+        fx: 1,
         sx: 128,
         ix: 128,
         c1: 0,

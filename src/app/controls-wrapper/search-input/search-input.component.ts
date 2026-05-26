@@ -85,7 +85,9 @@ export class SearchInputComponent extends UnsubscriberComponent implements OnIni
 
   openContextMenu() {
     const { settingsDialogComponentType: dialogType } = this;
-    const dialogRef = this.dialog.open(dialogType);
+    const dialogRef = this.dialog.open(dialogType, {
+      backdropClass: 'searchInput__overlayBackdrop',
+    });
   }
 
   private createFormControl() {

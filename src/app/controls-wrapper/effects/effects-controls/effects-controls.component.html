@@ -1,13 +1,18 @@
 <!-- https://kno.wled.ge/interfaces/json-api/#effect-metadata -->
 <div>
-  <app-color-slider
-    *ngFor="let sliderConfig of sliderConfigs"
-    [control]="effectsForm.get(sliderConfig.formControlName)!"
-    [min]="sliderConfig.min"
-    [max]="sliderConfig.max"
-    [label]="sliderConfig.label"
-    sliderClass="effectsControls__slider">
-  </app-color-slider>
+  <ng-container *ngIf="sliderConfigs.length > 0; else noConfigs">
+    <app-color-slider
+      *ngFor="let sliderConfig of sliderConfigs"
+      [control]="effectsForm.get(sliderConfig.formControlName)!"
+      [min]="sliderConfig.min"
+      [max]="sliderConfig.max"
+      [label]="sliderConfig.label"
+      sliderClass="effectsControls__slider">
+    </app-color-slider>
+  </ng-container>
+  <ng-template #noConfigs>
+    <div>None for this effect</div>
+  </ng-template>
 </div>
 
 <div>
