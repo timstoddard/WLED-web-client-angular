@@ -1,8 +1,7 @@
 const matchFullString = (regex: string) => `^${regex}$`;
 
-// TODO handle white channel with this?
 const hexDigit = `[\\da-fA-F]`;
-const HEX_BASE_REGEX = `#?(${hexDigit}{3}|${hexDigit}{6})`;
+const HEX_BASE_REGEX = `#?(${hexDigit}{3}|${hexDigit}{6}|${hexDigit}{8})`;
 export const HEX_REGEX = matchFullString(HEX_BASE_REGEX);
 
 const IPV4_ADDRESS_BASE_REGEX = new Array(4).fill('(\\d{1,2}|[01]\\d\\d|2[0-4]\\d|25[0-5])').join('\\.');

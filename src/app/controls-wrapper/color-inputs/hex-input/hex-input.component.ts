@@ -1,33 +1,49 @@
-import { Component, Input } from '@angular/core';
+import { AfterViewInit, Component, Input } from '@angular/core';
 import { AbstractControl, FormControl } from '@angular/forms';
-import { ColorService } from '../../color.service';
+import { ColorService, CurrentColor } from '../../color.service';
+import { InputConfig } from 'src/app/shared/text-input/text-input.component';
+import { UnsubscriberComponent } from 'src/app/shared/unsubscriber/unsubscriber.component';
 
 @Component({
   selector: 'app-hex-input',
   templateUrl: './hex-input.component.html',
   styleUrls: ['./hex-input.component.scss']
 })
-export class HexInputComponent {
+export class HexInputComponent extends UnsubscriberComponent implements AfterViewInit {
   @Input() hexInput!: AbstractControl;
+  hexColorInput: InputConfig = {
+    type: 'text',
+    getFormControl: () => this.getFormControl(),
+    placeholder: 'ffffff',
+    widthPx: 100,
+    maxLength: 8,
+    autocomplete: false,
+  };
 
-  constructor(private colorService: ColorService) { }
+  constructor(private colorService: ColorService) {
+    super();
+  }
+
+  ngAfterViewInit() {
+    // using timeout to avoid ExpressionChangedAfterItHasBeenCheckedError
+    // since we cannot subscribe in ngOnInit (see below comment)
+    setTimeout(() => {
+      // have to do this here instead of in ngOnInit so that the ColorPicker exists
+      this.handleUnsubscribe(
+        this.colorService.getCurrentColorData())
+        .subscribe((colorData: CurrentColor) => {
+          this.hexInput.patchValue(colorData.hex);
+        });
+    });
+  }
+
   getFormControl() {
     return this.hexInput as FormControl;
   }
 
   hexEnter(e: KeyboardEvent) {
-    // TODO update background color of "fromHex()" button
-    // document.getElementById('hexcnf')!.style.backgroundColor = 'var(--c-6)';
-    
     if (e.key === 'Enter') {
-      this.setHex();
+      this.colorService.validateAndSetHex(this.hexInput.value);
     }
-  }
-
-  setHex() {
-    const rawValue = this.hexInput.value
-    const hex = rawValue.substring(0, 6); // TODO also handle length 3? like css
-    const whiteValue = parseInt(rawValue.substring(6), 16) || 0;
-    this.colorService.setHex(hex, whiteValue);
   }
 }

@@ -40,7 +40,7 @@ export const MOCK_API_RESPONSE: WLEDApiResponse = {
         spc: 0,
         of: 0,
         col: [
-          [255, 10, 100, 128],
+          [255, 10, 100, 0],
           [0, 0, 0],
           [0, 0, 0]
         ],

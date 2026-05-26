@@ -56,9 +56,10 @@ export class ColorSlotsService extends UnsubscriberService {
     this.selectedSlot = slot;
 
     const hex = this.colors[this.selectedSlot];
-    const whiteChannel = this.whiteChannels[this.selectedSlot];
+    // TODO re wire up 
+    // const whiteChannel = this.whiteChannels[this.selectedSlot];
     // console.log('loading slot', slot + 1, hex, whiteChannel)
-    this.colorService.setHex(hex, whiteChannel);
+    this.colorService.validateAndSetHex(hex); // , whiteChannel);
     this.colorService.setSlot(slot);
 
     // TODO is this needed?

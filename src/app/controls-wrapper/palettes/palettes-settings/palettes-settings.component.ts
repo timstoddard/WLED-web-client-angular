@@ -1,11 +1,12 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, Validators } from '@angular/forms';
 import { merge } from 'rxjs';
 import { ColorService, CurrentColor } from '../../color.service';
 import { FormService } from 'src/app/shared/form-service';
 import { AppStateService } from 'src/app/shared/app-state/app-state.service';
 import { ColorSlotsService } from '../../color-inputs/color-slots/color-slots.service';
 import { UnsubscriberComponent } from 'src/app/shared/unsubscriber/unsubscriber.component';
+import { HEX_REGEX } from 'src/app/shared/common-regex';
 
 @Component({
   selector: 'app-palettes-settings',
@@ -116,7 +117,7 @@ export class PalettesSettingsComponent extends UnsubscriberComponent implements 
    * @returns 
    */
   private createForm() {
-    return this.formService.createFormGroup({
+    const form = this.formService.createFormGroup({
       rgb: {
         r: 0,
         g: 0,
@@ -130,5 +131,9 @@ export class PalettesSettingsComponent extends UnsubscriberComponent implements 
       },
       hex: '',
     });
+
+    form.get('hex')!.addValidators(Validators.pattern(HEX_REGEX));
+
+    return form;
   }
 }

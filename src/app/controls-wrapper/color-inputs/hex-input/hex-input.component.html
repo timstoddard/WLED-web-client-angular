@@ -1,23 +1,7 @@
-<mat-form-field
-  appearance="fill"
-  class="hexInput__inputWrapper">
-  <mat-label>Hex color</mat-label>
-  <input
-    matInput
-    [formControl]="getFormControl()"
-    (keydown)="hexEnter($event)"
-    placeholder="ffffff"
-    maxlength="8"
-    autocomplete="off">
-</mat-form-field>
-<div class="hexInput__buttonWrapper">
-  <button
-    (click)="setHex()"
-    mat-raised-button
-    color="primary"
-    class="hexInput__button">
-    <span class="material-symbols-outlined">
-      done
-    </span>
-  </button>
-</div>
+<app-text-input
+  label="Hex color"
+  (keydown)="hexEnter($event)"
+  [inputs]="[hexColorInput]"
+  [backgroundColor]="getFormControl().value"
+  flexDirection="column">
+</app-text-input>

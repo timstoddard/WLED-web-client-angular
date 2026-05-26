@@ -53,6 +53,19 @@ export class TextInputComponent {
   @Input() @Optional() suffix: string = '';
   @Input() @Optional() flexDirection: 'column' | 'row' | 'auto' = 'auto';
   @Input() @Optional() hideValidity = false;
+  @Input() @Optional()
+  set backgroundColor(value: string) {
+    const formattedValue = `#${value}`;
+    this._backgroundColor = CSS.supports('background-color', formattedValue)
+      ? formattedValue
+      : '';
+  }
+
+  get backgroundColor() {
+    return this._backgroundColor;
+  }
+
+  private _backgroundColor: string = '';
 
   getInputMode({ type, inputMode }: InputConfig) {
     return inputMode
@@ -97,7 +110,7 @@ export class TextInputComponent {
       widthPx,
       heightPx,
     } = input;
-    const styles: { [key: string]: number } = {};
+    const styles: { [key: string]: number | string } = {};
 
     if (widthPx) {
       styles['width.px'] = widthPx;
@@ -113,6 +126,10 @@ export class TextInputComponent {
         styles['max-height.px'] = heightPx;
         styles['min-height.px'] = heightPx;
       }
+    }
+
+    if (this.backgroundColor) {
+      styles['backgroundColor'] = this.backgroundColor;
     }
 
     return styles;

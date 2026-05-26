@@ -5,6 +5,7 @@ import { Subject } from 'rxjs';
 import { AppStateService } from '../shared/app-state/app-state.service';
 import { UnsubscriberService } from '../shared/unsubscriber/unsubscriber.service';
 import { SegmentApiService } from '../shared/api-service/segment-api.service';
+import { HEX_REGEX } from '../shared/common-regex';
 
 export interface CurrentColor {
   rgb: RgbColor;
@@ -106,16 +107,42 @@ export class ColorService extends UnsubscriberService {
       .subscribe();
   }
 
-  setHex(hex: string, whiteChannel: number) {
-    // TODO what if white channel is in hex string?
-    this.whiteChannel = whiteChannel;
-    try {
-      this.setColorPickerColor(`#${hex}`);
-    } catch (e) {
-      console.log(e)
-      // TODO show error toast
-      // this.setColorPickerColor(DEFAULT_COLOR);
+  // TODO really need to figure out how to handle white channel (effective enable or disable based on if its present in the input)
+  // TODO wire up to show error toast on false return value (failed result)
+  validateAndSetHex(rawValue: string): boolean {
+    const match = rawValue.trim().match(HEX_REGEX);
+    if (!match) {
+      return false;
     }
+    const hexString = match[1];
+
+    // parse the values
+    let whiteChannel = 0;
+    let hexValue = hexString;
+    switch (hexString.length) {
+      case 3:
+      case 6:
+        // valid
+        break;
+      case 8: {
+        hexValue = hexString.substring(0, 6);
+        whiteChannel = parseInt(hexString.substring(6, 8), 16) || 0;
+        break;
+      }
+      default:
+        return false;
+    }
+
+    // set the values
+    try {
+      this.setColorPickerColor(`#${hexValue}`);
+      this.whiteChannel = whiteChannel;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
+
+    return true;
   }
 
   /**
@@ -149,7 +176,8 @@ export class ColorService extends UnsubscriberService {
         rgb.g,
         rgb.b,
         this.whiteChannel,
-        this.selectedSlot)
+        this.selectedSlot,
+      )
     )
       .subscribe();
   }
