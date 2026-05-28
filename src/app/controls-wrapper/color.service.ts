@@ -76,8 +76,11 @@ export class ColorService extends UnsubscriberService {
   }
 
   setHsvValue = (hsvValue: number) => {
-    // TODO when this is 0 (or DNE?), use kelvin
-    this._colorPicker.color.setChannel('hsv', 'v', hsvValue);
+    if (!hsvValue || hsvValue === 0) {
+      // TODO when this is 0 (or DNE?), dont update the color? old comment was to use kelvin
+    } else {
+      this._colorPicker.color.setChannel('hsv', 'v', hsvValue ?? 0);
+    }
   }
 
   setKelvin = (kelvin: number) => {

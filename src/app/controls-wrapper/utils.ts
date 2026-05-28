@@ -73,3 +73,18 @@ export const formatPlural = (type: string, count: number) => {
 /** Workaround for angular http method options responseType bug. */
 export const responseTypeAsJsonHack = (responseType?: string) =>
   responseType ? responseType as 'json' : 'json';
+
+const zeroPad = (n: number | string, maxLength: number, zeroesBeforeNumber: boolean): string => {
+  const zeroes = new Array(maxLength).fill('0').join('');
+  const withZeroes = zeroesBeforeNumber ? `${zeroes}${n}` : `${n}${zeroes}`;
+  const zeroPadded = withZeroes.substring(withZeroes.length - maxLength, withZeroes.length);
+  return zeroPadded;
+}
+
+export const zeroPadStart = (n: number | string, maxLength: number) => {
+  return zeroPad(n, maxLength, true);
+}
+
+export const zeroPadEnd = (n: number | string, maxLength: number) => {
+  return zeroPad(n, maxLength, false);
+}
