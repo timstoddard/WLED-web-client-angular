@@ -1,21 +1,10 @@
 @import 'src/app/shared/scss/mixins';
 
 :host {
-  // TODO deprecate usage, remove material input
-  @include overrideMatTextInputStyles(--backgroundColorAccent);
-  flex-direction: column;
-}
-
-.hexInput {
-  &__inputWrapper {
-    max-width: 120px;
-    margin-bottom: -16px;
+  & ::ng-deep .textInput__input {
+    caret-color: black;
+    color: white;
+    paint-order: stroke fill;
+    -webkit-text-stroke: 2px black;
   }
-
-  &__buttonWrapper {
-    @include flex-center;
-    padding: 4px;
-  }
-
-  &__button {}
 }

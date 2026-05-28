@@ -55,6 +55,7 @@
         [pattern]="input.pattern ?? ''"
         [attr.inputmode]="getInputMode(input)"
         [autocomplete]="formatBoolean(input.autocomplete)"
+        [spellcheck]="spellCheck"
         [ngStyle]="getNgStyle(input, true)"
         class="textInput__input textInput__input--centered">
       <!-- same as text type due to https://stackoverflow.com/questions/40176061/two-switch-case-values-in-angular -->

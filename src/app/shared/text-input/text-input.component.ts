@@ -53,6 +53,7 @@ export class TextInputComponent {
   @Input() @Optional() suffix: string = '';
   @Input() @Optional() flexDirection: 'column' | 'row' | 'auto' = 'auto';
   @Input() @Optional() hideValidity = false;
+  @Input() @Optional() spellCheck = false;
   @Input() @Optional()
   set backgroundColor(value: string) {
     const formattedValue = `#${value}`;
